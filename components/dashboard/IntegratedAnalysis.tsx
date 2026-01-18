@@ -99,11 +99,11 @@ export function IntegratedAnalysis({
 
       {/* 性格プロファイル（Big Five） */}
       {hasBigFive && (
-        <Card variant="white" padding="md" className="shadow-brutal-sm">
+        <Card variant="white" padding="sm" className="shadow-brutal-sm">
           <h3 className="text-xl font-bold mb-4 uppercase tracking-tight">
             性格特性プロファイル
           </h3>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
             {/* レーダーチャート */}
             <div className="flex justify-center">
               <RadarChart

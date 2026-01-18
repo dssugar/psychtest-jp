@@ -19,9 +19,9 @@ export function RadarChart({ dimensions, size = "md" }: RadarChartProps) {
   );
 
   const sizeConfig = {
-    sm: { diameter: 200, fontSize: 10, radius: 80, labelOffset: 100 },
-    md: { diameter: 280, fontSize: 11, radius: 110, labelOffset: 140 },
-    lg: { diameter: 320, fontSize: 12, radius: 130, labelOffset: 160 },
+    sm: { diameter: 260, fontSize: 10, radius: 80, labelOffset: 100 },
+    md: { diameter: 320, fontSize: 11, radius: 100, labelOffset: 125 },
+    lg: { diameter: 380, fontSize: 12, radius: 120, labelOffset: 150 },
   };
 
   const colorMap = {
@@ -46,13 +46,24 @@ export function RadarChart({ dimensions, size = "md" }: RadarChartProps) {
     };
   };
 
-  // Create polygon points string
+  // Create polygon points string for data
   const polygonPoints = animatedValues
     .map((value, i) => {
       const point = getPoint(i, value, config.radius);
       return `${point.x},${point.y}`;
     })
     .join(" ");
+
+  // Create pentagon grid points (50%, 100%)
+  const getPentagonPoints = (percentage: number) => {
+    return Array.from({ length: numDimensions }, (_, i) => {
+      const point = getPoint(i, percentage, config.radius);
+      return `${point.x},${point.y}`;
+    }).join(" ");
+  };
+
+  const gridPentagon50 = getPentagonPoints(50);
+  const gridPentagon100 = getPentagonPoints(100);
 
   // Animation effect
   useEffect(() => {
@@ -62,25 +73,33 @@ export function RadarChart({ dimensions, size = "md" }: RadarChartProps) {
     return () => clearTimeout(timer);
   }, [dimensions]);
 
+  // Calculate actual content bounds for tighter viewBox
+  const padding = 20; // Padding for text
+  const minY = center - config.labelOffset - padding; // Top label position
+  const maxY = center + config.labelOffset * 0.85 + padding; // Bottom labels (pentagon doesn't extend as far down)
+  const viewBoxHeight = maxY - minY;
+  const viewBoxY = minY;
+
   return (
     <div
       className="flex items-center justify-center"
-      style={{ width: config.diameter, height: config.diameter }}
+      style={{ width: config.diameter, height: viewBoxHeight }}
     >
-      <svg width={config.diameter} height={config.diameter}>
-        {/* Grid circles (50%, 100%) */}
-        <circle
-          cx={center}
-          cy={center}
-          r={config.radius * 0.5}
+      <svg
+        width={config.diameter}
+        height={viewBoxHeight}
+        viewBox={`0 ${viewBoxY} ${config.diameter} ${viewBoxHeight}`}
+        preserveAspectRatio="xMidYMid meet"
+      >
+        {/* Grid pentagons (50%, 100%) */}
+        <polygon
+          points={gridPentagon50}
           fill="none"
           stroke="#d4d4d4"
           strokeWidth={2}
         />
-        <circle
-          cx={center}
-          cy={center}
-          r={config.radius}
+        <polygon
+          points={gridPentagon100}
           fill="none"
           stroke="#d4d4d4"
           strokeWidth={2}
@@ -116,7 +135,12 @@ export function RadarChart({ dimensions, size = "md" }: RadarChartProps) {
         {dimensions.map((dim, index) => {
           const angle = (Math.PI * 2 * index) / numDimensions - Math.PI / 2;
           const labelX = center + config.labelOffset * Math.cos(angle);
-          const labelY = center + config.labelOffset * Math.sin(angle);
+          let labelY = center + config.labelOffset * Math.sin(angle);
+
+          // Adjust top label (index 0) slightly down
+          if (index === 0) {
+            labelY += 8;
+          }
 
           return (
             <text
