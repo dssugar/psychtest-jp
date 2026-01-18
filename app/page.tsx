@@ -184,6 +184,78 @@ export default function Home() {
               </a>
             </div>
           </div>
+
+          {/* Big Five Card */}
+          <div className="card-brutal p-8 md:p-12 bg-brutal-white animate-scale-in" style={{ animationDelay: "0.4s" }}>
+            {/* Test Header */}
+            <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6 mb-8">
+              <div className="flex-1">
+                <div className="inline-block mb-4">
+                  <DataBadge color="green" size="lg">Mini-IPIP</DataBadge>
+                </div>
+                <h2 className="text-2xl md:text-3xl lg:text-5xl font-display text-brutal-black mb-4 leading-tight">
+                  Big Five<br />Personality Test
+                </h2>
+                <p className="text-lg text-brutal-gray-800">
+                  5つの性格特性を測定する20問の心理尺度
+                </p>
+              </div>
+
+              {/* Quick Stats */}
+              <div className="flex flex-col gap-3">
+                <div className="card-brutal p-4 bg-viz-green text-brutal-white border-brutal-black text-center">
+                  <div className="text-3xl md:text-4xl font-mono font-bold data-number">20</div>
+                  <div className="text-xs font-semibold uppercase tracking-wide">Questions</div>
+                </div>
+                <div className="card-brutal p-4 bg-brutal-black text-brutal-white border-brutal-black text-center">
+                  <div className="text-3xl md:text-4xl font-mono font-bold data-number">~3</div>
+                  <div className="text-xs font-semibold uppercase tracking-wide">Minutes</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Academic Credentials Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+              <StatCard
+                icon="📊"
+                label="信頼性係数"
+                value="α = 0.68-0.76"
+                description="許容範囲の一貫性"
+                color="green"
+              />
+              <StatCard
+                icon="🔄"
+                label="再テスト信頼性"
+                value="r = 0.72-0.82"
+                description="安定した測定結果"
+                color="pink"
+              />
+              <StatCard
+                icon="👥"
+                label="開発者"
+                value="Donnellan et al."
+                description="Psych Assess (2006)"
+                color="blue"
+              />
+              <StatCard
+                icon="📚"
+                label="引用論文数"
+                value="10,000+"
+                description="最も広く使用"
+                color="orange"
+              />
+            </div>
+
+            {/* CTA Button */}
+            <div className="text-center">
+              <a
+                href="/bigfive"
+                className="btn-brutal inline-block bg-brutal-black text-brutal-white px-12 py-5 text-lg min-h-[44px]"
+              >
+                診断を始める
+              </a>
+            </div>
+          </div>
         </div>
         </div>
 

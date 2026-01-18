@@ -1,5 +1,6 @@
 import { sccsConfig } from "./configs/sccs";
 import { rosenbergConfig } from "./configs/rosenberg";
+import { bigFiveConfig } from "./configs/bigfive";
 import type { TestType } from "@/lib/storage";
 import type { TestConfig, TestRegistry } from "./types";
 
@@ -10,6 +11,7 @@ import type { TestConfig, TestRegistry } from "./types";
 export const testRegistry = {
   sccs: sccsConfig,
   rosenberg: rosenbergConfig,
+  bigfive: bigFiveConfig,
 } as const;
 
 /**

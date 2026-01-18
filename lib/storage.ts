@@ -1,4 +1,6 @@
 import { SccsResult } from "./scoring/sccs";
+import { RosenbergResult } from "./scoring/rosenberg";
+import { BigFiveResult } from "./scoring/bigfive";
 
 // ============================================================
 // Type Definitions
@@ -20,32 +22,18 @@ export interface TestResult<T = unknown> {
 }
 
 /**
- * SCCS 結果（既存）
+ * SCCS 結果
  */
 export type SccsTestResult = TestResult<SccsResult>;
 
 /**
- * Rosenberg 自尊心テスト結果（未実装）
+ * Rosenberg 自尊心テスト結果
  */
-export interface RosenbergResult {
-  rawScore: number;
-  percentageScore: number;
-  level: "very_low" | "low" | "medium" | "high" | "very_high";
-  interpretation: string;
-}
 export type RosenbergTestResult = TestResult<RosenbergResult>;
 
 /**
- * Big Five 結果（未実装）
+ * Big Five 結果
  */
-export interface BigFiveResult {
-  extraversion: number;
-  agreeableness: number;
-  conscientiousness: number;
-  neuroticism: number;
-  openness: number;
-  interpretation: string;
-}
 export type BigFiveTestResult = TestResult<BigFiveResult>;
 
 /**

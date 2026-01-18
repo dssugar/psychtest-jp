@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { RadialBarChart, RadialBar, PolarAngleAxis } from "recharts";
 
 interface ScoreCircleProps {
   score: number; // 0-100
@@ -23,17 +24,23 @@ export function ScoreCircle({
     lg: { diameter: 240, strokeWidth: 16, fontSize: "text-6xl" },
   };
 
-  const colorConfig = {
-    blue: "viz-blue",
-    pink: "viz-pink",
-    green: "viz-green",
-    orange: "viz-orange",
+  const colorMap = {
+    blue: "#0066ff",
+    pink: "#ff3366",
+    green: "#00cc88",
+    orange: "#ff9900",
   };
 
   const config = sizeConfig[size];
-  const radius = (config.diameter - config.strokeWidth) / 2;
-  const circumference = 2 * Math.PI * radius;
-  const offset = circumference - (animatedScore / 100) * circumference;
+
+  // Recharts data format
+  const data = [
+    {
+      name: "score",
+      value: animatedScore,
+      fill: colorMap[color],
+    },
+  ];
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -45,39 +52,30 @@ export function ScoreCircle({
   return (
     <div className="flex flex-col items-center gap-4">
       <div className="relative" style={{ width: config.diameter, height: config.diameter }}>
-        {/* Background Circle */}
-        <svg
+        <RadialBarChart
           width={config.diameter}
           height={config.diameter}
-          className="transform -rotate-90"
+          cx={config.diameter / 2}
+          cy={config.diameter / 2}
+          innerRadius="70%"
+          outerRadius="100%"
+          barSize={config.strokeWidth}
+          startAngle={90}
+          endAngle={-270}
+          data={data}
         >
-          {/* Gray background track */}
-          <circle
-            cx={config.diameter / 2}
-            cy={config.diameter / 2}
-            r={radius}
-            fill="none"
-            stroke="hsl(var(--color-gray-200))"
-            strokeWidth={config.strokeWidth}
+          <PolarAngleAxis type="number" domain={[0, 100]} angleAxisId={0} tick={false} />
+          <RadialBar
+            background={{ fill: "#e5e5e5" }}
+            dataKey="value"
+            maxBarSize={config.strokeWidth}
+            cornerRadius={config.strokeWidth / 2}
+            animationDuration={1000}
           />
+        </RadialBarChart>
 
-          {/* Animated progress circle */}
-          <circle
-            cx={config.diameter / 2}
-            cy={config.diameter / 2}
-            r={radius}
-            fill="none"
-            stroke={`hsl(var(--color-viz-${color}))`}
-            strokeWidth={config.strokeWidth}
-            strokeDasharray={circumference}
-            strokeDashoffset={offset}
-            strokeLinecap="round"
-            className="transition-all duration-1000 ease-out"
-          />
-        </svg>
-
-        {/* Score Text */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center">
+        {/* Score Text Overlay */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
           <div className={`${config.fontSize} font-mono font-bold data-number animate-number-pop`}>
             {Math.round(animatedScore)}
           </div>

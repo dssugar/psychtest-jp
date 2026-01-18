@@ -19,6 +19,12 @@
   --color-viz-yellow: #ffd700;
   --color-viz-purple: #9933ff;
 
+  /* Brutal color variants (light backgrounds) */
+  --color-brutal-blue-50: rgba(0, 102, 255, 0.05);
+  --color-brutal-pink-50: rgba(255, 51, 102, 0.05);
+  --color-brutal-green-50: rgba(0, 204, 136, 0.05);
+  --color-brutal-orange-50: rgba(255, 153, 0, 0.05);
+
   /* === BORDER WIDTHS === */
   --border-width-brutal: 3px;
   --border-width-brutal-thick: 6px;

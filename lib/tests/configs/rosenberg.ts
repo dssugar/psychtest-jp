@@ -6,8 +6,8 @@ import {
 import {
   calculateRosenbergScore,
   validateAnswerPattern,
+  type RosenbergResult,
 } from "@/lib/scoring/rosenberg";
-import type { RosenbergResult } from "@/lib/storage";
 import type { TestConfig } from "../types";
 
 /**
