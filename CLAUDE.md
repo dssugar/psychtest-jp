@@ -29,18 +29,43 @@ This is a new project - commands will be added as the build system is establishe
 
 ## Architecture
 
-### Data Model - 6 Core Dimensions
+### Data Model - Trait-State-Outcome-Skill Framework
 
-Each psychological assessment measures one of these dimensions:
+心理学では、心理測定を4つの層で理解します：
 
-| Dimension | Measures | Scales Used |
-|-----------|----------|-------------|
-| 自己認識 (Self-Awareness) | How you see yourself | Self-Concept Clarity, Self-Esteem |
-| 価値観・強み (Values/Strengths) | What you value | VIA Character Strengths |
+#### 【Trait - 特性】比較的安定した個人差
+
+| Category | Measures | Scales Used |
+|----------|----------|-------------|
 | 性格特性 (Personality) | How you behave | Big Five (IPIP-NEO) |
-| 対人スタイル (Interpersonal) | How you relate | Attachment Style (ECR-R) |
-| メンタル状態 (Mental Health) | Current state | PHQ-9, GAD-7, PSS |
-| 適職・興味 (Career) | What you're suited for | RIASEC |
+| 愛着スタイル (Attachment) | How you relate | ECR-R |
+| 価値観・強み (Values/Strengths) | What you value | VIA Character Strengths |
+
+#### 【State - 状態】現在の心理状態（変化しうる）
+
+| Category | Measures | Scales Used |
+|----------|----------|-------------|
+| メンタルヘルス (Mental Health) | Current symptoms | PHQ-9, GAD-7, PSS |
+| 自己認識 (Self-Concept) | Self-understanding clarity | SCCS |
+
+#### 【Outcome - 成果】特性と状態の結果
+
+| Category | Measures | Scales Used |
+|----------|----------|-------------|
+| 自尊心 (Self-Esteem) | Self-worth evaluation | Rosenberg Self-Esteem |
+| キャリア適合 (Career Fit) | Job-person match | RIASEC |
+
+#### 【Skill/Capacity - スキル・能力】育成可能な力（将来的に追加予定）
+
+| Category | Measures | Scales Used |
+|----------|----------|-------------|
+| レジリエンス (Resilience) | Stress recovery capacity | CD-RISC (planned) |
+| マインドフルネス (Mindfulness) | Present-moment awareness | MAAS (planned) |
+| 対処スタイル (Coping) | Stress coping strategies | Brief COPE (planned) |
+
+**学術的根拠**: Trait-State-Outcome モデル ([Steyer et al., 1999](https://psycnet.apa.org/record/1999-05160-001))
+
+**拡張性**: このフレームワークは拡張可能で、新しい心理尺度を体系的に追加できます。
 
 ### Implementation Plan
 

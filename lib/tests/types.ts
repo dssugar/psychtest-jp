@@ -10,8 +10,12 @@ export interface ScaleInfo {
   nameJa: string;
   /** 略称 */
   abbreviation: string;
-  /** 測定次元（6次元のいずれか） */
-  dimension: string;
+  /** 測定カテゴリ（例: 性格特性、自己認識、メンタルヘルスなど） */
+  category: string;
+  /** 心理学的層（Trait/State/Outcome/Skillのいずれか） */
+  psychologicalLayer: "trait" | "state" | "outcome" | "skill";
+  /** @deprecated 旧フィールド - categoryを使用してください */
+  dimension?: string;
   /** 説明文 */
   description: string;
   /** 開発者 */

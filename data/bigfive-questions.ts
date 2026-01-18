@@ -176,7 +176,8 @@ export const scaleInfo: ScaleInfo = {
   name: "Mini-IPIP (Big Five)",
   nameJa: "ビッグファイブ性格特性",
   abbreviation: "Mini-IPIP",
-  dimension: "性格特性",
+  category: "性格特性",
+  psychologicalLayer: "trait",
   description:
     "外向性、協調性、誠実性、神経症傾向、開放性の5次元から性格を測定する、最も信頼性の高い性格理論に基づく尺度です。",
   developer: "Donnellan et al. (2006)",

@@ -92,7 +92,8 @@ export const scaleInfo: ScaleInfo = {
   name: "Self-Concept Clarity Scale",
   nameJa: "自己概念明確性尺度",
   abbreviation: "SCCS",
-  dimension: "自己認識",
+  category: "自己認識",
+  psychologicalLayer: "state",
   description: "自己概念の明確さと一貫性を測定する心理尺度。自分自身に対する理解がどれだけ明確で安定しているかを評価します。",
   developer: "Campbell et al. (1996)",
   reliability: {

@@ -10,16 +10,37 @@
 - **技術基盤**: Next.js 16 App Router、Tailwind CSS v4、TypeScript
 
 ### 🎯 目標
-6次元の心理診断を提供し、科学的根拠に基づいた「測れる診断」を実現
+Trait-State-Outcome-Skill フレームワークに基づく包括的な心理診断を提供し、科学的根拠に基づいた「測れる診断」を実現
 
-| 次元 | 測定内容 | 使用尺度 | 状態 |
-|------|----------|----------|------|
-| 自己認識 (Self-Awareness) | 自己理解の明確さ | SCCS, Rosenberg | SCCS✅ |
+#### 【Trait - 特性】比較的安定した個人差
+
+| Category | 測定内容 | 使用尺度 | 状態 |
+|----------|----------|----------|------|
+| 性格特性 (Personality) | 行動パターン | Big Five (IPIP-NEO) | Big Five✅ |
+| 愛着スタイル (Attachment) | 関係性の傾向 | ECR-R | 未実装 |
 | 価値観・強み (Values/Strengths) | 価値観と強み | VIA | 未実装 |
-| 性格特性 (Personality) | 行動パターン | Big Five (IPIP-NEO) | 未実装 |
-| 対人スタイル (Interpersonal) | 関係性の傾向 | ECR-R | 未実装 |
-| メンタル状態 (Mental Health) | 現在の心理状態 | PHQ-9, GAD-7, PSS | 未実装 |
-| 適職・興味 (Career) | 職業適性 | RIASEC | 未実装 |
+
+#### 【State - 状態】現在の心理状態
+
+| Category | 測定内容 | 使用尺度 | 状態 |
+|----------|----------|----------|------|
+| 自己認識 (Self-Concept) | 自己理解の明確さ | SCCS | SCCS✅ |
+| メンタルヘルス (Mental Health) | 現在の症状 | PHQ-9, GAD-7, PSS | 未実装 |
+
+#### 【Outcome - 成果】特性と状態の結果
+
+| Category | 測定内容 | 使用尺度 | 状態 |
+|----------|----------|----------|------|
+| 自尊心 (Self-Esteem) | 自己価値の評価 | Rosenberg | Rosenberg✅ |
+| キャリア適合 (Career Fit) | 職業適性 | RIASEC | 未実装 |
+
+#### 【Skill - スキル】育成可能な力（Phase 3以降）
+
+| Category | 測定内容 | 使用尺度 | 状態 |
+|----------|----------|----------|------|
+| レジリエンス (Resilience) | ストレス回復力 | CD-RISC | 未実装 |
+| マインドフルネス (Mindfulness) | 今への気づき | MAAS | 未実装 |
+| 対処スタイル (Coping) | ストレス対処 | Brief COPE | 未実装 |
 
 ---
 

@@ -99,7 +99,8 @@ export const scaleInfo: ScaleInfo = {
   name: "Rosenberg Self-Esteem Scale",
   nameJa: "ローゼンバーグ自尊心尺度",
   abbreviation: "RSES",
-  dimension: "自己認識",
+  category: "自尊心",
+  psychologicalLayer: "outcome",
   description: "自己に対する肯定的・否定的態度を測定する、最も広く使用されている自尊心尺度です。",
   developer: "Morris Rosenberg (1965)",
   reliability: {
