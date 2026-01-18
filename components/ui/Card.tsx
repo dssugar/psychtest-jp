@@ -1,4 +1,4 @@
-import { type ReactNode } from "react";
+import { type ReactNode, type CSSProperties } from "react";
 import { cn } from "@/lib/utils";
 
 interface CardProps {
@@ -10,6 +10,7 @@ interface CardProps {
   href?: string;
   hover?: boolean;
   onClick?: () => void;
+  style?: CSSProperties;
 }
 
 export function Card({
@@ -21,6 +22,7 @@ export function Card({
   href,
   hover = false,
   onClick,
+  style,
 }: CardProps) {
   const variantClasses = {
     white: "bg-brutal-white border-brutal-black",
@@ -54,14 +56,14 @@ export function Card({
 
   if (Component === "a" && href) {
     return (
-      <a href={href} className={combinedClassName}>
+      <a href={href} className={combinedClassName} style={style}>
         {children}
       </a>
     );
   }
 
   return (
-    <Component className={combinedClassName} onClick={onClick}>
+    <Component className={combinedClassName} onClick={onClick} style={style}>
       {children}
     </Component>
   );
