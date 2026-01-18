@@ -5,6 +5,7 @@ import Link from "next/link";
 import { getProfile, getCompletedTests, type TestType } from "@/lib/storage";
 import { DataBadge } from "@/components/viz/DataBadge";
 import { StatCard } from "@/components/viz/StatCard";
+import { Card } from "@/components/ui/Card";
 import { ProfileOverview } from "@/components/dashboard/ProfileOverview";
 import { IntegratedAnalysis } from "@/components/dashboard/IntegratedAnalysis";
 
@@ -154,9 +155,9 @@ export default function DashboardPage() {
                 if (!testResult) return null;
 
                 return (
-                  <div
+                  <Card
                     key={testType}
-                    className="card-brutal p-6 md:p-8 bg-brutal-white"
+                    variant="white" padding="md"
                   >
                     <div className="flex items-start justify-between mb-4">
                       <DataBadge color={info.color} size="md">
@@ -203,14 +204,14 @@ export default function DashboardPage() {
                         再受験する
                       </Link>
                     </div>
-                  </div>
+                  </Card>
                 );
               })}
             </div>
           </div>
         ) : (
           <div className="max-w-6xl mx-auto mb-16">
-            <div className="card-brutal p-8 md:p-12 bg-brutal-gray-50 text-center">
+            <Card variant="white" padding="lg" className="bg-brutal-gray-50 text-center">
               <div className="text-6xl mb-4">📊</div>
               <h2 className="text-2xl md:text-3xl font-display text-brutal-black mb-4">
                 まだ診断を受けていません
@@ -218,7 +219,7 @@ export default function DashboardPage() {
               <p className="text-brutal-gray-800 mb-6">
                 下記から診断を始めてみましょう
               </p>
-            </div>
+            </Card>
           </div>
         )}
 
@@ -233,9 +234,9 @@ export default function DashboardPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {notCompletedTests.map(([testType, info]) => (
-                <div
+                <Card
                   key={testType}
-                  className="card-brutal p-6 md:p-8 bg-brutal-white"
+                  variant="white" padding="md"
                 >
                   <DataBadge color={info.color} size="md">
                     {info.name}
@@ -255,7 +256,7 @@ export default function DashboardPage() {
                   >
                     診断を始める
                   </Link>
-                </div>
+                </Card>
               ))}
             </div>
           </div>
