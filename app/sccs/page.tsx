@@ -85,7 +85,7 @@ export default function SccsPage() {
                   📖 原著論文を見る
                 </summary>
                 <p className="mt-3 text-sm text-brutal-gray-900 leading-relaxed font-mono">
-                  {scaleInfo.citation}
+                  {scaleInfo.academicReference.original}
                 </p>
               </details>
             </div>
