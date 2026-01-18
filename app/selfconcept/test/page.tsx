@@ -2,18 +2,20 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { rosenbergQuestions, scaleLabels } from "@/data/rosenberg-questions";
-import { calculateRosenbergScore, validateAnswerPattern } from "@/lib/scoring/rosenberg";
+import { getTestConfig } from "@/lib/tests/test-registry";
 import { saveTestResult } from "@/lib/storage";
 import { DataBadge } from "@/components/viz/DataBadge";
 
-export default function RosenbergTestPage() {
+export default function SelfConceptTestPage() {
   const router = useRouter();
+  const config = getTestConfig("selfconcept");
+  const { questions, scaleLabels, calculateScore, validateAnswers } = config;
+
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState<number[]>(new Array(10).fill(-1));
+  const [answers, setAnswers] = useState<number[]>(new Array(questions.length).fill(-1));
   const [showWarning, setShowWarning] = useState(false);
 
-  const progress = ((currentQuestion + 1) / rosenbergQuestions.length) * 100;
+  const progress = ((currentQuestion + 1) / questions.length) * 100;
 
   const handleAnswer = (value: number) => {
     const newAnswers = [...answers];
@@ -21,7 +23,7 @@ export default function RosenbergTestPage() {
     setAnswers(newAnswers);
 
     // 次の質問へ自動的に進む
-    if (currentQuestion < rosenbergQuestions.length - 1) {
+    if (currentQuestion < questions.length - 1) {
       setTimeout(() => {
         setCurrentQuestion(currentQuestion + 1);
       }, 200);
@@ -42,27 +44,27 @@ export default function RosenbergTestPage() {
     }
 
     // 回答パターンのバリデーション
-    const validation = validateAnswerPattern(answers);
-    if (!validation.valid) {
-      if (!confirm(validation.warning + "\n\nこのまま結果を表示しますか？")) {
-        return;
+    if (validateAnswers) {
+      const validation = validateAnswers(answers);
+      if (!validation.valid) {
+        if (!confirm((validation.warning || "回答パターンに問題があります") + "\n\nこのまま結果を表示しますか？")) {
+          return;
+        }
       }
-    } else if (validation.warning) {
-      setShowWarning(true);
     }
 
     // スコア計算
-    const result = calculateRosenbergScore(answers);
+    const result = calculateScore(answers);
 
-    // 結果を保存（新API使用）
-    saveTestResult("rosenberg", result, answers);
+    // 結果を保存
+    saveTestResult("selfconcept", result, answers);
 
     // 結果ページへ遷移
-    router.push("/results/rosenberg");
+    router.push("/results/selfconcept");
   };
 
-  const question = rosenbergQuestions[currentQuestion];
-  const isLastQuestion = currentQuestion === rosenbergQuestions.length - 1;
+  const question = questions[currentQuestion];
+  const isLastQuestion = currentQuestion === questions.length - 1;
   const allAnswered = !answers.includes(-1);
 
   return (
@@ -72,10 +74,10 @@ export default function RosenbergTestPage() {
           {/* Progress Header */}
           <div className="mb-8">
             <div className="flex items-center justify-between mb-4">
-              <DataBadge color="pink">RSES</DataBadge>
+              <DataBadge color="blue">SCC</DataBadge>
               <div className="flex items-center gap-4">
                 <div className="font-mono font-bold text-sm text-brutal-gray-800">
-                  質問 {currentQuestion + 1} / {rosenbergQuestions.length}
+                  質問 {currentQuestion + 1} / {questions.length}
                 </div>
                 <div className="font-mono font-bold text-sm text-brutal-gray-800">
                   {Math.round(progress)}%
@@ -86,7 +88,7 @@ export default function RosenbergTestPage() {
             {/* Progress Bar */}
             <div className="w-full h-3 border-brutal border-brutal-black bg-brutal-gray-100 relative overflow-hidden">
               <div
-                className="h-full bg-viz-pink transition-all duration-300"
+                className="h-full bg-viz-blue transition-all duration-300"
                 style={{ width: `${progress}%` }}
               />
             </div>
@@ -101,12 +103,12 @@ export default function RosenbergTestPage() {
             {/* Answer Options */}
             <div className="space-y-4">
               {scaleLabels.map((label, index) => {
-                const value = index + 1;
+                const value = index + 1; // 1-5のスケール
                 const isSelected = answers[currentQuestion] === value;
 
                 return (
                   <button
-                    key={value}
+                    key={index}
                     onClick={() => handleAnswer(value)}
                     className={`
                       w-full text-left px-4 py-3 md:px-6 md:py-4 border-[3px] border-solid transition-all
