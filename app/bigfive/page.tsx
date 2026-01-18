@@ -1,17 +1,17 @@
-import { scaleInfo } from "@/data/sccs-questions";
+import { scaleInfo } from "@/data/bigfive-questions";
 import { StatCard } from "@/components/viz/StatCard";
 import { DataBadge } from "@/components/viz/DataBadge";
 import { Card } from "@/components/ui/Card";
 import Link from "next/link";
 
-export default function SccsPage() {
+export default function BigFivePage() {
   return (
     <main className="min-h-screen">
       <div className="container mx-auto px-4 py-12 md:py-20">
         <div className="max-w-5xl mx-auto">
           {/* Header */}
           <div className="text-center mb-12 animate-slide-in-up">
-            <DataBadge color="blue" size="lg">SCCS</DataBadge>
+            <DataBadge color="green" size="lg">Mini-IPIP</DataBadge>
             <h1 className="text-4xl md:text-5xl lg:text-7xl font-display text-brutal-black mt-6 mb-4 leading-tight">
               {scaleInfo.nameJa}
             </h1>
@@ -31,16 +31,16 @@ export default function SccsPage() {
 
             {/* Quick Stats */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-              <Card variant="blue" padding="md">
+              <Card variant="green" padding="md">
                 <div className="text-sm font-bold uppercase tracking-wide mb-2">所要時間</div>
                 <div className="text-3xl md:text-4xl lg:text-5xl font-mono font-bold data-number">
-                  ~5<span className="text-lg font-semibold ml-1">分</span>
+                  ~3<span className="text-lg font-semibold ml-1">分</span>
                 </div>
               </Card>
               <Card variant="black" padding="md">
                 <div className="text-sm font-bold uppercase tracking-wide mb-2">質問数</div>
                 <div className="text-3xl md:text-4xl lg:text-5xl font-mono font-bold data-number">
-                  12<span className="text-lg font-semibold ml-1">問</span>
+                  20<span className="text-lg font-semibold ml-1">問</span>
                 </div>
               </Card>
             </div>
@@ -55,42 +55,78 @@ export default function SccsPage() {
                 <StatCard
                   icon="📊"
                   label="信頼性係数"
-                  value="α = 0.86"
-                  description="高い内的一貫性"
-                  color="blue"
+                  value="α = 0.68-0.76"
+                  description="許容範囲の内的一貫性"
+                  color="green"
                 />
                 <StatCard
                   icon="🔄"
                   label="再テスト信頼性"
-                  value="r = 0.79"
-                  description="4ヶ月後も安定"
+                  value="r = 0.72-0.82"
+                  description="安定した測定結果"
                   color="pink"
                 />
                 <StatCard
                   icon="👥"
                   label="開発者"
-                  value="Campbell et al."
-                  description="JPSP (1996)"
-                  color="green"
+                  value="Donnellan et al."
+                  description="Psych Assessment (2006)"
+                  color="blue"
                 />
                 <StatCard
                   icon="📚"
                   label="引用論文数"
-                  value="2,000+"
-                  description="広く使用されている"
+                  value="10,000+"
+                  description="最も広く使用されている"
                   color="orange"
                 />
               </div>
 
               {/* Citation Details */}
-              <details className="card-brutal p-4 bg-brutal-gray-50 cursor-pointer">
+              <details className="card-brutal p-4 bg-brutal-gray-50 border-brutal-black cursor-pointer mb-6">
                 <summary className="font-bold uppercase tracking-wide text-sm text-brutal-gray-900 select-none">
                   📖 原著論文を見る
                 </summary>
-                <p className="mt-3 text-sm text-brutal-gray-900 leading-relaxed font-mono">
-                  {scaleInfo.academicReference.original}
-                </p>
+                <div className="mt-3 space-y-3">
+                  <p className="text-sm text-brutal-gray-900 leading-relaxed font-mono">
+                    {scaleInfo.academicReference.original}
+                  </p>
+                  {scaleInfo.academicReference.japanese && (
+                    <p className="text-sm text-brutal-gray-900 leading-relaxed font-mono">
+                      {scaleInfo.academicReference.japanese}
+                    </p>
+                  )}
+                </div>
               </details>
+
+              {/* Dimensions */}
+              <div className="card-brutal p-6 bg-brutal-gray-50 border-brutal-black">
+                <h4 className="font-bold uppercase tracking-wide text-sm text-brutal-gray-900 mb-4">
+                  📏 測定する5つの性格次元（OCEAN）
+                </h4>
+                <ul className="space-y-2 text-sm text-brutal-gray-900">
+                  <li className="flex items-start gap-2">
+                    <span className="font-bold min-w-[100px]">外向性:</span>
+                    <span>社交性、活動性、刺激を求める傾向</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="font-bold min-w-[100px]">協調性:</span>
+                    <span>協力性、思いやり、対人関係における調和</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="font-bold min-w-[100px]">誠実性:</span>
+                    <span>計画性、責任感、目標達成への意欲</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="font-bold min-w-[100px]">神経症傾向:</span>
+                    <span>感情の安定性、ストレスへの反応</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="font-bold min-w-[100px]">開放性:</span>
+                    <span>創造性、好奇心、新しい経験への開放性</span>
+                  </li>
+                </ul>
+              </div>
             </div>
           </Card>
 
@@ -103,7 +139,7 @@ export default function SccsPage() {
                   ご注意
                 </div>
                 <p className="text-sm text-brutal-black leading-relaxed">
-                  この診断は医療診断ではありません。スクリーニング目的の心理尺度です。深刻な症状がある場合は、必ず医療専門家にご相談ください。
+                  この診断は医療診断ではありません。性格特性を測定する心理尺度です。深刻な症状がある場合は、必ず医療専門家にご相談ください。
                 </p>
               </div>
             </div>
@@ -112,7 +148,7 @@ export default function SccsPage() {
           {/* CTA Section */}
           <div className="text-center mb-8">
             <Link
-              href="/sccs/test"
+              href="/bigfive/test"
               className="btn-brutal inline-block bg-brutal-black text-brutal-white px-12 py-5 text-lg mb-4 min-h-[44px]"
             >
               診断を始める

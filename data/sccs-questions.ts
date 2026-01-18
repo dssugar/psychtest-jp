@@ -9,6 +9,8 @@
  * 注意: 多くの項目が逆転項目（reverse scored）
  */
 
+import type { ScaleInfo } from "@/lib/tests/types";
+
 export interface Question {
   id: number;
   text: string;
@@ -86,14 +88,31 @@ export const scaleLabels = [
   "非常に当てはまる",
 ];
 
-export const scaleInfo = {
+export const scaleInfo: ScaleInfo = {
   name: "Self-Concept Clarity Scale",
   nameJa: "自己概念明確性尺度",
-  shortName: "SCCS",
-  authors: "Campbell et al. (1996)",
-  citation: "Campbell, J. D., Trapnell, P. D., Heine, S. J., Katz, I. M., Lavallee, L. F., & Lehman, D. R. (1996). Self-concept clarity: Measurement, personality correlates, and cultural boundaries. Journal of Personality and Social Psychology, 70(1), 141-156.",
-  reliability: "Cronbach's α = 0.86",
-  testRetest: "r = 0.79 (4ヶ月)",
-  citations: "2,000+",
+  abbreviation: "SCCS",
+  dimension: "自己認識",
   description: "自己概念の明確さと一貫性を測定する心理尺度。自分自身に対する理解がどれだけ明確で安定しているかを評価します。",
+  developer: "Campbell et al. (1996)",
+  reliability: {
+    cronbachAlpha: "α = 0.86",
+    testRetest: "r = 0.79 (4ヶ月)",
+  },
+  citations: "2,000+",
+  tier: "Tier A (Strong Support)",
+  academicReference: {
+    original:
+      "Campbell, J. D., Trapnell, P. D., Heine, S. J., Katz, I. M., Lavallee, L. F., & Lehman, D. R. (1996). Self-concept clarity: Measurement, personality correlates, and cultural boundaries. Journal of Personality and Social Psychology, 70(1), 141-156.",
+  },
+  scoring: {
+    min: 12,
+    max: 60,
+    neutral: 36,
+    description: "12-60点の範囲。高得点ほど自己概念が明確。",
+  },
+  stats: {
+    questions: 12,
+    minutes: 5,
+  },
 };

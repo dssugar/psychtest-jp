@@ -14,6 +14,8 @@
  * Citations: 50,000+
  */
 
+import type { ScaleInfo } from "@/lib/tests/types";
+
 export interface RosenbergQuestion {
   id: number;
   text: string;
@@ -93,7 +95,7 @@ export const rosenbergQuestions: RosenbergQuestion[] = [
 /**
  * 尺度情報
  */
-export const scaleInfo = {
+export const scaleInfo: ScaleInfo = {
   name: "Rosenberg Self-Esteem Scale",
   nameJa: "ローゼンバーグ自尊心尺度",
   abbreviation: "RSES",
@@ -107,13 +109,19 @@ export const scaleInfo = {
   citations: "50,000+",
   tier: "S (Gold Standard)",
   academicReference: {
-    original: "Rosenberg, M. (1965). Society and the adolescent self-image. Princeton, NJ: Princeton University Press.",
-    japanese: "山本真理子・松井豊・山成由紀子 (1982). 認知された自己の諸側面の構造. 教育心理学研究, 30, 64-68.",
+    original:
+      "Rosenberg, M. (1965). Society and the adolescent self-image. Princeton, NJ: Princeton University Press.",
+    japanese:
+      "山本真理子・松井豊・山成由紀子 (1982). 認知された自己の諸側面の構造. 教育心理学研究, 30, 64-68.",
   },
   scoring: {
     min: 10,
     max: 40,
     neutral: 25,
     description: "10-40点の範囲。高得点ほど自尊心が高い。",
+  },
+  stats: {
+    questions: 10,
+    minutes: 3,
   },
 };

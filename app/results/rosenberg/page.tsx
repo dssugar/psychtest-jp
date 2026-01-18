@@ -5,11 +5,11 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { getTestResult, type RosenbergTestResult } from "@/lib/storage";
 import { scaleInfo } from "@/data/rosenberg-questions";
+import { type RosenbergResult } from "@/lib/scoring/rosenberg";
 import { ScoreCircle } from "@/components/viz/ScoreCircle";
 import { BrutalProgressBar } from "@/components/viz/BrutalProgressBar";
 import { StatCard } from "@/components/viz/StatCard";
 import { DataBadge } from "@/components/viz/DataBadge";
-import type { RosenbergResult } from "@/lib/storage";
 
 export default function RosenbergResultPage() {
   const router = useRouter();

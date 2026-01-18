@@ -22,6 +22,18 @@ const config: Config = {
             800: "hsl(var(--color-gray-800))",
             900: "hsl(var(--color-gray-900))",
           },
+          blue: {
+            50: "var(--color-brutal-blue-50)",
+          },
+          pink: {
+            50: "var(--color-brutal-pink-50)",
+          },
+          green: {
+            50: "var(--color-brutal-green-50)",
+          },
+          orange: {
+            50: "var(--color-brutal-orange-50)",
+          },
         },
         // Data Visualization Accents
         viz: {
@@ -91,12 +103,17 @@ const config: Config = {
           "50%": { transform: "scale(1.1)" },
           "100%": { transform: "scale(1)" },
         },
+        "fadeIn": {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" },
+        },
       },
       animation: {
         "slide-in-up": "slide-in-up 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
         "slide-in-left": "slide-in-left 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
         "scale-in": "scale-in 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
         "number-pop": "number-pop 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+        "fadeIn": "fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards",
       },
     },
   },

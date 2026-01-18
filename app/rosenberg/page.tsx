@@ -1,6 +1,7 @@
 import { scaleInfo } from "@/data/rosenberg-questions";
 import { StatCard } from "@/components/viz/StatCard";
 import { DataBadge } from "@/components/viz/DataBadge";
+import { Card } from "@/components/ui/Card";
 import Link from "next/link";
 
 export default function RosenbergPage() {
@@ -20,7 +21,7 @@ export default function RosenbergPage() {
           </div>
 
           {/* Overview Card */}
-          <div className="card-brutal p-8 md:p-12 bg-brutal-white mb-12 animate-scale-in" style={{ animationDelay: "0.1s" }}>
+          <Card variant="white" padding="lg" className="mb-12 animate-scale-in" style={{ animationDelay: "0.1s" }}>
             <h2 className="text-3xl font-display text-brutal-black mb-6">
               診断について
             </h2>
@@ -30,16 +31,18 @@ export default function RosenbergPage() {
 
             {/* Quick Stats */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-              <div className="card-brutal p-6 bg-viz-pink text-brutal-white border-brutal-black">
+              <Card variant="pink" padding="md">
                 <div className="text-sm font-bold uppercase tracking-wide mb-2">所要時間</div>
-                <div className="text-3xl md:text-4xl lg:text-5xl font-mono font-bold data-number">~3</div>
-                <div className="text-lg font-semibold mt-1">分</div>
-              </div>
-              <div className="card-brutal p-6 bg-brutal-black text-brutal-white border-brutal-black">
+                <div className="text-3xl md:text-4xl lg:text-5xl font-mono font-bold data-number">
+                  ~3<span className="text-lg font-semibold ml-1">分</span>
+                </div>
+              </Card>
+              <Card variant="black" padding="md">
                 <div className="text-sm font-bold uppercase tracking-wide mb-2">質問数</div>
-                <div className="text-3xl md:text-4xl lg:text-5xl font-mono font-bold data-number">10</div>
-                <div className="text-lg font-semibold mt-1">問</div>
-              </div>
+                <div className="text-3xl md:text-4xl lg:text-5xl font-mono font-bold data-number">
+                  10<span className="text-lg font-semibold ml-1">問</span>
+                </div>
+              </Card>
             </div>
 
             {/* Academic Credentials */}
@@ -79,17 +82,17 @@ export default function RosenbergPage() {
                 />
               </div>
 
-              <div className="card-brutal p-4 bg-brutal-gray-50 border-brutal-black mb-4">
+              <Card variant="white" padding="sm" className="bg-brutal-gray-50 mb-4">
                 <div className="font-bold uppercase tracking-wide text-sm text-brutal-gray-900 mb-2">
                   ⭐️ {scaleInfo.tier}
                 </div>
                 <p className="text-sm text-brutal-gray-900 leading-relaxed">
                   自尊心測定の国際標準。50,000回以上引用され、世界中で最も広く使用されている自尊心尺度です。
                 </p>
-              </div>
+              </Card>
 
               {/* Citation Details */}
-              <details className="card-brutal p-4 bg-brutal-gray-50 border-brutal-black cursor-pointer">
+              <details className="card-brutal p-4 bg-brutal-gray-50 cursor-pointer">
                 <summary className="font-bold uppercase tracking-wide text-sm text-brutal-gray-900 select-none">
                   📖 原著論文を見る
                 </summary>
@@ -103,10 +106,10 @@ export default function RosenbergPage() {
                 </div>
               </details>
             </div>
-          </div>
+          </Card>
 
           {/* Disclaimer */}
-          <div className="card-brutal p-6 bg-viz-yellow border-brutal-black mb-12">
+          <Card variant="yellow" padding="md" className="mb-12">
             <div className="flex items-start gap-4">
               <div className="text-3xl">⚠️</div>
               <div>
@@ -118,7 +121,7 @@ export default function RosenbergPage() {
                 </p>
               </div>
             </div>
-          </div>
+          </Card>
 
           {/* CTA Section */}
           <div className="text-center mb-8">

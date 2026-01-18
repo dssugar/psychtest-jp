@@ -1,5 +1,11 @@
 import { rosenbergQuestions } from "@/data/rosenberg-questions";
-import type { RosenbergResult } from "@/lib/storage";
+
+export interface RosenbergResult {
+  rawScore: number;
+  percentageScore: number;
+  level: "very_low" | "low" | "medium" | "high" | "very_high";
+  interpretation: string;
+}
 
 /**
  * Rosenberg自尊心尺度のスコア計算

@@ -1,5 +1,6 @@
 import { StatCard } from "@/components/viz/StatCard";
 import { DataBadge } from "@/components/viz/DataBadge";
+import { Card } from "@/components/ui/Card";
 
 export default function Home() {
   return (
@@ -42,7 +43,7 @@ export default function Home() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* SCCS Card */}
-            <div className="card-brutal p-8 md:p-12 bg-brutal-white animate-scale-in" style={{ animationDelay: "0.2s" }}>
+            <Card as="a" href="/sccs" variant="white" padding="lg" hover className="animate-scale-in" style={{ animationDelay: "0.2s" }}>
             {/* Test Header */}
             <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6 mb-8">
               <div className="flex-1">
@@ -59,19 +60,19 @@ export default function Home() {
 
               {/* Quick Stats */}
               <div className="flex flex-col gap-3">
-                <div className="card-brutal p-4 bg-viz-blue text-brutal-white border-brutal-black text-center">
+                <Card variant="blue" padding="sm" className="text-center">
                   <div className="text-3xl md:text-4xl font-mono font-bold data-number">12</div>
                   <div className="text-xs font-semibold uppercase tracking-wide">Questions</div>
-                </div>
-                <div className="card-brutal p-4 bg-brutal-black text-brutal-white border-brutal-black text-center">
+                </Card>
+                <Card variant="black" padding="sm" className="text-center">
                   <div className="text-3xl md:text-4xl font-mono font-bold data-number">~5</div>
                   <div className="text-xs font-semibold uppercase tracking-wide">Minutes</div>
-                </div>
+                </Card>
               </div>
             </div>
 
             {/* Academic Credentials Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <StatCard
                 icon="📊"
                 label="信頼性係数"
@@ -101,20 +102,10 @@ export default function Home() {
                 color="orange"
               />
             </div>
-
-            {/* CTA Button */}
-            <div className="text-center">
-              <a
-                href="/sccs"
-                className="btn-brutal inline-block bg-brutal-black text-brutal-white px-12 py-5 text-lg min-h-[44px]"
-              >
-                診断を始める
-              </a>
-            </div>
-          </div>
+          </Card>
 
           {/* Rosenberg Card */}
-          <div className="card-brutal p-8 md:p-12 bg-brutal-white animate-scale-in" style={{ animationDelay: "0.3s" }}>
+          <Card as="a" href="/rosenberg" variant="white" padding="lg" hover className="animate-scale-in" style={{ animationDelay: "0.3s" }}>
             {/* Test Header */}
             <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6 mb-8">
               <div className="flex-1">
@@ -131,19 +122,19 @@ export default function Home() {
 
               {/* Quick Stats */}
               <div className="flex flex-col gap-3">
-                <div className="card-brutal p-4 bg-viz-pink text-brutal-white border-brutal-black text-center">
+                <Card variant="pink" padding="sm" className="text-center">
                   <div className="text-3xl md:text-4xl font-mono font-bold data-number">10</div>
                   <div className="text-xs font-semibold uppercase tracking-wide">Questions</div>
-                </div>
-                <div className="card-brutal p-4 bg-brutal-black text-brutal-white border-brutal-black text-center">
+                </Card>
+                <Card variant="black" padding="sm" className="text-center">
                   <div className="text-3xl md:text-4xl font-mono font-bold data-number">~3</div>
                   <div className="text-xs font-semibold uppercase tracking-wide">Minutes</div>
-                </div>
+                </Card>
               </div>
             </div>
 
             {/* Academic Credentials Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <StatCard
                 icon="📊"
                 label="信頼性係数"
@@ -173,23 +164,75 @@ export default function Home() {
                 color="blue"
               />
             </div>
+          </Card>
 
-            {/* CTA Button */}
-            <div className="text-center">
-              <a
-                href="/rosenberg"
-                className="btn-brutal inline-block bg-brutal-black text-brutal-white px-12 py-5 text-lg min-h-[44px]"
-              >
-                診断を始める
-              </a>
+          {/* Big Five Card */}
+          <Card as="a" href="/bigfive" variant="white" padding="lg" hover className="animate-scale-in" style={{ animationDelay: "0.4s" }}>
+            {/* Test Header */}
+            <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6 mb-8">
+              <div className="flex-1">
+                <div className="inline-block mb-4">
+                  <DataBadge color="green" size="lg">Mini-IPIP</DataBadge>
+                </div>
+                <h2 className="text-2xl md:text-3xl lg:text-5xl font-display text-brutal-black mb-4 leading-tight">
+                  Big Five<br />Personality Test
+                </h2>
+                <p className="text-lg text-brutal-gray-800">
+                  5つの性格特性を測定する20問の心理尺度
+                </p>
+              </div>
+
+              {/* Quick Stats */}
+              <div className="flex flex-col gap-3">
+                <Card variant="green" padding="sm" className="text-center">
+                  <div className="text-3xl md:text-4xl font-mono font-bold data-number">20</div>
+                  <div className="text-xs font-semibold uppercase tracking-wide">Questions</div>
+                </Card>
+                <Card variant="black" padding="sm" className="text-center">
+                  <div className="text-3xl md:text-4xl font-mono font-bold data-number">~3</div>
+                  <div className="text-xs font-semibold uppercase tracking-wide">Minutes</div>
+                </Card>
+              </div>
             </div>
-          </div>
+
+            {/* Academic Credentials Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <StatCard
+                icon="📊"
+                label="信頼性係数"
+                value="α = 0.68-0.76"
+                description="許容範囲の一貫性"
+                color="green"
+              />
+              <StatCard
+                icon="🔄"
+                label="再テスト信頼性"
+                value="r = 0.72-0.82"
+                description="安定した測定結果"
+                color="pink"
+              />
+              <StatCard
+                icon="👥"
+                label="開発者"
+                value="Donnellan et al."
+                description="Psych Assess (2006)"
+                color="blue"
+              />
+              <StatCard
+                icon="📚"
+                label="引用論文数"
+                value="10,000+"
+                description="最も広く使用"
+                color="orange"
+              />
+            </div>
+          </Card>
         </div>
         </div>
 
         {/* Disclaimer */}
         <div className="max-w-5xl mx-auto">
-          <div className="card-brutal p-6 bg-viz-yellow border-brutal-black">
+          <Card variant="yellow" padding="md">
             <div className="flex items-start gap-4">
               <div className="text-3xl">⚠️</div>
               <div>
@@ -201,7 +244,7 @@ export default function Home() {
                 </p>
               </div>
             </div>
-          </div>
+          </Card>
         </div>
 
         {/* Footer Note */}
