@@ -1,0 +1,133 @@
+@import "tailwindcss";
+
+/* === TAILWIND CSS V4 THEME CONFIGURATION === */
+@theme {
+  /* === COLORS === */
+  --color-brutal-black: #000000;
+  --color-brutal-white: #ffffff;
+  --color-brutal-gray-50: #fafafa;
+  --color-brutal-gray-100: #f5f5f5;
+  --color-brutal-gray-200: #e5e5e5;
+  --color-brutal-gray-300: #d4d4d4;
+  --color-brutal-gray-800: #262626;
+  --color-brutal-gray-900: #171717;
+
+  --color-viz-blue: #0066ff;
+  --color-viz-pink: #ff3366;
+  --color-viz-green: #00cc88;
+  --color-viz-orange: #ff9900;
+  --color-viz-yellow: #ffd700;
+  --color-viz-purple: #9933ff;
+
+  /* === BORDER WIDTHS === */
+  --border-width-brutal: 3px;
+  --border-width-brutal-thick: 6px;
+
+  /* === FONT FAMILIES === */
+  --font-family-display: var(--font-display);
+  --font-family-body: var(--font-body);
+  --font-family-mono: var(--font-mono);
+}
+
+@layer base {
+  :root {
+    /* Font variables for Next.js font optimization */
+    --font-display: 'Archivo Black', sans-serif;
+    --font-body: 'Inter', -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+
+    /* Mobile-first shadows */
+    --shadow-brutal: 4px 4px 0px #000000;
+    --shadow-brutal-sm: 3px 3px 0px #000000;
+    --shadow-brutal-lg: 6px 6px 0px #000000;
+    --shadow-brutal-hover: 2px 2px 0px #000000;
+  }
+
+  /* Tablet shadows */
+  @media (min-width: 768px) {
+    :root {
+      --shadow-brutal: 6px 6px 0px #000000;
+      --shadow-brutal-sm: 4px 4px 0px #000000;
+      --shadow-brutal-lg: 8px 8px 0px #000000;
+      --shadow-brutal-hover: 3px 3px 0px #000000;
+    }
+  }
+
+  /* Desktop shadows */
+  @media (min-width: 1024px) {
+    :root {
+      --shadow-brutal: 8px 8px 0px #000000;
+      --shadow-brutal-sm: 4px 4px 0px #000000;
+      --shadow-brutal-lg: 12px 12px 0px #000000;
+      --shadow-brutal-hover: 4px 4px 0px #000000;
+    }
+  }
+
+  /* Base Styles */
+  * {
+    @apply border-black;
+  }
+
+  body {
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    /* Spectrum diagonal stripes background */
+    background-image: repeating-linear-gradient(
+      45deg,
+      transparent 0,
+      transparent 50px,
+      rgba(0, 102, 255, 0.30) 50px,
+      rgba(0, 102, 255, 0.30) 90px,
+      rgba(255, 51, 102, 0.30) 90px,
+      rgba(255, 51, 102, 0.30) 130px,
+      rgba(0, 204, 136, 0.30) 130px,
+      rgba(0, 204, 136, 0.30) 170px,
+      rgba(255, 153, 0, 0.30) 170px,
+      rgba(255, 153, 0, 0.30) 210px,
+      rgba(255, 215, 0, 0.30) 210px,
+      rgba(255, 215, 0, 0.30) 250px,
+      rgba(153, 51, 255, 0.30) 250px,
+      rgba(153, 51, 255, 0.30) 290px,
+      transparent 290px,
+      transparent 340px
+    );
+    background-color: #ffffff;
+    background-attachment: fixed;
+  }
+
+  /* Brutal Button Base */
+  .btn-brutal {
+    border: var(--border-width) solid hsl(var(--color-black));
+    box-shadow: var(--shadow-brutal);
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .btn-brutal:hover {
+    box-shadow: var(--shadow-brutal-hover);
+    transform: translate(4px, 4px);
+  }
+
+  .btn-brutal:active {
+    box-shadow: none;
+    transform: translate(8px, 8px);
+  }
+
+  /* Data Display - Monospace Numbers */
+  .data-number {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-feature-settings: 'tnum' 1; /* Tabular numbers */
+  }
+
+  /* Card with Brutal Shadow */
+  .card-brutal {
+    border: var(--border-width) solid hsl(var(--color-black));
+    box-shadow: var(--shadow-brutal);
+    background: hsl(var(--color-white));
+  }
+}
