@@ -1,6 +1,7 @@
 "use client";
 
 import { ScoreCircle } from "@/components/viz/ScoreCircle";
+import { Card } from "@/components/ui/Card";
 import type { UserProfile, TestType } from "@/lib/storage";
 import { calculateProfileCompleteness } from "@/lib/analysis/synthesis";
 
@@ -47,7 +48,7 @@ export function ProfileOverview({
   ];
 
   return (
-    <div className="bg-white border-brutal border-brutal-black shadow-brutal-sm p-8">
+    <Card variant="white" padding="lg" className="shadow-brutal-sm">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 items-center">
         {/* 完了率サークル */}
         <div className="flex justify-center">
@@ -75,6 +76,6 @@ export function ProfileOverview({
           </div>
         ))}
       </div>
-    </div>
+    </Card>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import type { UserProfile, TestType } from "@/lib/storage";
+import { Card } from "@/components/ui/Card";
 import { CorrelationGrid } from "@/components/viz/CorrelationGrid";
 import { RadarChart } from "@/components/viz/RadarChart";
 import {
@@ -32,7 +33,7 @@ export function IntegratedAnalysis({
   return (
     <div className="space-y-8">
       {/* セクションヘッダー */}
-      <div className="bg-white border-brutal border-brutal-black shadow-brutal-sm p-6">
+      <Card variant="white" padding="md" className="shadow-brutal-sm">
         <div className="flex items-center gap-3 mb-2">
           <div className="w-2 h-8 bg-viz-blue" />
           <h2 className="text-2xl font-bold uppercase tracking-tight">
@@ -42,11 +43,11 @@ export function IntegratedAnalysis({
         <p className="text-brutal-gray-700 text-sm">
           複数のテスト結果を統合し、あなたの心理プロファイルを多角的に分析します。
         </p>
-      </div>
+      </Card>
 
       {/* 自己認識相関分析（SCCS + Rosenberg） */}
       {hasSelfAwareness && (
-        <div className="bg-white border-brutal border-brutal-black shadow-brutal-sm p-6">
+        <Card variant="white" padding="md" className="shadow-brutal-sm">
           <h3 className="text-xl font-bold mb-4 uppercase tracking-tight">
             自己認識マップ
           </h3>
@@ -93,12 +94,12 @@ export function IntegratedAnalysis({
               </div>
             </div>
           </div>
-        </div>
+        </Card>
       )}
 
       {/* 性格プロファイル（Big Five） */}
       {hasBigFive && (
-        <div className="bg-white border-brutal border-brutal-black shadow-brutal-sm p-6">
+        <Card variant="white" padding="md" className="shadow-brutal-sm">
           <h3 className="text-xl font-bold mb-4 uppercase tracking-tight">
             性格特性プロファイル
           </h3>
@@ -161,12 +162,12 @@ export function IntegratedAnalysis({
               </div>
             </div>
           </div>
-        </div>
+        </Card>
       )}
 
       {/* 統合インサイト（3テスト以上） */}
       {completedTests.length >= 3 && (
-        <div className="bg-white border-brutal border-brutal-black shadow-brutal-sm p-6">
+        <Card variant="white" padding="md" className="shadow-brutal-sm">
           <h3 className="text-xl font-bold mb-4 uppercase tracking-tight">
             統合インサイト
           </h3>
@@ -175,7 +176,7 @@ export function IntegratedAnalysis({
               {generateMultiTestSynthesis(profile, completedTests)}
             </p>
           </div>
-        </div>
+        </Card>
       )}
     </div>
   );
