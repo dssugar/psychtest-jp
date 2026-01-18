@@ -42,7 +42,7 @@ export default function Home() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* SCCS Card */}
-            <div className="card-brutal p-8 md:p-12 bg-brutal-white animate-scale-in" style={{ animationDelay: "0.2s" }}>
+            <a href="/sccs" className="card-brutal p-8 md:p-12 bg-brutal-white animate-scale-in cursor-pointer transition-transform hover:scale-[1.02] active:scale-[0.98]" style={{ animationDelay: "0.2s" }}>
             {/* Test Header */}
             <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6 mb-8">
               <div className="flex-1">
@@ -71,7 +71,7 @@ export default function Home() {
             </div>
 
             {/* Academic Credentials Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <StatCard
                 icon="📊"
                 label="信頼性係数"
@@ -101,20 +101,10 @@ export default function Home() {
                 color="orange"
               />
             </div>
-
-            {/* CTA Button */}
-            <div className="text-center">
-              <a
-                href="/sccs"
-                className="btn-brutal inline-block bg-brutal-black text-brutal-white px-12 py-5 text-lg min-h-[44px]"
-              >
-                診断を始める
-              </a>
-            </div>
-          </div>
+          </a>
 
           {/* Rosenberg Card */}
-          <div className="card-brutal p-8 md:p-12 bg-brutal-white animate-scale-in" style={{ animationDelay: "0.3s" }}>
+          <a href="/rosenberg" className="card-brutal p-8 md:p-12 bg-brutal-white animate-scale-in cursor-pointer transition-transform hover:scale-[1.02] active:scale-[0.98]" style={{ animationDelay: "0.3s" }}>
             {/* Test Header */}
             <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6 mb-8">
               <div className="flex-1">
@@ -143,7 +133,7 @@ export default function Home() {
             </div>
 
             {/* Academic Credentials Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <StatCard
                 icon="📊"
                 label="信頼性係数"
@@ -173,20 +163,10 @@ export default function Home() {
                 color="blue"
               />
             </div>
-
-            {/* CTA Button */}
-            <div className="text-center">
-              <a
-                href="/rosenberg"
-                className="btn-brutal inline-block bg-brutal-black text-brutal-white px-12 py-5 text-lg min-h-[44px]"
-              >
-                診断を始める
-              </a>
-            </div>
-          </div>
+          </a>
 
           {/* Big Five Card */}
-          <div className="card-brutal p-8 md:p-12 bg-brutal-white animate-scale-in" style={{ animationDelay: "0.4s" }}>
+          <a href="/bigfive" className="card-brutal p-8 md:p-12 bg-brutal-white animate-scale-in cursor-pointer transition-transform hover:scale-[1.02] active:scale-[0.98]" style={{ animationDelay: "0.4s" }}>
             {/* Test Header */}
             <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6 mb-8">
               <div className="flex-1">
@@ -215,7 +195,7 @@ export default function Home() {
             </div>
 
             {/* Academic Credentials Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <StatCard
                 icon="📊"
                 label="信頼性係数"
@@ -245,17 +225,7 @@ export default function Home() {
                 color="orange"
               />
             </div>
-
-            {/* CTA Button */}
-            <div className="text-center">
-              <a
-                href="/bigfive"
-                className="btn-brutal inline-block bg-brutal-black text-brutal-white px-12 py-5 text-lg min-h-[44px]"
-              >
-                診断を始める
-              </a>
-            </div>
-          </div>
+          </a>
         </div>
         </div>
 

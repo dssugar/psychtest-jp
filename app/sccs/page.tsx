@@ -32,13 +32,15 @@ export default function SccsPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
               <div className="card-brutal p-6 bg-viz-blue text-brutal-white border-brutal-black">
                 <div className="text-sm font-bold uppercase tracking-wide mb-2">所要時間</div>
-                <div className="text-3xl md:text-4xl lg:text-5xl font-mono font-bold data-number">~5</div>
-                <div className="text-lg font-semibold mt-1">分</div>
+                <div className="text-3xl md:text-4xl lg:text-5xl font-mono font-bold data-number">
+                  ~5<span className="text-lg font-semibold ml-1">分</span>
+                </div>
               </div>
               <div className="card-brutal p-6 bg-brutal-black text-brutal-white border-brutal-black">
                 <div className="text-sm font-bold uppercase tracking-wide mb-2">質問数</div>
-                <div className="text-3xl md:text-4xl lg:text-5xl font-mono font-bold data-number">12</div>
-                <div className="text-lg font-semibold mt-1">問</div>
+                <div className="text-3xl md:text-4xl lg:text-5xl font-mono font-bold data-number">
+                  12<span className="text-lg font-semibold ml-1">問</span>
+                </div>
               </div>
             </div>
 
