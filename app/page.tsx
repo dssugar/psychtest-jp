@@ -1,5 +1,6 @@
 import { StatCard } from "@/components/viz/StatCard";
 import { DataBadge } from "@/components/viz/DataBadge";
+import { Card } from "@/components/ui/Card";
 
 export default function Home() {
   return (
@@ -42,7 +43,7 @@ export default function Home() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* SCCS Card */}
-            <a href="/sccs" className="card-brutal p-8 md:p-12 bg-brutal-white animate-scale-in cursor-pointer transition-transform hover:scale-[1.02] active:scale-[0.98]" style={{ animationDelay: "0.2s" }}>
+            <Card as="a" href="/sccs" variant="white" padding="lg" hover className="animate-scale-in" style={{ animationDelay: "0.2s" }}>
             {/* Test Header */}
             <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6 mb-8">
               <div className="flex-1">
@@ -59,14 +60,14 @@ export default function Home() {
 
               {/* Quick Stats */}
               <div className="flex flex-col gap-3">
-                <div className="card-brutal p-4 bg-viz-blue text-brutal-white border-brutal-black text-center">
+                <Card variant="blue" padding="sm" className="text-center">
                   <div className="text-3xl md:text-4xl font-mono font-bold data-number">12</div>
                   <div className="text-xs font-semibold uppercase tracking-wide">Questions</div>
-                </div>
-                <div className="card-brutal p-4 bg-brutal-black text-brutal-white border-brutal-black text-center">
+                </Card>
+                <Card variant="black" padding="sm" className="text-center">
                   <div className="text-3xl md:text-4xl font-mono font-bold data-number">~5</div>
                   <div className="text-xs font-semibold uppercase tracking-wide">Minutes</div>
-                </div>
+                </Card>
               </div>
             </div>
 
@@ -101,10 +102,10 @@ export default function Home() {
                 color="orange"
               />
             </div>
-          </a>
+          </Card>
 
           {/* Rosenberg Card */}
-          <a href="/rosenberg" className="card-brutal p-8 md:p-12 bg-brutal-white animate-scale-in cursor-pointer transition-transform hover:scale-[1.02] active:scale-[0.98]" style={{ animationDelay: "0.3s" }}>
+          <Card as="a" href="/rosenberg" variant="white" padding="lg" hover className="animate-scale-in" style={{ animationDelay: "0.3s" }}>
             {/* Test Header */}
             <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6 mb-8">
               <div className="flex-1">
@@ -121,14 +122,14 @@ export default function Home() {
 
               {/* Quick Stats */}
               <div className="flex flex-col gap-3">
-                <div className="card-brutal p-4 bg-viz-pink text-brutal-white border-brutal-black text-center">
+                <Card variant="pink" padding="sm" className="text-center">
                   <div className="text-3xl md:text-4xl font-mono font-bold data-number">10</div>
                   <div className="text-xs font-semibold uppercase tracking-wide">Questions</div>
-                </div>
-                <div className="card-brutal p-4 bg-brutal-black text-brutal-white border-brutal-black text-center">
+                </Card>
+                <Card variant="black" padding="sm" className="text-center">
                   <div className="text-3xl md:text-4xl font-mono font-bold data-number">~3</div>
                   <div className="text-xs font-semibold uppercase tracking-wide">Minutes</div>
-                </div>
+                </Card>
               </div>
             </div>
 
@@ -163,10 +164,10 @@ export default function Home() {
                 color="blue"
               />
             </div>
-          </a>
+          </Card>
 
           {/* Big Five Card */}
-          <a href="/bigfive" className="card-brutal p-8 md:p-12 bg-brutal-white animate-scale-in cursor-pointer transition-transform hover:scale-[1.02] active:scale-[0.98]" style={{ animationDelay: "0.4s" }}>
+          <Card as="a" href="/bigfive" variant="white" padding="lg" hover className="animate-scale-in" style={{ animationDelay: "0.4s" }}>
             {/* Test Header */}
             <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6 mb-8">
               <div className="flex-1">
@@ -183,14 +184,14 @@ export default function Home() {
 
               {/* Quick Stats */}
               <div className="flex flex-col gap-3">
-                <div className="card-brutal p-4 bg-viz-green text-brutal-white border-brutal-black text-center">
+                <Card variant="green" padding="sm" className="text-center">
                   <div className="text-3xl md:text-4xl font-mono font-bold data-number">20</div>
                   <div className="text-xs font-semibold uppercase tracking-wide">Questions</div>
-                </div>
-                <div className="card-brutal p-4 bg-brutal-black text-brutal-white border-brutal-black text-center">
+                </Card>
+                <Card variant="black" padding="sm" className="text-center">
                   <div className="text-3xl md:text-4xl font-mono font-bold data-number">~3</div>
                   <div className="text-xs font-semibold uppercase tracking-wide">Minutes</div>
-                </div>
+                </Card>
               </div>
             </div>
 
@@ -225,13 +226,13 @@ export default function Home() {
                 color="orange"
               />
             </div>
-          </a>
+          </Card>
         </div>
         </div>
 
         {/* Disclaimer */}
         <div className="max-w-5xl mx-auto">
-          <div className="card-brutal p-6 bg-viz-yellow border-brutal-black">
+          <Card variant="yellow" padding="md">
             <div className="flex items-start gap-4">
               <div className="text-3xl">⚠️</div>
               <div>
@@ -243,7 +244,7 @@ export default function Home() {
                 </p>
               </div>
             </div>
-          </div>
+          </Card>
         </div>
 
         {/* Footer Note */}
