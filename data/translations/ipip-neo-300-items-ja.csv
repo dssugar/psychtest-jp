@@ -1,0 +1,301 @@
+item_number,english,japanese,domain,facet,facet_ja
+1,Worry about things,心配性である,N,Anxiety,不安性
+2,Fear for the worst,最悪の結果を恐れる,N,Anxiety,不安性
+3,Am afraid of many things,様々なものに対して不安である,N,Anxiety,不安性
+4,Get stressed out easily,すぐにストレスがたまる,N,Anxiety,不安性
+5,Get caught up in my problems,悩みだすと止まらない,N,Anxiety,不安性
+6,Am not easily bothered by things,周囲のことにはとらわれない,N,Anxiety,不安性
+7,Am relaxed most of the time,いつも落ち着いている,N,Anxiety,不安性
+8,Am not easily disturbed by events,行事に気を奪われることが少ない,N,Anxiety,不安性
+9,Don't worry about thing that have already happened,過ぎたことは気にしない,N,Anxiety,不安性
+10,Adapt easily to new situations,新しい環境にすぐ適応できる,N,Anxiety,不安性
+11,Get angry easily,怒りっぽい,N,Anger,怒り
+12,Get irritated easily,すぐにイライラする,N,Anger,怒り
+13,Get upset easily,すぐにうろたえる,N,Anger,怒り
+14,Am often in a bad mood,機嫌が悪いことが多い,N,Anger,怒り
+15,Lose my temper,キレやすい,N,Anger,怒り
+16,Rarely get irritated,あまりイラつかない,N,Anger,怒り
+17,Seldom get mad,めったに怒らない,N,Anger,怒り
+18,Am not easily annoyed,簡単にムカつきはしない,N,Anger,怒り
+19,Keep my cool,我を見失わない,N,Anger,怒り
+20,Rarely complain,めったに文句を言わない,N,Anger,怒り
+21,Often feel blue,気分が浮かないことが多い,N,Depression,抑鬱
+22,Dislike myself,自分が嫌いだ,N,Depression,抑鬱
+23,Am often down in the dumps,気分が沈んでいることが多い,N,Depression,抑鬱
+24,Have a low opinion of myself,自分を低く評価する,N,Depression,抑鬱
+25,Have frequent mood swings,気分屋である,N,Depression,抑鬱
+26,Feel desperate,必死である,N,Depression,抑鬱
+27,Feel that my life lacks direction,人生の方向性が足りないと思う,N,Depression,抑鬱
+28,Seldom feel blue,めったに落ち込まない,N,Depression,抑鬱
+29,Feel comfortable with myself,今の自分で十分である,N,Depression,抑鬱
+30,Am very pleased with myself,自分に満足である,N,Depression,抑鬱
+31,Am easily intimidated,すぐにくじける,N,Self-consciousness,自意識
+32,Am afraid that I will do the wrong thing,間違ったことをしていないか怖い,N,Self-consciousness,自意識
+33,Find it difficult to approach others,他人に近づくのが苦手,N,Self-consciousness,自意識
+34,Am afraid to draw attention to myself,自分に注目を集めるのが怖い,N,Self-consciousness,自意識
+35,Only feel comfortable with friends,友達としか安らげない,N,Self-consciousness,自意識
+36,Stumble over my words,言葉をよくかんでしまう,N,Self-consciousness,自意識
+37,Am not embarrassed easily,恥ずかしがらない,N,Self-consciousness,自意識
+38,Am comfortable in unfamiliar situations,不慣れな場面でも落ち着いている,N,Self-consciousness,自意識
+39,Am not bothered by difficult social situations,困難に負けない,N,Self-consciousness,自意識
+40,Am able to stand up for myself,自分をしっかり持っている,N,Self-consciousness,自意識
+41,Often eat too much,よく食べ過ぎる,N,Immoderation,節度の欠如
+42,Don't know why I do some of the things I do,自分の行動に疑問をもってしまう,N,Immoderation,節度の欠如
+43,Do things I later regret,自分の行動で後悔することが多い,N,Immoderation,節度の欠如
+44,Go on binges,暴飲暴食をしてしまう,N,Immoderation,節度の欠如
+45,Love to eat,食べるのが好きである,N,Immoderation,節度の欠如
+46,Rarely overindulge,ふざけすぎることはめったに無い,N,Immoderation,節度の欠如
+47,Easily resist my temptations,衝動を抑えることができる,N,Immoderation,節度の欠如
+48,Am able to control my cravings,欲望を抑えることができる,N,Immoderation,節度の欠如
+49,Never spend more than I can afford,払える以上の金額のものには手を出さない,N,Immoderation,節度の欠如
+50,Never splurge,自慢したりみせびらかしたりはしない,N,Immoderation,節度の欠如
+51,Panic easily,慌てやすい,N,Vulnerability,脆弱性
+52,Become overwhelmed by events,行事に困惑される,N,Vulnerability,脆弱性
+53,Feel that I'm unable to deal with things,物事の対処が出来ないと思う,N,Vulnerability,脆弱性
+54,Can't make up my mind,決断が出来ない,N,Vulnerability,脆弱性
+55,Get overwhelmed by emotions,感情に流される,N,Vulnerability,脆弱性
+56,Remain calm under pressure,プレッシャーの中でも落ち着いている,N,Vulnerability,脆弱性
+57,Can handle complex problems,難問に対応できる,N,Vulnerability,脆弱性
+58,Know how to cope,問題の対応ができる,N,Vulnerability,脆弱性
+59,Readily overcome setbacks,つまずきを乗り越えられる,N,Vulnerability,脆弱性
+60,Am calm even in tense situations,緊迫した場面でも冷静である,N,Vulnerability,脆弱性
+61,Make friends easily,友達を作りやすい,E,Friendliness,親しみやすさ
+62,Warm up quickly to others,人になじみやすい,E,Friendliness,親しみやすさ
+63,Feel comfortable around people,人が周りにいると安心できる,E,Friendliness,親しみやすさ
+64,Act comfortably with others,他人と安心して接することができる,E,Friendliness,親しみやすさ
+65,Cheer people up,人を励ませる,E,Friendliness,親しみやすさ
+66,Am hard to get to know,分かりにくい人である,E,Friendliness,親しみやすさ
+67,Often feel uncomfortable around others,人が周りにいると落ち着かない,E,Friendliness,親しみやすさ
+68,Avoid contacts with others,人との接触を避ける,E,Friendliness,親しみやすさ
+69,Am not really interested in others,あまり他人に興味はない,E,Friendliness,親しみやすさ
+70,Keep others at a distance,人と距離を置く,E,Friendliness,親しみやすさ
+71,Love large parties,大きなパーティが大好きだ,E,Gregariousness,社交性
+72,Talk to a lot of different people at parties,パーティでは色々な人と話す,E,Gregariousness,社交性
+73,Enjoy being part of a group,グループの一員であるのが楽しい,E,Gregariousness,社交性
+74,Involve others in what I am doing,自分のやることに人を巻き込む,E,Gregariousness,社交性
+75,Love surprise parties,不意打ちのパーティが大好きだ,E,Gregariousness,社交性
+76,Prefer to be alone,一人が良いと思う,E,Gregariousness,社交性
+77,Want to be left alone,ほうっておいて欲しい,E,Gregariousness,社交性
+78,Don't like crowded events,人混みの激しい行事は嫌いだ,E,Gregariousness,社交性
+79,Avoid crowds,人混みは避ける,E,Gregariousness,社交性
+80,Seek quiet,静かな方が良い,E,Gregariousness,社交性
+81,Take charge,リーダータイプである,E,Assertiveness,主張性
+82,Try to lead others,人を指揮りたがる,E,Assertiveness,主張性
+83,Can talk others into doing things,人を何かするように説得できる,E,Assertiveness,主張性
+84,Seek to influence others,周りの人に自分の影響を与えたい,E,Assertiveness,主張性
+85,Take control of things,指揮をとるのは好きだ,E,Assertiveness,主張性
+86,Wait for others to lead the way,人が導いてくれるのを待つ,E,Assertiveness,主張性
+87,Keep in the background,裏方に引っ込んでいる,E,Assertiveness,主張性
+88,Have little to say,あまり発言しない,E,Assertiveness,主張性
+89,Don't like to draw attention to myself,注目を集めたくない,E,Assertiveness,主張性
+90,Hold back my opinions,自分の意見は抑える,E,Assertiveness,主張性
+91,Am always busy,いつも忙しい,E,Activity Level,活発性
+92,Am always on the go,いつも働き詰めである,E,Activity Level,活発性
+93,Do a lot in my spare time,自由時間に様々なことをやる,E,Activity Level,活発性
+94,Can manage many things at the same time,同時に複数の物事に対処できる,E,Activity Level,活発性
+95,React quickly,反応が早い,E,Activity Level,活発性
+96,Like to take it easy,楽な道を選ぶ,E,Activity Level,活発性
+97,Like to take my time,時間をかけるのが好き,E,Activity Level,活発性
+98,Like a leisurely lifestyle,ゆったりした生活が好き,E,Activity Level,活発性
+99,Let things proceed at their own pace,周りの流れにのる,E,Activity Level,活発性
+100,React slowly,反応が遅い,E,Activity Level,活発性
+101,Love excitement,刺激が大好き,E,Excitement-seeking,刺激追求
+102,Seek adventure,冒険を好む,E,Excitement-seeking,刺激追求
+103,Love action,アクションが大好き,E,Excitement-seeking,刺激追求
+104,Enjoy being part of a loud crowd,にぎやかな集団の一部になりたい,E,Excitement-seeking,刺激追求
+105,Enjoy being reckless,無謀になることを楽しむ,E,Excitement-seeking,刺激追求
+106,Act wild and crazy,激しくはしゃぐ,E,Excitement-seeking,刺激追求
+107,Willing to try anything once,なんでも一度はためしてみたい,E,Excitement-seeking,刺激追求
+108,Seek danger,危険を好む,E,Excitement-seeking,刺激追求
+109,Would never go hang gliding or bungee jumping,ハンググライダーやバンジージャンプは絶対やる気にならない,E,Excitement-seeking,刺激追求
+110,Dislike loud music,大音量の音楽は嫌い,E,Excitement-seeking,刺激追求
+111,Radiate joy,喜びで満ち溢れている,E,Cheerfulness,陽気さ
+112,Have a lot of fun,いつも楽しい,E,Cheerfulness,陽気さ
+113,Express childlike joy,子供のように喜びを表現する,E,Cheerfulness,陽気さ
+114,Laugh my way through life,人生は笑って切り抜ける,E,Cheerfulness,陽気さ
+115,Love life,人生大好き,E,Cheerfulness,陽気さ
+116,Look at the bright side of life,人生の明るい面を見る,E,Cheerfulness,陽気さ
+117,Laugh aloud,声を出して笑う,E,Cheerfulness,陽気さ
+118,Amuse my friends,友達を楽しませる,E,Cheerfulness,陽気さ
+119,Am not easily amused,あまり楽しいと思えない,E,Cheerfulness,陽気さ
+120,Seldom joke around,めったに冗談など言わない,E,Cheerfulness,陽気さ
+121,Have a vivid imagination,想像力豊かである,O,Imagination,想像力
+122,Enjoy wild flights of fantasy,自分の世界に入るのが好きだ,O,Imagination,想像力
+123,Love to daydream,たそがれるのが好きだ,O,Imagination,想像力
+124,Like to get lost in thought,考え込むのが好きだ,O,Imagination,想像力
+125,Indulge in my fantasies,空想にふけるのが好きだ,O,Imagination,想像力
+126,Spend time reflecting on things,物事を振り返るのに時間をかける,O,Imagination,想像力
+127,Seldom daydream,めったに空想しない,O,Imagination,想像力
+128,Do not have a good imagination,想像力に欠けている,O,Imagination,想像力
+129,Seldom get lost in thought,めったに考え込まない,O,Imagination,想像力
+130,Have difficulty imagining things,物事の想像はあまり上手くない,O,Imagination,想像力
+131,Believe in the importance of art,芸術は大事だと思う,O,Artistic Interests,芸術的関心
+132,Like music,音楽は好きだ,O,Artistic Interests,芸術的関心
+133,See beauty in things that other might not notice,他人が気づかない美しさに気づく,O,Artistic Interests,芸術的関心
+134,Love flowers,花が好きだ,O,Artistic Interests,芸術的関心
+135,Enjoy the beauty of nature,自然の美しさが好きだ,O,Artistic Interests,芸術的関心
+136,Do not like art,芸術なんて嫌いだ,O,Artistic Interests,芸術的関心
+137,Do not like poetry,詩なんて嫌いだ,O,Artistic Interests,芸術的関心
+138,Do not enjoy going to art museums,美術館に行っても楽しめない,O,Artistic Interests,芸術的関心
+139,Do not like concerts,コンサートに行くのは嫌いだ,O,Artistic Interests,芸術的関心
+140,Do not enjoy watching dance performers,踊りを見るのは好きではない,O,Artistic Interests,芸術的関心
+141,Experience my emotions intensely,感情的である,O,Emotionality,感情性
+142,Feel others' emotions,他人に同情できる,O,Emotionality,感情性
+143,Am passionate about causes,物事に関して短気である,O,Emotionality,感情性
+144,Enjoy examining myself and my life,自分や人生を見つめることが好きだ,O,Emotionality,感情性
+145,Try to understand myself,自分を理解しようとする,O,Emotionality,感情性
+146,Seldom get emotional,めったに感情的にならない,O,Emotionality,感情性
+147,Am not easily affected by my emotions,感情に流されることはあまり無い,O,Emotionality,感情性
+148,Rarely notice my emotional reactions,ほとんど自分の感情の変化に気づかない,O,Emotionality,感情性
+149,Experience very few emotional highs and lows,ほとんど気分の波がない,O,Emotionality,感情性
+150,Don't understand people who get emotional,感情的になる人が理解できない,O,Emotionality,感情性
+151,Prefer variety to routine,いつも同じより変化がある方が良い,O,Adventurousness,冒険性
+152,Like to visit new places,新しいところへ行くのが好きだ,O,Adventurousness,冒険性
+153,Interested in many things,色々なことに興味がある,O,Adventurousness,冒険性
+154,Like to begin new things,新しいことを始めるのが好きだ,O,Adventurousness,冒険性
+155,Prefer to stick with things that I know,知っている世界から出たくない,O,Adventurousness,冒険性
+156,Dislike changes,変化は嫌いである,O,Adventurousness,冒険性
+157,Don't like the idea of change,変化という考えが嫌いだ,O,Adventurousness,冒険性
+158,Am a creature of habit,習慣を好む人である,O,Adventurousness,冒険性
+159,Dislike new foods,新しい食べ物は嫌いである,O,Adventurousness,冒険性
+160,Am attached to conventional ways,従来のやり方に固執する,O,Adventurousness,冒険性
+161,Like to solve complex problems,難しい問題を解くのが好きだ,O,Intellect,知性
+162,Love to read challenging material,難しい読み物が好きだ,O,Intellect,知性
+163,Have a rich vocabulary,語彙が豊富だ,O,Intellect,知性
+164,Can handle a lot of information,たくさんの情報を扱える,O,Intellect,知性
+165,Enjoy thinking about things,物事を考えるのが楽しい,O,Intellect,知性
+166,Am not interested in abstract ideas,抽象的な観念には興味が無い,O,Intellect,知性
+167,Avoid philosophical discussions,哲学的な話は避ける,O,Intellect,知性
+168,Have difficulty understanding abstract ideas,抽象的なことは理解しづらい,O,Intellect,知性
+169,Am not interested in theoretical ideas,理論的な考え方には興味が無い,O,Intellect,知性
+170,Avoid difficult reading material,難しい読み物は避ける,O,Intellect,知性
+171,Tend to vote for liberal political candidates,選挙では自由派に投票する,O,Liberalism,自由主義
+172,Believe that there is no absolute right or wrong,絶対的な善や悪はないと思う,O,Liberalism,自由主義
+173,Believe that criminals should receive help rather than punishment,犯罪者は罰するより助けるべきだと思う,O,Liberalism,自由主義
+174,Believe in one true religion,1つの宗教を信じている,O,Liberalism,自由主義
+175,Tend to vote for conservative political candidates,選挙では保守派に投票する,O,Liberalism,自由主義
+176,Believe that too much tax money goes to support artists,芸術家の補助に税金を使いすぎだと思う,O,Liberalism,自由主義
+177,Believe laws should be strictly reinforced,法律はもっと厳しくされるべきだと思う,O,Liberalism,自由主義
+178,Believe that we coddle criminals too much,犯罪者を甘やかしすぎだと思う,O,Liberalism,自由主義
+179,Believe that we should be tough on crime,犯罪には厳しくするべきだと思う,O,Liberalism,自由主義
+180,Like to stand during the national anthem,国歌が流れるときは起立する,O,Liberalism,自由主義
+181,Trust others,他人を信頼する,A,Trust,信頼
+182,Believe that others have good intentions,人は皆好意をもっていると思う,A,Trust,信頼
+183,Trust what people say,人の言うことは信じる,A,Trust,信頼
+184,Believe that people are basically moral,人は基本的に善悪を区別できると思う,A,Trust,信頼
+185,Believe in human goodness,人は皆善き心をもっていると思う,A,Trust,信頼
+186,Think that all will be well,何事も何とかなる,A,Trust,信頼
+187,Distrust people,人が信用できない,A,Trust,信頼
+188,Suspect hidden motives in others,人は裏があると思う,A,Trust,信頼
+189,Am wary of others,他人に対しては用心深い,A,Trust,信頼
+190,Believe that people are essentially evil,人は基本的に悪だと思う,A,Trust,信頼
+191,Would never cheat on my taxes,税金はしっかり納める,A,Morality,道徳性
+192,Stick to the rules,決まりは守る,A,Morality,道徳性
+193,Use flattery to get ahead,出世のためならお世辞も使う,A,Morality,道徳性
+194,Use others for my own ends,自分のために他人を利用する,A,Morality,道徳性
+195,Know how to get around the rules,決まり・規則の抜け道を見つけられる,A,Morality,道徳性
+196,Cheat to get ahead,出世のためには不正でもする,A,Morality,道徳性
+197,Put people under pressure,人に圧力をかける,A,Morality,道徳性
+198,Pretend to be concerned for others,他人を気にかけているふりをする,A,Morality,道徳性
+199,Take advantage of others,人を利用する,A,Morality,道徳性
+200,Obstruct others' plans,他人の計画の邪魔をする,A,Morality,道徳性
+201,Make others feel welcome,人を喜ばせる,A,Altruism,利他主義
+202,Anticipate the needs of others,人のニーズを予想する,A,Altruism,利他主義
+203,Love to help others,人を助けるのは大好きだ,A,Altruism,利他主義
+204,Am concerned about others,他人のことを心配,A,Altruism,利他主義
+205,Have a good word for everyone,誰にでもいい言葉をかけてやれる,A,Altruism,利他主義
+206,Look down on others,他人を見下す,A,Altruism,利他主義
+207,Am indifferent to the feelings of others,人の気持ちには関心が無い,A,Altruism,利他主義
+208,Make people feel uncomfortable,人を不安にさせる,A,Altruism,利他主義
+209,Turn my back on others,人に背を向ける,A,Altruism,利他主義
+210,Take no time for others,人のために時間は割かない,A,Altruism,利他主義
+211,Am easy to satisfy,すぐに満足できる,A,Cooperation,協調性
+212,Can't stand confrontations,対立は嫌だ,A,Cooperation,協調性
+213,Hate to seem pushy,でしゃばりだと思われたくない,A,Cooperation,協調性
+214,Have a sharp tongue,毒舌である,A,Cooperation,協調性
+215,Contradict others,人の意見を否定する,A,Cooperation,協調性
+216,Love a good fight,喧嘩好きである,A,Cooperation,協調性
+217,Yell at people,人に大声を出す,A,Cooperation,協調性
+218,Insult people,人をけなす,A,Cooperation,協調性
+219,Get back at others,人に仕返しをする,A,Cooperation,協調性
+220,Hold a grudge,出し惜しみをする,A,Cooperation,協調性
+221,Dislike being the center of attention,注目を浴びるのを嫌う,A,Modesty,謙虚さ
+222,Dislike talking about myself,自分の話はしたくない,A,Modesty,謙虚さ
+223,Consider myself an average person,自分は平均的な人だと思う,A,Modesty,謙虚さ
+224,Seldom toot my own horn,あまり自分の意見は言わない,A,Modesty,謙虚さ
+225,Believe that I am better than others,自分は他よりできていると思う,A,Modesty,謙虚さ
+226,Think highly of myself,私は自分を尊重している,A,Modesty,謙虚さ
+227,Have a high opinion of myself,私は自己評価が高い,A,Modesty,謙虚さ
+228,Know the answers to many questions,様々な問題の答えを持っている,A,Modesty,謙虚さ
+229,Boast about my virtues,自分の美徳を誇示する,A,Modesty,謙虚さ
+230,Make myself the center of attention,注目の的になりたい,A,Modesty,謙虚さ
+231,Sympathize with the homeless,ホームレスには同情する,A,Sympathy,共感性
+232,Feel sympathy for those who are worse off than myself,自分より恵まれない人に同情する,A,Sympathy,共感性
+233,Value cooperation over competition,競争するより協力することのほうが重要,A,Sympathy,共感性
+234,Suffer from others' sorrows,人の悲しみは自分のことのようだ,A,Sympathy,共感性
+235,Am not interested in other people's problems,他人の問題には興味はない,A,Sympathy,共感性
+236,Tend to dislike soft-hearted people,手ぬるい人は嫌いだ,A,Sympathy,共感性
+237,Believe in an eye for an eye,「目には目を」と思っている,A,Sympathy,共感性
+238,Try not to think about the needy,貧しい人のことは考えないようにしている,A,Sympathy,共感性
+239,Believe people should fend for themselves,人は自分の身を守るべきである,A,Sympathy,共感性
+240,Can't stand weak people,弱い者は嫌い,A,Sympathy,共感性
+241,Complete tasks successfully,仕事は完璧にこなす,C,Self-efficacy,自信
+242,Excel in what I do,自分のやることに長ずる,C,Self-efficacy,自信
+243,Handle tasks smoothly,楽に課題をこなせる,C,Self-efficacy,自信
+244,Am sure of my ground,自分の意見に自信がある,C,Self-efficacy,自信
+245,Come up with good solutions,良い解決策を見つけられる,C,Self-efficacy,自信
+246,Know how to get things done,要領が良い,C,Self-efficacy,自信
+247,Misjudge situations,状況の判断を誤る,C,Self-efficacy,自信
+248,Don't understand things,物事を理解するのが遅い,C,Self-efficacy,自信
+249,Have little to contribute,役に立たない,C,Self-efficacy,自信
+250,Don't see the consequences of things,影響の重要性を理解できない,C,Self-efficacy,自信
+251,Like order,整理が好きである,C,Orderliness,秩序性
+252,Like to tidy up,きれい好きである,C,Orderliness,秩序性
+253,Want everything to be "just right",すべてが完璧であってほしい,C,Orderliness,秩序性
+254,Love order and regularity,規則正しさ、秩序が好きである,C,Orderliness,秩序性
+255,Do things according to a plan,計画に基づき行動する,C,Orderliness,秩序性
+256,Often forget to put things back in their proper place,よく物を元の場所に戻さない,C,Orderliness,秩序性
+257,Leave a mess in my room,部屋は汚い,C,Orderliness,秩序性
+258,Leave my belongings around,所持品を放置する,C,Orderliness,秩序性
+259,Am not bothered be messy people,散らかす人には特に不快感を感じない,C,Orderliness,秩序性
+260,Am not bothered by disorder,散らかっていても構わない,C,Orderliness,秩序性
+261,Try to follow the rules,規則は守る,C,Dutifulness,誠実性
+262,Keep my promises,約束を守る,C,Dutifulness,誠実性
+263,Pay my bills on time,請求書は期限どおりに払う,C,Dutifulness,誠実性
+264,Tell the truth,真実を言う,C,Dutifulness,誠実性
+265,Listen to my conscience,自分の良心に従う,C,Dutifulness,誠実性
+266,Break rules,規則を破る,C,Dutifulness,誠実性
+267,Break my promises,約束を破る,C,Dutifulness,誠実性
+268,Get others to do my duties,他人に自分の仕事を押し付ける,C,Dutifulness,誠実性
+269,Do the opposite of what is asked,言われたことと逆のことをする,C,Dutifulness,誠実性
+270,Misrepresent the facts,嘘をつく,C,Dutifulness,誠実性
+271,Go straight for the goal,目標に向かって突き進む,C,Achievement-striving,達成動機
+272,Work hard,よく働く,C,Achievement-striving,達成動機
+273,Turn plans into actions,有言実行である,C,Achievement-striving,達成動機
+274,Plunge into tasks with all my heart,全力で課題に取り組む,C,Achievement-striving,達成動機
+275,Do more than what's expected of me,求められていること以上のことをする,C,Achievement-striving,達成動機
+276,Set high standards for myself and others,自分にも他人にも厳しい,C,Achievement-striving,達成動機
+277,Demand quality,質を要求する,C,Achievement-striving,達成動機
+278,Am not highly motivated to succeed,あまり成功したいと思わない,C,Achievement-striving,達成動機
+279,Do just enough work to get by,必要最低限のことしかやらない,C,Achievement-striving,達成動機
+280,Put little time and effort into my work,仕事に時間と労力を裂きたくない,C,Achievement-striving,達成動機
+281,Get chores done right away,雑用はすぐに済ませる,C,Self-discipline,自己鍛錬
+282,Am always prepared,常に準備ができている,C,Self-discipline,自己鍛錬
+283,Start tasks right away,課題はすぐに着手する,C,Self-discipline,自己鍛錬
+284,Get to work at once,ただちに仕事にかかる,C,Self-discipline,自己鍛錬
+285,Carry out my plans,計画は実行する,C,Self-discipline,自己鍛錬
+286,Find it difficult to get down to work,仕事を始める気になれない,C,Self-discipline,自己鍛錬
+287,Waste my time,時間を効率よく使わない,C,Self-discipline,自己鍛錬
+288,Need a push to get started,きっかけがないと仕事を始められない,C,Self-discipline,自己鍛錬
+289,Have difficulty starting tasks,仕事を始めるのが難しい,C,Self-discipline,自己鍛錬
+290,Postpone decisions,決断を先送りにする,C,Self-discipline,自己鍛錬
+291,Avoid mistakes,失敗を避ける,C,Cautiousness,慎重性
+292,Choose my words with care,言葉は慎重に選ぶ,C,Cautiousness,慎重性
+293,Stick to my chosen path,定められた道を歩む,C,Cautiousness,慎重性
+294,Jump into things without thinking,考えもしないで行動に移る,C,Cautiousness,慎重性
+295,Make rash decisions,突発的な決断をする,C,Cautiousness,慎重性
+296,Like to act on a whim,気まぐれに動く,C,Cautiousness,慎重性
+297,Rush into things,焦って物事を行う,C,Cautiousness,慎重性
+298,Do crazy things,はっちゃけたことをする,C,Cautiousness,慎重性
+299,Act without thinking,考えずに動く,C,Cautiousness,慎重性
+300,Often make last-minute plans,よく直前に物事を決める,C,Cautiousness,慎重性

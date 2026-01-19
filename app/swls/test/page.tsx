@@ -2,18 +2,18 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { bigFiveQuestions, scaleLabels } from "@/data/bigfive-questions";
-import { calculateBigFiveScore, validateAnswerPattern } from "@/lib/scoring/bigfive";
+import { swlsQuestions, scaleLabels } from "@/data/swls-questions";
+import { calculateSwlsScore, validateAnswerPattern } from "@/lib/scoring/swls";
 import { saveTestResult } from "@/lib/storage";
 import { DataBadge } from "@/components/viz/DataBadge";
 
-export default function BigFiveTestPage() {
+export default function SwlsTestPage() {
   const router = useRouter();
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState<number[]>(new Array(20).fill(0));
+  const [answers, setAnswers] = useState<number[]>(new Array(5).fill(-1));
   const [showWarning, setShowWarning] = useState(false);
 
-  const progress = ((currentQuestion + 1) / bigFiveQuestions.length) * 100;
+  const progress = ((currentQuestion + 1) / swlsQuestions.length) * 100;
 
   const handleAnswer = (value: number) => {
     const newAnswers = [...answers];
@@ -21,7 +21,7 @@ export default function BigFiveTestPage() {
     setAnswers(newAnswers);
 
     // 次の質問へ自動的に進む
-    if (currentQuestion < bigFiveQuestions.length - 1) {
+    if (currentQuestion < swlsQuestions.length - 1) {
       setTimeout(() => {
         setCurrentQuestion(currentQuestion + 1);
       }, 200);
@@ -36,7 +36,7 @@ export default function BigFiveTestPage() {
 
   const handleSubmit = () => {
     // すべて回答済みか確認
-    if (answers.includes(0)) {
+    if (answers.includes(-1)) {
       alert("すべての質問に回答してください");
       return;
     }
@@ -44,26 +44,24 @@ export default function BigFiveTestPage() {
     // 回答パターンのバリデーション
     const validation = validateAnswerPattern(answers);
     if (!validation.valid) {
-      if (!confirm(validation.warning + "\n\nこのまま結果を表示しますか？")) {
+      if (!confirm(validation.message + "\n\nこのまま結果を表示しますか？")) {
         return;
       }
-    } else if (validation.warning) {
-      setShowWarning(true);
     }
 
     // スコア計算
-    const result = calculateBigFiveScore(answers);
+    const result = calculateSwlsScore(answers);
 
-    // 結果を保存 (IPIP-120バージョンとして)
-    saveTestResult("bigfive", result, answers, "ipip-120");
+    // 結果を保存（新API使用）
+    saveTestResult("swls", result, answers);
 
     // 結果ページへ遷移
-    router.push("/results/bigfive");
+    router.push("/results/swls");
   };
 
-  const question = bigFiveQuestions[currentQuestion];
-  const isLastQuestion = currentQuestion === bigFiveQuestions.length - 1;
-  const allAnswered = !answers.includes(0);
+  const question = swlsQuestions[currentQuestion];
+  const isLastQuestion = currentQuestion === swlsQuestions.length - 1;
+  const allAnswered = !answers.includes(-1);
 
   return (
     <main className="min-h-screen">
@@ -72,10 +70,10 @@ export default function BigFiveTestPage() {
           {/* Progress Header */}
           <div className="mb-8">
             <div className="flex items-center justify-between mb-4">
-              <DataBadge color="green">Mini-IPIP</DataBadge>
+              <DataBadge color="blue">SWLS</DataBadge>
               <div className="flex items-center gap-4">
                 <div className="font-mono font-bold text-sm text-brutal-gray-800">
-                  質問 {currentQuestion + 1} / {bigFiveQuestions.length}
+                  質問 {currentQuestion + 1} / {swlsQuestions.length}
                 </div>
                 <div className="font-mono font-bold text-sm text-brutal-gray-800">
                   {Math.round(progress)}%
@@ -86,7 +84,7 @@ export default function BigFiveTestPage() {
             {/* Progress Bar */}
             <div className="w-full h-3 border-brutal border-brutal-black bg-brutal-gray-100 relative overflow-hidden">
               <div
-                className="h-full bg-viz-green transition-all duration-300"
+                className="h-full bg-viz-blue transition-all duration-300"
                 style={{ width: `${progress}%` }}
               />
             </div>
@@ -101,7 +99,7 @@ export default function BigFiveTestPage() {
             {/* Answer Options */}
             <div className="space-y-4">
               {scaleLabels.map((label, index) => {
-                const value = index + 1;
+                const value = index + 1; // 1-7
                 const isSelected = answers[currentQuestion] === value;
 
                 return (
@@ -112,7 +110,7 @@ export default function BigFiveTestPage() {
                       w-full text-left px-4 py-3 md:px-6 md:py-4 border-[3px] border-solid transition-all
                       ${
                         isSelected
-                          ? "border-black bg-black text-white shadow-[4px_4px_0px_#000]"
+                          ? "border-black bg-viz-blue text-black shadow-[4px_4px_0px_#000]"
                           : "border-black bg-[#ffffff] text-black hover:shadow-[4px_4px_0px_#000]"
                       }
                     `}
@@ -124,7 +122,7 @@ export default function BigFiveTestPage() {
                         w-6 h-6 border-[3px] border-solid flex items-center justify-center
                         ${
                           isSelected
-                            ? "border-white bg-[#ffffff]"
+                            ? "border-black bg-[#ffffff]"
                             : "border-black bg-[#ffffff]"
                         }
                       `}
@@ -149,30 +147,50 @@ export default function BigFiveTestPage() {
               disabled={currentQuestion === 0}
               className="px-6 py-3 font-bold uppercase tracking-wide text-sm text-brutal-gray-800 hover:text-brutal-black disabled:opacity-30 disabled:cursor-not-allowed transition-opacity min-h-[44px]"
             >
-              ← 前の質問
+              ← 戻る
             </button>
 
-            {isLastQuestion && allAnswered && (
+            {/* Question Dots */}
+            <div className="flex items-center gap-2">
+              {swlsQuestions.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setCurrentQuestion(idx)}
+                  className={`
+                    w-3 h-3 border-[2px] border-brutal-black transition-all
+                    ${
+                      idx === currentQuestion
+                        ? "bg-viz-blue scale-125"
+                        : answers[idx] !== -1
+                        ? "bg-brutal-gray-400"
+                        : "bg-brutal-white"
+                    }
+                  `}
+                  aria-label={`質問 ${idx + 1}`}
+                />
+              ))}
+            </div>
+
+            {isLastQuestion && allAnswered ? (
               <button
                 onClick={handleSubmit}
-                className="btn-brutal bg-brutal-black text-brutal-white px-6 py-3 md:px-10 md:py-4 text-sm min-h-[44px]"
+                className="px-8 py-3 font-bold uppercase tracking-wide text-sm border-brutal border-brutal-black bg-brutal-black text-brutal-white hover:shadow-[4px_4px_0px_#000] transition-all min-h-[44px]"
               >
                 結果を見る
               </button>
+            ) : (
+              <button
+                onClick={() =>
+                  currentQuestion < swlsQuestions.length - 1 &&
+                  setCurrentQuestion(currentQuestion + 1)
+                }
+                disabled={currentQuestion === swlsQuestions.length - 1}
+                className="px-8 py-3 font-bold uppercase tracking-wide text-sm text-brutal-gray-800 hover:text-brutal-black disabled:opacity-30 disabled:cursor-not-allowed transition-opacity min-h-[44px]"
+              >
+                次へ →
+              </button>
             )}
           </div>
-
-          {/* Warning Message */}
-          {showWarning && (
-            <div className="mt-6 card-brutal p-4 bg-viz-yellow border-brutal-black">
-              <div className="flex items-start gap-3">
-                <div className="text-xl">⚠️</div>
-                <p className="text-sm text-brutal-black leading-relaxed">
-                  回答パターンが単調です。より正確な結果を得るため、各質問に対して率直に答えることをお勧めします。
-                </p>
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </main>

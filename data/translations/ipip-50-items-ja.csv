@@ -1,0 +1,51 @@
+item_number,english,japanese,factor
+1,Am the life of the party.,盛り上げ役である,Extraversion
+2,Feel little concern for others.,他人を気づかうことはない,Agreeableness
+3,Am always prepared.,いつも用意周到である,Conscientiousness
+4,Get stressed out easily.,すぐにストレスがたまってしまう,Neuroticism
+5,Have a rich vocabulary.,語彙が豊富である,Openness
+6,Don't talk a lot.,おしゃべりではない,Extraversion
+7,Am interested in people.,他人に興味がある,Agreeableness
+8,Leave my belongings around.,持ち物が整理できないほうだ,Conscientiousness
+9,Am relaxed most of the time.,いつもリラックスしていることが多い,Neuroticism
+10,Have difficulty understanding abstract ideas.,抽象的な考えを理解するのが苦手だ,Openness
+11,Feel comfortable around people.,人前でもあがらない,Extraversion
+12,Insult people.,人を馬鹿にするほうだ,Agreeableness
+13,Pay attention to details.,細かいことに気がつく,Conscientiousness
+14,Worry about things.,心配性である,Neuroticism
+15,Have a vivid imagination.,想像力が豊かである,Openness
+16,Keep in the background.,引っ込み思案である,Extraversion
+17,Sympathize with others' feelings.,人に共感しやすい,Agreeableness
+18,Make a mess of things.,無茶なことをする,Conscientiousness
+19,Seldom feel blue.,落ち込むことはめったにない,Neuroticism
+20,Am not interested in abstract ideas.,抽象的な考えには興味がない,Openness
+21,Start conversations.,自分から話しかけるほうである,Extraversion
+22,Am not interested in other people's problems.,他人の問題には興味がない,Agreeableness
+23,Get chores done right away.,すぐに雑用を済ませる,Conscientiousness
+24,Am easily disturbed.,動揺しやすい,Neuroticism
+25,Have excellent ideas.,素晴らしいアイディアを持っている,Openness
+26,Have little to say.,あまり話すことがない,Extraversion
+27,Have a soft heart.,優しい心を持っている,Agreeableness
+28,Often forget to put things back in their proper place.,整理整頓を怠りがち,Conscientiousness
+29,Get upset easily.,慌てやすい,Neuroticism
+30,Do not have a good imagination.,アイディアが乏しいほうだ,Openness
+31,Talk to a lot of different people at parties.,パーティでは色々な人と話すほうだ,Extraversion
+32,Am not really interested in others.,他人にはまったく興味がない,Agreeableness
+33,Like order.,整頓するのが好きである,Conscientiousness
+34,Change my mood a lot.,気分をコロコロ変える,Neuroticism
+35,Am quick to understand things.,ものわかりが良いほうだ,Openness
+36,Don't like to draw attention to myself.,人から注目を浴びるのは好きではない,Extraversion
+37,Take time out for others.,他の人のために時間を割くほうだ,Agreeableness
+38,Shirk my duties.,仕事や学習をさぼることが多い,Conscientiousness
+39,Have frequent mood swings.,気分が著しく変化するほうだ,Neuroticism
+40,Use difficult words.,難しい言葉を使うほうだ,Openness
+41,Don't mind being the center of attention.,注目の的になるのは嫌ではない,Extraversion
+42,Feel others' emotions.,他の人の気持ちがわかる,Agreeableness
+43,Follow a schedule.,予定に従うほうだ,Conscientiousness
+44,Get irritated easily.,イライラしやすい,Neuroticism
+45,Spend time reflecting on things.,いろんなことを反省しては時間を過ごす,Openness
+46,Am quiet around strangers.,人見知りする,Extraversion
+47,Make people feel at ease.,人を安心させる,Agreeableness
+48,Am exacting in my work.,張り切って仕事や学習に取り組むほうだ,Conscientiousness
+49,Often feel blue.,落ち込むことが多い,Neuroticism
+50,Am full of ideas.,アイディアが豊富である,Openness

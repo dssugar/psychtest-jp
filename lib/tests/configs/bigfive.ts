@@ -11,7 +11,7 @@ import type { BigFiveResult } from "@/lib/scoring/bigfive";
 import type { TestConfig } from "../types";
 
 /**
- * Big Five (Mini-IPIP) テスト設定
+ * Big Five (IPIP-120) テスト設定
  */
 export const bigFiveConfig: TestConfig<BigFiveResult> = {
   id: "bigfive",

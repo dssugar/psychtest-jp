@@ -3,23 +3,23 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { getTestResult, type RosenbergTestResult } from "@/lib/storage";
-import { scaleInfo } from "@/data/rosenberg-questions";
-import { type RosenbergResult } from "@/lib/scoring/rosenberg";
+import { getTestResult, type SelfConceptTestResult } from "@/lib/storage";
+import { scaleInfo } from "@/data/selfconcept-questions";
+import { type SelfConceptResult } from "@/lib/scoring/selfconcept";
 import { ScoreCircle } from "@/components/viz/ScoreCircle";
 import { BrutalProgressBar } from "@/components/viz/BrutalProgressBar";
 import { StatCard } from "@/components/viz/StatCard";
 import { DataBadge } from "@/components/viz/DataBadge";
 
-export default function RosenbergResultPage() {
+export default function SelfConceptResultPage() {
   const router = useRouter();
-  const [result, setResult] = useState<RosenbergTestResult | null>(null);
+  const [result, setResult] = useState<SelfConceptTestResult | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const testResult = getTestResult<RosenbergResult>("rosenberg");
+    const testResult = getTestResult<SelfConceptResult>("selfconcept");
     if (!testResult) {
-      router.push("/rosenberg");
+      router.push("/selfconcept");
       return;
     }
     setResult(testResult);
@@ -34,14 +34,14 @@ export default function RosenbergResultPage() {
     );
   }
 
-  const { result: rosenbergResult } = result;
+  const { result: selfConceptResult } = result;
   const levelText = {
-    very_low: "かなり低い",
+    very_low: "低い",
     low: "やや低い",
-    medium: "平均的",
+    moderate: "中程度",
     high: "高い",
     very_high: "非常に高い",
-  }[rosenbergResult.level];
+  }[selfConceptResult.level];
 
   return (
     <main className="min-h-screen">
@@ -49,7 +49,7 @@ export default function RosenbergResultPage() {
         {/* Header */}
         <div className="max-w-6xl mx-auto mb-12 text-center">
           <div className="flex flex-wrap items-center justify-center gap-3 mb-4">
-            <DataBadge color="pink" size="lg">RSES RESULT</DataBadge>
+            <DataBadge color="blue" size="lg">SCC RESULT</DataBadge>
             <DataBadge
               color={scaleInfo.psychologicalLayer === "trait" ? "green" :
                      scaleInfo.psychologicalLayer === "state" ? "blue" :
@@ -76,10 +76,10 @@ export default function RosenbergResultPage() {
               {/* Score Circle */}
               <div className="flex-shrink-0 w-[180px] md:w-[220px] lg:w-[240px]">
                 <ScoreCircle
-                  score={rosenbergResult.percentageScore}
+                  score={selfConceptResult.percentageScore}
                   size="lg"
-                  color="pink"
-                  label="自尊心"
+                  color="blue"
+                  label="自己概念の明確さ"
                 />
               </div>
 
@@ -87,19 +87,19 @@ export default function RosenbergResultPage() {
               <div className="flex-1 space-y-6">
                 <div>
                   <div className="inline-block mb-3">
-                    <DataBadge color="pink" size="lg">{levelText}</DataBadge>
+                    <DataBadge color="blue" size="lg">{levelText}</DataBadge>
                   </div>
                   <h2 className="text-2xl md:text-3xl lg:text-4xl text-brutal-black mb-4" style={{ fontFamily: 'var(--font-display-ja)', fontWeight: 700 }}>
                     評価レベル
                   </h2>
                 </div>
 
-                <div className="card-brutal p-6 bg-brutal-gray-50 border-brutal-black border-l-brutal-thick border-l-viz-pink">
+                <div className="card-brutal p-6 bg-brutal-gray-50 border-brutal-black border-l-brutal-thick border-l-viz-blue">
                   <h3 className="font-bold uppercase tracking-wide text-sm text-brutal-gray-900 mb-3">
                     結果の解釈
                   </h3>
                   <p className="text-brutal-gray-900 leading-relaxed">
-                    {rosenbergResult.interpretation}
+                    {selfConceptResult.interpretation}
                   </p>
                 </div>
               </div>
@@ -114,10 +114,10 @@ export default function RosenbergResultPage() {
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <div className="card-brutal p-8 bg-viz-pink text-brutal-white border-brutal-black">
+            <div className="card-brutal p-8 bg-viz-blue text-brutal-white border-brutal-black">
               <div className="text-sm font-bold uppercase tracking-wide mb-2">Raw Score</div>
               <div className="text-4xl md:text-5xl lg:text-6xl font-mono font-bold data-number mb-2">
-                {rosenbergResult.rawScore}
+                {selfConceptResult.rawScore}
               </div>
               <div className="text-lg font-semibold">/ 40点</div>
             </div>
@@ -125,7 +125,7 @@ export default function RosenbergResultPage() {
             <div className="card-brutal p-8 bg-brutal-black text-brutal-white border-brutal-black">
               <div className="text-sm font-bold uppercase tracking-wide mb-2">Percentile</div>
               <div className="text-4xl md:text-5xl lg:text-6xl font-mono font-bold data-number mb-2">
-                {Math.round(rosenbergResult.percentageScore)}
+                {Math.round(selfConceptResult.percentageScore)}
               </div>
               <div className="text-lg font-semibold">%</div>
             </div>
@@ -134,14 +134,14 @@ export default function RosenbergResultPage() {
           {/* Progress Bar Breakdown */}
           <div className="card-brutal p-8 bg-brutal-white">
             <BrutalProgressBar
-              value={rosenbergResult.percentageScore}
-              color="pink"
+              value={selfConceptResult.percentageScore}
+              color="blue"
               label="全体スコア"
               height="lg"
             />
             <div className="flex justify-between text-xs font-mono text-brutal-gray-800 mt-3 uppercase tracking-wide">
               <span>Low (0-30%)</span>
-              <span>Medium (30-70%)</span>
+              <span>Moderate (30-70%)</span>
               <span>High (70-100%)</span>
             </div>
           </div>
@@ -157,36 +157,36 @@ export default function RosenbergResultPage() {
             <StatCard
               icon="📊"
               label="信頼性係数"
-              value={scaleInfo.reliability.cronbachAlpha}
+              value="α = 0.79"
               description="高い内的一貫性"
-              color="pink"
+              color="blue"
             />
             <StatCard
               icon="🔄"
               label="再テスト信頼性"
-              value={scaleInfo.reliability.testRetest}
-              description="安定した測定"
+              value="r = 0.75"
+              description="4週間後も安定"
               color="green"
             />
             <StatCard
               icon="👥"
               label="開発者"
-              value="M. Rosenberg"
-              description="1965年"
+              value="Campbell et al."
+              description="JPSP (1996)"
               color="orange"
             />
             <StatCard
               icon="📚"
               label="引用論文数"
-              value={scaleInfo.citations}
-              description="最も使用される尺度"
-              color="blue"
+              value="2,000+"
+              description="高い学術的信頼性"
+              color="pink"
             />
           </div>
 
           <div className="card-brutal p-6 bg-brutal-gray-50">
             <p className="text-sm text-brutal-gray-900 leading-relaxed">
-              {scaleInfo.description}
+              {scaleInfo.scoring.description}
             </p>
           </div>
         </div>
@@ -209,8 +209,8 @@ export default function RosenbergResultPage() {
               </div>
             </div>
             <div className="flex gap-3">
-              <DataBadge color="black">10 Questions</DataBadge>
-              <DataBadge color="pink">RSES</DataBadge>
+              <DataBadge color="black">8 Questions</DataBadge>
+              <DataBadge color="blue">SCC</DataBadge>
             </div>
           </div>
         </div>
@@ -235,7 +235,7 @@ export default function RosenbergResultPage() {
         {/* Action Buttons */}
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row gap-4 justify-center">
           <Link
-            href="/rosenberg/test"
+            href="/selfconcept/test"
             className="btn-brutal bg-brutal-white text-brutal-black px-10 py-4 text-center min-h-[44px]"
           >
             もう一度診断する

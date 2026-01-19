@@ -5,10 +5,13 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { getTestResult, type BigFiveTestResult } from "@/lib/storage";
 import { scaleInfo } from "@/data/bigfive-questions";
-import { dimensionNames, dimensionDescriptions } from "@/lib/scoring/bigfive";
+import { dimensionNames, dimensionDescriptions, addAllEstimations } from "@/lib/scoring/bigfive";
 import { BrutalProgressBar } from "@/components/viz/BrutalProgressBar";
 import { StatCard } from "@/components/viz/StatCard";
 import { DataBadge } from "@/components/viz/DataBadge";
+import { FacetsDisplay } from "@/components/bigfive/FacetsDisplay";
+import { MBTIEstimationCard } from "@/components/bigfive/MBTIEstimationCard";
+import { EnneagramEstimationCard } from "@/components/bigfive/EnneagramEstimationCard";
 import type { BigFiveResult } from "@/lib/scoring/bigfive";
 
 export default function BigFiveResultPage() {
@@ -34,10 +37,11 @@ export default function BigFiveResultPage() {
     );
   }
 
-  const { result: bigFiveResult } = result;
+  // MBTI/Enneagram推定を追加
+  const bigFiveResult = addAllEstimations(result.result);
 
-  // 各次元をパーセンテージに変換 (4-20 → 0-100)
-  const toPercentage = (score: number) => ((score - 4) / 16) * 100;
+  // 各次元をパーセンテージに変換 (24-120 → 0-100)
+  const toPercentage = (score: number) => ((score - 24) / 96) * 100;
 
   const dimensions = [
     {
@@ -87,8 +91,16 @@ export default function BigFiveResultPage() {
       <div className="container mx-auto px-4 py-12 md:py-20">
         {/* Header */}
         <div className="max-w-6xl mx-auto mb-12 text-center">
-          <DataBadge color="green" size="lg">BIG FIVE RESULT</DataBadge>
-          <h1 className="text-4xl md:text-5xl lg:text-7xl font-display text-brutal-black mt-6 mb-4 animate-slide-in-up">
+          <div className="flex flex-wrap items-center justify-center gap-3 mb-4">
+            <DataBadge color="green" size="lg">BIG FIVE RESULT</DataBadge>
+            <DataBadge color="green" size="md">
+              特性 (TRAIT)
+            </DataBadge>
+            <DataBadge color="blue" size="md">
+              IPIP-120
+            </DataBadge>
+          </div>
+          <h1 className="text-4xl md:text-5xl lg:text-7xl text-brutal-black mt-6 mb-4 animate-slide-in-up" style={{ fontFamily: 'var(--font-display-ja)', fontWeight: 900 }}>
             診断結果
           </h1>
           <p className="text-lg md:text-xl text-brutal-gray-800 font-mono animate-slide-in-up" style={{ animationDelay: "0.1s" }}>
@@ -99,7 +111,7 @@ export default function BigFiveResultPage() {
         {/* Interpretation */}
         <div className="max-w-6xl mx-auto mb-16">
           <div className="card-brutal p-8 md:p-12 bg-brutal-white animate-scale-in" style={{ animationDelay: "0.2s" }}>
-            <h2 className="text-2xl md:text-3xl font-display text-brutal-black mb-6">
+            <h2 className="text-2xl md:text-3xl text-brutal-black mb-6" style={{ fontFamily: 'var(--font-display-ja)', fontWeight: 700 }}>
               あなたの性格プロファイル
             </h2>
             <p className="text-lg text-brutal-gray-900 leading-relaxed">
@@ -110,7 +122,7 @@ export default function BigFiveResultPage() {
 
         {/* Dimension Scores */}
         <div className="max-w-6xl mx-auto mb-16">
-          <h2 className="text-2xl md:text-3xl lg:text-5xl font-display text-brutal-black mb-8 animate-slide-in-up">
+          <h2 className="text-2xl md:text-3xl lg:text-5xl text-brutal-black mb-8 animate-slide-in-up" style={{ fontFamily: 'var(--font-display-ja)', fontWeight: 700 }}>
             5つの性格次元スコア
           </h2>
 
@@ -123,11 +135,11 @@ export default function BigFiveResultPage() {
               >
                 <div className="mb-6">
                   <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-xl md:text-2xl font-display text-brutal-black">
+                    <h3 className="text-xl md:text-2xl text-brutal-black" style={{ fontFamily: 'var(--font-display-ja)', fontWeight: 700 }}>
                       {dim.name}
                     </h3>
                     <div className="flex items-center gap-3">
-                      <DataBadge color={dim.color}>{dim.score} / 20</DataBadge>
+                      <DataBadge color={dim.color}>{dim.score} / 120</DataBadge>
                     </div>
                   </div>
                   <p className="text-sm text-brutal-gray-800 mb-4">
@@ -143,18 +155,83 @@ export default function BigFiveResultPage() {
                 />
 
                 <div className="flex justify-between text-xs font-mono text-brutal-gray-800 mt-3 uppercase tracking-wide">
-                  <span>Low (4-8)</span>
-                  <span>Medium (9-15)</span>
-                  <span>High (16-20)</span>
+                  <span>Low (24-60)</span>
+                  <span>Medium (61-83)</span>
+                  <span>High (84-120)</span>
                 </div>
               </div>
             ))}
           </div>
         </div>
 
+        {/* 30 Facets */}
+        {bigFiveResult.facets && (
+          <div className="max-w-6xl mx-auto mb-16">
+            <h2 className="text-2xl md:text-3xl lg:text-5xl text-brutal-black mb-8" style={{ fontFamily: 'var(--font-display-ja)', fontWeight: 700 }}>
+              30ファセット詳細分析
+            </h2>
+            <p className="text-brutal-gray-800 mb-6">
+              各性格次元は6つのファセット（下位尺度）で構成されています。クリックして詳細を表示できます。
+            </p>
+
+            <div className="space-y-4">
+              <FacetsDisplay
+                facets={bigFiveResult.facets}
+                domain="neuroticism"
+                domainName="神経症傾向"
+                color="orange"
+              />
+              <FacetsDisplay
+                facets={bigFiveResult.facets}
+                domain="extraversion"
+                domainName="外向性"
+                color="blue"
+              />
+              <FacetsDisplay
+                facets={bigFiveResult.facets}
+                domain="openness"
+                domainName="開放性"
+                color="blue"
+              />
+              <FacetsDisplay
+                facets={bigFiveResult.facets}
+                domain="agreeableness"
+                domainName="協調性"
+                color="pink"
+              />
+              <FacetsDisplay
+                facets={bigFiveResult.facets}
+                domain="conscientiousness"
+                domainName="誠実性"
+                color="green"
+              />
+            </div>
+          </div>
+        )}
+
+        {/* MBTI Estimation */}
+        {bigFiveResult.mbtiEstimation && (
+          <div className="max-w-6xl mx-auto mb-16">
+            <h2 className="text-2xl md:text-3xl lg:text-5xl text-brutal-black mb-8" style={{ fontFamily: 'var(--font-display-ja)', fontWeight: 700 }}>
+              16タイプ性格推定
+            </h2>
+            <MBTIEstimationCard estimation={bigFiveResult.mbtiEstimation} />
+          </div>
+        )}
+
+        {/* Enneagram Estimation */}
+        {bigFiveResult.enneagramEstimation && (
+          <div className="max-w-6xl mx-auto mb-16">
+            <h2 className="text-2xl md:text-3xl lg:text-5xl text-brutal-black mb-8" style={{ fontFamily: 'var(--font-display-ja)', fontWeight: 700 }}>
+              エニアグラム推定
+            </h2>
+            <EnneagramEstimationCard estimation={bigFiveResult.enneagramEstimation} />
+          </div>
+        )}
+
         {/* Academic Credibility */}
         <div className="max-w-6xl mx-auto mb-16">
-          <h2 className="text-2xl md:text-3xl lg:text-5xl font-display text-brutal-black mb-8">
+          <h2 className="text-2xl md:text-3xl lg:text-5xl text-brutal-black mb-8" style={{ fontFamily: 'var(--font-display-ja)', fontWeight: 700 }}>
             学術的根拠
           </h2>
 
@@ -162,37 +239,41 @@ export default function BigFiveResultPage() {
             <StatCard
               icon="📊"
               label="信頼性係数"
-              value="α = 0.68-0.76"
-              description="許容範囲の内的一貫性"
+              value="α = 0.77-0.89"
+              description="各ファセットで高い内的一貫性"
               color="green"
             />
             <StatCard
               icon="🔄"
               label="再テスト信頼性"
-              value="r = 0.72-0.82"
+              value="r = 0.70-0.85"
               description="安定した測定結果"
               color="pink"
             />
             <StatCard
               icon="👥"
               label="開発者"
-              value="Donnellan et al."
-              description="Psych Assessment (2006)"
+              value="Johnson (2014)"
+              description="J Research in Personality"
               color="blue"
             />
             <StatCard
               icon="📚"
               label="引用論文数"
-              value="10,000+"
-              description="最も広く使用されている"
+              value="5,000+"
+              description="広く使用されている尺度"
               color="orange"
             />
           </div>
 
-          <div className="card-brutal p-6 bg-brutal-gray-50">
-            <p className="text-sm text-brutal-gray-900 leading-relaxed">
+          <div className="card-brutal p-6 bg-brutal-gray-50 mb-4">
+            <p className="text-sm text-brutal-gray-900 leading-relaxed mb-3">
               {scaleInfo.description}
             </p>
+            <div className="text-xs font-mono text-brutal-gray-800">
+              <div className="font-bold mb-1">原著論文:</div>
+              {scaleInfo.academicReference.original}
+            </div>
           </div>
         </div>
 
@@ -214,8 +295,9 @@ export default function BigFiveResultPage() {
               </div>
             </div>
             <div className="flex gap-3">
-              <DataBadge color="black">20 Questions</DataBadge>
-              <DataBadge color="green">Mini-IPIP</DataBadge>
+              <DataBadge color="black">120 Questions</DataBadge>
+              <DataBadge color="green">IPIP-120</DataBadge>
+              <DataBadge color="blue">30 Facets</DataBadge>
             </div>
           </div>
         </div>

@@ -1,0 +1,101 @@
+item_number,english,japanese,factor
+1,Often feel blue,よくブルーになる,Neuroticism
+2,Dislike myself,自分が嫌いだ,Neuroticism
+3,Am often down in the dumps,よく欝な気分になる,Neuroticism
+4,Have frequent mood swings,気分の起伏が激しい,Neuroticism
+5,Panic easily,慌てやすい,Neuroticism
+6,Am filled with doubts,いつも物事に疑いをもっている,Neuroticism
+7,Feel threatened easily,脅かされている気分になる,Neuroticism
+8,Get stressed out easily,すぐに重圧に押しつぶされる,Neuroticism
+9,Fear for the worst,最悪を予想する,Neuroticism
+10,Worry about things,心配性である,Neuroticism
+11,Seldom feel blue,めったに落ち込まない,Neuroticism
+12,Feel comfortable with myself,自分には自信がある,Neuroticism
+13,Rarely get irritated,めったにイラつかない,Neuroticism
+14,Am not easily bothered,周囲のことにはとらわれない,Neuroticism
+15,Am very pleased with myself,自分が好きである,Neuroticism
+16,Am relaxed most of the time,たいてい落ち着いている,Neuroticism
+17,Seldom get mad,めったに怒らない,Neuroticism
+18,Am not easily frustrated,あまり欲求不満にならない,Neuroticism
+19,Remain calm under pressure,プレッシャーの中でも落ち着いている,Neuroticism
+20,Rarely lose my composure,冷静さを失うことはめったに無い,Neuroticism
+21,Feel comfortable around people,周りに人がいると落ち着く,Extraversion
+22,Make friends easily,友達を作りやすい,Extraversion
+23,Am skilled in handling social situations,社会のいろいろな場面に対応できる,Extraversion
+24,Am the life of the party,パーティの中心だ,Extraversion
+25,Know how to captivate people,人を魅了できる,Extraversion
+26,Start conversations,会話を始められる,Extraversion
+27,Warm up quickly to others,他人と親しみやすい,Extraversion
+28,Talk to a lot of different people,パーティではいろいろな人としゃべる,Extraversion
+29,Don't mind being center of attention,注目の的になるのはかまわない,Extraversion
+30,Cheer people up,人を元気づけることができる,Extraversion
+31,Have little to say,言うことはあまりない,Extraversion
+32,Keep in the background,奥に引っ込んでいる,Extraversion
+33,Would describe experiences as dull,自分の経験はあまり面白くない,Extraversion
+34,Don't like to draw attention,自分に注目を集めたくない,Extraversion
+35,Don't talk a lot,あまり喋らない,Extraversion
+36,Avoid contacts with others,他人との接触は避ける,Extraversion
+37,Am hard to get to know,分かりにくい人である,Extraversion
+38,Retreat from others,引っ込み思案である,Extraversion
+39,Find it difficult to approach,人に近づきづらいと思う,Extraversion
+40,Keep others at a distance,他人と距離を置く,Extraversion
+41,Believe in importance of art,芸術は大切だと思う,Openness
+42,Have vivid imagination,想像力豊かである,Openness
+43,Tend to vote liberal,選挙では自由派の候補に投票する,Openness
+44,Carry conversation to higher level,会話を発展させる,Openness
+45,Enjoy hearing new ideas,新しい発想は好きだ,Openness
+46,Enjoy thinking about things,物事を考えるのは好きだ,Openness
+47,Can say things beautifully,物事を美化することができる,Openness
+48,Enjoy wild flights of fantasy,空想にふけるのが好きである,Openness
+49,Get excited by new ideas,新しいアイデアに興味がある,Openness
+50,Have rich vocabulary,語彙は豊富である,Openness
+51,Not interested in abstract ideas,抽象的な考え方には興味が無い,Openness
+52,Do not like art,芸術には興味が無い,Openness
+53,Avoid philosophical discussions,哲学的な話は避ける,Openness
+54,Not enjoy art museums,美術館に行っても楽しめない,Openness
+55,Vote for conservative,選挙では保守派の候補に投票する,Openness
+56,Do not like poetry,詩は嫌い,Openness
+57,Rarely look for deeper meaning,あまり深く考え込まない,Openness
+58,Tax money supports artists,芸術家の支援に税金を使いすぎだと思う,Openness
+59,Not interested in theoretical,理論的な議論には興味が無い,Openness
+60,Difficulty understanding abstract,抽象的なことは理解できない,Openness
+61,Have good word for everyone,誰でも褒められる,Agreeableness
+62,Believe others have good intentions,人は良心を持っていると信じている,Agreeableness
+63,Respect others,他人を尊重する,Agreeableness
+64,Accept people as they are,人をありのままに受け入れる,Agreeableness
+65,Make people feel at ease,人を落ち着かせる,Agreeableness
+66,Am concerned about others,他人のことが心配である,Agreeableness
+67,Trust what people say,人の言うことを信じる,Agreeableness
+68,Sympathize with feelings,人に同情する,Agreeableness
+69,Am easy to satisfy,満足しやすい,Agreeableness
+70,Treat all equally,全ての人を平等に扱う,Agreeableness
+71,Have sharp tongue,毒舌である,Agreeableness
+72,Cut others to pieces,人をズタズタに打ちのめす,Agreeableness
+73,Suspect hidden motives,人は何かをたくらんでいると思う,Agreeableness
+74,Get back at others,やられたらやり返す,Agreeableness
+75,Insult people,人を傷つける,Agreeableness
+76,Better than others,自分は人より優れていると思う,Agreeableness
+77,Contradict others,人を否定する,Agreeableness
+78,Make demands on others,人に要求する,Agreeableness
+79,Hold a grudge,根に持つ,Agreeableness
+80,Out for personal gain,自分の利益のために動く,Agreeableness
+81,Always prepared,常に準備を怠らない,Conscientiousness
+82,Pay attention to details,細部まで気を配る,Conscientiousness
+83,Get chores done right away,雑用はすぐに終わらせる,Conscientiousness
+84,Carry out my plans,計画は実行に移す,Conscientiousness
+85,Make plans and stick to them,計画を作ったらそれに従う,Conscientiousness
+86,Complete tasks successfully,課題は確実に成し遂げる,Conscientiousness
+87,Do things according to plan,物事は計画に沿って行う,Conscientiousness
+88,Exacting in my work,自分の仕事には厳しく要求する,Conscientiousness
+89,Finish what I start,始めたことは最後まで行う,Conscientiousness
+90,Follow through with plans,自分が立てた計画通りに動く,Conscientiousness
+91,Waste my time,時間を無駄に使う,Conscientiousness
+92,Difficult to get to work,仕事に手をつけにくい,Conscientiousness
+93,Just enough work to get by,必要最低限の仕事しかやらない,Conscientiousness
+94,Don't see things through,物事の見通しができない,Conscientiousness
+95,Shirk my duties,責任を逃れようとする,Conscientiousness
+96,Mess things up,失敗する,Conscientiousness
+97,Leave things unfinished,未完成のままにしておく,Conscientiousness
+98,Don't put mind on task,やるべき課題に集中しない,Conscientiousness
+99,Make a mess of things,物事を滅茶苦茶にする,Conscientiousness
+100,Need a push to start,始めるのに後押しが必要である,Conscientiousness

@@ -4,9 +4,10 @@ import type { UserProfile, TestType } from "@/lib/storage";
 import { Card } from "@/components/ui/Card";
 import { CorrelationGrid } from "@/components/viz/CorrelationGrid";
 import { RadarChart } from "@/components/viz/RadarChart";
+import { PsychologicalLayerView } from "./PsychologicalLayerView";
 import {
   generateSelfAwarenessInsight,
-  extractTopTraits,
+  extractTopFacets,
   generateMultiTestSynthesis,
   bigFiveToPercentage,
 } from "@/lib/analysis/synthesis";
@@ -27,7 +28,7 @@ export function IntegratedAnalysis({
   }
 
   const hasSelfAwareness =
-    profile.tests.sccs && profile.tests.rosenberg;
+    profile.tests.selfconcept && profile.tests.rosenberg;
   const hasBigFive = profile.tests.bigfive;
 
   return (
@@ -45,9 +46,12 @@ export function IntegratedAnalysis({
         </p>
       </Card>
 
+      {/* 心理測定の4層構造（統合ビュー） */}
+      <PsychologicalLayerView profile={profile} completedTests={completedTests} />
+
       {/* 自己認識相関分析（SCCS + Rosenberg） */}
       {hasSelfAwareness && (
-        <Card variant="white" padding="md" className="shadow-brutal-sm">
+        <Card variant="white" padding="sm" className="shadow-brutal-sm">
           <h3 className="text-xl font-bold mb-4 uppercase tracking-tight">
             自己認識マップ
           </h3>
@@ -55,9 +59,9 @@ export function IntegratedAnalysis({
             {/* 相関グリッド */}
             <div className="flex justify-center">
               <CorrelationGrid
-                xValue={profile.tests.sccs!.result.percentageScore}
+                xValue={profile.tests.selfconcept!.result.percentageScore}
                 yValue={profile.tests.rosenberg!.result.percentageScore}
-                xLabel="自己概念の明確さ (SCCS)"
+                xLabel="自己概念の明確さ (SCC)"
                 yLabel="自尊心 (Rosenberg)"
                 color="blue"
               />
@@ -65,33 +69,33 @@ export function IntegratedAnalysis({
 
             {/* インサイト */}
             <div className="space-y-4">
-              <div className="bg-brutal-gray-50 border-brutal border-brutal-gray-300 p-5">
+              <Card variant="white" padding="sm" className="bg-brutal-gray-50 border-brutal-gray-300">
                 <div className="font-semibold text-sm uppercase tracking-wide text-brutal-gray-600 mb-3">
                   📊 あなたの位置
                 </div>
                 <ul className="space-y-2 text-sm">
                   <li>
                     <span className="font-semibold">自己概念の明確さ:</span>{" "}
-                    {Math.round(profile.tests.sccs!.result.percentageScore)}%
+                    {Math.round(profile.tests.selfconcept!.result.percentageScore)}%
                   </li>
                   <li>
                     <span className="font-semibold">自尊心:</span>{" "}
                     {Math.round(profile.tests.rosenberg!.result.percentageScore)}%
                   </li>
                 </ul>
-              </div>
+              </Card>
 
-              <div className="bg-brutal-blue-50 border-brutal border-viz-blue p-5">
+              <Card variant="white" padding="sm" className="bg-brutal-blue-50 border-viz-blue">
                 <div className="font-semibold text-sm uppercase tracking-wide text-brutal-gray-800 mb-3">
                   💡 インサイト
                 </div>
                 <p className="text-sm leading-relaxed">
                   {generateSelfAwarenessInsight(
-                    profile.tests.sccs!.result.percentageScore,
+                    profile.tests.selfconcept!.result.percentageScore,
                     profile.tests.rosenberg!.result.percentageScore
                   )}
                 </p>
-              </div>
+              </Card>
             </div>
           </div>
         </Card>
@@ -138,28 +142,30 @@ export function IntegratedAnalysis({
               />
             </div>
 
-            {/* トップ特性 */}
+            {/* トップファセット */}
             <div className="space-y-4">
-              <div className="bg-brutal-gray-50 border-brutal border-brutal-gray-300 p-5">
-                <div className="font-semibold text-sm uppercase tracking-wide text-brutal-gray-600 mb-3">
-                  🏆 トップ3特性
-                </div>
-                <ul className="space-y-2">
-                  {extractTopTraits(profile.tests.bigfive!.result).map((trait, index) => (
-                    <li key={trait.trait} className="flex items-center gap-3">
-                      <div className="w-8 h-8 flex items-center justify-center bg-viz-green text-white font-bold border-brutal border-brutal-black">
-                        {index + 1}
-                      </div>
-                      <div className="flex-1">
-                        <div className="font-semibold">{trait.traitJa}</div>
-                        <div className="text-xs text-brutal-gray-600">
-                          スコア: {trait.score}/20
+              {profile.tests.bigfive!.result.facets && (
+                <Card variant="white" padding="sm" className="bg-brutal-gray-50 border-brutal-gray-300">
+                  <div className="font-semibold text-sm uppercase tracking-wide text-brutal-gray-600 mb-3">
+                    🏆 トップ5ファセット
+                  </div>
+                  <ul className="space-y-2">
+                    {extractTopFacets(profile.tests.bigfive!.result.facets).map((facet, index) => (
+                      <li key={facet.facet} className="flex items-center gap-3">
+                        <div className="w-8 h-8 flex items-center justify-center bg-viz-green text-white font-bold border-brutal border-brutal-black shrink-0">
+                          {index + 1}
                         </div>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="font-semibold">{facet.facetJa}</div>
+                          <div className="text-xs text-brutal-gray-600">
+                            {Math.round(facet.percentageScore)}%
+                          </div>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </Card>
+              )}
             </div>
           </div>
         </Card>
@@ -171,11 +177,11 @@ export function IntegratedAnalysis({
           <h3 className="text-xl font-bold mb-4 uppercase tracking-tight">
             統合インサイト
           </h3>
-          <div className="bg-brutal-pink-50 border-brutal border-viz-pink p-6">
+          <Card variant="white" padding="md" className="bg-brutal-pink-50 border-viz-pink">
             <p className="text-base leading-relaxed">
               {generateMultiTestSynthesis(profile, completedTests)}
             </p>
-          </div>
+          </Card>
         </Card>
       )}
     </div>

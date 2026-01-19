@@ -12,7 +12,7 @@ export default function RosenbergPage() {
           {/* Header */}
           <div className="text-center mb-12 animate-slide-in-up">
             <DataBadge color="pink" size="lg">RSES</DataBadge>
-            <h1 className="text-4xl md:text-5xl lg:text-7xl font-display text-brutal-black mt-6 mb-4 leading-tight">
+            <h1 className="text-4xl md:text-5xl lg:text-7xl text-brutal-black mt-6 mb-4 leading-tight" style={{ fontFamily: 'var(--font-display-ja)', fontWeight: 900 }}>
               {scaleInfo.nameJa}
             </h1>
             <p className="text-lg md:text-xl lg:text-2xl text-brutal-gray-800 font-mono">
@@ -22,7 +22,7 @@ export default function RosenbergPage() {
 
           {/* Overview Card */}
           <Card variant="white" padding="lg" className="mb-12 animate-scale-in" style={{ animationDelay: "0.1s" }}>
-            <h2 className="text-3xl font-display text-brutal-black mb-6">
+            <h2 className="text-3xl text-brutal-black mb-6" style={{ fontFamily: 'var(--font-display-ja)', fontWeight: 700 }}>
               診断について
             </h2>
             <p className="text-lg text-brutal-gray-900 leading-relaxed mb-8">
@@ -47,7 +47,7 @@ export default function RosenbergPage() {
 
             {/* Academic Credentials */}
             <div className="border-t-brutal border-brutal-black pt-8">
-              <h3 className="text-2xl font-display text-brutal-black mb-6">
+              <h3 className="text-2xl text-brutal-black mb-6" style={{ fontFamily: 'var(--font-display-ja)', fontWeight: 700 }}>
                 学術的信頼性
               </h3>
 
