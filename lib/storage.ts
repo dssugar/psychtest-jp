@@ -1,6 +1,13 @@
-import { SccsResult } from "./scoring/sccs";
+// import { SccsResult } from "./scoring/sccs"; // 著作権確認中のため一時的に無効化
 import { RosenbergResult } from "./scoring/rosenberg";
 import { BigFiveResult } from "./scoring/bigfive";
+import { SelfConceptResult } from "./scoring/selfconcept";
+import { Phq9Result } from "./scoring/phq9";
+import { SwlsResult } from "./scoring/swls";
+import { K6Result } from "./scoring/k6";
+
+// 一時的な型定義（既存データ互換性のため）
+type SccsResult = unknown;
 
 // ============================================================
 // Type Definitions
@@ -9,7 +16,7 @@ import { BigFiveResult } from "./scoring/bigfive";
 /**
  * テストの種類
  */
-export type TestType = "sccs" | "rosenberg" | "bigfive" | "ecrr" | "phq9" | "gad7" | "pss";
+export type TestType = "rosenberg" | "bigfive" | "selfconcept" | "ecrr" | "phq9" | "gad7" | "pss" | "swls" | "k6";
 
 /**
  * 汎用テスト結果型
@@ -19,6 +26,7 @@ export interface TestResult<T = unknown> {
   answers: number[];
   completedAt: string;
   retakeCount: number;
+  testVersion?: string; // テストバージョン (例: "mini-ipip-20", "ipip-120")
 }
 
 /**
@@ -37,6 +45,11 @@ export type RosenbergTestResult = TestResult<RosenbergResult>;
 export type BigFiveTestResult = TestResult<BigFiveResult>;
 
 /**
+ * Self-Concept Clarity 結果
+ */
+export type SelfConceptTestResult = TestResult<SelfConceptResult>;
+
+/**
  * ECR-R 愛着スタイル結果（未実装）
  */
 export interface EcrRResult {
@@ -48,6 +61,21 @@ export interface EcrRResult {
 export type EcrRTestResult = TestResult<EcrRResult>;
 
 /**
+ * PHQ-9 結果
+ */
+export type Phq9TestResult = TestResult<Phq9Result>;
+
+/**
+ * SWLS (人生満足度) 結果
+ */
+export type SwlsTestResult = TestResult<SwlsResult>;
+
+/**
+ * K6 (心理的苦痛) 結果
+ */
+export type K6TestResult = TestResult<K6Result>;
+
+/**
  * ユーザープロファイル（複数テストの結果を保持）
  */
 export interface UserProfile {
@@ -56,10 +84,13 @@ export interface UserProfile {
     sccs?: SccsTestResult;
     rosenberg?: RosenbergTestResult;
     bigfive?: BigFiveTestResult;
+    selfconcept?: SelfConceptTestResult;
     ecrr?: EcrRTestResult;
-    phq9?: TestResult;
+    phq9?: Phq9TestResult;
     gad7?: TestResult;
     pss?: TestResult;
+    swls?: SwlsTestResult;
+    k6?: K6TestResult;
   };
   metadata: {
     createdAt: string;
@@ -203,7 +234,8 @@ export function saveProfile(profile: UserProfile): void {
 export function saveTestResult<T>(
   testType: TestType,
   result: T,
-  answers: number[]
+  answers: number[],
+  testVersion?: string
 ): void {
   const profile = getProfile() || createEmptyProfile();
 
@@ -215,6 +247,7 @@ export function saveTestResult<T>(
     answers,
     completedAt: new Date().toISOString(),
     retakeCount,
+    testVersion,
   };
 
   profile.tests[testType as keyof typeof profile.tests] = testResult as any;
@@ -238,8 +271,15 @@ export function getCompletedTests(): TestType[] {
   const profile = getProfile();
   if (!profile) return [];
 
+  // 有効なTestTypeのみをフィルタ（sccsなど古いテストタイプを除外）
+  const validTestTypes: TestType[] = ["rosenberg", "bigfive", "selfconcept", "ecrr", "phq9", "gad7", "pss", "swls", "k6"];
+
   return Object.keys(profile.tests).filter(
-    (key) => profile.tests[key as keyof typeof profile.tests] !== undefined
+    (key) => {
+      const isValid = validTestTypes.includes(key as TestType);
+      const hasResult = profile.tests[key as keyof typeof profile.tests] !== undefined;
+      return isValid && hasResult;
+    }
   ) as TestType[];
 }
 

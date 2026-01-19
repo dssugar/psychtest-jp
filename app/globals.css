@@ -17,6 +17,7 @@
   --color-viz-green: #00cc88;
   --color-viz-orange: #ff9900;
   --color-viz-yellow: #ffd700;
+  --color-viz-cyan: #00bcd4;
   --color-viz-purple: #9933ff;
 
   /* Brutal color variants (light backgrounds) */
@@ -24,6 +25,7 @@
   --color-brutal-pink-50: rgba(255, 51, 102, 0.05);
   --color-brutal-green-50: rgba(0, 204, 136, 0.05);
   --color-brutal-orange-50: rgba(255, 153, 0, 0.05);
+  --color-brutal-cyan-50: rgba(0, 188, 212, 0.05);
 
   /* === BORDER WIDTHS === */
   --border-width-brutal: 3px;
@@ -31,6 +33,7 @@
 
   /* === FONT FAMILIES === */
   --font-family-display: var(--font-display);
+  --font-family-display-ja: var(--font-display-ja);
   --font-family-body: var(--font-body);
   --font-family-mono: var(--font-mono);
 }
@@ -39,6 +42,7 @@
   :root {
     /* Font variables for Next.js font optimization */
     --font-display: 'Archivo Black', sans-serif;
+    --font-display-ja: 'Noto Sans JP', sans-serif;
     --font-body: 'Inter', -apple-system, sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
 
@@ -79,27 +83,12 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 
-    /* Spectrum diagonal stripes background */
-    background-image: repeating-linear-gradient(
-      45deg,
-      transparent 0,
-      transparent 50px,
-      rgba(0, 102, 255, 0.30) 50px,
-      rgba(0, 102, 255, 0.30) 90px,
-      rgba(255, 51, 102, 0.30) 90px,
-      rgba(255, 51, 102, 0.30) 130px,
-      rgba(0, 204, 136, 0.30) 130px,
-      rgba(0, 204, 136, 0.30) 170px,
-      rgba(255, 153, 0, 0.30) 170px,
-      rgba(255, 153, 0, 0.30) 210px,
-      rgba(255, 215, 0, 0.30) 210px,
-      rgba(255, 215, 0, 0.30) 250px,
-      rgba(153, 51, 255, 0.30) 250px,
-      rgba(153, 51, 255, 0.30) 290px,
-      transparent 290px,
-      transparent 340px
-    );
-    background-color: #ffffff;
+    /* Lab notebook grid pattern background */
+    background-color: #fafafa;
+    background-image:
+      linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+    background-size: 20px 20px;
     background-attachment: fixed;
   }
 

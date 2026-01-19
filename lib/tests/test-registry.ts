@@ -1,6 +1,9 @@
-import { sccsConfig } from "./configs/sccs";
 import { rosenbergConfig } from "./configs/rosenberg";
 import { bigFiveConfig } from "./configs/bigfive";
+import { selfConceptConfig } from "./configs/selfconcept";
+import { phq9Config } from "./configs/phq9";
+import { swlsConfig } from "./configs/swls";
+import { k6Config } from "./configs/k6";
 import type { TestType } from "@/lib/storage";
 import type { TestConfig, TestRegistry } from "./types";
 
@@ -9,9 +12,12 @@ import type { TestConfig, TestRegistry } from "./types";
  * 全テストの設定を一元管理
  */
 export const testRegistry = {
-  sccs: sccsConfig,
   rosenberg: rosenbergConfig,
   bigfive: bigFiveConfig,
+  selfconcept: selfConceptConfig,
+  phq9: phq9Config,
+  swls: swlsConfig,
+  k6: k6Config,
 } as const;
 
 /**

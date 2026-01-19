@@ -15,18 +15,18 @@ const testInfo: Record<
   {
     name: string;
     nameJa: string;
-    color: "blue" | "pink" | "green" | "orange" | "yellow" | "black";
+    color: "blue" | "pink" | "green" | "orange" | "yellow" | "black" | "cyan";
     path: string;
     dimension: string;
     available: boolean;
   }
 > = {
-  sccs: {
-    name: "SCCS",
+  selfconcept: {
+    name: "SCC",
     nameJa: "自己概念の明確さ",
     color: "blue",
-    path: "/sccs",
-    dimension: "自己認識",
+    path: "/selfconcept",
+    dimension: "状態",
     available: true,
   },
   rosenberg: {
@@ -56,10 +56,10 @@ const testInfo: Record<
   phq9: {
     name: "PHQ-9",
     nameJa: "うつ病スクリーニング",
-    color: "blue",
+    color: "orange",
     path: "/phq9",
     dimension: "メンタル状態",
-    available: false,
+    available: true,
   },
   gad7: {
     name: "GAD-7",
@@ -76,6 +76,22 @@ const testInfo: Record<
     path: "/pss",
     dimension: "メンタル状態",
     available: false,
+  },
+  swls: {
+    name: "SWLS",
+    nameJa: "人生満足度",
+    color: "blue",
+    path: "/swls",
+    dimension: "ウェルビーイング",
+    available: true,
+  },
+  k6: {
+    name: "K6",
+    nameJa: "心理的苦痛スクリーニング",
+    color: "cyan",
+    path: "/k6",
+    dimension: "メンタル状態",
+    available: true,
   },
 };
 
@@ -113,7 +129,7 @@ export default function DashboardPage() {
           <DataBadge color="green" size="lg">
             DASHBOARD
           </DataBadge>
-          <h1 className="text-4xl md:text-5xl lg:text-7xl font-display text-brutal-black mt-6 mb-4 animate-slide-in-up">
+          <h1 className="text-4xl md:text-5xl lg:text-7xl text-brutal-black mt-6 mb-4 animate-slide-in-up" style={{ fontFamily: 'var(--font-display-ja)', fontWeight: 900 }}>
             マイダッシュボード
           </h1>
           <p className="text-lg md:text-xl text-brutal-gray-800 font-mono animate-slide-in-up">
@@ -143,7 +159,7 @@ export default function DashboardPage() {
         {/* Completed Tests - Dimension Breakdown */}
         {completedTests.length > 0 ? (
           <div className="max-w-6xl mx-auto mb-16">
-            <h2 className="text-2xl md:text-3xl font-display text-brutal-black mb-8">
+            <h2 className="text-2xl md:text-3xl text-brutal-black mb-8" style={{ fontFamily: 'var(--font-display-ja)', fontWeight: 700 }}>
               完了した診断
             </h2>
 
@@ -152,7 +168,8 @@ export default function DashboardPage() {
                 const info = testInfo[testType];
                 const testResult = profile?.tests[testType];
 
-                if (!testResult) return null;
+                // testInfoに定義がない、または結果がない場合はスキップ
+                if (!info || !testResult) return null;
 
                 return (
                   <Card
@@ -175,7 +192,7 @@ export default function DashboardPage() {
                       </div>
                     </div>
 
-                    <h3 className="text-xl md:text-2xl font-display text-brutal-black mb-2">
+                    <h3 className="text-xl md:text-2xl text-brutal-black mb-2" style={{ fontFamily: 'var(--font-display-ja)', fontWeight: 700 }}>
                       {info.nameJa}
                     </h3>
 
@@ -213,7 +230,7 @@ export default function DashboardPage() {
           <div className="max-w-6xl mx-auto mb-16">
             <Card variant="white" padding="lg" className="bg-brutal-gray-50 text-center">
               <div className="text-6xl mb-4">📊</div>
-              <h2 className="text-2xl md:text-3xl font-display text-brutal-black mb-4">
+              <h2 className="text-2xl md:text-3xl text-brutal-black mb-4" style={{ fontFamily: 'var(--font-display-ja)', fontWeight: 700 }}>
                 まだ診断を受けていません
               </h2>
               <p className="text-brutal-gray-800 mb-6">
@@ -226,7 +243,7 @@ export default function DashboardPage() {
         {/* Available Tests */}
         {notCompletedTests.length > 0 && (
           <div className="max-w-6xl mx-auto mb-16">
-            <h2 className="text-2xl md:text-3xl font-display text-brutal-black mb-8">
+            <h2 className="text-2xl md:text-3xl text-brutal-black mb-8" style={{ fontFamily: 'var(--font-display-ja)', fontWeight: 700 }}>
               {completedTests.length > 0
                 ? "未受験の診断"
                 : "利用可能な診断"}
@@ -242,7 +259,7 @@ export default function DashboardPage() {
                     {info.name}
                   </DataBadge>
 
-                  <h3 className="text-xl md:text-2xl font-display text-brutal-black mt-4 mb-2">
+                  <h3 className="text-xl md:text-2xl text-brutal-black mt-4 mb-2" style={{ fontFamily: 'var(--font-display-ja)', fontWeight: 700 }}>
                     {info.nameJa}
                   </h3>
 

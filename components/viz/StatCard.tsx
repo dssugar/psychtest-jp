@@ -1,9 +1,11 @@
+import { Card } from "@/components/ui/Card";
+
 interface StatCardProps {
   icon?: string;
   label: string;
   value: string;
   description?: string;
-  color?: "blue" | "pink" | "green" | "orange" | "yellow";
+  color?: "blue" | "pink" | "green" | "orange" | "yellow" | "black" | "cyan";
 }
 
 export function StatCard({
@@ -19,10 +21,12 @@ export function StatCard({
     green: "border-l-viz-green",
     orange: "border-l-viz-orange",
     yellow: "border-l-viz-yellow",
+    cyan: "border-l-viz-cyan",
+    black: "border-l-brutal-black",
   };
 
   return (
-    <div className={`card-brutal p-3 md:p-4 border-l-brutal-thick ${colorConfig[color]} animate-slide-in-left`}>
+    <Card variant="white" padding="sm" className={`border-l-brutal-thick ${colorConfig[color]} animate-slide-in-left`}>
       <div className="flex items-start gap-3">
         {icon && <div className="text-xl md:text-2xl">{icon}</div>}
         <div className="flex-1">
@@ -39,6 +43,6 @@ export function StatCard({
           )}
         </div>
       </div>
-    </div>
+    </Card>
   );
 }

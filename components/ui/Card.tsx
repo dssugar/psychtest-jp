@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 interface CardProps {
   children: ReactNode;
   className?: string;
-  variant?: "white" | "blue" | "pink" | "green" | "orange" | "yellow" | "black";
+  variant?: "white" | "blue" | "pink" | "green" | "orange" | "yellow" | "black" | "cyan";
   padding?: "none" | "sm" | "md" | "lg" | "xl";
   as?: "div" | "section" | "article" | "a";
   href?: string;
@@ -31,6 +31,7 @@ export function Card({
     green: "bg-viz-green text-brutal-white border-brutal-black",
     orange: "bg-viz-orange text-brutal-white border-brutal-black",
     yellow: "bg-viz-yellow border-brutal-black",
+    cyan: "bg-viz-cyan text-brutal-white border-brutal-black",
     black: "bg-brutal-black text-brutal-white border-brutal-black",
   };
 

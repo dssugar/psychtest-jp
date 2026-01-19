@@ -34,6 +34,9 @@ const config: Config = {
           orange: {
             50: "var(--color-brutal-orange-50)",
           },
+          cyan: {
+            50: "var(--color-brutal-cyan-50)",
+          },
         },
         // Data Visualization Accents
         viz: {
@@ -42,6 +45,7 @@ const config: Config = {
           green: "hsl(var(--color-viz-green))",
           orange: "hsl(var(--color-viz-orange))",
           yellow: "hsl(var(--color-viz-yellow))",
+          cyan: "hsl(var(--color-viz-cyan))",
         },
         // Legacy compatibility
         background: "hsl(var(--background))",

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 interface BrutalProgressBarProps {
   value: number; // 0-100
-  color?: "blue" | "pink" | "green" | "orange";
+  color?: "blue" | "pink" | "green" | "orange" | "black" | "cyan";
   label?: string;
   showValue?: boolean;
   height?: "sm" | "md" | "lg";
@@ -30,6 +30,8 @@ export function BrutalProgressBar({
     pink: "bg-viz-pink",
     green: "bg-viz-green",
     orange: "bg-viz-orange",
+    cyan: "bg-viz-cyan",
+    black: "bg-brutal-black",
   };
 
   useEffect(() => {

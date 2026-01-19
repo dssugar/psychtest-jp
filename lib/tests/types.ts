@@ -74,7 +74,7 @@ export interface TestConfig<TResult, TQuestion extends BaseQuestion = BaseQuesti
   /** テストID */
   id: TestType;
   /** テーマカラー */
-  color: "blue" | "pink" | "green" | "orange" | "yellow" | "black";
+  color: "blue" | "pink" | "green" | "orange" | "yellow" | "black" | "cyan";
 
   /** 質問データ */
   questions: TQuestion[];
