@@ -10,11 +10,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Tech Stack
 
-- **Frontend**: Static site (HTML/JS/CSS)
-- **Hosting**: Cloudflare Pages (free tier)
+- **Framework**: Next.js 16 (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS v4
+- **Hosting**: Cloudflare Pages (static export)
 - **Domain**: psychtest.jp
-- **Data Storage**: localStorage (no backend/database in Phase 1)
-- **UI Framework**: Tailwind CSS for modern UI
+- **Data Storage**: localStorage (no backend/database in current phase)
 - **No API costs**: Fully static
 
 ### Monetization Strategy
@@ -25,7 +26,20 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Commands
 
-This is a new project - commands will be added as the build system is established.
+```bash
+# Development
+npm install          # Install dependencies
+npm run dev          # Start dev server (http://localhost:3000)
+npm run type-check   # TypeScript type checking
+
+# Build & Deploy
+npm run build        # Build static site (output: out/)
+npx serve out        # Preview built site locally
+
+# Testing
+npm run test:e2e     # Run E2E tests (Playwright)
+npm run test:e2e:ui  # E2E tests with UI mode
+```
 
 ## Architecture
 
@@ -35,25 +49,27 @@ This is a new project - commands will be added as the build system is establishe
 
 #### 【Trait - 特性】比較的安定した個人差
 
-| Category | Measures | Scales Used |
-|----------|----------|-------------|
-| 性格特性 (Personality) | How you behave | Big Five (IPIP-NEO) |
-| 愛着スタイル (Attachment) | How you relate | ECR-R |
-| 価値観・強み (Values/Strengths) | What you value | VIA Character Strengths |
+| Category | Measures | Scales Used | Status |
+|----------|----------|-------------|--------|
+| 性格特性 (Personality) | How you behave | Big Five (IPIP-NEO) | ✅ **Implemented** |
+| 勤勉性 / やり抜く力 (Industriousness / Grit) | Achievement & perseverance | IPIP-300 C4+C5 | ✅ **Implemented** |
+| 愛着スタイル (Attachment) | How you relate | ECR-R | Planned |
+| 価値観・強み (Values/Strengths) | What you value | VIA Character Strengths | Planned |
 
 #### 【State - 状態】現在の心理状態（変化しうる）
 
-| Category | Measures | Scales Used |
-|----------|----------|-------------|
-| メンタルヘルス (Mental Health) | Current symptoms | PHQ-9, GAD-7, PSS |
-| 自己認識 (Self-Concept) | Self-understanding clarity | SCCS |
+| Category | Measures | Scales Used | Status |
+|----------|----------|-------------|--------|
+| メンタルヘルス (Mental Health) | Current symptoms | PHQ-9, K6, PSS | ✅ **PHQ-9, K6 Implemented** |
+| 自己認識 (Self-Concept) | Self-understanding clarity | Self-Concept Clarity Scale | ✅ **Implemented** |
 
 #### 【Outcome - 成果】特性と状態の結果
 
-| Category | Measures | Scales Used |
-|----------|----------|-------------|
-| 自尊心 (Self-Esteem) | Self-worth evaluation | Rosenberg Self-Esteem |
-| キャリア適合 (Career Fit) | Job-person match | RIASEC |
+| Category | Measures | Scales Used | Status |
+|----------|----------|-------------|--------|
+| 自尊心 (Self-Esteem) | Self-worth evaluation | Rosenberg Self-Esteem | ✅ **Implemented** |
+| 主観的幸福感 (Subjective Well-being) | Life satisfaction | SWLS | ✅ **Implemented** |
+| キャリア適合 (Career Fit) | Job-person match | RIASEC | Planned |
 
 #### 【Skill/Capacity - スキル・能力】育成可能な力（将来的に追加予定）
 
@@ -73,44 +89,67 @@ This is a new project - commands will be added as the build system is establishe
 
 ### Academic Scale Tiers
 
-**Tier S (Gold Standard)**: Big Five, PHQ-9, GAD-7, Rosenberg Self-Esteem
+**Tier S (Gold Standard)**: Big Five, Industriousness (IPIP-300 C4+C5), PHQ-9, K6, Rosenberg Self-Esteem, SWLS
 **Tier A (Strong Support)**: Self-Concept Clarity, ECR-R, VIA, PSS, RIASEC
 **Tier C (Not Recommended)**: MBTI/16Personalities (low retest reliability r=0.50), animal-type quizzes
 
 ### Key Scales Reference
 
-#### Self-Concept Clarity Scale (SCCS)
-- Campbell et al. (1996), JPSP, 70(1), 141-156
-- 12 items, 5-point Likert
-- Cronbach's α = 0.86, retest r = 0.79 (4 months)
-- Many reverse-scored items
+#### IPIP-NEO (Big Five) ✅ **Implemented**
+- **Public Domain** (completely free)
+- Goldberg (1992), International Personality Item Pool
+- Versions: 300-item (research), 120-item (standard), 60-item (short), 20-item Mini-IPIP (ultra-short)
+- **Current implementation**: 120-item version (30 facets)
+- Measures: Extraversion, Agreeableness, Conscientiousness, Neuroticism, Openness
+- Each domain has 6 facets (4 items per facet)
+- Resource: https://ipip.ori.org/
 
-#### Rosenberg Self-Esteem Scale
+#### Industriousness / Grit ✅ **Implemented**
+- **Public Domain** (IPIP-300)
+- DeYoung, Quilty, & Peterson (2007), Big Five Aspect Scale
+- 20 items, 5-point Likert (C4: Achievement Striving + C5: Self-Discipline)
+- Cronbach's α = 0.82 (combined), C4: 0.79, C5: 0.85
+- 2×2 matrix visualization with 4 quadrant types
+- **Alternative to Grit Scale** (Duckworth et al., 2007) - r > .75 correlation
+- Grit concept overlaps with Conscientiousness facets (Credé et al., 2017)
+
+#### Rosenberg Self-Esteem Scale ✅ **Implemented**
 - Rosenberg (1965), 10 items, 4-point Likert
 - Cronbach's α = 0.77-0.88, retest r = 0.82-0.85
 - 50,000+ citations
+- 5 reverse-scored items
 
-#### IPIP-NEO (Big Five)
-- **Public Domain** (completely free)
-- Versions: 300-item (research), 120-item (standard), 60-item (short), 20-item Mini-IPIP (ultra-short)
-- Measures: Extraversion, Agreeableness, Conscientiousness, Neuroticism, Openness
-- Resource: https://ipip.ori.org/
-
-#### ECR-R (Attachment)
-- Fraley et al. (2000), 36 items (12-18 for short), 7-point Likert
-- Two axes: Anxiety, Avoidance
-- Four types: Secure, Preoccupied, Dismissive, Fearful
-
-#### PHQ-9 (Depression Screening)
+#### PHQ-9 (Depression Screening) ✅ **Implemented**
 - Kroenke et al. (2001), 9 items, 4-point (0-3)
 - Cronbach's α = 0.86-0.89
 - Scores: 0-4 (none), 5-9 (mild), 10-14 (moderate), 15-19 (mod-severe), 20-27 (severe)
 - **Free to use (Pfizer-provided)**
 
-#### GAD-7 (Anxiety Screening)
-- Spitzer et al. (2006), 7 items, 4-point (0-3)
-- Scores: 0-4 (minimal), 5-9 (mild), 10-14 (moderate), 15-21 (severe)
-- **Free to use**
+#### SWLS (Satisfaction With Life Scale) ✅ **Implemented**
+- Diener et al. (1985), 5 items, 7-point Likert
+- Cronbach's α = 0.87, retest r = 0.82
+- Scores: 5-9 (extremely dissatisfied), 10-14 (dissatisfied), 15-19 (slightly dissatisfied), 20 (neutral), 21-25 (slightly satisfied), 26-30 (satisfied), 31-35 (extremely satisfied)
+- **Permission from Ed Diener**
+
+#### Self-Concept Clarity Scale ✅ **Implemented**
+- Campbell et al. (1996), JPSP, 70(1), 141-156
+- 12 items, 5-point Likert
+- Cronbach's α = 0.86, retest r = 0.79 (4 months)
+- Many reverse-scored items
+
+#### K6 (Kessler Psychological Distress Scale) ✅ **Implemented**
+- Kessler et al. (2002), 6 items, 5-point (0-4)
+- Scores: 0-4 (no distress), 5-9 (mild), 10-12 (moderate), 13+ (severe)
+- Cronbach's α = 0.89
+- **Copyright-free for non-commercial use**
+- Used in Japan's National Livelihood Survey (国民生活基礎調査)
+- Japanese version: Furukawa et al. (2003)
+- Copyright © Ronald C. Kessler (attribution required)
+
+#### ECR-R (Attachment) - Planned
+- Fraley et al. (2000), 36 items (12-18 for short), 7-point Likert
+- Two axes: Anxiety, Avoidance
+- Four types: Secure, Preoccupied, Dismissive, Fearful
 
 ## Critical Implementation Requirements
 
@@ -191,6 +230,76 @@ vs. commutest.com:
 - Google Scholar
 - PubMed
 - PsycINFO
+
+---
+
+## 🔄 New Test Implementation Checklist
+
+When adding a new psychological test/scale, **ALWAYS** update the following files:
+
+### Phase 6: Core Code Generation (3 files)
+- [ ] `data/{scale}-questions.ts` - Question data, scale info, scale labels
+- [ ] `lib/scoring/{scale}.ts` - Scoring logic, interpretation function
+- [ ] `lib/tests/configs/{scale}.ts` - Test configuration (TestConfig)
+
+### Phase 7: Page Generation (3 files)
+- [ ] `app/{scale}/page.tsx` - Landing page with scale description
+- [ ] `app/{scale}/test/page.tsx` - Test interface with questions
+- [ ] `app/results/{scale}/page.tsx` - Results display page
+
+### Phase 8: Integration (4 files)
+- [ ] `lib/tests/test-registry.ts` - Add import and register config
+- [ ] `lib/storage.ts` - Add to TestType union, add TestResult type, add to UserProfile.tests
+- [ ] `app/page.tsx` - Add to LAYER I/II/III/IV list (✅) AND add test card
+- [ ] `app/dashboard/page.tsx` - Add to testInfo Record with available: true
+
+### Documentation Updates (3 files + total count)
+- [ ] `CLAUDE.md` - Update:
+  - [ ] Trait/State/Outcome/Skill framework table (add row with ✅ status)
+  - [ ] Academic Scale Tiers (add to Tier S/A/B)
+  - [ ] Key Scales Reference (add detailed section)
+  - [ ] Total question count (calculate: previous + new items)
+- [ ] `README.md` - Update:
+  - [ ] Project structure (add `app/{scale}/` directory)
+  - [ ] Project structure (add `lib/scoring/{scale}.ts`)
+  - [ ] Project structure (add `data/{scale}-questions.ts`)
+  - [ ] Implemented features list (add new test with ✅)
+  - [ ] Total question count (same as CLAUDE.md)
+  - [ ] License & Academic References section (add citation)
+- [ ] `ROADMAP.md` - Update:
+  - [ ] Current status date (e.g., 2026-01-20)
+  - [ ] Phase 1 completed tests list (add new test)
+  - [ ] Framework implementation status table (update Trait/State/Outcome/Skill row)
+  - [ ] Progress total question count (calculate: previous + new items)
+  - [ ] Move from "Next candidates" to "Completed" if applicable
+
+### Optional Updates (if applicable)
+- [ ] `app/about/page.tsx` - Add to appropriate LAYER section with ✅
+- [ ] `app/references/page.tsx` - Add academic reference card (if using alternative scale)
+
+### Validation
+- [ ] Run `npx tsc --noEmit` - No TypeScript errors
+- [ ] Test in browser - All pages load correctly
+- [ ] Check dashboard - Test appears in available/completed tests
+- [ ] Verify localStorage - Results save/load correctly
+
+### Example Calculation: Total Question Count
+```
+Current Total = Sum of all test items:
+- Big Five (IPIP-120): 120 items
+- Industriousness: 20 items
+- Rosenberg: 10 items
+- PHQ-9: 9 items
+- K6: 6 items
+- SWLS: 5 items
+- Self-Concept: 12 items
+= 182 items total
+
+After adding GAD-7 (7 items):
+New Total = 182 + 7 = 189 items
+```
+
+**⚠️ CRITICAL**: Always update the total question count in CLAUDE.md, README.md, and ROADMAP.md simultaneously to avoid inconsistencies.
 
 ---
 

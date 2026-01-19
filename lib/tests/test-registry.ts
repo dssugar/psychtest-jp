@@ -4,6 +4,7 @@ import { selfConceptConfig } from "./configs/selfconcept";
 import { phq9Config } from "./configs/phq9";
 import { swlsConfig } from "./configs/swls";
 import { k6Config } from "./configs/k6";
+import { industriousnessConfig } from "./configs/industriousness";
 import type { TestType } from "@/lib/storage";
 import type { TestConfig, TestRegistry } from "./types";
 
@@ -18,6 +19,7 @@ export const testRegistry = {
   phq9: phq9Config,
   swls: swlsConfig,
   k6: k6Config,
+  industriousness: industriousnessConfig,
 } as const;
 
 /**

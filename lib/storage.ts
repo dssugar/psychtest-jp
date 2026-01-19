@@ -5,6 +5,7 @@ import { SelfConceptResult } from "./scoring/selfconcept";
 import { Phq9Result } from "./scoring/phq9";
 import { SwlsResult } from "./scoring/swls";
 import { K6Result } from "./scoring/k6";
+import { IndustriousnessResult } from "./scoring/industriousness";
 
 // 一時的な型定義（既存データ互換性のため）
 type SccsResult = unknown;
@@ -16,7 +17,7 @@ type SccsResult = unknown;
 /**
  * テストの種類
  */
-export type TestType = "rosenberg" | "bigfive" | "selfconcept" | "ecrr" | "phq9" | "gad7" | "pss" | "swls" | "k6";
+export type TestType = "rosenberg" | "bigfive" | "selfconcept" | "ecrr" | "phq9" | "gad7" | "pss" | "swls" | "k6" | "industriousness";
 
 /**
  * 汎用テスト結果型
@@ -76,6 +77,11 @@ export type SwlsTestResult = TestResult<SwlsResult>;
 export type K6TestResult = TestResult<K6Result>;
 
 /**
+ * Industriousness (勤勉性) 結果
+ */
+export type IndustriousnessTestResult = TestResult<IndustriousnessResult>;
+
+/**
  * ユーザープロファイル（複数テストの結果を保持）
  */
 export interface UserProfile {
@@ -91,6 +97,7 @@ export interface UserProfile {
     pss?: TestResult;
     swls?: SwlsTestResult;
     k6?: K6TestResult;
+    industriousness?: IndustriousnessTestResult;
   };
   metadata: {
     createdAt: string;
@@ -272,7 +279,7 @@ export function getCompletedTests(): TestType[] {
   if (!profile) return [];
 
   // 有効なTestTypeのみをフィルタ（sccsなど古いテストタイプを除外）
-  const validTestTypes: TestType[] = ["rosenberg", "bigfive", "selfconcept", "ecrr", "phq9", "gad7", "pss", "swls", "k6"];
+  const validTestTypes: TestType[] = ["rosenberg", "bigfive", "selfconcept", "ecrr", "phq9", "gad7", "pss", "swls", "k6", "industriousness"];
 
   return Object.keys(profile.tests).filter(
     (key) => {

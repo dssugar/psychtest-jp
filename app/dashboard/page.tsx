@@ -93,6 +93,14 @@ const testInfo: Record<
     dimension: "メンタル状態",
     available: true,
   },
+  industriousness: {
+    name: "IND",
+    nameJa: "勤勉性",
+    color: "green",
+    path: "/industriousness",
+    dimension: "性格特性",
+    available: true,
+  },
 };
 
 export default function DashboardPage() {

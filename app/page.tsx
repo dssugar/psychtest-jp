@@ -2,6 +2,7 @@ import { StatCard } from "@/components/viz/StatCard";
 import { DataBadge } from "@/components/viz/DataBadge";
 import { Card } from "@/components/ui/Card";
 import { scaleInfo as bigFiveScaleInfo } from "@/data/bigfive-questions";
+import { scaleInfo as industriousnessScaleInfo } from "@/data/industriousness-questions";
 import { scaleInfo as phq9ScaleInfo } from "@/data/phq9-questions";
 import { scaleInfo as swlsScaleInfo } from "@/data/swls-questions";
 import { scaleInfo as k6ScaleInfo } from "@/data/k6-questions";
@@ -64,7 +65,7 @@ export default function Home() {
                 </div>
                 <ul className="text-xs text-brutal-gray-800 space-y-1">
                   <li>• 性格特性 (Big Five) ✅</li>
-                  <li>• やり抜く力 (Grit) * <span className="text-brutal-gray-600">← Grit Scale</span></li>
+                  <li>• 勤勉性 (Industriousness / Grit) ✅</li>
                   <li>• 愛着スタイル (Attachment) * <span className="text-brutal-gray-600">← ECR-R</span></li>
                   <li>• 自己効力感 (Self-Efficacy) * <span className="text-brutal-gray-600">← GSE</span></li>
                 </ul>
@@ -274,6 +275,71 @@ export default function Home() {
                 label="引用論文数"
                 value={bigFiveScaleInfo.citations}
                 description="広く使用される尺度"
+                color="orange"
+              />
+            </div>
+          </Card>
+
+          {/* Industriousness Card */}
+          <Card as="a" href="/industriousness" variant="white" padding="lg" hover className="animate-scale-in" style={{ animationDelay: "0.45s" }}>
+            {/* Test Header */}
+            <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6 mb-8">
+              <div className="flex-1">
+                <div className="inline-block mb-4">
+                  <DataBadge color="green" size="lg">{industriousnessScaleInfo.abbreviation}</DataBadge>
+                </div>
+                <h2 className="text-2xl md:text-3xl lg:text-5xl font-display text-brutal-black mb-4 leading-tight">
+                  Industriousness<br />勤勉性
+                </h2>
+                <p className="text-sm font-mono text-brutal-gray-600 mb-2">
+                  IPIP-300 C4 + C5
+                </p>
+                <p className="text-lg text-brutal-gray-800" style={{ fontFamily: 'var(--font-display-ja)', fontWeight: 500 }}>
+                  達成動機と自己鍛錬の2軸で測定する{industriousnessScaleInfo.stats.questions}問の心理尺度
+                </p>
+              </div>
+
+              {/* Quick Stats */}
+              <div className="flex flex-col gap-3">
+                <Card variant="green" padding="sm" className="text-center">
+                  <div className="text-3xl md:text-4xl font-mono font-bold data-number">{industriousnessScaleInfo.stats.questions}</div>
+                  <div className="text-xs font-semibold uppercase tracking-wide">Questions</div>
+                </Card>
+                <Card variant="black" padding="sm" className="text-center">
+                  <div className="text-3xl md:text-4xl font-mono font-bold data-number">~{industriousnessScaleInfo.stats.minutes}</div>
+                  <div className="text-xs font-semibold uppercase tracking-wide">Minutes</div>
+                </Card>
+              </div>
+            </div>
+
+            {/* Academic Credentials Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <StatCard
+                icon="📊"
+                label="信頼性係数"
+                value={`α = ${industriousnessScaleInfo.reliability.cronbachAlpha.split(",")[0]}`}
+                description="優れた内的一貫性"
+                color="green"
+              />
+              <StatCard
+                icon="🔄"
+                label="因子構造"
+                value="2因子モデル"
+                description="C4 × C5 独立構造"
+                color="pink"
+              />
+              <StatCard
+                icon="👥"
+                label="開発者"
+                value={industriousnessScaleInfo.developer}
+                description="JPSP (2007)"
+                color="blue"
+              />
+              <StatCard
+                icon="📚"
+                label="学術評価"
+                value={`Tier ${industriousnessScaleInfo.tier}`}
+                description="ゴールドスタンダード"
                 color="orange"
               />
             </div>
