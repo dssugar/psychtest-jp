@@ -1,6 +1,5 @@
 "use client";
 
-import { ScoreCircle } from "@/components/viz/ScoreCircle";
 import { Card } from "@/components/ui/Card";
 import type { UserProfile, TestType } from "@/lib/storage";
 import { calculateProfileCompleteness } from "@/lib/analysis/synthesis";
@@ -49,23 +48,13 @@ export function ProfileOverview({
 
   return (
     <Card variant="white" padding="lg" className="shadow-brutal-sm">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 items-center">
-        {/* 完了率サークル */}
-        <div className="flex justify-center">
-          <ScoreCircle
-            score={completionPercentage}
-            size="md"
-            color="blue"
-            label="完了率"
-          />
-        </div>
-
-        {/* 統計グリッド */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+        {/* 統計グリッド（完了率サークル削除） */}
         {stats.map((stat, index) => (
           <div
             key={stat.label}
             className="text-center animate-fadeIn"
-            style={{ animationDelay: `${(index + 1) * 100}ms` }}
+            style={{ animationDelay: `${index * 100}ms` }}
           >
             <div className="text-sm font-semibold uppercase tracking-wide text-brutal-gray-600 mb-2">
               {stat.label}

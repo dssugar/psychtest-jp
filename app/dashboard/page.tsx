@@ -8,6 +8,10 @@ import { StatCard } from "@/components/viz/StatCard";
 import { Card } from "@/components/ui/Card";
 import { ProfileOverview } from "@/components/dashboard/ProfileOverview";
 import { IntegratedAnalysis } from "@/components/dashboard/IntegratedAnalysis";
+import { ResultSummaryCard } from "@/components/results/ResultSummaryCard";
+import { SocialShareButtons } from "@/components/share/SocialShareButtons";
+import { OG_COLORS, DIMENSION_NAMES, DIMENSION_ORDER } from "@/lib/og-design/constants";
+import type { DimensionData } from "@/lib/og-design/types";
 
 // テスト情報の定義
 const testInfo: Record<
@@ -157,21 +161,14 @@ export default function DashboardPage() {
           </div>
         )}
 
-        {/* Integrated Analysis */}
-        {completedTests.length >= 2 && profile && (
-          <div className="max-w-6xl mx-auto mb-16">
-            <IntegratedAnalysis profile={profile} completedTests={completedTests} />
-          </div>
-        )}
-
-        {/* Completed Tests - Dimension Breakdown */}
+        {/* Completed Tests - ResultSummaryCard Style */}
         {completedTests.length > 0 ? (
           <div className="max-w-6xl mx-auto mb-16">
             <h2 className="text-2xl md:text-3xl text-brutal-black mb-8" style={{ fontFamily: 'var(--font-display-ja)', fontWeight: 700 }}>
               完了した診断
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-8">
               {completedTests.map((testType) => {
                 const info = testInfo[testType];
                 const testResult = profile?.tests[testType];
@@ -179,57 +176,139 @@ export default function DashboardPage() {
                 // testInfoに定義がない、または結果がない場合はスキップ
                 if (!info || !testResult) return null;
 
-                return (
-                  <Card
-                    key={testType}
-                    variant="white" padding="md"
-                  >
-                    <div className="flex items-start justify-between mb-4">
-                      <DataBadge color={info.color} size="md">
-                        {info.name}
-                      </DataBadge>
-                      <div className="text-xs font-mono text-brutal-gray-800">
-                        {new Date(testResult.completedAt).toLocaleDateString(
-                          "ja-JP",
-                          {
-                            year: "numeric",
-                            month: "short",
-                            day: "numeric",
-                          }
-                        )}
+                // Big Fiveの場合: ResultSummaryCardを使用
+                if (testType === 'bigfive' && 'result' in testResult) {
+                  const bigFiveResult = testResult.result as {
+                    openness: number;
+                    conscientiousness: number;
+                    extraversion: number;
+                    agreeableness: number;
+                    neuroticism: number;
+                  };
+
+                  // dimensions配列を構築
+                  const dimensions: DimensionData[] = DIMENSION_ORDER.map((key) => {
+                    const score = bigFiveResult[key];
+                    return {
+                      key,
+                      label: DIMENSION_NAMES[key],
+                      score,
+                      percentage: ((score - 24) / (120 - 24)) * 100, // 24-120 → 0-100%
+                      color: OG_COLORS.dimensions[key],
+                    };
+                  });
+
+                  // OG画像用のURLパラメータを含める（e, a, c, n, o）
+                  const params = new URLSearchParams({
+                    e: bigFiveResult.extraversion.toString(),
+                    a: bigFiveResult.agreeableness.toString(),
+                    c: bigFiveResult.conscientiousness.toString(),
+                    n: bigFiveResult.neuroticism.toString(),
+                    o: bigFiveResult.openness.toString(),
+                  });
+                  const shareUrl = `${typeof window !== 'undefined' ? window.location.origin : 'https://psychtest.jp'}/results/${testType}?${params.toString()}`;
+                  const shareText = `Big Five性格診断の結果 - 心理測定ラボ`;
+
+                  return (
+                    <div key={testType} className="space-y-4">
+                      <ResultSummaryCard
+                        dimensions={dimensions}
+                        testName="Big Five 性格診断"
+                        siteName="psychtest.jp"
+                      />
+                      <div className="max-w-[1200px] mx-auto space-y-4">
+                        <div className="flex gap-3">
+                          <Link
+                            href={`/results/${testType}`}
+                            className="btn-brutal flex-1 bg-brutal-black text-brutal-white px-6 py-3 text-sm text-center min-h-[44px]"
+                          >
+                            詳細な結果を見る
+                          </Link>
+                          <Link
+                            href={`${info.path}/test`}
+                            className="btn-brutal flex-1 bg-brutal-white text-brutal-black px-6 py-3 text-sm text-center min-h-[44px]"
+                          >
+                            再受験する
+                          </Link>
+                        </div>
+                        <Card variant="white" padding="sm">
+                          <div className="text-xs font-semibold uppercase tracking-wide text-brutal-gray-600 mb-2">
+                            結果をシェア
+                          </div>
+                          <SocialShareButtons
+                            shareUrl={shareUrl}
+                            text={shareText}
+                          />
+                        </Card>
                       </div>
                     </div>
+                  );
+                }
 
-                    <h3 className="text-xl md:text-2xl text-brutal-black mb-2" style={{ fontFamily: 'var(--font-display-ja)', fontWeight: 700 }}>
-                      {info.nameJa}
-                    </h3>
+                // その他のテスト: 従来通りのCard表示
+                const shareUrl = `${typeof window !== 'undefined' ? window.location.origin : 'https://psychtest.jp'}/results/${testType}`;
+                const shareText = `${info.nameJa}の結果 - 心理測定ラボ`;
 
-                    <div className="flex items-center gap-2 mb-6">
-                      <span className="text-sm text-brutal-gray-800">
-                        {info.dimension}
-                      </span>
-                      {testResult.retakeCount > 0 && (
-                        <DataBadge color="black" size="sm">
-                          再受験 {testResult.retakeCount}回
+                return (
+                  <div key={testType} className="space-y-4">
+                    <Card variant="white" padding="md">
+                      <div className="flex items-start justify-between mb-4">
+                        <DataBadge color={info.color} size="md">
+                          {info.name}
                         </DataBadge>
-                      )}
-                    </div>
+                        <div className="text-xs font-mono text-brutal-gray-800">
+                          {new Date(testResult.completedAt).toLocaleDateString(
+                            "ja-JP",
+                            {
+                              year: "numeric",
+                              month: "short",
+                              day: "numeric",
+                            }
+                          )}
+                        </div>
+                      </div>
 
-                    <div className="flex gap-3">
-                      <Link
-                        href={`/results/${testType}`}
-                        className="btn-brutal flex-1 bg-brutal-black text-brutal-white px-6 py-3 text-sm text-center min-h-[44px]"
-                      >
-                        結果を見る
-                      </Link>
-                      <Link
-                        href={`${info.path}/test`}
-                        className="btn-brutal flex-1 bg-brutal-white text-brutal-black px-6 py-3 text-sm text-center min-h-[44px]"
-                      >
-                        再受験する
-                      </Link>
-                    </div>
-                  </Card>
+                      <h3 className="text-xl md:text-2xl text-brutal-black mb-2" style={{ fontFamily: 'var(--font-display-ja)', fontWeight: 700 }}>
+                        {info.nameJa}
+                      </h3>
+
+                      <div className="flex items-center gap-2 mb-6">
+                        <span className="text-sm text-brutal-gray-800">
+                          {info.dimension}
+                        </span>
+                        {testResult.retakeCount > 0 && (
+                          <DataBadge color="black" size="sm">
+                            再受験 {testResult.retakeCount}回
+                          </DataBadge>
+                        )}
+                      </div>
+
+                      <div className="flex gap-3">
+                        <Link
+                          href={`/results/${testType}`}
+                          className="btn-brutal flex-1 bg-brutal-black text-brutal-white px-6 py-3 text-sm text-center min-h-[44px]"
+                        >
+                          結果を見る
+                        </Link>
+                        <Link
+                          href={`${info.path}/test`}
+                          className="btn-brutal flex-1 bg-brutal-white text-brutal-black px-6 py-3 text-sm text-center min-h-[44px]"
+                        >
+                          再受験する
+                        </Link>
+                      </div>
+                    </Card>
+
+                    <Card variant="white" padding="sm">
+                      <div className="text-xs font-semibold uppercase tracking-wide text-brutal-gray-600 mb-2">
+                        結果をシェア
+                      </div>
+                      <SocialShareButtons
+                        shareUrl={shareUrl}
+                        text={shareText}
+                      />
+                    </Card>
+                  </div>
                 );
               })}
             </div>
@@ -245,6 +324,13 @@ export default function DashboardPage() {
                 下記から診断を始めてみましょう
               </p>
             </Card>
+          </div>
+        )}
+
+        {/* Integrated Analysis */}
+        {completedTests.length >= 2 && profile && (
+          <div className="max-w-6xl mx-auto mb-16">
+            <IntegratedAnalysis profile={profile} completedTests={completedTests} />
           </div>
         )}
 

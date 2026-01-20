@@ -4,7 +4,6 @@ import type { UserProfile, TestType } from "@/lib/storage";
 import { Card } from "@/components/ui/Card";
 import { CorrelationGrid } from "@/components/viz/CorrelationGrid";
 import { RadarChart } from "@/components/viz/RadarChart";
-import { PsychologicalLayerView } from "./PsychologicalLayerView";
 import {
   generateSelfAwarenessInsight,
   extractTopFacets,
@@ -45,9 +44,6 @@ export function IntegratedAnalysis({
           複数のテスト結果を統合し、あなたの心理プロファイルを多角的に分析します。
         </p>
       </Card>
-
-      {/* 心理測定の4層構造（統合ビュー） */}
-      <PsychologicalLayerView profile={profile} completedTests={completedTests} />
 
       {/* 自己認識相関分析（SCCS + Rosenberg） */}
       {hasSelfAwareness && (

@@ -273,6 +273,25 @@ export default function AboutPage() {
                 この区別により、「何を変えられるか、何を受け入れるべきか」が明確になり、科学的根拠に基づいた自己理解と成長戦略が可能になります。
               </p>
             </Card>
+
+            <Card variant="white" padding="md" className="border-brutal border-viz-green" style={{ background: '#f0fff4' }}>
+              <h4 className="font-bold text-sm uppercase tracking-wide text-brutal-gray-800 mb-3">
+                💡 因果関係の解釈
+              </h4>
+              <div className="space-y-2 text-xs text-brutal-gray-800 leading-relaxed">
+                <p><strong>TRAIT → SKILL:</strong> 性格特性が、スキル習得の容易さに影響</p>
+                <p><strong>SKILL → STATE:</strong> 心理的スキルが、ストレス状態を緩和</p>
+                <p><strong>STATE → OUTCOME:</strong> 一時的な状態が、臨床症状の重症度として測定される</p>
+              </div>
+              <div className="mt-4 pt-4 border-t border-brutal-gray-300">
+                <p className="text-xs text-brutal-gray-800 leading-relaxed">
+                  <strong>📚 学術的根拠：</strong>
+                  この4層構造は、Latent State-Trait (LST) 理論（Steyer et al., 1999）とMcAdamsの3層モデルを統合したものです。
+                  TRAITとSTATEは心理測定の数学的分解、SKILLは訓練可能な適応、
+                  OUTCOMEは特性・スキル・状態の相互作用の結果として生じる臨床症状や生活機能を表します（治療効果判定の指標）。
+                </p>
+              </div>
+            </Card>
           </div>
         </div>
 
