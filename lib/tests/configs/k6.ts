@@ -23,7 +23,7 @@ export const k6Config: TestConfig<K6Result> = {
   resultAlerts: [
     {
       type: "urgent",
-      condition: (result: K6Result) => result.totalScore >= 13,
+      condition: (result: K6Result) => result.rawScore >= 13,
       title: "専門家への相談を推奨します",
       message:
         "あなたのスコアは13点以上です。重度の心理的苦痛が示唆されています。精神科医または心療内科医への受診をご検討ください。",

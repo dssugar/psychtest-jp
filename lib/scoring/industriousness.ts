@@ -18,7 +18,7 @@ export interface IndustriousnessResult {
   c5_discipline: number; // 自己鍛錬
 
   // 合計スコア (20-100)
-  totalScore: number;
+  rawScore: number;
 
   // パーセンタイル (0-100%)
   c4_percentile: number;
@@ -71,7 +71,7 @@ export function calculateIndustriousnessScore(
   }
 
   // 合計スコア
-  const totalScore = c4_achievement + c5_discipline;
+  const rawScore = c4_achievement + c5_discipline;
 
   // パーセンタイル計算 ((rawScore - min) / (max - min)) * 100
   const c4_percentile = ((c4_achievement - 10) / 40) * 100;
@@ -104,7 +104,7 @@ export function calculateIndustriousnessScore(
   return {
     c4_achievement,
     c5_discipline,
-    totalScore,
+    rawScore,
     c4_percentile,
     c5_percentile,
     quadrant,

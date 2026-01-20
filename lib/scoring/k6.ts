@@ -18,7 +18,7 @@ export type K6Level = "none" | "mild" | "moderate" | "severe";
 
 export interface K6Result {
   answers: number[];
-  totalScore: number;
+  rawScore: number;
   level: K6Level;
   levelLabel: string;
   interpretation: string;
@@ -115,17 +115,17 @@ export function getK6Interpretation(level: K6Level): string {
  * K6の完全な結果を生成
  */
 export function getK6Result(answers: number[]): K6Result {
-  const totalScore = calculateK6Score(answers);
-  const level = getK6Level(totalScore);
+  const rawScore = calculateK6Score(answers);
+  const level = getK6Level(rawScore);
   const levelLabel = getK6LevelLabel(level);
   const interpretation = getK6Interpretation(level);
 
   // スコア13点以上は専門家への受診を強く推奨
-  const requiresUrgentCare = totalScore >= 13;
+  const requiresUrgentCare = rawScore >= 13;
 
   return {
     answers,
-    totalScore,
+    rawScore,
     level,
     levelLabel,
     interpretation,

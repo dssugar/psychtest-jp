@@ -305,7 +305,7 @@ function renderScoreDisplay(
       <Card variant={color as any} padding="lg">
         <div className="text-center">
           <div className="text-6xl md:text-8xl font-mono font-bold data-number mb-4">
-            {testResult.rawScore || testResult.score || testResult.totalScore || "N/A"}
+            {testResult.rawScore || "N/A"}
           </div>
           <p className="text-lg">{testResult.interpretation}</p>
         </div>
@@ -368,14 +368,14 @@ function renderProgressScoreDisplay(testResult: any, color: string, scoreDisplay
       <Card variant={color as any} padding="lg">
         <div className="text-center mb-6">
           <div className="text-6xl md:text-8xl font-mono font-bold data-number mb-4">
-            {testResult.rawScore || testResult.score}
+            {testResult.rawScore}
             <span className="text-3xl md:text-4xl font-semibold">
               /{scoreDisplay.maxScore}
             </span>
           </div>
         </div>
         <BrutalProgressBar
-          value={((testResult.rawScore || testResult.score) / scoreDisplay.maxScore) * 100}
+          value={(testResult.rawScore / scoreDisplay.maxScore) * 100}
           color={color as any}
           showValue={false}
         />
@@ -393,8 +393,8 @@ function renderClinicalScoreDisplay(
   scoreDisplay: any,
   baseColor: string
 ) {
-  // スコア取得（PHQ-9: rawScore, K6: totalScore）
-  const score = testResult.rawScore || testResult.totalScore || testResult.score || 0;
+  // スコア取得（すべてrawScoreで統一）
+  const score = testResult.rawScore;
   const percentageScore =
     testResult.percentageScore || (score / scoreDisplay.maxScore) * 100;
 
@@ -480,27 +480,27 @@ function renderIndustriousnessScoreDisplay(testResult: any) {
             className="text-3xl md:text-4xl text-brutal-black mb-4"
             style={{ fontFamily: "var(--font-display-ja)", fontWeight: 700 }}
           >
-            あなたのタイプ: {testResult.category}
+            あなたのタイプ: {testResult.quadrantLabel}
           </h2>
           <div className="text-5xl font-mono font-bold data-number">
-            {testResult.totalScore}点
+            {testResult.rawScore}点
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <div className="text-sm font-bold uppercase tracking-wide mb-2">目標達成意欲</div>
+            <div className="text-sm font-bold uppercase tracking-wide mb-2">目標達成意欲 (C4)</div>
             <BrutalProgressBar
-              value={(testResult.achievementStriving / 50) * 100}
+              value={(testResult.c4_achievement / 50) * 100}
               color="blue"
-              label={`${testResult.achievementStriving}/50`}
+              label={`${testResult.c4_achievement}/50`}
             />
           </div>
           <div>
-            <div className="text-sm font-bold uppercase tracking-wide mb-2">自己統制力</div>
+            <div className="text-sm font-bold uppercase tracking-wide mb-2">自己統制力 (C5)</div>
             <BrutalProgressBar
-              value={(testResult.selfDiscipline / 50) * 100}
+              value={(testResult.c5_discipline / 50) * 100}
               color="green"
-              label={`${testResult.selfDiscipline}/50`}
+              label={`${testResult.c5_discipline}/50`}
             />
           </div>
         </div>
