@@ -111,12 +111,42 @@ export interface UserData {
 }
 
 // ============================================================
+// Draft Storage Types
+// ============================================================
+
+/**
+ * 下書きテストの状態
+ */
+export interface DraftTestState {
+  answers: number[];          // 回答配列（未回答は-1）
+  currentQuestion: number;    // 現在の質問インデックス
+  startedAt: string;         // 開始日時（ISO 8601）
+  lastSavedAt: string;       // 最終保存日時
+  testVersion?: string;      // テストバージョン
+}
+
+/**
+ * 下書きストレージ全体
+ */
+export interface DraftStorage {
+  drafts: {
+    [testType in TestType]?: DraftTestState;
+  };
+  metadata: {
+    version: string;      // "1.0.0"
+    updatedAt: string;
+  };
+}
+
+// ============================================================
 // Constants
 // ============================================================
 
 const STORAGE_KEY = "psychtest_data";
 const PROFILE_STORAGE_KEY = "psychtest_profile_v2";
+const DRAFT_STORAGE_KEY = "psychtest_drafts_v1";
 const CURRENT_VERSION = "2.0.0";
+const DRAFT_VERSION = "1.0.0";
 
 // ============================================================
 // Migration Utilities
@@ -322,6 +352,122 @@ export function importProfile(jsonData: string): boolean {
     console.error("Failed to import profile:", error);
     return false;
   }
+}
+
+// ============================================================
+// Draft Storage API
+// ============================================================
+
+/**
+ * 下書きストレージ全体を取得
+ */
+function getDraftStorage(): DraftStorage | null {
+  if (typeof window === "undefined") return null;
+
+  try {
+    const stored = localStorage.getItem(DRAFT_STORAGE_KEY);
+    if (!stored) return null;
+
+    return JSON.parse(stored);
+  } catch (error) {
+    console.error("Failed to load draft storage:", error);
+    return null;
+  }
+}
+
+/**
+ * 下書きストレージ全体を保存
+ */
+function saveDraftStorage(storage: DraftStorage): void {
+  if (typeof window === "undefined") return;
+
+  try {
+    storage.metadata.updatedAt = new Date().toISOString();
+    localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(storage));
+  } catch (error) {
+    console.error("Failed to save draft storage:", error);
+  }
+}
+
+/**
+ * 空の下書きストレージを作成
+ */
+function createEmptyDraftStorage(): DraftStorage {
+  const now = new Date().toISOString();
+  return {
+    drafts: {},
+    metadata: {
+      version: DRAFT_VERSION,
+      updatedAt: now,
+    },
+  };
+}
+
+/**
+ * 特定テストの下書きを取得
+ */
+export function getDraft(testType: TestType): DraftTestState | null {
+  const storage = getDraftStorage();
+  if (!storage) return null;
+
+  return storage.drafts[testType] || null;
+}
+
+/**
+ * 特定テストの下書きを保存
+ */
+export function saveDraft(testType: TestType, draft: DraftTestState): void {
+  const storage = getDraftStorage() || createEmptyDraftStorage();
+
+  storage.drafts[testType] = draft;
+  saveDraftStorage(storage);
+}
+
+/**
+ * 特定テストの下書きをクリア
+ */
+export function clearDraft(testType: TestType): void {
+  const storage = getDraftStorage();
+  if (!storage) return;
+
+  delete storage.drafts[testType];
+  saveDraftStorage(storage);
+}
+
+/**
+ * 全下書きをクリア
+ */
+export function clearAllDrafts(): void {
+  if (typeof window === "undefined") return;
+
+  localStorage.removeItem(DRAFT_STORAGE_KEY);
+}
+
+/**
+ * 下書きの有効性を検証
+ */
+export function validateDraft(
+  testType: TestType,
+  draft: DraftTestState,
+  expectedQuestionCount?: number,
+  expectedVersion?: string
+): { valid: boolean; message?: string } {
+  // 基本構造チェック
+  if (!draft.answers || !Array.isArray(draft.answers)) {
+    return { valid: false, message: "Invalid draft structure" };
+  }
+
+  // バージョンチェック（指定されている場合）
+  if (expectedVersion && draft.testVersion && draft.testVersion !== expectedVersion) {
+    return { valid: false, message: "Test version mismatch" };
+  }
+
+  // 質問数チェック（指定されている場合）
+  if (expectedQuestionCount && draft.answers.length !== expectedQuestionCount) {
+    return { valid: false, message: "Question count mismatch" };
+  }
+
+  return { valid: true };
 }
 
 // ============================================================

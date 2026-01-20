@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { getTestConfig } from "@/lib/tests/test-registry";
-import { saveTestResult } from "@/lib/storage";
+import { saveTestResult, getDraft, saveDraft, clearDraft } from "@/lib/storage";
 import { DataBadge } from "@/components/viz/DataBadge";
-import type { TestType } from "@/lib/storage";
+import { DraftResumeBanner } from "@/components/test/DraftResumeBanner";
+import type { TestType, DraftTestState } from "@/lib/storage";
 import type { ScaleOption } from "@/lib/tests/types";
 
 /**
@@ -40,6 +41,13 @@ export default function DynamicTestPage() {
     new Array(questions.length).fill(-1)
   );
 
+  // 下書き自動保存関連の状態
+  const [draftLoaded, setDraftLoaded] = useState(false);
+  const [showResumeBanner, setShowResumeBanner] = useState(false);
+  const [draftData, setDraftData] = useState<DraftTestState | null>(null);
+  const [saveStatus, setSaveStatus] = useState<"saved" | "idle">("idle");
+  const [draftStartTime] = useState(new Date().toISOString());
+
   const progress = ((currentQuestion + 1) / questions.length) * 100;
   const question = questions[currentQuestion];
   const isLastQuestion = currentQuestion === questions.length - 1;
@@ -48,11 +56,46 @@ export default function DynamicTestPage() {
   // 質問固有の選択肢 or デフォルト選択肢（ハイブリッド対応）
   const scaleOptions = question.scaleOptions ?? defaultScaleOptions;
 
+  // マウント時に下書きを読み込み
+  useEffect(() => {
+    const draft = getDraft(testType as TestType);
+
+    if (draft) {
+      // 下書きの有効性を検証（質問数とバージョンをチェック）
+      const isValid =
+        draft.answers.length === questions.length &&
+        (!testVersion || !draft.testVersion || draft.testVersion === testVersion);
+
+      if (isValid) {
+        setDraftData(draft);
+        setShowResumeBanner(true);
+      } else {
+        // 無効な下書きは削除
+        clearDraft(testType as TestType);
+      }
+    }
+
+    setDraftLoaded(true);
+  }, [testType, questions.length, testVersion]);
+
   // Navigation handlers (全テスト共通)
   const handleAnswer = (value: number) => {
     const newAnswers = [...answers];
     newAnswers[currentQuestion] = value;
     setAnswers(newAnswers);
+
+    // 🔥 自動保存
+    saveDraft(testType as TestType, {
+      answers: newAnswers,
+      currentQuestion: currentQuestion + 1,
+      startedAt: draftData?.startedAt || draftStartTime,
+      lastSavedAt: new Date().toISOString(),
+      testVersion,
+    });
+
+    // 保存インジケーター表示
+    setSaveStatus("saved");
+    setTimeout(() => setSaveStatus("idle"), 2000);
 
     // 自動進行（最終質問以外）
     if (currentQuestion < questions.length - 1) {
@@ -64,6 +107,15 @@ export default function DynamicTestPage() {
 
   const handleBack = () => {
     if (currentQuestion > 0) {
+      // 🔥 戻る時も下書き保存（現在の質問番号を記録）
+      saveDraft(testType as TestType, {
+        answers,
+        currentQuestion: currentQuestion - 1,
+        startedAt: draftData?.startedAt || draftStartTime,
+        lastSavedAt: new Date().toISOString(),
+        testVersion,
+      });
+
       setCurrentQuestion(currentQuestion - 1);
     }
   };
@@ -94,14 +146,48 @@ export default function DynamicTestPage() {
     // 結果保存（testVersion はオプショナル）
     saveTestResult(testType as TestType, result, answers, testVersion);
 
+    // 🔥 下書きをクリア
+    clearDraft(testType as TestType);
+
     // 結果ページへ遷移
     router.push(`/results/${testType}`);
+  };
+
+  // 再開ハンドラー
+  const handleResumeDraft = () => {
+    if (!draftData) return;
+    setAnswers(draftData.answers);
+    setCurrentQuestion(draftData.currentQuestion);
+    setShowResumeBanner(false);
+  };
+
+  const handleStartFresh = () => {
+    clearDraft(testType as TestType);
+    setDraftData(null);
+    setShowResumeBanner(false);
   };
 
   return (
     <main className="min-h-screen">
       <div className="container mx-auto px-4 py-8 md:py-12">
         <div className="max-w-3xl mx-auto">
+          {/* 再開バナー */}
+          {showResumeBanner && draftData && (
+            <DraftResumeBanner
+              testName={config.scaleInfo.nameJa}
+              progress={{
+                current: draftData.currentQuestion,
+                total: questions.length,
+                percentage: Math.round(
+                  (draftData.currentQuestion / questions.length) * 100
+                ),
+              }}
+              savedAt={draftData.lastSavedAt}
+              onResume={handleResumeDraft}
+              onStartFresh={handleStartFresh}
+            />
+          )}
+
           {/* Progress Header */}
           <div className="mb-8">
             {/* ヘッダー指示文（K6など） */}
@@ -118,6 +204,12 @@ export default function DynamicTestPage() {
               <div className="flex items-center gap-4">
                 <div className="font-mono font-bold text-sm text-brutal-gray-800">
                   質問 {currentQuestion + 1} / {questions.length}
+                  {/* 保存ステータス */}
+                  {saveStatus === "saved" && (
+                    <span className="text-viz-green ml-2 text-xs">
+                      ✓ 保存済み
+                    </span>
+                  )}
                 </div>
                 <div className="font-mono font-bold text-sm text-brutal-gray-800">
                   {Math.round(progress)}%
