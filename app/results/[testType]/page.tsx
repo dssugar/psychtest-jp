@@ -23,7 +23,7 @@ import type { InterpretationData } from "@/lib/tests/types";
 // Dynamic interpretation imports for all tests
 import { getDetailedInterpretation as getRosenbergDetailedInterpretation, type RosenbergResult } from "@/lib/tests/rosenberg";
 import { getDetailedInterpretation as getSelfConceptDetailedInterpretation, type SelfConceptResult } from "@/lib/tests/selfconcept";
-import { getInterpretation as getSwlsInterpretation, type SwlsResult } from "@/lib/tests/swls";
+import { getDetailedInterpretation as getSwlsDetailedInterpretation, type SwlsResult } from "@/lib/tests/swls";
 import { getDetailedInterpretation as getPhq9DetailedInterpretation, type Phq9Result } from "@/lib/tests/phq9";
 import { getDetailedInterpretation as getK6DetailedInterpretation, type K6Result } from "@/lib/tests/k6";
 import { getDetailedInterpretation as getIndustriousnessDetailedInterpretation, type IndustriousnessResult } from "@/lib/tests/industriousness";
@@ -437,10 +437,7 @@ function renderSelfConceptDetailedDisplay(testResult: any, color: string, scoreD
  */
 function renderSwlsDetailedDisplay(testResult: any, color: string, scoreDisplay: any) {
   const result = testResult as SwlsResult;
-  const interpretationText = getSwlsInterpretation(result.level);
-  const interpretation: InterpretationData = {
-    summary: interpretationText,
-  };
+  const interpretation = getSwlsDetailedInterpretation(result.level);
   return renderDetailedInterpretation(interpretation, color);
 }
 
@@ -527,13 +524,15 @@ function renderCircleDetailedDisplay(testType: string, testResult: any, color: s
 
 /**
  * Progress型の詳細表示（SWLS用）
+ * @deprecated 使用されていない古い関数
  */
 function renderProgressDetailedDisplay(testType: string, testResult: any, color: string, scoreDisplay: any) {
   // 動的に解釈文を生成
   let interpretation: string;
   if (testType === "swls") {
     const result = testResult as SwlsResult;
-    interpretation = getSwlsInterpretation(result.level);
+    const detailed = getSwlsDetailedInterpretation(result.level);
+    interpretation = detailed.summary;
   } else {
     // フォールバック
     interpretation = testResult.interpretation || "解釈文が利用できません。";
