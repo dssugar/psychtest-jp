@@ -128,3 +128,43 @@ export const scaleInfo: ScaleInfo = {
     minutes: 3,
   },
 };
+
+/**
+ * スコア区分（3段階）
+ *
+ * 学術的根拠:
+ * - Yokoshima (2020): 日本人12歳児 M=22, SD=4.2
+ * - 成人補正: 平均を25点、SD=4.5と推定
+ * - 統計的基準: 平均±1SD（約68%が「平均的」に含まれる）
+ *
+ * 区分:
+ * - 低め: < 20点（下位16%、M-1SD未満）
+ * - 平均的: 20-29点（中間68%、M±1SD）
+ * - 高め: ≥ 30点（上位16%、M+1SD以上）
+ */
+export const scoreRanges = [
+  {
+    min: 10,
+    max: 19,
+    level: "low" as const,
+    label: "低め",
+    labelEn: "Low",
+    description: "自尊心が低めの範囲です。",
+  },
+  {
+    min: 20,
+    max: 29,
+    level: "medium" as const,
+    label: "平均的",
+    labelEn: "Average",
+    description: "平均的な自尊心の範囲です。",
+  },
+  {
+    min: 30,
+    max: 40,
+    level: "high" as const,
+    label: "高め",
+    labelEn: "High",
+    description: "自尊心が高めの範囲です。",
+  },
+] as const;

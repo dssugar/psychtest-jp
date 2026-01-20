@@ -12,7 +12,7 @@
 
 import { useLayoutEffect, useRef, useState } from 'react';
 import { OG_SIZE } from '@/lib/og-design/constants';
-import type { ResultSummaryProps } from '@/lib/og-design/types';
+import type { ResultSummaryProps, ScoreRange } from '@/lib/og-design/types';
 
 /**
  * 個別ラベルの自動フィットコンポーネント（右カラムのグラフラベル用）
@@ -103,6 +103,11 @@ export function ResultSummaryCard({
   category,
   description,
   siteName = 'PSYCHOMETRIC LAB',
+  levelLabel: providedLevelLabel,
+  shortInterpretation: providedShortInterpretation,
+  scaleMarkers: providedScaleMarkers,
+  config,
+  testResult,
 }: ResultSummaryProps) {
   // タイトルを行分割（改行または空白で分割）
   const titleLines = titleEn
@@ -110,6 +115,31 @@ export function ResultSummaryCard({
       ? titleEn.split(/\\n|\n/)
       : titleEn.split(' ')
     : ['TEST'];
+
+  // 単一スコアかどうかを判定
+  const isSingleScore = dimensions.length === 1;
+
+  // 単一スコア専用データを取得
+  // オプション1: 直接渡された場合はそれを使用
+  // オプション2: configとtestResultが渡された場合は内部で計算
+  const levelLabel = providedLevelLabel ||
+    (isSingleScore && config?.ogImage?.getLevelLabel && testResult
+      ? config.ogImage.getLevelLabel(testResult)
+      : undefined);
+
+  const shortInterpretation = providedShortInterpretation ||
+    (isSingleScore && config?.ogImage?.getShortInterpretation && testResult
+      ? config.ogImage.getShortInterpretation(testResult)
+      : undefined);
+
+  const scaleMarkers = providedScaleMarkers ||
+    (isSingleScore && config?.ogImage?.scaleMarkers
+      ? config.ogImage.scaleMarkers
+      : undefined);
+
+  const scoreRanges = isSingleScore && config?.ogImage?.scoreRanges
+    ? config.ogImage.scoreRanges
+    : undefined;
 
   return (
     <div
@@ -156,54 +186,174 @@ export function ResultSummaryCard({
 
       {/* 右カラム：データエリア（グラフ最大化） */}
       <div
-        className="flex-1 bg-[#F9FAFB] px-8 md:px-[40px] py-4 md:py-[20px] flex flex-col justify-center relative"
+        className={`flex-1 bg-[#F9FAFB] px-8 md:px-[40px] py-4 md:py-[20px] flex flex-col ${isSingleScore ? 'justify-between' : 'justify-center'} relative`}
         style={{
           backgroundImage: 'radial-gradient(circle, rgba(206, 206, 206, 0.4) 2px, transparent 2.5px)',
           backgroundSize: '30px 30px',
         }}
       >
-        {dimensions.map((dim, index) => (
-          <div
-            key={dim.key}
-            className="flex items-center"
-            style={{
-              marginBottom: index === dimensions.length - 1 ? '0' : '32px',
-            }}
-          >
-            {/* 項目名 */}
-            <div className="w-[130px] md:w-[150px] lg:w-[170px]">
-              <AutoFitLabel label={dim.label} />
+        {/* 単一スコアの場合：3段レイアウト */}
+        {isSingleScore && levelLabel ? (
+          <>
+            {/* 上段：判定ラベル */}
+            <div className="flex flex-col items-center mb-8">
+              <div className="text-4xl md:text-5xl lg:text-[52px] font-black text-[#111111] text-center leading-tight">
+                {levelLabel}
+              </div>
             </div>
 
-            {/* バーエリア（極太化 + 密集） */}
-            <div
-              className="flex-1 h-[48px] md:h-[58px] lg:h-[68px] bg-white border-[3px] border-[#111111] mr-6 overflow-hidden relative"
-              style={{
-                boxShadow: '4px 4px 0px 0px #111111',
-              }}
-            >
+            {/* 中段：スコア + バー + 境界線ラベル */}
+            <div className="flex flex-col mb-8">
+              {/* スコア数値（バーの上、中央配置） */}
+              <div className="flex justify-center mb-3">
+                <div
+                  className="text-4xl md:text-5xl lg:text-[56px] font-black font-mono text-[#111111] leading-none tabular-nums"
+                  style={{
+                    fontFeatureSettings: '"tnum" 1',
+                  }}
+                >
+                  {dimensions[0].score}
+                </div>
+              </div>
+
+              {/* バーエリア（境界線とラベルを含む） */}
+              <div className="relative">
+                <div
+                  className="w-full h-[48px] md:h-[58px] lg:h-[68px] bg-white border-[3px] border-[#111111] overflow-hidden relative"
+                  style={{
+                    boxShadow: '4px 4px 0px 0px #111111',
+                  }}
+                >
+                  {/* 進捗バー */}
+                  <div
+                    className="h-full border-r-[3px] border-[#111111]"
+                    style={{
+                      width: `${dimensions[0].percentage}%`,
+                      backgroundColor: dimensions[0].color,
+                    }}
+                  />
+
+                  {/* 区分境界線（バーの中） */}
+                  {scoreRanges && scoreRanges.length > 0 && (() => {
+                    const minScore = Math.min(...scoreRanges.map((r: ScoreRange) => r.min));
+                    const maxScore = Math.max(...scoreRanges.map((r: ScoreRange) => r.max));
+                    const totalRange = maxScore - minScore;
+
+                    return scoreRanges.map((range: ScoreRange, index: number) => {
+                      if (index === 0) return null; // 最初の境界線はスキップ
+                      const leftPercent = ((range.min - minScore) / totalRange) * 100;
+                      return (
+                        <div
+                          key={index}
+                          className="absolute top-0 bottom-0 w-[2px] bg-[#111111] opacity-40"
+                          style={{
+                            left: `${leftPercent}%`,
+                          }}
+                        />
+                      );
+                    });
+                  })()}
+                </div>
+
+                {/* ラベル（バーの下） */}
+                {scoreRanges && scoreRanges.length > 0 && (
+                  <div className="relative w-full h-6 mt-2">
+                    {(() => {
+                      const minScore = Math.min(...scoreRanges.map((r: ScoreRange) => r.min));
+                      const maxScore = Math.max(...scoreRanges.map((r: ScoreRange) => r.max));
+                      const totalRange = maxScore - minScore;
+
+                      // 境界線の位置を配列化（例: [10, 20, 30, 40]）
+                      const boundaries = [minScore, ...scoreRanges.slice(1).map((r: ScoreRange) => r.min), maxScore];
+
+                      return scoreRanges.map((range: ScoreRange, index: number) => {
+                        // 区間の開始と終了位置
+                        const rangeStart = boundaries[index];
+                        const rangeEnd = boundaries[index + 1];
+                        // 区間の中央値
+                        const centerValue = (rangeStart + rangeEnd) / 2;
+                        // 中央値の位置（%）
+                        const centerPercent = ((centerValue - minScore) / totalRange) * 100;
+
+                        return (
+                          <div
+                            key={index}
+                            className="absolute text-xs md:text-sm text-[#111111] opacity-60 transform -translate-x-1/2"
+                            style={{
+                              left: `${centerPercent}%`,
+                            }}
+                          >
+                            {range.label}
+                          </div>
+                        );
+                      });
+                    })()}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* 下段：解説文 */}
+            {shortInterpretation && (
+              <div className="bg-[#F3F4F6] p-6 rounded-lg border-2 border-[#111111]">
+                <div className="text-lg md:text-xl lg:text-[22px] text-[#4B5563] leading-relaxed">
+                  {shortInterpretation.split('\n').map((line: string, i: number) => (
+                    <span key={i}>
+                      {line}
+                      {i < shortInterpretation.split('\n').length - 1 && <br />}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </>
+        ) : (
+          // 複数スコアの場合：既存のバーレイアウト
+          <>
+            {dimensions.map((dim, index) => (
               <div
-                className="h-full border-r-[3px] border-[#111111]"
+                key={dim.key}
+                className="flex items-center"
                 style={{
-                  width: `${dim.percentage}%`,
-                  backgroundColor: dim.color,
+                  marginBottom: index === dimensions.length - 1 ? '0' : '32px',
                 }}
-              />
-            </div>
+              >
+                {/* 項目名 */}
+                <div className="w-[130px] md:w-[150px] lg:w-[170px]">
+                  <AutoFitLabel label={dim.label} />
+                </div>
 
-            {/* スコア数値（等幅フォント、固定幅で右揃え） */}
-            <div
-              className="text-4xl md:text-5xl lg:text-[56px] font-black font-mono text-[#111111] leading-none tabular-nums"
-              style={{
-                width: '100px',
-                textAlign: 'right',
-                fontFeatureSettings: '"tnum" 1',
-              }}
-            >
-              {dim.score}
-            </div>
-          </div>
-        ))}
+                {/* バーエリア（極太化 + 密集） */}
+                <div
+                  className="flex-1 h-[48px] md:h-[58px] lg:h-[68px] bg-white border-[3px] border-[#111111] mr-6 overflow-hidden relative"
+                  style={{
+                    boxShadow: '4px 4px 0px 0px #111111',
+                  }}
+                >
+                  <div
+                    className="h-full border-r-[3px] border-[#111111]"
+                    style={{
+                      width: `${dim.percentage}%`,
+                      backgroundColor: dim.color,
+                    }}
+                  />
+                </div>
+
+                {/* スコア数値（等幅フォント、固定幅で右揃え） */}
+                <div
+                  className="text-4xl md:text-5xl lg:text-[56px] font-black font-mono text-[#111111] leading-none tabular-nums"
+                  style={{
+                    width: '100px',
+                    textAlign: 'right',
+                    fontFeatureSettings: '"tnum" 1',
+                  }}
+                >
+                  {dim.score}
+                </div>
+              </div>
+            ))}
+          </>
+        )}
 
         {/* ウォーターマーク */}
         <div className="absolute bottom-5 right-5 text-base font-bold text-[#111111] opacity-20">

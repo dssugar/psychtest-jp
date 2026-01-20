@@ -69,6 +69,19 @@ async function renderDimensionBarOG(url: URL, config: any) {
   // config.getDimensions() で次元データを構築
   const dimensions = config.getDimensions(testResult);
 
+  // 単一スコアかどうかを判定
+  const isSingleScore = dimensions.length === 1;
+
+  // 単一スコア専用データ（存在する場合のみ取得）
+  const levelLabel = isSingleScore && config.ogImage.getLevelLabel
+    ? config.ogImage.getLevelLabel(testResult)
+    : null;
+  const shortInterpretation = isSingleScore && config.ogImage.getShortInterpretation
+    ? config.ogImage.getShortInterpretation(testResult)
+    : null;
+  const scaleMarkers = isSingleScore ? config.ogImage.scaleMarkers : null;
+  const scoreRanges = isSingleScore ? config.ogImage.scoreRanges : null;
+
   // ランダムID（装飾用）
   const reportId = Math.floor(Math.random() * 90000) + 10000;
 
@@ -218,74 +231,275 @@ async function renderDimensionBarOG(url: URL, config: any) {
             backgroundImage: OG_COLORS.gridPattern,
             backgroundSize: `${OG_COLORS.gridSize} ${OG_COLORS.gridSize}`,
             padding: `${OG_LAYOUT.rightPaddingY}px ${OG_LAYOUT.rightPaddingX}px`,
-            justifyContent: 'center',
+            justifyContent: isSingleScore ? 'space-between' : 'center',
             position: 'relative',
           }}
         >
-          {dimensions.map((item: any, index: number) => (
-            <div
-              key={item.key}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                marginBottom: index === dimensions.length - 1 ? '0' : `${OG_LAYOUT.barGap}px`,
-              }}
-            >
-              {/* 項目名（同期拡大） */}
+          {/* 単一スコアの場合：3段レイアウト */}
+          {isSingleScore && levelLabel ? (
+            <>
+              {/* 上段：判定ラベル */}
               <div
                 style={{
                   display: 'flex',
-                  width: `${OG_LAYOUT.labelWidth}px`,
-                  fontSize: `${OG_TYPOGRAPHY.labelSize}px`,
-                  fontWeight: OG_TYPOGRAPHY.labelWeight,
-                  color: OG_COLORS.textMain,
-                }}
-              >
-                {item.label}
-              </div>
-
-              {/* バーエリア（極太化） */}
-              <div
-                style={{
-                  display: 'flex',
-                  flex: 1,
-                  height: `${OG_LAYOUT.barHeight}px`,
-                  backgroundColor: OG_COLORS.trackBg,
-                  border: `${OG_LAYOUT.barBorder}px solid ${OG_COLORS.border}`,
-                  marginRight: `${OG_LAYOUT.barRightMargin}px`,
-                  boxShadow: OG_COLORS.barShadow,
-                  position: 'relative',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  marginBottom: '30px',
                 }}
               >
                 <div
                   style={{
                     display: 'flex',
-                    width: `${item.percentage}%`,
-                    height: '100%',
-                    backgroundColor: item.color,
-                    borderRight: `${OG_LAYOUT.barBorder}px solid ${OG_COLORS.border}`,
+                    fontSize: '52px',
+                    fontWeight: 900,
+                    color: OG_COLORS.textMain,
+                    textAlign: 'center',
+                    lineHeight: 1.2,
                   }}
-                />
+                >
+                  {levelLabel}
+                </div>
               </div>
 
-              {/* スコア（等幅フォント + さらに巨大化） */}
+              {/* 中段：スコア + バー + 境界線ラベル */}
               <div
                 style={{
                   display: 'flex',
-                  fontSize: `${OG_TYPOGRAPHY.scoreSize}px`,
-                  fontWeight: OG_TYPOGRAPHY.scoreWeight,
-                  color: OG_COLORS.textMain,
-                  width: `${OG_LAYOUT.scoreWidth}px`,
-                  justifyContent: 'flex-end',
-                  lineHeight: 1,
-                  fontFamily: '"Noto Sans JP", monospace',
-                  fontVariantNumeric: 'tabular-nums',
+                  flexDirection: 'column',
+                  marginBottom: '30px',
                 }}
               >
-                {item.score}
+                {/* スコア数値（バーの上、中央配置） */}
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    marginBottom: '12px',
+                  }}
+                >
+                  <div
+                    style={{
+                      display: 'flex',
+                      fontSize: `${OG_TYPOGRAPHY.scoreSize}px`,
+                      fontWeight: OG_TYPOGRAPHY.scoreWeight,
+                      color: OG_COLORS.textMain,
+                      lineHeight: 1,
+                      fontFamily: '"Noto Sans JP", monospace',
+                      fontVariantNumeric: 'tabular-nums',
+                    }}
+                  >
+                    {dimensions[0].score}
+                  </div>
+                </div>
+
+                {/* バーエリア（境界線を含む） */}
+                <div
+                  style={{
+                    display: 'flex',
+                    position: 'relative',
+                    width: '100%',
+                  }}
+                >
+                  <div
+                    style={{
+                      display: 'flex',
+                      width: '100%',
+                      height: `${OG_LAYOUT.barHeight}px`,
+                      backgroundColor: OG_COLORS.trackBg,
+                      border: `${OG_LAYOUT.barBorder}px solid ${OG_COLORS.border}`,
+                      boxShadow: OG_COLORS.barShadow,
+                      position: 'relative',
+                    }}
+                  >
+                    {/* 進捗バー */}
+                    <div
+                      style={{
+                        display: 'flex',
+                        width: `${dimensions[0].percentage}%`,
+                        height: '100%',
+                        backgroundColor: dimensions[0].color,
+                        borderRight: `${OG_LAYOUT.barBorder}px solid ${OG_COLORS.border}`,
+                      }}
+                    />
+
+                    {/* 区分境界線（バーの中） */}
+                    {scoreRanges && scoreRanges.length > 0 && (() => {
+                      const minScore = Math.min(...scoreRanges.map((r: { min: number }) => r.min));
+                      const maxScore = Math.max(...scoreRanges.map((r: { max: number }) => r.max));
+                      const totalRange = maxScore - minScore;
+
+                      return scoreRanges.map((range: { min: number; max: number; label: string }, index: number) => {
+                        if (index === 0) return null; // 最初の境界線はスキップ
+                        const leftPercent = ((range.min - minScore) / totalRange) * 100;
+                        return (
+                          <div
+                            key={index}
+                            style={{
+                              display: 'flex',
+                              position: 'absolute',
+                              left: `${leftPercent}%`,
+                              top: 0,
+                              bottom: 0,
+                              width: '2px',
+                              backgroundColor: OG_COLORS.textMain,
+                              opacity: 0.4,
+                            }}
+                          />
+                        );
+                      });
+                    })()}
+                  </div>
+                </div>
+
+                {/* ラベル（バーの下） */}
+                {scoreRanges && scoreRanges.length > 0 && (
+                  <div
+                    style={{
+                      display: 'flex',
+                      position: 'relative',
+                      width: '100%',
+                      height: '24px',
+                      marginTop: '8px',
+                    }}
+                  >
+                    {(() => {
+                      const minScore = Math.min(...scoreRanges.map((r: { min: number }) => r.min));
+                      const maxScore = Math.max(...scoreRanges.map((r: { max: number }) => r.max));
+                      const totalRange = maxScore - minScore;
+
+                      // 境界線の位置を配列化（例: [10, 20, 30, 40]）
+                      const boundaries = [minScore, ...scoreRanges.slice(1).map((r: { min: number }) => r.min), maxScore];
+
+                      return scoreRanges.map((range: { min: number; max: number; label: string }, index: number) => {
+                        // 区間の開始と終了位置
+                        const rangeStart = boundaries[index];
+                        const rangeEnd = boundaries[index + 1];
+                        // 区間の中央値
+                        const centerValue = (rangeStart + rangeEnd) / 2;
+                        // 中央値の位置（%）
+                        const centerPercent = ((centerValue - minScore) / totalRange) * 100;
+
+                        return (
+                          <div
+                            key={index}
+                            style={{
+                              display: 'flex',
+                              position: 'absolute',
+                              left: `${centerPercent}%`,
+                              transform: 'translateX(-50%)',
+                              fontSize: '14px',
+                              color: OG_COLORS.textMain,
+                              opacity: 0.6,
+                            }}
+                          >
+                            {range.label}
+                          </div>
+                        );
+                      });
+                    })()}
+                  </div>
+                )}
               </div>
-            </div>
-          ))}
+
+              {/* 下段：解説文 */}
+              {shortInterpretation && (
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    backgroundColor: '#F3F4F6',
+                    padding: '24px',
+                    borderRadius: '8px',
+                    border: `2px solid ${OG_COLORS.border}`,
+                  }}
+                >
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      fontSize: '22px',
+                      color: '#4B5563',
+                      lineHeight: 1.6,
+                    }}
+                  >
+                    {shortInterpretation.split('\n').map((line: string, index: number) => (
+                      <span key={index} style={{ display: 'flex' }}>
+                        {line}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </>
+          ) : (
+            // 複数スコアの場合：既存のバーレイアウト
+            <>
+              {dimensions.map((item: any, index: number) => (
+                <div
+                  key={item.key}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    marginBottom: index === dimensions.length - 1 ? '0' : `${OG_LAYOUT.barGap}px`,
+                  }}
+                >
+                  {/* 項目名（同期拡大） */}
+                  <div
+                    style={{
+                      display: 'flex',
+                      width: `${OG_LAYOUT.labelWidth}px`,
+                      fontSize: `${OG_TYPOGRAPHY.labelSize}px`,
+                      fontWeight: OG_TYPOGRAPHY.labelWeight,
+                      color: OG_COLORS.textMain,
+                    }}
+                  >
+                    {item.label}
+                  </div>
+
+                  {/* バーエリア（極太化） */}
+                  <div
+                    style={{
+                      display: 'flex',
+                      flex: 1,
+                      height: `${OG_LAYOUT.barHeight}px`,
+                      backgroundColor: OG_COLORS.trackBg,
+                      border: `${OG_LAYOUT.barBorder}px solid ${OG_COLORS.border}`,
+                      marginRight: `${OG_LAYOUT.barRightMargin}px`,
+                      boxShadow: OG_COLORS.barShadow,
+                      position: 'relative',
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: 'flex',
+                        width: `${item.percentage}%`,
+                        height: '100%',
+                        backgroundColor: item.color,
+                        borderRight: `${OG_LAYOUT.barBorder}px solid ${OG_COLORS.border}`,
+                      }}
+                    />
+                  </div>
+
+                  {/* スコア（等幅フォント + さらに巨大化） */}
+                  <div
+                    style={{
+                      display: 'flex',
+                      fontSize: `${OG_TYPOGRAPHY.scoreSize}px`,
+                      fontWeight: OG_TYPOGRAPHY.scoreWeight,
+                      color: OG_COLORS.textMain,
+                      width: `${OG_LAYOUT.scoreWidth}px`,
+                      justifyContent: 'flex-end',
+                      lineHeight: 1,
+                      fontFamily: '"Noto Sans JP", monospace',
+                      fontVariantNumeric: 'tabular-nums',
+                    }}
+                  >
+                    {item.score}
+                  </div>
+                </div>
+              ))}
+            </>
+          )}
 
           {/* ウォーターマーク */}
           <div

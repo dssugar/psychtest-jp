@@ -193,6 +193,8 @@ export default function DashboardPage() {
                         titleEn={ogImage.titleEn}
                         category={ogImage.category}
                         description={ogImage.description}
+                        config={config}
+                        testResult={testResult.result}
                       />
                       <div className="max-w-[1200px] mx-auto space-y-4">
                         {/* アクションボタン */}

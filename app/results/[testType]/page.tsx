@@ -701,6 +701,8 @@ function renderDimensionSummaryCard(testResult: any, config: any) {
         titleEn={config.ogImage.titleEn}
         category={config.ogImage.category}
         description={config.ogImage.description}
+        config={config}
+        testResult={testResult}
       />
     </div>
   );

@@ -173,8 +173,8 @@ export function generateMultiTestSynthesis(
     const selfconceptLevel = profile.tests.selfconcept.result.level;
     const rosenbergLevel = profile.tests.rosenberg.result.level;
 
-    const selfconceptHigh = selfconceptLevel === "high" || selfconceptLevel === "very_high";
-    const rosenbergHigh = rosenbergLevel === "high" || rosenbergLevel === "very_high";
+    const selfconceptHigh = selfconceptLevel === "high";
+    const rosenbergHigh = rosenbergLevel === "high";
 
     if (selfconceptHigh && rosenbergHigh) {
       parts.push("自己認識が明確で、自己評価も高い状態");
@@ -187,11 +187,11 @@ export function generateMultiTestSynthesis(
     }
   } else if (profile.tests.selfconcept) {
     const level = profile.tests.selfconcept.result.level;
-    const clarity = level === "high" || level === "very_high" ? "明確" : "発展途上";
+    const clarity = level === "high" ? "明確" : "発展途上";
     parts.push(`自己認識: ${clarity}`);
   } else if (profile.tests.rosenberg) {
     const level = profile.tests.rosenberg.result.level;
-    const esteem = level === "high" || level === "very_high" ? "高い" : "向上の余地あり";
+    const esteem = level === "high" ? "高い" : "向上の余地あり";
     parts.push(`自己評価: ${esteem}`);
   }
 
