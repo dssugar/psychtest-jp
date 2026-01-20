@@ -205,19 +205,31 @@ export const k6Config: TestConfig<K6Result> = {
     }),
   },
 
-  // 🆕 NEW: 1次元データ生成
+  // 🆕 NEW: 1次元データ生成（レベルベースの色付き）
   getDimensions: (result: K6Result): DimensionData[] => {
     const min = 0;
     const max = 24;
     const rawScore = result?.rawScore ?? 7;
     const percentage = ((rawScore - min) / (max - min)) * 100;
 
+    // スコアに応じた色を決定
+    let color: string;
+    if (rawScore >= 13) {
+      color = '#f97316'; // orange (severe)
+    } else if (rawScore >= 10) {
+      color = '#ec4899'; // pink (moderate)
+    } else if (rawScore >= 5) {
+      color = '#3b82f6'; // blue (mild)
+    } else {
+      color = '#10b981'; // green (no distress)
+    }
+
     return [{
       key: 'score',
       label: 'Total Score',
       score: rawScore,
       percentage: percentage,
-      color: TEST_COLOR_MAP['cyan'] || '#06b6d4',
+      color: color,
     }];
   },
 };

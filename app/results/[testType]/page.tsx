@@ -17,7 +17,6 @@ import { QuadrantMatrix } from "@/components/industriousness/QuadrantMatrix";
 
 // BigFive specific imports (for BigFive score display only)
 import { addAllEstimations, getInterpretation as getBigFiveInterpretation, type BigFiveResult } from "@/lib/tests/bigfive";
-import { OG_COLORS, DIMENSION_NAMES, DIMENSION_ORDER } from "@/lib/og-design/constants";
 import type { DimensionData } from "@/lib/og-design/types";
 
 // Dynamic interpretation imports for all tests
@@ -278,28 +277,8 @@ function renderResultSummaryCard(
   result: any,
   config: any
 ) {
-  // BigFive: 5次元表示
-  if (testType === "bigfive") {
-    return renderBigFiveSummaryCard(testResult);
-  }
-
-  // Industriousness: 2次元表示
-  if (testType === "industriousness") {
-    return renderIndustriousnessSummaryCard(testResult, config);
-  }
-
-  // PHQ-9/K6: 単一スコア（レベル色）
-  if (testType === "phq9" || testType === "k6") {
-    return renderClinicalSummaryCard(testType, testResult, scoreDisplay, config);
-  }
-
-  // その他: Circle または Progress型
-  if (scoreDisplay?.type === "circle" || scoreDisplay?.type === "progress") {
-    return renderSingleScoreSummaryCard(testResult, color, scaleInfo, config);
-  }
-
-  // フォールバック: なし
-  return null;
+  // すべてのテスト: 次元データのバー表示（getDimensions使用、1次元～5次元対応）
+  return renderDimensionSummaryCard(testResult, config);
 }
 
 /**
@@ -332,7 +311,7 @@ function renderDetailedScoreDisplay(
 
   // PHQ-9/K6: プログレスバー + レベル色
   if (testType === "phq9" || testType === "k6") {
-    return renderClinicalDetailedDisplay(testType, testResult, scoreDisplay, color);
+    return renderClinicalDetailedDisplay(testType, testResult, scoreDisplay, color, config);
   }
 
   // Circle型
@@ -356,39 +335,6 @@ function renderDetailedScoreDisplay(
           <p className="text-lg">{testResult.interpretation}</p>
         </div>
       </Card>
-    </div>
-  );
-}
-
-/**
- * 単一スコアのSummary Card（Circle/Progress型共通）
- */
-function renderSingleScoreSummaryCard(testResult: any, color: string, scaleInfo: any, config: any) {
-  // Color mapping
-  const colorMap: Record<string, string> = {
-    pink: '#ec4899', orange: '#f97316', cyan: '#06b6d4',
-    yellow: '#eab308', purple: '#a855f7', green: '#10b981', blue: '#3b82f6',
-  };
-
-  // ResultSummaryCard用のデータ（単一次元）
-  const dimensionData: DimensionData[] = [
-    {
-      key: 'score',
-      label: 'Total Score',
-      score: testResult.rawScore,
-      percentage: testResult.percentageScore,
-      color: colorMap[color] || '#3b82f6',
-    },
-  ];
-
-  return (
-    <div className="mb-12">
-      <ResultSummaryCard
-        dimensions={dimensionData}
-        titleEn={config.ogImage?.titleEn || scaleInfo.abbreviation}
-        category={config.ogImage?.category || scaleInfo.category}
-        description={config.ogImage?.description || ''}
-      />
     </div>
   );
 }
@@ -526,85 +472,32 @@ function renderProgressDetailedDisplay(testType: string, testResult: any, color:
 }
 
 /**
- * 臨床系（PHQ-9, K6）のレベル色を取得
- */
-function getClinicalLevelColor(
-  testType: string,
-  testResult: any
-): "orange" | "blue" | "green" | "pink" {
-  const score = testResult.rawScore;
-  if (testType === "phq9") {
-    if (testResult.level === "severe") return "orange";
-    if (testResult.level === "moderately_severe") return "orange";
-    if (testResult.level === "moderate") return "pink";
-    if (testResult.level === "mild") return "blue";
-    return "green";
-  }
-  // K6
-  if (score >= 13) return "orange";
-  if (score >= 10) return "pink";
-  if (score >= 5) return "blue";
-  return "green";
-}
-
-/**
- * 臨床系（PHQ-9, K6）のSummary Card
- */
-function renderClinicalSummaryCard(
-  testType: string,
-  testResult: any,
-  scoreDisplay: any,
-  config: any
-) {
-  const score = testResult.rawScore;
-  const percentageScore =
-    testResult.percentageScore || (score / scoreDisplay.maxScore) * 100;
-  const levelColor = getClinicalLevelColor(testType, testResult);
-
-  // Color mapping
-  const colorMap: Record<string, string> = {
-    pink: '#ec4899', orange: '#f97316', cyan: '#06b6d4',
-    yellow: '#eab308', purple: '#a855f7', green: '#10b981', blue: '#3b82f6',
-  };
-
-  // ResultSummaryCard用のデータ（単一次元）
-  const dimensionData: DimensionData[] = [
-    {
-      key: 'score',
-      label: 'Total Score',
-      score: testResult.rawScore,
-      percentage: percentageScore,
-      color: colorMap[levelColor] || '#3b82f6',
-    },
-  ];
-
-  const { scaleInfo } = config;
-
-  return (
-    <div className="mb-12">
-      <ResultSummaryCard
-        dimensions={dimensionData}
-        titleEn={config.ogImage?.titleEn || scaleInfo.abbreviation}
-        category={config.ogImage?.category || scaleInfo.category}
-        description={config.ogImage?.description || ''}
-      />
-    </div>
-  );
-}
-
-/**
  * 臨床系（PHQ-9, K6）の詳細表示
  */
 function renderClinicalDetailedDisplay(
   testType: string,
   testResult: any,
   scoreDisplay: any,
-  baseColor: string
+  baseColor: string,
+  config: any
 ) {
   const score = testResult.rawScore;
   const percentageScore =
     testResult.percentageScore || (score / scoreDisplay.maxScore) * 100;
-  const levelColor = getClinicalLevelColor(testType, testResult);
+
+  // getDimensions から色を取得
+  const dimensions = config.getDimensions(testResult);
+  const colorHex = dimensions[0]?.color || '#3b82f6';
+
+  // Hex色からvariant名にマッピング
+  const colorToVariant = (hex: string): "orange" | "blue" | "green" | "pink" => {
+    if (hex === '#f97316') return 'orange';
+    if (hex === '#ec4899') return 'pink';
+    if (hex === '#3b82f6') return 'blue';
+    if (hex === '#10b981') return 'green';
+    return 'blue'; // default
+  };
+  const levelColor = colorToVariant(colorHex);
 
   // 動的に解釈文を生成
   let interpretation: string;
@@ -646,26 +539,20 @@ function renderClinicalDetailedDisplay(
 }
 
 /**
- * BigFive Summary Card
+ * 次元データのSummary Card（全テスト共通）
+ * 1次元～5次元すべてに対応（getDimensionsから取得）
  */
-function renderBigFiveSummaryCard(bigFiveResult: BigFiveResult) {
-  const toPercentage = (score: number) => ((score - 24) / 96) * 100;
-
-  const dimensionsForSummary: DimensionData[] = DIMENSION_ORDER.map((key) => ({
-    key,
-    label: DIMENSION_NAMES[key],
-    score: bigFiveResult[key],
-    percentage: toPercentage(bigFiveResult[key]),
-    color: OG_COLORS.dimensions[key],
-  }));
+function renderDimensionSummaryCard(testResult: any, config: any) {
+  // config.getDimensions() を使用してデータソースを統一
+  const dimensionData = config.getDimensions?.(testResult) || [];
 
   return (
     <div className="mb-12">
       <ResultSummaryCard
-        dimensions={dimensionsForSummary}
-        titleEn="BIG FIVE"
-        category="性格特性診断"
-        description="科学的根拠に基づいた\n5つの主要特性スコアレポート"
+        dimensions={dimensionData}
+        titleEn={config.ogImage.titleEn}
+        category={config.ogImage.category}
+        description={config.ogImage.description}
       />
     </div>
   );
@@ -677,25 +564,6 @@ function renderBigFiveSummaryCard(bigFiveResult: BigFiveResult) {
 function renderBigFiveDetailedDisplay(bigFiveResult: BigFiveResult) {
   // 動的結果ページではSummary Cardのみ表示し、詳細はbigfive専用ページへ誘導
   return null;
-}
-
-/**
- * Industriousness Summary Card
- */
-function renderIndustriousnessSummaryCard(testResult: any, config: any) {
-  // config.getDimensions() を使用してデータソースを統一
-  const dimensionData = config.getDimensions?.(testResult) || [];
-
-  return (
-    <div className="mb-12">
-      <ResultSummaryCard
-        dimensions={dimensionData}
-        titleEn="INDUSTRI-\nOUSNESS"
-        category="勤勉性診断"
-        description="やり抜く力を測定\n2つの次元で評価"
-      />
-    </div>
-  );
 }
 
 /**

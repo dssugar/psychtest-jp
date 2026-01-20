@@ -397,19 +397,31 @@ export const phq9Config: TestConfig<Phq9Result> = {
     }),
   },
 
-  // 🆕 NEW: 1次元データ生成
+  // 🆕 NEW: 1次元データ生成（レベルベースの色付き）
   getDimensions: (result: Phq9Result): DimensionData[] => {
     const min = 0;
     const max = 27;
     const rawScore = result?.rawScore ?? 7;
     const percentage = result?.percentageScore ?? ((rawScore - min) / (max - min)) * 100;
 
+    // レベルに応じた色を決定
+    let color: string;
+    if (result.level === "severe" || result.level === "moderately_severe") {
+      color = '#f97316'; // orange
+    } else if (result.level === "moderate") {
+      color = '#ec4899'; // pink
+    } else if (result.level === "mild") {
+      color = '#3b82f6'; // blue
+    } else {
+      color = '#10b981'; // green
+    }
+
     return [{
       key: 'score',
       label: 'Total Score',
       score: rawScore,
       percentage: percentage,
-      color: TEST_COLOR_MAP['orange'] || '#f97316',
+      color: color,
     }];
   },
 };

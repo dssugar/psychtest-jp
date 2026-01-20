@@ -198,8 +198,6 @@ interface ScaleInfo {
 ```
 
 **活用例**:
-- ダッシュボードで層別表示 (`PsychologicalLayerView.tsx`)
-- 因果フロー図の自動生成 (`CausalFlowDiagram.tsx`)
 - 層間の関係性分析 (Trait → State → Outcome)
 
 #### 4. Synthesis Pattern (統合分析)
@@ -252,10 +250,7 @@ export const onRequest: PagesFunction = async (context) => {
 components/
 ├── dashboard/          # ダッシュボード専用コンポーネント
 │   ├── ProfileOverview.tsx          # プロファイル概要
-│   ├── IntegratedAnalysis.tsx       # 統合分析
-│   ├── PsychologicalLayerView.tsx   # 心理層ビュー
-│   ├── LayerMatrixView.tsx          # 層マトリクス
-│   └── CausalFlowDiagram.tsx        # 因果フロー図
+│   └── IntegratedAnalysis.tsx       # 統合分析
 ├── viz/                # データビジュアライゼーション
 │   ├── RadarChart.tsx               # レーダーチャート
 │   ├── DataBadge.tsx                # データバッジ
