@@ -1,11 +1,9 @@
 'use client';
 
-import { useEffect, useMemo } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useMemo } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { ResultSummaryCard } from '@/components/results/ResultSummaryCard';
 import { Card } from '@/components/ui/Card';
-import type { DimensionData } from '@/lib/og-design/types';
 
 interface SharePageClientProps {
   test: string;
@@ -20,94 +18,47 @@ export function SharePageClient({
   ogImageConfig,
   scaleInfo,
 }: SharePageClientProps) {
-  const router = useRouter();
   const searchParams = useSearchParams();
 
-  // クエリパラメータからスコアを復元（手動実装）
-  const rawScores = useMemo(() => {
-    const scores: Record<string, number> = {};
+  // OG画像URLを生成（友人のスコアを表示するため）
+  const ogImageUrl = useMemo(() => {
+    const params = new URLSearchParams();
 
-    // Big Five型の場合
-    if (ogImageConfig.layoutType === 'bar') {
-      searchParams.forEach((value, key) => {
-        const numValue = parseInt(value);
-        if (!isNaN(numValue)) {
-          // Big Fiveの場合: e→extraversion, a→agreeableness など
-          const keyMap: Record<string, string> = {
-            e: 'extraversion',
-            a: 'agreeableness',
-            c: 'conscientiousness',
-            n: 'neuroticism',
-            o: 'openness',
-          };
-          const fullKey = keyMap[key] || key;
-          scores[fullKey] = numValue;
-        }
+    // サーバーから注入されたパラメータまたはURLパラメータを使用
+    const injectedParams = typeof window !== 'undefined' && (window as any).__SHARE_PARAMS__;
+
+    if (injectedParams) {
+      Object.entries(injectedParams).forEach(([key, value]) => {
+        params.set(key, String(value));
       });
-    }
-
-    // 単一スコア型の場合
-    if (ogImageConfig.layoutType === 'single') {
-      const total = searchParams.get('total');
-      if (total) {
-        scores.total = parseInt(total);
+    } else {
+      // フォールバック：URLから直接取得
+      if (typeof window !== 'undefined') {
+        const urlParams = new URLSearchParams(window.location.search);
+        urlParams.forEach((value, key) => {
+          params.set(key, value);
+        });
       }
     }
 
-    return scores;
-  }, [searchParams, ogImageConfig.layoutType]);
-
-  // DimensionData配列を生成
-  const dimensions = useMemo((): DimensionData[] => {
-    if (!ogImageConfig) return [];
-
-    switch (ogImageConfig.layoutType) {
-      case 'bar':
-        // Big Five型（複数次元）
-        return Object.entries(rawScores).map(([key, score]) => {
-          const label = ogImageConfig.dimensionLabels?.[key] || key;
-          const color = ogImageConfig.colors?.[key] || '#3b82f6';
-          const percentage = ogImageConfig.scoreDisplay
-            ? Math.round(((score as number - (ogImageConfig.scoreDisplay.min || 0)) / ((ogImageConfig.scoreDisplay.max || 100) - (ogImageConfig.scoreDisplay.min || 0))) * 100)
-            : 0;
-
-          return {
-            key,
-            label,
-            score: score as number,
-            percentage,
-            color,
-          };
-        });
-
-      case 'single':
-        // 単一スコア型（PHQ-9, K6等）
-        const totalScore = rawScores.total || 0;
-        return [
-          {
-            key: 'total',
-            label: '総合スコア',
-            score: totalScore as number,
-            percentage: 0,
-            color: '#3b82f6',
-          },
-        ];
-
-      default:
-        return [];
-    }
-  }, [ogImageConfig, rawScores]);
+    const queryString = params.toString();
+    return queryString ? `/og/${test}?${queryString}` : `/og/${test}`;
+  }, [test]);
 
   return (
     <main className="min-h-screen bg-brutal-cream py-8 px-4">
       <div className="max-w-[1200px] mx-auto space-y-8">
-        {/* スコアカード表示 */}
-        <ResultSummaryCard
-          dimensions={dimensions}
-          titleEn={ogImageConfig.titleEn}
-          category={ogImageConfig.category}
-          description={ogImageConfig.description}
-        />
+        {/* 友人のスコア画像表示（OG画像） */}
+        <div className="w-full">
+          <img
+            src={ogImageUrl}
+            alt={`${scaleInfo.nameJa}の診断結果`}
+            className="w-full h-auto border-brutal-thick border-brutal-black shadow-brutal"
+            style={{
+              aspectRatio: '1200 / 630',
+            }}
+          />
+        </div>
 
         {/* CTA Section (Pattern B: ソーシャルプルーフ) */}
         <Card padding="xl" className="text-center">
