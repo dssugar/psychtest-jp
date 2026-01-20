@@ -109,6 +109,23 @@ export function ResultSummaryCard({
   config,
   testResult,
 }: ResultSummaryProps) {
+  // 1200×630pxで固定描画し、画面幅に応じてscaleで縮小
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(1);
+
+  useLayoutEffect(() => {
+    const updateScale = () => {
+      if (containerRef.current) {
+        const containerWidth = containerRef.current.offsetWidth;
+        const newScale = Math.min(containerWidth / OG_SIZE.width, 1);
+        setScale(newScale);
+      }
+    };
+
+    updateScale();
+    window.addEventListener('resize', updateScale);
+    return () => window.removeEventListener('resize', updateScale);
+  }, []);
   // タイトルを行分割（改行または空白で分割）
   const titleLines = titleEn
     ? titleEn.includes('\n') || titleEn.includes('\\n')
@@ -143,11 +160,21 @@ export function ResultSummaryCard({
 
   return (
     <div
-      className="w-full max-w-[1200px] mx-auto bg-white border-[12px] border-[#111111] flex"
+      ref={containerRef}
+      className="w-full overflow-hidden"
       style={{
-        aspectRatio: `${OG_SIZE.width} / ${OG_SIZE.height}`,
+        height: `${OG_SIZE.height * scale}px`,
       }}
     >
+      <div
+        className="bg-white border-[12px] border-[#111111] flex"
+        style={{
+          width: `${OG_SIZE.width}px`,
+          height: `${OG_SIZE.height}px`,
+          transform: `scale(${scale})`,
+          transformOrigin: 'top left',
+        }}
+      >
       {/* 左カラム：タイトルとブランド情報（黒背景・白文字） */}
       <div className="w-[400px] bg-[#111111] text-white px-10 py-12 flex flex-col justify-between border-r-8 border-[#111111]">
         {/* 上部：タイトルエリア */}
@@ -359,6 +386,7 @@ export function ResultSummaryCard({
         <div className="absolute bottom-5 right-5 text-base font-bold text-[#111111] opacity-20">
           psychtest.jp
         </div>
+      </div>
       </div>
     </div>
   );
