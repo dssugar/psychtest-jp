@@ -18,9 +18,6 @@ export function ResultSummaryCard({
   description,
   siteName = 'PSYCHOMETRIC LAB',
 }: ResultSummaryProps) {
-  // ランダムID（装飾用）
-  const reportId = Math.floor(Math.random() * 90000) + 10000;
-
   // タイトルを行分割（改行または空白で分割）
   const titleLines = titleEn
     ? titleEn.includes('\n')
@@ -71,11 +68,6 @@ export function ResultSummaryCard({
               ))}
             </div>
           )}
-
-          <div className="flex items-center bg-[#333333] px-5 py-3 rounded-lg">
-            <div className="text-xl md:text-2xl mr-2.5">ID</div>
-            <div className="text-2xl md:text-[32px] font-black font-mono tabular-nums">{reportId}</div>
-          </div>
         </div>
       </div>
 
