@@ -13,6 +13,10 @@ import { FacetsDisplay } from "@/components/bigfive/FacetsDisplay";
 import { MBTIEstimationCard } from "@/components/bigfive/MBTIEstimationCard";
 import { EnneagramEstimationCard } from "@/components/bigfive/EnneagramEstimationCard";
 import type { BigFiveResult } from "@/lib/scoring/bigfive";
+import { SocialShareButtons } from "@/components/share/SocialShareButtons";
+import { ResultSummaryCard } from "@/components/results/ResultSummaryCard";
+import { OG_COLORS, DIMENSION_NAMES, DIMENSION_ORDER } from "@/lib/og-design/constants";
+import type { DimensionData } from "@/lib/og-design/types";
 
 export default function BigFiveResultPage() {
   const router = useRouter();
@@ -86,6 +90,15 @@ export default function BigFiveResultPage() {
     },
   ];
 
+  // ResultSummaryCard用のデータ（OG画像と完全に同じデータ構造）
+  const dimensionsForSummary: DimensionData[] = DIMENSION_ORDER.map((key) => ({
+    key,
+    label: DIMENSION_NAMES[key],
+    score: bigFiveResult[key],
+    percentage: toPercentage(bigFiveResult[key]),
+    color: OG_COLORS.dimensions[key],
+  }));
+
   return (
     <main className="min-h-screen">
       <div className="container mx-auto px-4 py-12 md:py-20">
@@ -106,6 +119,31 @@ export default function BigFiveResultPage() {
           <p className="text-lg md:text-xl text-brutal-gray-800 font-mono animate-slide-in-up" style={{ animationDelay: "0.1s" }}>
             {scaleInfo.nameJa}
           </p>
+        </div>
+
+        {/* Result Summary Card - OG画像と完全に同じビジュアル */}
+        <div className="max-w-6xl mx-auto mb-12">
+          <ResultSummaryCard
+            dimensions={dimensionsForSummary}
+            testName="Big Five 性格診断結果"
+            siteName="心理測定ラボ"
+          />
+        </div>
+
+        {/* Share Section */}
+        <div className="max-w-6xl mx-auto mb-16">
+          <div className="card-brutal p-8 bg-brutal-white">
+            <h2 className="text-2xl md:text-3xl text-brutal-black mb-6" style={{ fontFamily: 'var(--font-display-ja)', fontWeight: 700 }}>
+              結果をシェア
+            </h2>
+            <p className="text-sm text-brutal-gray-700 mb-4">
+              診断結果をSNSでシェアできます。リンクをシェアすると、SNS上で上記のサマリーカードが表示されます。
+            </p>
+            <SocialShareButtons
+              shareUrl={`${typeof window !== 'undefined' ? window.location.origin : ''}/share/bigfive?e=${bigFiveResult.extraversion}&a=${bigFiveResult.agreeableness}&c=${bigFiveResult.conscientiousness}&n=${bigFiveResult.neuroticism}&o=${bigFiveResult.openness}`}
+              text="Big Five性格診断の結果をシェア！"
+            />
+          </div>
         </div>
 
         {/* Interpretation */}

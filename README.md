@@ -12,7 +12,8 @@ Trait-State-Outcome-Skill フレームワークに基づき、性格特性・自
 - **Framework**: Next.js 16 (App Router)
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS v4
-- **Hosting**: Cloudflare Pages (静的エクスポート)
+- **Hosting**: Cloudflare Pages (静的エクスポート + Functions)
+- **OG Image**: Cloudflare Pages Functions + @vercel/og (Satori)
 - **Data Storage**: localStorage
 
 ## 開発
@@ -96,10 +97,14 @@ psychtest-jp/
 │   ├── swls/              # SWLS 人生満足度尺度
 │   ├── selfconcept/       # 自己概念の明確さ尺度
 │   ├── results/           # 各テストの結果ページ
+│   ├── share/             # SNSシェア用ページ (動的OGメタデータ生成)
 │   ├── about/             # サイト概要
 │   ├── privacy/           # プライバシーポリシー
 │   ├── terms/             # 利用規約
 │   └── contact/           # お問い合わせ
+├── functions/             # Cloudflare Pages Functions
+│   ├── og/               # OG画像生成エンドポイント
+│   └── types.d.ts        # Cloudflare Workers型定義
 ├── components/            # 再利用可能コンポーネント
 │   ├── bigfive/          # Big Five専用コンポーネント
 │   ├── dashboard/        # ダッシュボード用コンポーネント
@@ -126,6 +131,7 @@ psychtest-jp/
 │   └── selfconcept-questions.ts
 ├── docs/                  # ドキュメント
 │   ├── scales/           # 心理尺度の研究・ドキュメント
+│   ├── OG_IMAGE_IMPLEMENTATION.md  # OG画像実装ガイド
 │   └── translation-workflow.md
 └── public/               # 静的ファイル
 ```
@@ -153,6 +159,7 @@ psychtest-jp/
 - [x] レスポンシブデザイン（モバイル対応）
 - [x] ネオブルータリスト × データビジュアライゼーション デザインシステム
 - [x] E2Eテスト (Playwright)
+- [x] **SNSシェア用動的OG画像生成** (Cloudflare Pages Functions) - 診断結果を画像化してSNS共有
 
 ## 今後の拡張
 

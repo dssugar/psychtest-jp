@@ -1,0 +1,10 @@
+name = "psychtest-jp"
+compatibility_date = "2024-01-01"
+pages_build_output_dir = "out"
+
+# Cloudflare Pages Functions設定
+[build]
+command = "npm run build"
+
+# Node.js互換性フラグ（OG画像生成に必要）
+compatibility_flags = ["nodejs_compat"]
