@@ -10,7 +10,7 @@
   - PHQ-9 - うつ病スクリーニング（9問）
   - K6 - 心理的苦痛スクリーニング（6問）
   - SWLS - 人生満足度尺度（5問）
-  - Self-Concept Clarity - 自己概念の明確さ（12問）
+  - Self-Concept Clarity - 自己概念の明確さ（8問、IPIP代替尺度）
 - **統合ダッシュボード**: Trait-State-Outcome-Skill フレームワークに基づく統合分析
 - **デザインシステム**: ネオブルータリズム × データビジュアライゼーション
 - **レスポンシブ対応**: モバイルファースト設計完了
@@ -51,7 +51,7 @@
 | マインドフルネス (Mindfulness) | 今への気づき | MAAS | 未実装 |
 | 対処スタイル (Coping) | ストレス対処 | Brief COPE | 未実装 |
 
-**進捗**: 182問実装完了（Big Five 120問 + Industriousness 20問 + Rosenberg 10問 + PHQ-9 9問 + K6 6問 + SWLS 5問 + Self-Concept 12問）
+**進捗**: 178問実装完了（Big Five 120問 + Industriousness 20問 + Rosenberg 10問 + PHQ-9 9問 + K6 6問 + SWLS 5問 + Self-Concept 8問）
 
 ---
 
@@ -477,5 +477,5 @@ ${remainingTests.map(t => `- ${t.name}: ${t.description}`).join('\n')}
 
 ---
 
-**最終更新**: 2026-01-19
+**最終更新**: 2026-01-20
 **次回レビュー**: Sprint 1完了後

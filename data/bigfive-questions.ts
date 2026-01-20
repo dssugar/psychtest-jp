@@ -1251,25 +1251,25 @@ export const scaleInfo: ScaleInfo = {
   category: "性格特性",
   psychologicalLayer: "trait",
   description:
-    "外向性、協調性、誠実性、神経症傾向、開放性の5次元を30ファセット（下位尺度）で詳細に測定する、最も信頼性の高い性格理論に基づく尺度です。Mini-IPIPの完全版で、より精密な性格分析が可能です。",
+    "Big Five（ビッグファイブ）は、人間の性格を5つの基本次元で捉える、心理学で最も信頼されている性格理論です。50年以上にわたる膨大な実証研究により、世界中の文化・言語を超えて普遍的に観察される5つの性格次元（外向性、協調性、誠実性、神経症傾向、開放性）が存在することが確認されています。IPIP-NEO-120は、これらの5次元を30ファセット（下位尺度）で詳細に測定する、パブリックドメインの高品質な測定ツールです。商用版NEO-PI-R（$300-400 USD）と同等の測定精度を持ちながら、完全無料で使用できます。学業・キャリア成功、対人関係、メンタルヘルス、身体健康・寿命など、人生のあらゆる側面を予測する強力なツールです。",
   developer: "Johnson (2014)",
   reliability: {
-    cronbachAlpha: "0.77-0.89 (ファセットごと)",
-    testRetest: "r = 0.70-0.85",
+    cronbachAlpha: "0.81-0.90 (次元), 0.63-0.88 (ファセット)",
+    testRetest: "r = 0.83-0.91 (2年間)",
   },
-  citations: "5,000+",
+  citations: "500+ (IPIP-120), 数万件 (Big Five理論全体)",
   tier: "S (Gold Standard)",
   academicReference: {
     original:
       "Johnson, J. A. (2014). Measuring thirty facets of the Five Factor Model with a 120-item public domain inventory: Development of the IPIP-NEO-120. Journal of Research in Personality, 51, 78-89. https://doi.org/10.1016/j.jrp.2014.05.003",
     japanese:
-      "日本語版: @alheimsins/b5-johnson-120-ipip-neo-pi-r (https://github.com/Alheimsins/b5-johnson-120-ipip-neo-pi-r)",
+      "日本語版: @alheimsins/b5-johnson-120-ipip-neo-pi-r (https://github.com/Alheimsins/b5-johnson-120-ipip-neo-pi-r) | NEO-PI-R日本語版: Shimonaka et al. (1998), 性格心理学研究, 6(2), 138-147",
   },
   scoring: {
     min: 24,
     max: 120,
     neutral: 72,
-    description: "各次元24-120点の範囲。各ファセットは4-20点。次元ごとに高得点の意味が異なる。",
+    description: "各次元24-120点の範囲（低スコア: 24-60, 中スコア: 61-83, 高スコア: 84-120）。各ファセットは4-20点。次元ごとに高得点の意味が異なる。",
   },
   stats: {
     questions: 120,

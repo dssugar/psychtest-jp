@@ -1,4 +1,5 @@
 import type { TestType } from "@/lib/storage";
+import type { OGImageConfig } from "@/lib/og-design/types";
 
 /**
  * 心理尺度の学術的情報
@@ -179,6 +180,12 @@ export interface TestConfig<TResult, TQuestion extends BaseQuestion = BaseQuesti
   resultAlerts?: AlertConfig[];
   /** 結果ページ拡張機能 */
   resultExtensions?: ResultExtensions;
+
+  // ========================================
+  // OG画像・SNSシェア設定
+  // ========================================
+  /** OG画像設定（動的画像生成、シェアページ用） */
+  ogImage?: OGImageConfig;
 
   // ========================================
   // 後方互換性（非推奨）

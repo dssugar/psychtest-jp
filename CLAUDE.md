@@ -87,6 +87,258 @@ npm run test:e2e:ui  # E2E tests with UI mode
 
 **詳細な実装計画は [ROADMAP.md](./ROADMAP.md) を参照してください。**
 
+---
+
+## Architecture & Design Patterns
+
+### Core Design Principles
+
+このプロジェクトは以下の設計原則に基づいています：
+
+1. **Configuration-Driven Architecture**: 各テストを`TestConfig`インターフェースで統一
+2. **Type-Safe Registry Pattern**: すべてのテストを`testRegistry`で一元管理
+3. **Separation of Concerns**: データ、スコアリング、UI、分析を明確に分離
+4. **Academic Metadata First**: 学術的信頼性情報を設定に組み込み
+5. **Framework-Based Organization**: Trait-State-Outcome-Skill層で体系化
+
+### Data Flow Architecture
+
+```
+1. データ層 (data/*-questions.ts)
+   ├─ 質問データ
+   ├─ 尺度情報 (ScaleInfo)
+   └─ 選択肢定義 (ScaleOption)
+
+2. ロジック層 (lib/tests/*.ts)
+   ├─ スコアリング関数 (calculateScore)
+   ├─ バリデーション関数 (validateAnswers)
+   ├─ 解釈文生成 (interpretation)
+   └─ テスト設定 (TestConfig)
+
+3. レジストリ層 (lib/tests/test-registry.ts)
+   └─ 全テストの統一管理
+
+4. ストレージ層 (lib/storage.ts)
+   ├─ localStorage抽象化
+   ├─ UserProfile型定義
+   └─ テスト結果の永続化
+
+5. 分析層 (lib/analysis/synthesis.ts)
+   ├─ 複数テスト統合分析
+   ├─ 象限分析 (2D quadrant)
+   └─ トップ特性抽出
+
+6. UI層 (app/*/page.tsx, components/*)
+   ├─ テストページ (質問表示)
+   ├─ 結果ページ (スコア可視化)
+   └─ ダッシュボード (統合表示)
+```
+
+### Key Design Patterns
+
+#### 1. TestConfig Pattern (統一テスト設定)
+
+全テストを統一インターフェースで管理することで、拡張性と保守性を確保：
+
+```typescript
+interface TestConfig<TResult> {
+  id: TestType;
+  color: "blue" | "pink" | "green" | ...;
+  basePath: string;
+  questions: TQuestion[];
+  scaleOptions: ScaleOption[];
+  calculateScore: (answers: number[]) => TResult;
+  validateAnswers?: (answers: number[]) => ValidationResult;
+  scaleInfo: ScaleInfo;  // 学術的メタデータ
+  scoreDisplay?: ScoreDisplayConfig;
+  resultAlerts?: AlertConfig[];  // PHQ-9/K6の高スコア警告
+  ogImage?: OGImageConfig;       // SNSシェア画像設定
+}
+```
+
+**メリット**:
+- 新規テスト追加が容易（3ファイル + レジストリ登録のみ）
+- 型安全性が高い（TypeScriptの恩恵を最大化）
+- 設定の一元管理（散在しない）
+
+#### 2. Registry Pattern (テストレジストリ)
+
+全テストを`testRegistry`オブジェクトで一元管理：
+
+```typescript
+export const testRegistry = {
+  rosenberg: rosenbergConfig,
+  bigfive: bigFiveConfig,
+  selfconcept: selfConceptConfig,
+  phq9: phq9Config,
+  swls: swlsConfig,
+  k6: k6Config,
+  industriousness: industriousnessConfig,
+} as const;
+```
+
+**使用例**:
+```typescript
+// 型安全なテスト設定取得
+const config = getTestConfig("bigfive");
+const questions = config.questions;
+const result = config.calculateScore(answers);
+```
+
+#### 3. Psychological Layer Architecture (心理層アーキテクチャ)
+
+`ScaleInfo`に`psychologicalLayer`フィールドを持たせ、フレームワークベースの体系化：
+
+```typescript
+interface ScaleInfo {
+  psychologicalLayer: "trait" | "state" | "outcome" | "skill";
+  category: string;  // 性格特性、自己認識、メンタルヘルスなど
+  // ...
+}
+```
+
+**活用例**:
+- ダッシュボードで層別表示 (`PsychologicalLayerView.tsx`)
+- 因果フロー図の自動生成 (`CausalFlowDiagram.tsx`)
+- 層間の関係性分析 (Trait → State → Outcome)
+
+#### 4. Synthesis Pattern (統合分析)
+
+複数テスト結果を統合解析する専用モジュール (`lib/analysis/synthesis.ts`):
+
+```typescript
+// 2次元象限分析
+function getQuadrant(x: number, y: number): QuadrantType
+function generateSelfAwarenessInsight(sccs, rosenberg): string
+
+// トップ特性抽出
+function extractTopTraits(bigFive): TopTraits[]
+function extractTopFacets(facets): TopFacets[]
+
+// 統合インサイト生成
+function generateMultiTestSynthesis(profile, completedTests): string
+```
+
+**使用場面**:
+- 自己認識マトリクス (Self-Concept × Rosenberg)
+- Big Fiveトップ3特性のハイライト
+- 複数テスト結果の統合メッセージ
+
+#### 5. OG Image Generation (動的OG画像)
+
+Cloudflare Pages Functions + `@vercel/og` でSNSシェア用画像を動的生成：
+
+```typescript
+// functions/og/[test].tsx
+export const onRequest: PagesFunction = async (context) => {
+  const { test } = context.params;
+  const url = new URL(context.request.url);
+
+  // URLパラメータからスコア復元
+  const scores = paramsToScore(url.searchParams);
+
+  // 画像レンダリング
+  return new ImageResponse(<OGTemplate scores={scores} />);
+};
+```
+
+**実装ステータス**:
+- ✅ Big Five: 5次元バー表示（`layoutType: "bar"`）
+- 📋 Rosenberg/PHQ-9: single scoreレイアウト（計画中）
+
+### Component Architecture
+
+```
+components/
+├── dashboard/          # ダッシュボード専用コンポーネント
+│   ├── ProfileOverview.tsx          # プロファイル概要
+│   ├── IntegratedAnalysis.tsx       # 統合分析
+│   ├── PsychologicalLayerView.tsx   # 心理層ビュー
+│   ├── LayerMatrixView.tsx          # 層マトリクス
+│   └── CausalFlowDiagram.tsx        # 因果フロー図
+├── viz/                # データビジュアライゼーション
+│   ├── RadarChart.tsx               # レーダーチャート
+│   ├── DataBadge.tsx                # データバッジ
+│   └── StatCard.tsx                 # 統計カード
+├── results/            # 結果表示コンポーネント
+│   └── ResultSummaryCard.tsx        # 結果サマリーカード
+├── bigfive/            # Big Five専用コンポーネント
+│   ├── FacetDetails.tsx             # ファセット詳細
+│   ├── MBTIEstimation.tsx           # MBTI推定
+│   └── EnneagramEstimation.tsx      # エニアグラム推定
+└── share/              # SNSシェアコンポーネント
+    └── SocialShareButtons.tsx       # シェアボタン
+```
+
+**設計方針**:
+- テスト固有UIは専用ディレクトリに分離 (`components/bigfive/`)
+- 再利用可能なビジュアライゼーションは`viz/`に集約
+- ダッシュボード機能は`dashboard/`に集約
+
+### File Organization Strategy (Locality of Behavior)
+
+**原則**: 関連するコードは近くに配置（凝集度優先）
+
+```
+lib/tests/rosenberg.ts
+├─ RosenbergResult型定義
+├─ calculateRosenbergScore()
+├─ getInterpretation()
+├─ validateAnswerPattern()
+└─ rosenbergConfig (TestConfig)
+
+data/rosenberg-questions.ts
+├─ rosenbergQuestions配列
+├─ scaleOptions配列
+└─ scaleInfo (ScaleInfo)
+```
+
+**メリット**:
+- 1つのテストに関わるコードが1-2ファイルに集約
+- 変更時の影響範囲が明確
+- コードレビューが容易
+
+### Type Safety & Validation
+
+**型定義の階層**:
+```typescript
+// 1. ストレージ型 (lib/storage.ts)
+type TestType = "rosenberg" | "bigfive" | ...
+type RosenbergTestResult = TestResult<RosenbergResult>
+
+// 2. 結果型 (lib/tests/rosenberg.ts)
+interface RosenbergResult {
+  rawScore: number;
+  percentageScore: number;
+  level: "very_low" | "low" | "medium" | "high" | "very_high";
+  interpretation: string;
+}
+
+// 3. バリデーション型 (lib/tests/types.ts)
+interface ValidationResult {
+  valid: boolean;
+  warning?: string;
+  message?: string;
+}
+```
+
+**バリデーション戦略**:
+- 全テストで回答パターンの妥当性をチェック
+- 単調な回答（全て同じ値）を警告
+- PHQ-9/K6で高スコア時に専門家受診を推奨
+
+### Next Steps for Architecture
+
+**Phase 2**:
+- ECR-R追加時に2D散布図コンポーネントを実装 (`AttachmentPlot.tsx`)
+- RIASECで6次元レーダーチャートを追加
+
+**Phase 3**:
+- AI機能実装時にBYOK Chat設定管理を追加
+- エージェントシステムの設定ファイル化
+
+---
+
 ### Academic Scale Tiers
 
 **Tier S (Gold Standard)**: Big Five, Industriousness (IPIP-300 C4+C5), PHQ-9, K6, Rosenberg Self-Esteem, SWLS
@@ -133,8 +385,9 @@ npm run test:e2e:ui  # E2E tests with UI mode
 
 #### Self-Concept Clarity Scale ✅ **Implemented**
 - Campbell et al. (1996), JPSP, 70(1), 141-156
-- 12 items, 5-point Likert
-- Cronbach's α = 0.86, retest r = 0.79 (4 months)
+- **Implementation**: IPIP Self-Consciousness Facet (8 items, public domain alternative)
+- Original SCCS: 12 items, α = 0.86, construct validity r > .70 with original scale
+- 5-point Likert scale
 - Many reverse-scored items
 
 #### K6 (Kessler Psychological Distress Scale) ✅ **Implemented**
@@ -292,11 +545,11 @@ Current Total = Sum of all test items:
 - PHQ-9: 9 items
 - K6: 6 items
 - SWLS: 5 items
-- Self-Concept: 12 items
-= 182 items total
+- Self-Concept: 8 items
+= 178 items total
 
 After adding GAD-7 (7 items):
-New Total = 182 + 7 = 189 items
+New Total = 178 + 7 = 185 items
 ```
 
 **⚠️ CRITICAL**: Always update the total question count in CLAUDE.md, README.md, and ROADMAP.md simultaneously to avoid inconsistencies.

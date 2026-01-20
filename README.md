@@ -7,6 +7,14 @@
 学術論文で検証された信頼性の高い心理尺度を使用し、全ての波長で心を解析する科学的な診断サイトです。
 Trait-State-Outcome-Skill フレームワークに基づき、性格特性・自己認識・メンタルヘルス・主観的幸福感を多面的に測定します。
 
+### コアコンセプト
+
+- **学術的根拠優先**: 全ての尺度が論文で検証済み（信頼性係数α開示）
+- **統一設計パターン**: `TestConfig`インターフェースで全テストを統一管理
+- **型安全性**: TypeScriptによる厳密な型定義とバリデーション
+- **統合分析**: 複数テスト結果を心理学フレームワークで統合解析
+- **完全静的**: バックエンド不要、localStorage で動作
+
 ### 技術スタック
 
 - **Framework**: Next.js 16 (App Router)
@@ -103,28 +111,37 @@ psychtest-jp/
 │   ├── terms/             # 利用規約
 │   └── contact/           # お問い合わせ
 ├── functions/             # Cloudflare Pages Functions
-│   ├── og/               # OG画像生成エンドポイント
-│   └── types.d.ts        # Cloudflare Workers型定義
+│   └── og/[test].tsx     # OG画像生成エンドポイント（動的）
 ├── components/            # 再利用可能コンポーネント
-│   ├── bigfive/          # Big Five専用コンポーネント
-│   ├── dashboard/        # ダッシュボード用コンポーネント
+│   ├── dashboard/        # ダッシュボード用（統合分析、心理層ビュー）
+│   ├── bigfive/          # Big Five専用（ファセット詳細、MBTI/Enneagram推定）
+│   ├── results/          # 結果表示（サマリーカード）
+│   ├── share/            # SNSシェアボタン
 │   ├── layout/           # レイアウトコンポーネント
-│   └── viz/              # データビジュアライゼーション
+│   └── viz/              # データビジュアライゼーション（レーダーチャート等）
 ├── lib/
-│   ├── storage.ts        # localStorage 抽象化
-│   ├── scoring/          # スコアリングロジック
-│   │   ├── bigfive.ts
-│   │   ├── industriousness.ts
-│   │   ├── rosenberg.ts
-│   │   ├── phq9.ts
-│   │   ├── k6.ts
-│   │   ├── swls.ts
-│   │   └── selfconcept.ts
+│   ├── tests/            # 【コア】テスト設定・スコアリング・レジストリ
+│   │   ├── types.ts           # TestConfig, ScaleInfo型定義
+│   │   ├── test-registry.ts   # 全テストの一元管理
+│   │   ├── bigfive.ts         # Big Five スコアリング + config
+│   │   ├── rosenberg.ts       # Rosenberg スコアリング + config
+│   │   ├── phq9.ts            # PHQ-9 スコアリング + config
+│   │   ├── k6.ts              # K6 スコアリング + config
+│   │   ├── swls.ts            # SWLS スコアリング + config
+│   │   ├── selfconcept.ts     # Self-Concept スコアリング + config
+│   │   └── industriousness.ts # Industriousness スコアリング + config
+│   ├── storage.ts        # localStorage 抽象化（UserProfile管理）
 │   ├── analysis/         # 統合分析ロジック
-│   └── tests/            # テスト設定・レジストリ
-├── data/                  # 質問データ
+│   │   └── synthesis.ts       # 複数テスト結果の統合解析（象限分析等）
+│   ├── og-design/        # OG画像生成設定
+│   │   ├── types.ts           # OGImageConfig型定義
+│   │   ├── constants.ts       # OG画像デザイン定数
+│   │   └── share-template.ts  # OG画像テンプレート
+│   └── utils/            # ユーティリティ関数
+├── data/                  # 質問データ + 尺度情報
 │   ├── bigfive-questions.ts
 │   ├── industriousness-questions.ts
+│   ├── rosenberg-questions.ts
 │   ├── phq9-questions.ts
 │   ├── k6-questions.ts
 │   ├── swls-questions.ts
@@ -136,6 +153,30 @@ psychtest-jp/
 └── public/               # 静的ファイル
 ```
 
+### アーキテクチャの特徴
+
+**1. Configuration-Driven Design**
+- 各テストを`TestConfig<TResult>`インターフェースで統一
+- 質問データ、スコアリング関数、バリデーション、学術情報を1つの設定に集約
+- 新規テスト追加はレジストリ登録のみで完結
+
+**2. 層別データフロー**
+```
+データ層 (data/) → ロジック層 (lib/tests/)
+  → レジストリ層 (test-registry.ts) → ストレージ層 (storage.ts)
+    → 分析層 (synthesis.ts) → UI層 (app/, components/)
+```
+
+**3. Locality of Behavior**
+- 1つのテストに関わるコードは1-2ファイルに集約
+- `lib/tests/rosenberg.ts`: 型定義、スコアリング、解釈、バリデーション、config
+- `data/rosenberg-questions.ts`: 質問データ、選択肢、尺度情報
+
+**4. 型安全性**
+- 全レイヤーでTypeScriptの厳密な型定義
+- `TestType` union typeによる存在しないテストの排除
+- ジェネリクス `TestConfig<TResult>` で各テスト結果型を保証
+
 ## 実装済み機能
 
 ### 診断テスト
@@ -145,9 +186,9 @@ psychtest-jp/
 - [x] **PHQ-9** - うつ病スクリーニング（9問）
 - [x] **K6** - 心理的苦痛スクリーニング（6問）
 - [x] **SWLS** - 人生満足度尺度（5問）
-- [x] **Self-Concept Clarity Scale** - 自己概念の明確さ（12問）
+- [x] **Self-Concept Clarity Scale** - 自己概念の明確さ（8問、IPIP代替尺度）
 
-**総問題数**: 182問
+**総問題数**: 178問
 
 ### システム機能
 - [x] 統合ダッシュボード（複数テスト結果の統合表示）

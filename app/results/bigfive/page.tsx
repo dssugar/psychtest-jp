@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { getTestResult, type BigFiveTestResult } from "@/lib/storage";
 import { scaleInfo } from "@/data/bigfive-questions";
-import { dimensionNames, dimensionDescriptions, addAllEstimations } from "@/lib/tests/bigfive";
+import { dimensionNames, dimensionDescriptions, addAllEstimations, getDimensionInterpretation } from "@/lib/tests/bigfive";
 import { BrutalProgressBar } from "@/components/viz/BrutalProgressBar";
 import { StatCard } from "@/components/viz/StatCard";
 import { DataBadge } from "@/components/viz/DataBadge";
@@ -165,40 +165,62 @@ export default function BigFiveResultPage() {
           </h2>
 
           <div className="space-y-6">
-            {dimensions.map((dim, index) => (
-              <div
-                key={dim.key}
-                className="card-brutal p-6 md:p-8 bg-brutal-white animate-slide-in-up"
-                style={{ animationDelay: `${0.1 * (index + 1)}s` }}
-              >
-                <div className="mb-6">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-xl md:text-2xl text-brutal-black" style={{ fontFamily: 'var(--font-display-ja)', fontWeight: 700 }}>
-                      {dim.name}
-                    </h3>
-                    <div className="flex items-center gap-3">
-                      <DataBadge color={dim.color}>{dim.score} / 120</DataBadge>
+            {dimensions.map((dim, index) => {
+              const interpretation = getDimensionInterpretation(dim.key, dim.score);
+              return (
+                <div
+                  key={dim.key}
+                  className="card-brutal p-6 md:p-8 bg-brutal-white animate-slide-in-up"
+                  style={{ animationDelay: `${0.1 * (index + 1)}s` }}
+                >
+                  <div className="mb-6">
+                    <div className="flex items-center justify-between mb-3">
+                      <h3 className="text-xl md:text-2xl text-brutal-black" style={{ fontFamily: 'var(--font-display-ja)', fontWeight: 700 }}>
+                        {dim.name}
+                      </h3>
+                      <div className="flex items-center gap-3">
+                        <DataBadge
+                          color={
+                            interpretation.level === 'low' ? 'blue' :
+                            interpretation.level === 'high' ? 'orange' :
+                            'green'
+                          }
+                        >
+                          {interpretation.level === 'low' ? '低い' : interpretation.level === 'high' ? '高い' : '中程度'}
+                        </DataBadge>
+                        <DataBadge color={dim.color}>{dim.score} / 120</DataBadge>
+                      </div>
                     </div>
+                    <p className="text-sm text-brutal-gray-800 mb-4">
+                      {dim.description}
+                    </p>
                   </div>
-                  <p className="text-sm text-brutal-gray-800 mb-4">
-                    {dim.description}
-                  </p>
-                </div>
 
-                <BrutalProgressBar
-                  value={dim.percentage}
-                  color={dim.color}
-                  label={dim.name}
-                  height="md"
-                />
+                  <BrutalProgressBar
+                    value={dim.percentage}
+                    color={dim.color}
+                    label={dim.name}
+                    height="md"
+                  />
 
-                <div className="flex justify-between text-xs font-mono text-brutal-gray-800 mt-3 uppercase tracking-wide">
-                  <span>Low (24-60)</span>
-                  <span>Medium (61-83)</span>
-                  <span>High (84-120)</span>
+                  <div className="flex justify-between text-xs font-mono text-brutal-gray-800 mt-3 mb-6 uppercase tracking-wide">
+                    <span>Low (24-60)</span>
+                    <span>Medium (61-83)</span>
+                    <span>High (84-120)</span>
+                  </div>
+
+                  {/* 詳細解釈 */}
+                  <div className="border-t-brutal border-brutal-gray-300 pt-6">
+                    <h4 className="font-bold text-brutal-black mb-3 uppercase tracking-wide text-sm">
+                      📝 あなたのスコアの解釈
+                    </h4>
+                    <p className="text-sm text-brutal-gray-900 leading-relaxed">
+                      {interpretation.summary}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 

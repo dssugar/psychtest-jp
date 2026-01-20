@@ -223,6 +223,18 @@ export function calculateBigFiveScore(answers: number[]): BigFiveResult {
   };
 }
 
+/**
+ * スコアレベルの判定（低・中・高）
+ */
+function getScoreLevel(score: number): 'low' | 'medium' | 'high' {
+  if (score <= 60) return 'low';
+  if (score >= 84) return 'high';
+  return 'medium';
+}
+
+/**
+ * 簡潔な解釈文の生成（既存の関数）
+ */
 function getInterpretation(scores: {
   extraversion: number;
   agreeableness: number;
@@ -280,6 +292,51 @@ function getInterpretation(scores: {
   return `あなたの性格は次のような特徴があります: ${traits.join(
     "、"
   )}。これらの特性はあなたの行動パターンや対人関係のスタイルに影響を与えます。`;
+}
+
+/**
+ * 各次元の詳細解釈を取得
+ * @param dimension - 次元名
+ * @param score - スコア（24-120）
+ * @returns 詳細解釈テキスト
+ */
+export function getDimensionInterpretation(
+  dimension: keyof typeof dimensionNames,
+  score: number
+): { summary: string; level: 'low' | 'medium' | 'high' } {
+  const level = getScoreLevel(score);
+  const interpretations = {
+    neuroticism: {
+      low: "感情的に非常に安定しており、ストレスに強い状態です（スコア: 24-60点）。日常的なプレッシャーや困難に対して冷静に対処でき、不安や心配を感じることは少ないです。周囲からは「落ち着いている」「メンタルが強い」と評価されやすく、危機的状況でも平常心を保ちやすい傾向があります。",
+      medium: "適度な感情の波があり、健全な範囲内でストレスに反応します（スコア: 61-83点）。大半の人が属するこのレベルでは、不安や心配を感じることもあれば、冷静に対処できることもあります。感情的な感受性と理性的な判断のバランスが取れており、日常生活に大きな支障はありません。",
+      high: "感情的な反応が強く、ストレスに敏感な状態です（スコア: 84-120点）。不安、心配、悲しみ、怒りなどのネガティブな感情を感じやすく、日常的な出来事でも強く反応します。周囲からは「敏感」「繊細」「気にしすぎ」と言われることが多く、感情のコントロールに苦労する場合があります。ただし、この感受性は芸術的創造性や共感力と関連する側面もあります。"
+    },
+    extraversion: {
+      low: "社交的な場面よりも一人の時間を好む内向的な性格です（スコア: 24-60点）。大勢の人との交流はエネルギーを消耗させ、少人数や一対一の深い関係を好みます。静かな環境で集中して作業することを好み、刺激の少ない環境で充実感を得ます。「物静か」「控えめ」「思慮深い」と評価されることが多いです。",
+      medium: "状況に応じて社交的にも内省的にもなれる柔軟な性格です（スコア: 61-83点）。大勢の人との交流も楽しめますが、一人の時間も必要です。「両向性（Ambiversion）」とも呼ばれ、多くの人がこのレベルに属します。環境や相手に合わせて、外向性と内向性を切り替えることができます。",
+      high: "非常に社交的で、人との交流からエネルギーを得るタイプです（スコア: 84-120点）。大勢の人と過ごすことを楽しみ、パーティ、イベント、グループ活動を好みます。一人でいることは退屈でエネルギーが低下します。「明るい」「話好き」「リーダーシップがある」と評価され、注目を集めることを厭いません。"
+    },
+    openness: {
+      low: "慣れ親しんだ方法を好み、新しいことよりも確実なアプローチを重視します（スコア: 24-60点）。抽象的な議論よりも具体的で実践的なことを好み、芸術や哲学への関心は低めです。保守的で伝統を尊重し、変化よりも安定を求めます。「現実的」「実務的」「地に足がついている」と評価されます。",
+      medium: "新しいことへの興味と慣れ親しんだ方法のバランスが取れています（スコア: 61-83点）。状況に応じて、創造的にも実践的にもなれます。芸術や抽象的な議論を楽しむこともあれば、具体的で実用的なアプローチも重視します。適度な好奇心と安定志向の両立が特徴です。",
+      high: "非常に創造的で、新しいアイデアや経験を積極的に求めます（スコア: 84-120点）。抽象的な思考、芸術、哲学、多様な文化に強い関心があり、既成概念にとらわれません。変化と革新を好み、ルーチンワークは退屈に感じます。「創造的」「知的」「先見的」と評価されますが、「非現実的」「頭でっかち」と見られることもあります。"
+    },
+    agreeableness: {
+      low: "他人よりも自分の利益を優先し、競争的な性格です（スコア: 24-60点）。対人関係では率直で、時に批判的です。他人に合わせるよりも、自分の意見を主張します。「強い」「独立心がある」と評価される一方、「冷たい」「利己的」と見られることもあります。",
+      medium: "思いやりと自己主張のバランスが取れています（スコア: 61-83点）。状況に応じて、協力的にも競争的にもなれます。他人を助けることも大切にしますが、自分の利益も守ります。「公平」「バランスが良い」と評価されます。",
+      high: "非常に思いやり深く、他人を助けることに喜びを感じます（スコア: 84-120点）。協力的で、対立を避け、調和を重視します。他人の感情に敏感で、共感力が高いです。「優しい」「親切」「利他的」と評価される一方、「お人好し」「利用されやすい」と見られることもあります。"
+    },
+    conscientiousness: {
+      low: "計画よりも自発性を重視し、柔軟な生活スタイルを好みます（スコア: 24-60点）。厳格なスケジュールやルールに縛られることを嫌い、その場の流れに任せます。組織化や細部への注意は苦手ですが、創造性と適応力があります。「自由奔放」「柔軟」と評価される一方、「だらしない」「無責任」と見られることもあります。",
+      medium: "計画性と柔軟性のバランスが取れています（スコア: 61-83点）。重要なタスクは計画的にこなしますが、細部にはこだわりすぎません。締め切りは守りますが、完璧主義ではありません。「信頼できる」「現実的」と評価されます。",
+      high: "非常に計画的で、責任感が強く、目標達成に向けて努力します（スコア: 84-120点）。細部に注意を払い、完璧主義的です。締め切りを守り、約束を果たし、信頼性が高いです。「真面目」「勤勉」「頼りになる」と評価される一方、「融通が利かない」「頑固」と見られることもあります。"
+    }
+  };
+
+  return {
+    summary: interpretations[dimension][level],
+    level
+  };
 }
 
 /**
@@ -408,5 +465,49 @@ export const bigFiveConfig: TestConfig<BigFiveResult> = {
     shareButtons: true,
     facetsDisplay: true,
     estimations: true,
+  },
+
+  // OG画像・SNSシェア設定
+  ogImage: {
+    layoutType: "bar",
+    titleEn: "BIG FIVE",
+    category: "性格特性診断",
+    description: "科学的根拠に基づいた\n5つの主要特性スコアレポート",
+    colors: {
+      extraversion: "#3b82f6",      // 青
+      agreeableness: "#ec4899",     // ピンク
+      conscientiousness: "#10b981", // 緑
+      neuroticism: "#f97316",       // オレンジ
+      openness: "#8b5cf6",          // 紫
+    },
+    dimensionLabels: {
+      extraversion: "外向性",
+      agreeableness: "協調性",
+      conscientiousness: "誠実性",
+      neuroticism: "神経症傾向",
+      openness: "開放性",
+    },
+    scoreDisplay: {
+      type: "raw",
+      min: 24,
+      max: 120,
+      unit: "",
+    },
+    // スコアをクエリパラメータに変換（短縮形）
+    scoreToParams: (result: BigFiveResult) => ({
+      e: result.extraversion.toString(),
+      a: result.agreeableness.toString(),
+      c: result.conscientiousness.toString(),
+      n: result.neuroticism.toString(),
+      o: result.openness.toString(),
+    }),
+    // クエリパラメータからスコアに変換
+    paramsToScore: (params: URLSearchParams) => ({
+      extraversion: parseInt(params.get("e") || "72"),
+      agreeableness: parseInt(params.get("a") || "72"),
+      conscientiousness: parseInt(params.get("c") || "72"),
+      neuroticism: parseInt(params.get("n") || "72"),
+      openness: parseInt(params.get("o") || "72"),
+    }),
   },
 };
