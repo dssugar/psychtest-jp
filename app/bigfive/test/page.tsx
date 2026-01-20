@@ -10,7 +10,7 @@ import { DataBadge } from "@/components/viz/DataBadge";
 export default function BigFiveTestPage() {
   const router = useRouter();
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState<number[]>(new Array(20).fill(0));
+  const [answers, setAnswers] = useState<number[]>(new Array(20).fill(-1));
   const [showWarning, setShowWarning] = useState(false);
 
   const progress = ((currentQuestion + 1) / bigFiveQuestions.length) * 100;
@@ -36,7 +36,7 @@ export default function BigFiveTestPage() {
 
   const handleSubmit = () => {
     // すべて回答済みか確認
-    if (answers.includes(0)) {
+    if (answers.includes(-1)) {
       alert("すべての質問に回答してください");
       return;
     }
@@ -63,7 +63,7 @@ export default function BigFiveTestPage() {
 
   const question = bigFiveQuestions[currentQuestion];
   const isLastQuestion = currentQuestion === bigFiveQuestions.length - 1;
-  const allAnswered = !answers.includes(0);
+  const allAnswered = !answers.includes(-1);
 
   return (
     <main className="min-h-screen">

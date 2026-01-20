@@ -10,7 +10,7 @@ import { DataBadge } from "@/components/viz/DataBadge";
 export default function IndustriousnessTestPage() {
   const router = useRouter();
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState<number[]>(new Array(20).fill(0));
+  const [answers, setAnswers] = useState<number[]>(new Array(20).fill(-1));
 
   const progress = ((currentQuestion + 1) / industriousnessQuestions.length) * 100;
 
@@ -35,7 +35,7 @@ export default function IndustriousnessTestPage() {
 
   const handleSubmit = () => {
     // すべて回答済みか確認
-    if (answers.includes(0)) {
+    if (answers.includes(-1)) {
       alert("すべての質問に回答してください");
       return;
     }
@@ -52,7 +52,7 @@ export default function IndustriousnessTestPage() {
 
   const question = industriousnessQuestions[currentQuestion];
   const isLastQuestion = currentQuestion === industriousnessQuestions.length - 1;
-  const allAnswered = !answers.includes(0);
+  const allAnswered = !answers.includes(-1);
 
   return (
     <main className="min-h-screen">
@@ -138,39 +138,16 @@ export default function IndustriousnessTestPage() {
               disabled={currentQuestion === 0}
               className="px-6 py-3 font-bold uppercase tracking-wide text-sm text-brutal-gray-800 hover:text-brutal-black disabled:opacity-30 disabled:cursor-not-allowed transition-opacity min-h-[44px]"
             >
-              ← 戻る
+              ← 前の質問
             </button>
 
-            {/* Question Dots Navigation */}
-            <div className="hidden md:flex items-center gap-2">
-              {industriousnessQuestions.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentQuestion(index)}
-                  className={`
-                    w-2 h-2 transition-all
-                    ${
-                      index === currentQuestion
-                        ? "w-6 bg-viz-green"
-                        : answers[index] !== 0
-                        ? "bg-brutal-black"
-                        : "bg-brutal-gray-400"
-                    }
-                  `}
-                  aria-label={`質問 ${index + 1}へ移動`}
-                />
-              ))}
-            </div>
-
-            {isLastQuestion && allAnswered ? (
+            {isLastQuestion && allAnswered && (
               <button
                 onClick={handleSubmit}
                 className="btn-brutal bg-viz-green text-brutal-white px-8 py-3 font-bold uppercase tracking-wide hover:translate-x-1 hover:translate-y-1 transition-transform min-h-[44px]"
               >
-                結果を見る →
+                結果を見る
               </button>
-            ) : (
-              <div className="w-[120px]" /> // Spacer for layout consistency
             )}
           </div>
         </div>

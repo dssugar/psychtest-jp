@@ -147,47 +147,15 @@ export default function SwlsTestPage() {
               disabled={currentQuestion === 0}
               className="px-6 py-3 font-bold uppercase tracking-wide text-sm text-brutal-gray-800 hover:text-brutal-black disabled:opacity-30 disabled:cursor-not-allowed transition-opacity min-h-[44px]"
             >
-              ← 戻る
+              ← 前の質問
             </button>
 
-            {/* Question Dots */}
-            <div className="flex items-center gap-2">
-              {swlsQuestions.map((_, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setCurrentQuestion(idx)}
-                  className={`
-                    w-3 h-3 border-[2px] border-brutal-black transition-all
-                    ${
-                      idx === currentQuestion
-                        ? "bg-viz-blue scale-125"
-                        : answers[idx] !== -1
-                        ? "bg-brutal-gray-400"
-                        : "bg-brutal-white"
-                    }
-                  `}
-                  aria-label={`質問 ${idx + 1}`}
-                />
-              ))}
-            </div>
-
-            {isLastQuestion && allAnswered ? (
+            {isLastQuestion && allAnswered && (
               <button
                 onClick={handleSubmit}
-                className="px-8 py-3 font-bold uppercase tracking-wide text-sm border-brutal border-brutal-black bg-brutal-black text-brutal-white hover:shadow-[4px_4px_0px_#000] transition-all min-h-[44px]"
+                className="btn-brutal bg-brutal-black text-brutal-white px-6 py-3 md:px-10 md:py-4 text-sm min-h-[44px]"
               >
                 結果を見る
-              </button>
-            ) : (
-              <button
-                onClick={() =>
-                  currentQuestion < swlsQuestions.length - 1 &&
-                  setCurrentQuestion(currentQuestion + 1)
-                }
-                disabled={currentQuestion === swlsQuestions.length - 1}
-                className="px-8 py-3 font-bold uppercase tracking-wide text-sm text-brutal-gray-800 hover:text-brutal-black disabled:opacity-30 disabled:cursor-not-allowed transition-opacity min-h-[44px]"
-              >
-                次へ →
               </button>
             )}
           </div>

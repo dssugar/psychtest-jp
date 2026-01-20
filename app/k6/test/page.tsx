@@ -111,25 +111,50 @@ export default function K6TestPage() {
             </div>
 
             {/* Answer Options */}
-            <div className="space-y-3">
-              {scaleLabels.map((label, index) => (
-                <button
-                  key={index}
-                  onClick={() => handleAnswer(index)}
-                  className={`btn-brutal w-full text-left px-6 py-4 transition-all ${
-                    currentAnswer === index
-                      ? "bg-viz-cyan text-brutal-white border-4"
-                      : "bg-brutal-white text-brutal-black hover:bg-brutal-gray-50"
-                  }`}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="font-semibold">{label}</span>
-                    <span className="text-sm font-mono text-brutal-gray-700">
-                      {index}点
-                    </span>
-                  </div>
-                </button>
-              ))}
+            <div className="space-y-4">
+              {scaleLabels.map((label, index) => {
+                const isSelected = currentAnswer === index;
+
+                return (
+                  <button
+                    key={index}
+                    onClick={() => handleAnswer(index)}
+                    className={`
+                      w-full text-left px-4 py-3 md:px-6 md:py-4 border-[3px] border-solid transition-all
+                      ${
+                        isSelected
+                          ? "border-black bg-black text-white shadow-[4px_4px_0px_#000]"
+                          : "border-black bg-[#ffffff] text-black hover:shadow-[4px_4px_0px_#000]"
+                      }
+                    `}
+                  >
+                    <div className="flex items-center gap-4">
+                      {/* Radio Indicator */}
+                      <div
+                        className={`
+                        w-6 h-6 border-[3px] border-solid flex items-center justify-center
+                        ${
+                          isSelected
+                            ? "border-white bg-[#ffffff]"
+                            : "border-black bg-[#ffffff]"
+                        }
+                      `}
+                      >
+                        {isSelected && (
+                          <div className="w-3 h-3 bg-black" />
+                        )}
+                      </div>
+
+                      <div className="flex items-center justify-between flex-1">
+                        <span className="font-semibold">{label}</span>
+                        <span className="text-sm font-mono text-brutal-gray-700">
+                          {index}点
+                        </span>
+                      </div>
+                    </div>
+                  </button>
+                );
+              })}
             </div>
           </div>
 
@@ -138,36 +163,18 @@ export default function K6TestPage() {
             <button
               onClick={handleBack}
               disabled={currentQuestion === 0}
-              className="btn-brutal px-6 py-3 bg-brutal-gray-200 text-brutal-black disabled:opacity-30"
+              className="px-6 py-3 font-bold uppercase tracking-wide text-sm text-brutal-gray-800 hover:text-brutal-black disabled:opacity-30 disabled:cursor-not-allowed transition-opacity min-h-[44px]"
             >
-              ← 戻る
+              ← 前の質問
             </button>
 
-            {/* Progress Dots */}
-            <div className="flex gap-2">
-              {questions.map((_, index) => (
-                <div
-                  key={index}
-                  className={`w-2 h-2 rounded-full border border-brutal-black ${
-                    index === currentQuestion
-                      ? "bg-viz-cyan"
-                      : answers[index] !== -1
-                      ? "bg-brutal-black"
-                      : "bg-brutal-gray-200"
-                  }`}
-                />
-              ))}
-            </div>
-
-            {isLastQuestion ? (
+            {isLastQuestion && currentAnswer !== -1 && (
               <button
                 onClick={handleSubmit}
-                className="btn-brutal px-8 py-3 bg-viz-cyan text-brutal-white hover-lift"
+                className="btn-brutal bg-brutal-black text-brutal-white px-6 py-3 md:px-10 md:py-4 text-sm min-h-[44px]"
               >
                 結果を見る
               </button>
-            ) : (
-              <div className="w-24" /> // Spacer for alignment
             )}
           </div>
         </div>
