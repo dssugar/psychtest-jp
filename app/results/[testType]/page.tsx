@@ -152,11 +152,15 @@ export default function DynamicResultPage() {
             </Card>
           ))}
 
-          {/* Score Display - テスト固有の表示 */}
-          {renderScoreDisplay(testType, testResult, scoreDisplay, color, scaleInfo, result, config)}
+          {/* Result Summary Card (1200x630) */}
+          {renderResultSummaryCard(testType, testResult, scoreDisplay, color, scaleInfo, result, config)}
 
-          {/* Result Extensions (条件付き) */}
+          {/* Share Section - Result Summary Card の直下 */}
           {resultExtensions?.shareButtons && renderShareButtons(testType, testResult, config)}
+
+          {/* Detailed Score Display - テスト固有の詳細表示 */}
+          {renderDetailedScoreDisplay(testType, testResult, scoreDisplay, color, scaleInfo, result, config)}
+
           {/* TODO: BigFive専用拡張機能（Facets, MBTI, Enneagram）は
               複雑な構造のため、既存のbigfive result pageで対応 */}
 
@@ -265,9 +269,9 @@ export default function DynamicResultPage() {
 }
 
 /**
- * スコア表示のレンダリング（テスト固有）
+ * Result Summary Card のレンダリング（1200x630セクション）
  */
-function renderScoreDisplay(
+function renderResultSummaryCard(
   testType: string,
   testResult: any,
   scoreDisplay: any,
@@ -276,28 +280,65 @@ function renderScoreDisplay(
   result: any,
   config: any
 ) {
-  // BigFive: 特殊な多次元表示
+  // BigFive: 5次元表示
   if (testType === "bigfive") {
-    return renderBigFiveScoreDisplay(testResult, result);
+    return renderBigFiveSummaryCard(testResult);
+  }
+
+  // Industriousness: 2次元表示
+  if (testType === "industriousness") {
+    return renderIndustriousnessSummaryCard(testResult);
+  }
+
+  // PHQ-9/K6: 単一スコア（レベル色）
+  if (testType === "phq9" || testType === "k6") {
+    return renderClinicalSummaryCard(testType, testResult, scoreDisplay, config);
+  }
+
+  // その他: Circle または Progress型
+  if (scoreDisplay?.type === "circle" || scoreDisplay?.type === "progress") {
+    return renderSingleScoreSummaryCard(testResult, color, scaleInfo, config);
+  }
+
+  // フォールバック: なし
+  return null;
+}
+
+/**
+ * Detailed Score Display のレンダリング
+ */
+function renderDetailedScoreDisplay(
+  testType: string,
+  testResult: any,
+  scoreDisplay: any,
+  color: string,
+  scaleInfo: any,
+  result: any,
+  config: any
+) {
+  // BigFive: 簡易版（詳細はbigfive専用ページで表示）
+  if (testType === "bigfive") {
+    return renderBigFiveDetailedDisplay(testResult);
   }
 
   // Industriousness: 2x2マトリックス表示
   if (testType === "industriousness") {
-    return renderIndustriousnessScoreDisplay(testResult);
+    return renderIndustriousnessDetailedDisplay(testResult);
   }
 
   // PHQ-9/K6: プログレスバー + レベル色
   if (testType === "phq9" || testType === "k6") {
-    return renderClinicalScoreDisplay(testType, testResult, scoreDisplay, color, config);
+    return renderClinicalDetailedDisplay(testType, testResult, scoreDisplay, color);
   }
 
-  // その他: Circle または Progress
+  // Circle型
   if (scoreDisplay?.type === "circle") {
-    return renderCircleScoreDisplay(testResult, color, scaleInfo, config);
+    return renderCircleDetailedDisplay(testResult, color, scaleInfo);
   }
 
+  // Progress型
   if (scoreDisplay?.type === "progress") {
-    return renderProgressScoreDisplay(testResult, color, scoreDisplay);
+    return renderProgressDetailedDisplay(testResult, color, scoreDisplay);
   }
 
   // フォールバック: シンプルなスコア表示
@@ -316,9 +357,9 @@ function renderScoreDisplay(
 }
 
 /**
- * Circle型スコア表示
+ * 単一スコアのSummary Card（Circle/Progress型共通）
  */
-function renderCircleScoreDisplay(testResult: any, color: string, scaleInfo: any, config: any) {
+function renderSingleScoreSummaryCard(testResult: any, color: string, scaleInfo: any, config: any) {
   // Color mapping
   const colorMap: Record<string, string> = {
     pink: '#ec4899', orange: '#f97316', cyan: '#06b6d4',
@@ -337,63 +378,66 @@ function renderCircleScoreDisplay(testResult: any, color: string, scaleInfo: any
   ];
 
   return (
-    <>
-      {/* Result Summary Card */}
-      <div className="mb-12">
-        <ResultSummaryCard
-          dimensions={dimensionData}
-          titleEn={config.ogImage?.titleEn || scaleInfo.abbreviation}
-          category={config.ogImage?.category || scaleInfo.category}
-          description={config.ogImage?.description || ''}
-        />
-      </div>
-
-      {/* Detailed Score Display */}
-      <div className="mb-16">
-        <Card variant="white" padding="lg" className="animate-scale-in">
-          <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12">
-            <div className="flex-shrink-0 w-[180px] md:w-[220px] lg:w-[240px]">
-              <ScoreCircle
-                score={testResult.percentageScore}
-                size="lg"
-                color={color as any}
-                label={scaleInfo.nameJa}
-              />
-            </div>
-            <div className="flex-1 space-y-6">
-              <div>
-                <DataBadge color={color as any} size="lg">
-                  {testResult.levelLabel || "スコア"}
-                </DataBadge>
-                <h2
-                  className="text-2xl md:text-3xl lg:text-4xl text-brutal-black mt-4 mb-4"
-                  style={{ fontFamily: "var(--font-display-ja)", fontWeight: 700 }}
-                >
-                  評価レベル
-                </h2>
-              </div>
-              <Card
-                variant="white"
-                padding="md"
-                className="bg-brutal-gray-50 border-l-brutal-thick border-l-viz-blue"
-              >
-                <h3 className="font-bold uppercase tracking-wide text-sm text-brutal-gray-900 mb-3">
-                  結果の解釈
-                </h3>
-                <p className="text-brutal-gray-900 leading-relaxed">{testResult.interpretation}</p>
-              </Card>
-            </div>
-          </div>
-        </Card>
-      </div>
-    </>
+    <div className="mb-12">
+      <ResultSummaryCard
+        dimensions={dimensionData}
+        titleEn={config.ogImage?.titleEn || scaleInfo.abbreviation}
+        category={config.ogImage?.category || scaleInfo.category}
+        description={config.ogImage?.description || ''}
+      />
+    </div>
   );
 }
 
 /**
- * Progress型スコア表示
+ * Circle型の詳細表示
  */
-function renderProgressScoreDisplay(testResult: any, color: string, scoreDisplay: any) {
+function renderCircleDetailedDisplay(testResult: any, color: string, scaleInfo: any) {
+  return (
+    <div className="mb-16">
+      <Card variant="white" padding="lg" className="animate-scale-in">
+        <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12">
+          <div className="flex-shrink-0 w-[180px] md:w-[220px] lg:w-[240px]">
+            <ScoreCircle
+              score={testResult.percentageScore}
+              size="lg"
+              color={color as any}
+              label={scaleInfo.nameJa}
+            />
+          </div>
+          <div className="flex-1 space-y-6">
+            <div>
+              <DataBadge color={color as any} size="lg">
+                {testResult.levelLabel || "スコア"}
+              </DataBadge>
+              <h2
+                className="text-2xl md:text-3xl lg:text-4xl text-brutal-black mt-4 mb-4"
+                style={{ fontFamily: "var(--font-display-ja)", fontWeight: 700 }}
+              >
+                評価レベル
+              </h2>
+            </div>
+            <Card
+              variant="white"
+              padding="md"
+              className="bg-brutal-gray-50 border-l-brutal-thick border-l-viz-blue"
+            >
+              <h3 className="font-bold uppercase tracking-wide text-sm text-brutal-gray-900 mb-3">
+                結果の解釈
+              </h3>
+              <p className="text-brutal-gray-900 leading-relaxed">{testResult.interpretation}</p>
+            </Card>
+          </div>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+/**
+ * Progress型の詳細表示
+ */
+function renderProgressDetailedDisplay(testResult: any, color: string, scoreDisplay: any) {
   return (
     <div className="mb-16">
       <Card variant={color as any} padding="lg">
@@ -416,37 +460,40 @@ function renderProgressScoreDisplay(testResult: any, color: string, scoreDisplay
 }
 
 /**
- * 臨床系（PHQ-9, K6）のスコア表示
+ * 臨床系（PHQ-9, K6）のレベル色を取得
  */
-function renderClinicalScoreDisplay(
+function getClinicalLevelColor(
+  testType: string,
+  testResult: any
+): "orange" | "blue" | "green" | "pink" {
+  const score = testResult.rawScore;
+  if (testType === "phq9") {
+    if (testResult.level === "severe") return "orange";
+    if (testResult.level === "moderately_severe") return "orange";
+    if (testResult.level === "moderate") return "pink";
+    if (testResult.level === "mild") return "blue";
+    return "green";
+  }
+  // K6
+  if (score >= 13) return "orange";
+  if (score >= 10) return "pink";
+  if (score >= 5) return "blue";
+  return "green";
+}
+
+/**
+ * 臨床系（PHQ-9, K6）のSummary Card
+ */
+function renderClinicalSummaryCard(
   testType: string,
   testResult: any,
   scoreDisplay: any,
-  baseColor: string,
   config: any
 ) {
-  // スコア取得（すべてrawScoreで統一）
   const score = testResult.rawScore;
   const percentageScore =
     testResult.percentageScore || (score / scoreDisplay.maxScore) * 100;
-
-  // レベルに応じた色の決定
-  const getLevelColor = (): "orange" | "blue" | "green" | "pink" | "black" => {
-    if (testType === "phq9") {
-      if (testResult.level === "severe") return "orange";
-      if (testResult.level === "moderately_severe") return "orange";
-      if (testResult.level === "moderate") return "pink";
-      if (testResult.level === "mild") return "blue";
-      return "green";
-    }
-    // K6
-    if (score >= 13) return "orange";
-    if (score >= 10) return "pink";
-    if (score >= 5) return "blue";
-    return "green";
-  };
-
-  const levelColor = getLevelColor();
+  const levelColor = getClinicalLevelColor(testType, testResult);
 
   // Color mapping
   const colorMap: Record<string, string> = {
@@ -468,49 +515,61 @@ function renderClinicalScoreDisplay(
   const { scaleInfo } = config;
 
   return (
-    <>
-      {/* Result Summary Card */}
-      <div className="mb-12">
-        <ResultSummaryCard
-          dimensions={dimensionData}
-          titleEn={config.ogImage?.titleEn || scaleInfo.abbreviation}
-          category={config.ogImage?.category || scaleInfo.category}
-          description={config.ogImage?.description || ''}
-        />
-      </div>
-
-      {/* Detailed Score Display */}
-      <div className="mb-16">
-        <Card variant={levelColor} padding="lg">
-          <div className="text-center mb-6">
-            <div className="text-6xl md:text-8xl font-mono font-bold data-number mb-4">
-              {score}
-              <span className="text-3xl md:text-4xl font-semibold">
-                /{scoreDisplay.maxScore}
-              </span>
-            </div>
-            <div
-              className="text-2xl md:text-3xl text-brutal-black"
-              style={{ fontFamily: "var(--font-display-ja)", fontWeight: 700 }}
-            >
-              {testResult.levelLabel}
-            </div>
-          </div>
-          <BrutalProgressBar value={percentageScore} color={levelColor} showValue={false} />
-          <div className="mt-6 text-center text-sm font-mono text-brutal-gray-800">
-            {testResult.interpretation}
-          </div>
-        </Card>
-      </div>
-    </>
+    <div className="mb-12">
+      <ResultSummaryCard
+        dimensions={dimensionData}
+        titleEn={config.ogImage?.titleEn || scaleInfo.abbreviation}
+        category={config.ogImage?.category || scaleInfo.category}
+        description={config.ogImage?.description || ''}
+      />
+    </div>
   );
 }
 
 /**
- * BigFive特殊表示
+ * 臨床系（PHQ-9, K6）の詳細表示
  */
-function renderBigFiveScoreDisplay(bigFiveResult: BigFiveResult, result: any) {
-  const bigFiveWithEstimations = addAllEstimations(bigFiveResult);
+function renderClinicalDetailedDisplay(
+  testType: string,
+  testResult: any,
+  scoreDisplay: any,
+  baseColor: string
+) {
+  const score = testResult.rawScore;
+  const percentageScore =
+    testResult.percentageScore || (score / scoreDisplay.maxScore) * 100;
+  const levelColor = getClinicalLevelColor(testType, testResult);
+
+  return (
+    <div className="mb-16">
+      <Card variant={levelColor} padding="lg">
+        <div className="text-center mb-6">
+          <div className="text-6xl md:text-8xl font-mono font-bold data-number mb-4">
+            {score}
+            <span className="text-3xl md:text-4xl font-semibold">
+              /{scoreDisplay.maxScore}
+            </span>
+          </div>
+          <div
+            className="text-2xl md:text-3xl text-brutal-black"
+            style={{ fontFamily: "var(--font-display-ja)", fontWeight: 700 }}
+          >
+            {testResult.levelLabel}
+          </div>
+        </div>
+        <BrutalProgressBar value={percentageScore} color={levelColor} showValue={false} />
+        <div className="mt-6 text-center text-sm font-mono text-brutal-gray-800">
+          {testResult.interpretation}
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+/**
+ * BigFive Summary Card
+ */
+function renderBigFiveSummaryCard(bigFiveResult: BigFiveResult) {
   const toPercentage = (score: number) => ((score - 24) / 96) * 100;
 
   const dimensionsForSummary: DimensionData[] = DIMENSION_ORDER.map((key) => ({
@@ -534,10 +593,17 @@ function renderBigFiveScoreDisplay(bigFiveResult: BigFiveResult, result: any) {
 }
 
 /**
- * Industriousness特殊表示
+ * BigFive Detailed Display（簡易版 - 詳細はbigfive専用ページで表示）
  */
-function renderIndustriousnessScoreDisplay(testResult: any) {
-  // ResultSummaryCard用のデータ（2次元）
+function renderBigFiveDetailedDisplay(bigFiveResult: BigFiveResult) {
+  // 動的結果ページではSummary Cardのみ表示し、詳細はbigfive専用ページへ誘導
+  return null;
+}
+
+/**
+ * Industriousness Summary Card
+ */
+function renderIndustriousnessSummaryCard(testResult: any) {
   const toPercentage = (score: number) => Math.round(((score - 10) / 40) * 100);
   const dimensionData: DimensionData[] = [
     {
@@ -557,52 +623,55 @@ function renderIndustriousnessScoreDisplay(testResult: any) {
   ];
 
   return (
-    <>
-      {/* Result Summary Card */}
-      <div className="mb-12">
-        <ResultSummaryCard
-          dimensions={dimensionData}
-          titleEn="INDUSTRI-\nOUSNESS"
-          category="勤勉性診断"
-          description="やり抜く力を測定\n2つの次元で評価"
-        />
-      </div>
+    <div className="mb-12">
+      <ResultSummaryCard
+        dimensions={dimensionData}
+        titleEn="INDUSTRI-\nOUSNESS"
+        category="勤勉性診断"
+        description="やり抜く力を測定\n2つの次元で評価"
+      />
+    </div>
+  );
+}
 
-      {/* Detailed Score Display */}
-      <div className="mb-16">
-        <Card variant="green" padding="lg">
-          <div className="text-center mb-8">
-            <h2
-              className="text-3xl md:text-4xl text-brutal-black mb-4"
-              style={{ fontFamily: "var(--font-display-ja)", fontWeight: 700 }}
-            >
-              あなたのタイプ: {testResult.quadrantLabel}
-            </h2>
-            <div className="text-5xl font-mono font-bold data-number">
-              {testResult.rawScore}点
-            </div>
+/**
+ * Industriousness Detailed Display
+ */
+function renderIndustriousnessDetailedDisplay(testResult: any) {
+  return (
+    <div className="mb-16">
+      <Card variant="green" padding="lg">
+        <div className="text-center mb-8">
+          <h2
+            className="text-3xl md:text-4xl text-brutal-black mb-4"
+            style={{ fontFamily: "var(--font-display-ja)", fontWeight: 700 }}
+          >
+            あなたのタイプ: {testResult.quadrantLabel}
+          </h2>
+          <div className="text-5xl font-mono font-bold data-number">
+            {testResult.rawScore}点
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <div className="text-sm font-bold uppercase tracking-wide mb-2">目標達成意欲 (C4)</div>
-              <BrutalProgressBar
-                value={(testResult.c4_achievement / 50) * 100}
-                color="blue"
-                label={`${testResult.c4_achievement}/50`}
-              />
-            </div>
-            <div>
-              <div className="text-sm font-bold uppercase tracking-wide mb-2">自己統制力 (C5)</div>
-              <BrutalProgressBar
-                value={(testResult.c5_discipline / 50) * 100}
-                color="green"
-                label={`${testResult.c5_discipline}/50`}
-              />
-            </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <div className="text-sm font-bold uppercase tracking-wide mb-2">目標達成意欲 (C4)</div>
+            <BrutalProgressBar
+              value={(testResult.c4_achievement / 50) * 100}
+              color="blue"
+              label={`${testResult.c4_achievement}/50`}
+            />
           </div>
-        </Card>
-      </div>
-    </>
+          <div>
+            <div className="text-sm font-bold uppercase tracking-wide mb-2">自己統制力 (C5)</div>
+            <BrutalProgressBar
+              value={(testResult.c5_discipline / 50) * 100}
+              color="green"
+              label={`${testResult.c5_discipline}/50`}
+            />
+          </div>
+        </div>
+      </Card>
+    </div>
   );
 }
 

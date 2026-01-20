@@ -22,6 +22,8 @@ import {
   scaleInfo,
 } from "@/data/selfconcept-questions";
 import type { TestConfig } from "./types";
+import type { DimensionData } from "@/lib/og-design/types";
+import { TEST_COLOR_MAP } from "@/lib/og-design/constants";
 
 // ============================================================================
 // Types & Interfaces
@@ -171,6 +173,11 @@ export const selfConceptConfig: TestConfig<SelfConceptResult> = {
     maxScore: 60,
   },
 
+  // 結果ページ拡張機能
+  resultExtensions: {
+    shareButtons: true,
+  },
+
   // OG画像設定
   ogImage: {
     layoutType: "single",
@@ -184,5 +191,21 @@ export const selfConceptConfig: TestConfig<SelfConceptResult> = {
     paramsToScore: (params: URLSearchParams) => ({
       score: parseInt(params.get("score") || "24"),
     }),
+  },
+
+  // 🆕 NEW: 1次元データ生成
+  getDimensions: (result: SelfConceptResult): DimensionData[] => {
+    const min = 8;
+    const max = 40;
+    const rawScore = result?.rawScore ?? 24;
+    const percentage = result?.percentageScore ?? ((rawScore - min) / (max - min)) * 100;
+
+    return [{
+      key: 'score',
+      label: 'Total Score',
+      score: rawScore,
+      percentage: percentage,
+      color: TEST_COLOR_MAP['blue'] || '#3b82f6',
+    }];
   },
 };
