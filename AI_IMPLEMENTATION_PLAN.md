@@ -154,6 +154,546 @@ IndexedDB（会話履歴をブラウザに保存）
 
 ---
 
+## 🧠 メモリアーキテクチャ（Memory Architecture）
+
+### なぜメモリ設計が重要か？
+
+LLMエージェントの会話品質は、**記憶をどう管理するか**に依存します。
+
+**課題**:
+- Context window（200K-2M tokens）には限界がある
+- 長期会話では古い情報が押し出される
+- 関連性の低い情報で無駄にトークンを消費
+- ユーザーが過去の話題に戻ったときに文脈を失う
+
+**解決策**:
+- 3層メモリ階層（Working / Contextual / Long-term）
+- 意味的検索（Semantic Retrieval）でRAGベースの記憶想起
+- プログレッシブ要約（Progressive Summarization）でコンテキスト圧縮
+- ブラウザ内ベクトル埋め込み（Transformers.js）で完全プライバシー
+
+---
+
+### メモリ階層（3-Tier Memory Hierarchy）
+
+#### Layer 1: Working Memory（作業記憶）
+- **容量**: 直近5-10ターン
+- **保持期間**: 現在の会話セッション中のみ
+- **用途**: 即座の文脈理解（"それ"、"その話"などの照応解決）
+- **実装**: メモリ内配列（React state）
+
+```typescript
+interface WorkingMemory {
+  messages: Message[];  // 直近10ターン
+  currentTopic: string; // "キャリア相談"など
+  lastUpdate: Date;
+}
+```
+
+#### Layer 2: Contextual Memory（文脈記憶）
+- **容量**: 現在の会話スレッド全体の要約
+- **保持期間**: セッション終了まで（ページリロードで再構築）
+- **用途**: 会話全体の流れ把握、主要な話題追跡
+- **実装**: 定期的な要約生成（5ターンごと）
+
+```typescript
+interface ContextualMemory {
+  conversationId: string;
+  summary: string;  // "ユーザーは転職を検討中。Big Fiveの開放性が高く..."
+  keyTopics: string[]; // ["転職", "キャリア", "強み"]
+  emotionalTone: 'positive' | 'neutral' | 'negative';
+  createdAt: Date;
+  lastSummarizedTurn: number;
+}
+```
+
+#### Layer 3: Long-term Memory（長期記憶）
+- **容量**: 過去すべての会話（IndexedDB）
+- **保持期間**: 永続（ユーザーが削除するまで）
+- **用途**: セマンティック検索で関連する過去の会話を想起
+- **実装**: IndexedDB + ベクトル埋め込み
+
+```typescript
+interface LongTermMemory {
+  memoryId: string;
+  type: 'conversation' | 'insight' | 'fact';
+  content: string;
+  embedding: number[]; // 768次元ベクトル（all-MiniLM-L6-v2）
+  metadata: {
+    conversationId: string;
+    timestamp: Date;
+    agentId: string;
+    topics: string[];
+    emotionalContext: string;
+  };
+  importance: number; // 0-1（重要度スコア）
+}
+```
+
+---
+
+### IndexedDB スキーマ設計
+
+```typescript
+// Dexie.js スキーマ
+class ChatDatabase extends Dexie {
+  conversations!: Table<Conversation>;
+  messages!: Table<Message>;
+  summaries!: Table<Summary>;
+  memories!: Table<Memory>;
+
+  constructor() {
+    super('psychtest_chat');
+    this.version(1).stores({
+      // 会話スレッド
+      conversations: '++id, agentId, createdAt, lastMessageAt',
+
+      // メッセージ（全履歴）
+      messages: '++id, conversationId, role, timestamp',
+
+      // 要約（5ターンごと）
+      summaries: '++id, conversationId, turnRange, createdAt',
+
+      // 長期記憶（セマンティック検索用）
+      memories: '++id, conversationId, type, importance, timestamp, *topics',
+    });
+  }
+}
+
+interface Conversation {
+  id?: number;
+  agentId: string; // 'coach' | 'strict-trainer' | ...
+  title: string; // 自動生成 "キャリア相談 2026-01-21"
+  createdAt: Date;
+  lastMessageAt: Date;
+  messageCount: number;
+}
+
+interface Message {
+  id?: number;
+  conversationId: number;
+  role: 'system' | 'user' | 'assistant';
+  content: string;
+  timestamp: Date;
+  tokenCount?: number; // オプション：トークン使用量追跡
+}
+
+interface Summary {
+  id?: number;
+  conversationId: number;
+  turnRange: string; // "1-5", "6-10"
+  summary: string; // LLMが生成した要約
+  keyPoints: string[];
+  createdAt: Date;
+}
+
+interface Memory {
+  id?: number;
+  conversationId: number;
+  type: 'conversation' | 'insight' | 'fact';
+  content: string;
+  embedding?: number[]; // ベクトル埋め込み（オプション）
+  topics: string[];
+  importance: number; // 0-1
+  timestamp: Date;
+}
+```
+
+---
+
+### メモリ操作（Memory Operations）
+
+Agentic Memory（AgeMem）研究に基づき、メモリ操作をLLMが自律的に実行できるツールとして実装：
+
+```typescript
+// lib/memory/operations.ts
+interface MemoryOperations {
+  // 1. Store（保存）
+  store(content: string, type: 'insight' | 'fact', importance: number): Promise<void>;
+
+  // 2. Retrieve（想起）
+  retrieve(query: string, limit: number): Promise<Memory[]>;
+
+  // 3. Update（更新）
+  update(memoryId: number, content: string): Promise<void>;
+
+  // 4. Summarize（要約）
+  summarize(conversationId: number, turnRange: string): Promise<Summary>;
+
+  // 5. Discard（削除）
+  discard(memoryId: number): Promise<void>;
+}
+
+// 使用例: LLMが自律的にメモリ操作を実行
+const tools = [
+  {
+    name: 'store_memory',
+    description: 'Store important information for future reference',
+    parameters: {
+      content: 'string',
+      type: 'insight | fact',
+      importance: 'number (0-1)',
+    },
+  },
+  {
+    name: 'retrieve_memory',
+    description: 'Search past conversations for relevant context',
+    parameters: {
+      query: 'string',
+      limit: 'number',
+    },
+  },
+];
+```
+
+---
+
+### コンテキストウィンドウ管理
+
+#### プログレッシブ要約（Progressive Summarization）
+
+**戦略**: 5ターンごとに自動要約を生成し、古いメッセージを圧縮
+
+```typescript
+// lib/memory/summarization.ts
+async function progressiveSummarization(conversationId: number) {
+  const messages = await db.messages
+    .where('conversationId')
+    .equals(conversationId)
+    .toArray();
+
+  const TURNS_PER_SUMMARY = 5;
+  const unsummarizedMessages = messages.slice(-TURNS_PER_SUMMARY);
+
+  if (unsummarizedMessages.length < TURNS_PER_SUMMARY) {
+    return; // まだ要約不要
+  }
+
+  // LLMに要約生成を依頼
+  const summary = await generateSummary(unsummarizedMessages);
+
+  // 要約を保存
+  await db.summaries.add({
+    conversationId,
+    turnRange: `${messages.length - TURNS_PER_SUMMARY + 1}-${messages.length}`,
+    summary: summary.text,
+    keyPoints: summary.keyPoints,
+    createdAt: new Date(),
+  });
+
+  // 重要なメッセージのみMemoriesに昇格
+  const importantMessages = unsummarizedMessages.filter(m =>
+    summary.keyPoints.some(point => m.content.includes(point))
+  );
+
+  for (const msg of importantMessages) {
+    await db.memories.add({
+      conversationId,
+      type: 'conversation',
+      content: msg.content,
+      topics: extractTopics(msg.content),
+      importance: 0.8, // 高重要度
+      timestamp: msg.timestamp,
+    });
+  }
+}
+```
+
+#### マルチレベル要約（Multi-level Summarization）
+
+```
+原メッセージ（10ターン） → 詳細要約（5ターン） → 抽象要約（1ターン）
+       ↓                      ↓                      ↓
+    500 tokens             100 tokens              20 tokens
+```
+
+**実装**:
+```typescript
+interface SummaryLevel {
+  level: 1 | 2 | 3; // 1=詳細, 2=中間, 3=抽象
+  turnRange: string;
+  content: string;
+  tokenCount: number;
+}
+
+// レベル1: 5ターンごと
+// レベル2: 25ターン（5要約をさらに要約）
+// レベル3: 125ターン（5要約をさらに要約）
+```
+
+---
+
+### セマンティック検索（Semantic Retrieval）
+
+#### ブラウザ内ベクトル埋め込み
+
+**完全プライバシー**: サーバーにデータ送信せず、ブラウザ内で実行
+
+```bash
+npm install @xenova/transformers
+```
+
+```typescript
+// lib/memory/embeddings.ts
+import { pipeline } from '@xenova/transformers';
+
+let embedder: any = null;
+
+export async function initEmbeddings() {
+  if (!embedder) {
+    // all-MiniLM-L6-v2 (軽量、384次元)
+    embedder = await pipeline('feature-extraction',
+      'Xenova/all-MiniLM-L6-v2'
+    );
+  }
+  return embedder;
+}
+
+export async function generateEmbedding(text: string): Promise<number[]> {
+  const model = await initEmbeddings();
+  const output = await model(text, { pooling: 'mean', normalize: true });
+  return Array.from(output.data);
+}
+
+export function cosineSimilarity(a: number[], b: number[]): number {
+  const dotProduct = a.reduce((sum, val, i) => sum + val * b[i], 0);
+  const magnitudeA = Math.sqrt(a.reduce((sum, val) => sum + val * val, 0));
+  const magnitudeB = Math.sqrt(b.reduce((sum, val) => sum + val * val, 0));
+  return dotProduct / (magnitudeA * magnitudeB);
+}
+```
+
+#### RAGベースの会話履歴検索
+
+```typescript
+// lib/memory/retrieval.ts
+async function retrieveRelevantMemories(
+  query: string,
+  limit: number = 5
+): Promise<Memory[]> {
+  // 1. クエリの埋め込みを生成
+  const queryEmbedding = await generateEmbedding(query);
+
+  // 2. 全メモリを取得（TODO: ベクトルインデックス最適化）
+  const allMemories = await db.memories.toArray();
+
+  // 3. コサイン類似度で検索
+  const scored = allMemories.map(memory => ({
+    memory,
+    score: memory.embedding
+      ? cosineSimilarity(queryEmbedding, memory.embedding)
+      : 0,
+  }));
+
+  // 4. 重要度 × 類似度でランキング
+  scored.sort((a, b) => {
+    const scoreA = a.score * a.memory.importance;
+    const scoreB = b.score * b.memory.importance;
+    return scoreB - scoreA;
+  });
+
+  // 5. 上位N件を返す
+  return scored.slice(0, limit).map(s => s.memory);
+}
+```
+
+---
+
+### Claudeネイティブメモリ統合
+
+Claudeの`memory_20250818`ツールを活用（Claude API使用時のみ）：
+
+```typescript
+// functions/api/chat.ts（Claude BYOK時）
+async function callClaudeWithMemory(
+  apiKey: string,
+  messages: Message[],
+  systemPrompt: string
+) {
+  const response = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+      'content-type': 'application/json',
+    },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-5-20250929',
+      max_tokens: 4096,
+      system: systemPrompt,
+      messages,
+      tools: [
+        {
+          type: 'memory',
+          // Claudeが自動的にメモリファイルを管理
+          memory_config: {
+            type: 'indexeddb', // ブラウザ内保存
+          },
+        },
+      ],
+    }),
+  });
+
+  return response;
+}
+```
+
+**Claudeのメモリ機能**:
+- 24時間ごとに会話履歴から自動メモリ合成
+- ユーザーの嗜好、重要な事実を自動抽出
+- クロスセッションで永続化
+
+---
+
+### エージェント別メモリ分離
+
+**要件**: 複数エージェント（コーチ、トレーナー、カウンセラー）で会話履歴を分離
+
+```typescript
+// lib/memory/agent-context.ts
+interface AgentContext {
+  agentId: string;
+  conversationHistory: Message[];
+  summaries: Summary[];
+  memories: Memory[];
+}
+
+async function loadAgentContext(agentId: string): Promise<AgentContext> {
+  const conversations = await db.conversations
+    .where('agentId')
+    .equals(agentId)
+    .toArray();
+
+  const conversationIds = conversations.map(c => c.id!);
+
+  const messages = await db.messages
+    .where('conversationId')
+    .anyOf(conversationIds)
+    .toArray();
+
+  const summaries = await db.summaries
+    .where('conversationId')
+    .anyOf(conversationIds)
+    .toArray();
+
+  const memories = await db.memories
+    .where('conversationId')
+    .anyOf(conversationIds)
+    .toArray();
+
+  return {
+    agentId,
+    conversationHistory: messages,
+    summaries,
+    memories,
+  };
+}
+```
+
+**メリット**:
+- 厳しいトレーナーとの会話が、優しいカウンセラーに漏れない
+- エージェント特性に応じた記憶戦略（トレーナー＝目標達成記録、カウンセラー＝感情記録）
+
+---
+
+### メモリ削除とプライバシー
+
+**GDPR準拠**: ユーザーがいつでもメモリを削除可能
+
+```typescript
+// lib/memory/privacy.ts
+async function deleteAllMemories() {
+  await db.conversations.clear();
+  await db.messages.clear();
+  await db.summaries.clear();
+  await db.memories.clear();
+}
+
+async function deleteConversation(conversationId: number) {
+  await db.messages.where('conversationId').equals(conversationId).delete();
+  await db.summaries.where('conversationId').equals(conversationId).delete();
+  await db.memories.where('conversationId').equals(conversationId).delete();
+  await db.conversations.delete(conversationId);
+}
+
+async function exportMemories(): Promise<string> {
+  const data = {
+    conversations: await db.conversations.toArray(),
+    messages: await db.messages.toArray(),
+    summaries: await db.summaries.toArray(),
+    memories: await db.memories.toArray(),
+  };
+  return JSON.stringify(data, null, 2);
+}
+```
+
+---
+
+### パフォーマンス最適化
+
+#### 1. 遅延読み込み（Lazy Loading）
+```typescript
+// 初回レンダリング時は直近10件のみ
+// スクロール時に追加読み込み
+const messages = await db.messages
+  .where('conversationId')
+  .equals(conversationId)
+  .reverse()
+  .limit(10)
+  .toArray();
+```
+
+#### 2. Web Worker でベクトル演算
+```typescript
+// workers/embeddings.worker.ts
+self.onmessage = async (e) => {
+  const { text } = e.data;
+  const embedding = await generateEmbedding(text);
+  self.postMessage({ embedding });
+};
+```
+
+#### 3. IndexedDB インデックス最適化
+```typescript
+this.version(1).stores({
+  memories: '++id, conversationId, type, importance, timestamp, *topics',
+  //                                                           ^^^^^^^ 複合インデックス
+});
+```
+
+---
+
+### 実装優先度
+
+#### Phase 1: 基本メモリ（MVP必須）
+- ✅ IndexedDB スキーマ（conversations, messages）
+- ✅ 会話履歴保存・読み込み
+- ✅ エージェント別分離
+
+#### Phase 2: 要約とコンテキスト管理
+- ⚠️ プログレッシブ要約（5ターンごと）
+- ⚠️ コンテキストウィンドウ最適化
+- ⚠️ 古いメッセージの自動圧縮
+
+#### Phase 3: セマンティック検索（高度）
+- 📋 Transformers.js統合
+- 📋 ベクトル埋め込み生成
+- 📋 RAGベースの記憶想起
+- 📋 Claudeネイティブメモリ統合
+
+---
+
+### 参考文献
+
+- [AgeMem: Agentic Memory for LLMs (2026)](https://arxiv.org/abs/2501.00663) - Unified LTM/STM management
+- [RAG for Conversation History Best Practices](https://www.glean.com/blog/building-ai-agents-in-2025-best-practices)
+- [Context Window Management](https://community.openai.com/t/managing-long-chat-history-summarization-vs-observation-masking/988148)
+- [Transformers.js - Browser ML](https://huggingface.co/docs/transformers.js)
+- [Claude Memory Tools Documentation](https://www.anthropic.com/news/extended-context)
+- [Dexie.js - IndexedDB Wrapper](https://dexie.org/)
+
+---
+
 ## 📋 実装計画（3 Phase）
 
 ### Phase 1: MVP（1-2日）
@@ -164,7 +704,11 @@ IndexedDB（会話履歴をブラウザに保存）
 - `/chat` ページの追加
 - Cloudflare Workers AI統合（無料枠のみ）
 - 心理プロファイル自動読み込み
-- IndexedDBで会話履歴保存
+- **メモリシステム基盤**:
+  - IndexedDB スキーマ実装（Dexie.js）
+  - 会話履歴保存・読み込み（conversations, messages テーブル）
+  - エージェント別メモリ分離
+  - Working Memory管理（React state）
 - ストリーミングUI
 
 **技術スタック**:
@@ -427,23 +971,36 @@ export const agentPresets: AgentPreset[] = [
 ## 🚀 推奨実装順序
 
 ### Week 1: Phase 1 MVP
-- [ ] `/chat` ページUI
+- [ ] `/chat` ページUI（チャット入力、メッセージ表示）
 - [ ] Cloudflare Pages Functions setup
-- [ ] Workers AI統合
-- [ ] 心理プロファイル自動読み込み
-- [ ] IndexedDB会話履歴
+- [ ] Workers AI統合（ストリーミング）
+- [ ] 心理プロファイル自動読み込み（Custom Instructions連携）
+- [ ] **メモリシステム基盤**:
+  - [ ] Dexie.js setup + IndexedDB スキーマ定義
+  - [ ] `lib/memory/database.ts` - ChatDatabase class
+  - [ ] `lib/memory/operations.ts` - 基本的な保存・読み込み関数
+  - [ ] エージェント別会話履歴管理
 
-### Week 2: Phase 2 BYOK
-- [ ] 設定ページ
-- [ ] APIキー暗号化
+### Week 2: Phase 2 BYOK + Memory Enhancement
+- [ ] 設定ページ（`/settings`）
+- [ ] APIキー暗号化（CryptoJS AES-256）
 - [ ] Gemini API統合
 - [ ] Claude API統合
-- [ ] フォールバック機能
+- [ ] フォールバック機能（BYOK失敗時はWorkers AI）
+- [ ] **メモリ強化**:
+  - [ ] `lib/memory/summarization.ts` - プログレッシブ要約（5ターンごと）
+  - [ ] Summariesテーブル活用
+  - [ ] コンテキストウィンドウ最適化
 
-### Week 3: Phase 3 Multi-Agent（オプション）
-- [ ] エージェントプリセット
-- [ ] エージェント推奨ロジック
+### Week 3: Phase 3 Multi-Agent + Semantic Search（オプション）
+- [ ] エージェントプリセット（coach, trainer, counselor等）
+- [ ] エージェント推奨ロジック（Big Fiveベース）
 - [ ] エージェント切り替えUI
+- [ ] **高度なメモリ機能**（オプション）:
+  - [ ] Transformers.js統合（@xenova/transformers）
+  - [ ] `lib/memory/embeddings.ts` - ベクトル埋め込み生成
+  - [ ] `lib/memory/retrieval.ts` - RAGベースのセマンティック検索
+  - [ ] Memoriesテーブルへの埋め込み保存
 
 ---
 
@@ -453,6 +1010,7 @@ export const agentPresets: AgentPreset[] = [
 - Next.js 16 (App Router)
 - React 19
 - Dexie.js (IndexedDB wrapper)
+- @xenova/transformers (ブラウザ内ベクトル埋め込み、Phase 3)
 - TailwindCSS v4
 
 ### Backend（Edge）
