@@ -17,16 +17,13 @@
  * https://ipip.ori.org/JapaneseIPIP-NEOFacets.htm
  */
 
-import type { ScaleInfo } from "@/lib/tests/types";
+import type { BaseQuestion, ScaleInfo } from "@/lib/tests/types";
 
-export interface IndustriousnessQuestion {
-  id: number;
+export interface IndustriousnessQuestion extends BaseQuestion {
   originalId: number; // IPIP-300 item number (271-290)
-  text: string;
   textEn: string;
   subscale: "c4_achievement" | "c5_discipline";
   subscaleLabel: string;
-  reverse: boolean;
 }
 
 /**

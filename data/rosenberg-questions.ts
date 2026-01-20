@@ -14,13 +14,9 @@
  * Citations: 50,000+
  */
 
-import type { ScaleInfo } from "@/lib/tests/types";
+import type { BaseQuestion, ScaleInfo } from "@/lib/tests/types";
 
-export interface RosenbergQuestion {
-  id: number;
-  text: string;
-  reverse: boolean; // 逆転項目
-}
+export type RosenbergQuestion = BaseQuestion;
 
 /**
  * 4点リッカート尺度

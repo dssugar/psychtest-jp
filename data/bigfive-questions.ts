@@ -14,17 +14,14 @@
  * https://github.com/Alheimsins/b5-johnson-120-ipip-neo-pi-r
  */
 
-import type { ScaleInfo } from "@/lib/tests/types";
+import type { BaseQuestion, ScaleInfo } from "@/lib/tests/types";
 
-export interface BigFiveQuestion {
-  id: number;
-  text: string;
+export interface BigFiveQuestion extends BaseQuestion {
   textEn?: string; // English reference (optional)
   dimension: "extraversion" | "agreeableness" | "conscientiousness" | "neuroticism" | "openness";
   domain: "E" | "A" | "C" | "N" | "O"; // Short form for IPIP-120
   facet: 1 | 2 | 3 | 4 | 5 | 6; // IPIP-120 facet number
   facetName?: string; // e.g., "n1_anxiety", "e1_friendliness" (for IPIP-120)
-  reverse: boolean;
 }
 
 /**

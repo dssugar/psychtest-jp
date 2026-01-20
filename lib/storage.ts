@@ -1,4 +1,3 @@
-// import { SccsResult } from "./scoring/sccs"; // 著作権確認中のため一時的に無効化
 import { RosenbergResult } from "./scoring/rosenberg";
 import { BigFiveResult } from "./scoring/bigfive";
 import { SelfConceptResult } from "./scoring/selfconcept";
@@ -6,9 +5,6 @@ import { Phq9Result } from "./scoring/phq9";
 import { SwlsResult } from "./scoring/swls";
 import { K6Result } from "./scoring/k6";
 import { IndustriousnessResult } from "./scoring/industriousness";
-
-// 一時的な型定義（既存データ互換性のため）
-type SccsResult = unknown;
 
 // ============================================================
 // Type Definitions
@@ -29,11 +25,6 @@ export interface TestResult<T = unknown> {
   retakeCount: number;
   testVersion?: string; // テストバージョン (例: "mini-ipip-20", "ipip-120")
 }
-
-/**
- * SCCS 結果
- */
-export type SccsTestResult = TestResult<SccsResult>;
 
 /**
  * Rosenberg 自尊心テスト結果
@@ -87,7 +78,6 @@ export type IndustriousnessTestResult = TestResult<IndustriousnessResult>;
 export interface UserProfile {
   userId?: string; // 将来的なOAuth対応用
   tests: {
-    sccs?: SccsTestResult;
     rosenberg?: RosenbergTestResult;
     bigfive?: BigFiveTestResult;
     selfconcept?: SelfConceptTestResult;
@@ -115,14 +105,7 @@ export interface UserProfile {
  */
 export interface UserData {
   results: {
-    sccs?: {
-      testId: "sccs";
-      score: number;
-      percentageScore: number;
-      answers: number[];
-      result: SccsResult;
-      timestamp: string;
-    };
+    // SCCS removed - replaced with selfconcept (IPIP public domain alternative)
   };
   userId: string | null;
 }
@@ -155,16 +138,8 @@ function migrateFromLegacy(legacyData: UserData): UserProfile {
     },
   };
 
-  // SCCS データの移行
-  if (legacyData.results.sccs) {
-    const legacy = legacyData.results.sccs;
-    profile.tests.sccs = {
-      result: legacy.result,
-      answers: legacy.answers,
-      completedAt: legacy.timestamp,
-      retakeCount: 0, // 初回として扱う
-    };
-  }
+  // SCCS removed - replaced with selfconcept (IPIP public domain alternative)
+  // Legacy SCCS data migration is no longer supported
 
   return profile;
 }
@@ -388,19 +363,10 @@ export function saveUserData(data: UserData): void {
 
 /**
  * @deprecated Use getCompletedTests() instead
+ * SCCS removed - replaced with selfconcept
  */
-export function getAllResults(): Array<{
-  testId: "sccs";
-  score: number;
-  percentageScore: number;
-  answers: number[];
-  result: SccsResult;
-  timestamp: string;
-}> {
-  const data = loadUserData();
-  return Object.values(data.results).filter(
-    (result): result is NonNullable<typeof result> => result !== undefined
-  );
+export function getAllResults(): Array<never> {
+  return [];
 }
 
 /**
