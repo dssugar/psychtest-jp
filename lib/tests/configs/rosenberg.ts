@@ -22,4 +22,13 @@ export const rosenbergConfig: TestConfig<RosenbergResult> = {
   calculateScore: calculateRosenbergScore,
   validateAnswers: validateAnswerPattern,
   scaleInfo,
+
+  // 結果ページ設定
+  scoreDisplay: {
+    type: "circle",
+    maxScore: 40,
+  },
+  resultExtensions: {
+    shareButtons: true,
+  },
 };

@@ -23,4 +23,13 @@ export const swlsConfig: TestConfig<SwlsResult> = {
   validateAnswers: validateAnswerPattern,
   scaleInfo,
   selectedButtonColor: "blue", // SWLSのみ青色ボタン
+
+  // 結果ページ設定
+  scoreDisplay: {
+    type: "circle",
+    maxScore: 35,
+  },
+  resultExtensions: {
+    shareButtons: true,
+  },
 };

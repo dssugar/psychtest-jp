@@ -92,6 +92,51 @@ export interface ValidationResult {
 }
 
 /**
+ * アラート設定
+ */
+export interface AlertConfig {
+  /** アラートのタイプ */
+  type: "crisis" | "urgent" | "warning" | "info";
+  /** 発動条件（resultをチェック） */
+  condition: (result: any) => boolean;
+  /** アラートのタイトル */
+  title: string;
+  /** アラートのメッセージ */
+  message: string;
+  /** 連絡先情報（オプション） */
+  contacts?: Array<{
+    name: string;
+    number: string;
+  }>;
+}
+
+/**
+ * スコア表示設定
+ */
+export interface ScoreDisplayConfig {
+  /** 表示タイプ */
+  type: "circle" | "progress" | "multibar" | "matrix";
+  /** 最大スコア（circle/progress用） */
+  maxScore?: number;
+  /** パーセンテージ計算式（オプション） */
+  percentageFormula?: (result: any) => number;
+}
+
+/**
+ * 結果ページの拡張機能
+ */
+export interface ResultExtensions {
+  /** シェアボタン表示 */
+  shareButtons?: boolean;
+  /** ファセット詳細表示（BigFive） */
+  facetsDisplay?: boolean;
+  /** MBTI/Enneagram推定表示 */
+  estimations?: boolean;
+  /** 治療エビデンス表示（K6） */
+  treatmentEvidence?: boolean;
+}
+
+/**
  * テスト設定（各テストの統一インターフェース）
  */
 export interface TestConfig<TResult, TQuestion extends BaseQuestion = BaseQuestion> {
@@ -124,6 +169,16 @@ export interface TestConfig<TResult, TQuestion extends BaseQuestion = BaseQuesti
   testVersion?: string;
   /** 選択ボタンの色バリエーション（デフォルト: "black"） */
   selectedButtonColor?: "black" | "blue";
+
+  // ========================================
+  // 結果ページ設定（Phase 3追加）
+  // ========================================
+  /** スコア表示設定 */
+  scoreDisplay?: ScoreDisplayConfig;
+  /** 結果ページアラート設定（PHQ-9, K6など） */
+  resultAlerts?: AlertConfig[];
+  /** 結果ページ拡張機能 */
+  resultExtensions?: ResultExtensions;
 
   // ========================================
   // 後方互換性（非推奨）

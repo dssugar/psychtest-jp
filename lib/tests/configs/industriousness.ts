@@ -18,4 +18,12 @@ export const industriousnessConfig: TestConfig<IndustriousnessResult> = {
   scaleOptions,
   calculateScore: calculateIndustriousnessScore,
   scaleInfo,
+
+  // 結果ページ設定
+  scoreDisplay: {
+    type: "matrix",
+  },
+  resultExtensions: {
+    shareButtons: true,
+  },
 };

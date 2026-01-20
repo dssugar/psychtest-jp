@@ -22,4 +22,10 @@ export const selfConceptConfig: TestConfig<SelfConceptResult> = {
   calculateScore: calculateSelfConceptScore,
   validateAnswers: validateAnswerPattern,
   scaleInfo,
+
+  // 結果ページ設定
+  scoreDisplay: {
+    type: "circle",
+    maxScore: 60,
+  },
 };
