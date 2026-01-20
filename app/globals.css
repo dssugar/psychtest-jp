@@ -28,6 +28,7 @@
   --color-brutal-cyan-50: rgba(0, 188, 212, 0.05);
 
   /* === BORDER WIDTHS === */
+  --border-width: 3px;
   --border-width-brutal: 3px;
   --border-width-brutal-thick: 6px;
 
