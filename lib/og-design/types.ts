@@ -11,11 +11,12 @@ export type DimensionKey = typeof DIMENSION_ORDER[number];
 
 /**
  * 次元データ（表示用）
+ * 汎用的な型。Big Five以外のテストでも使用可能。
  */
 export interface DimensionData {
-  key: DimensionKey;
-  label: string;      // 日本語名（例: "外向性"）
-  score: number;      // 生スコア（24-120）
+  key: string;        // 次元キー（例: "extraversion", "total"）
+  label: string;      // 日本語名（例: "外向性", "総合スコア"）
+  score: number;      // 生スコア（テスト依存）
   percentage: number; // パーセンテージ（0-100）
   color: string;      // カラーコード（例: "#3b82f6"）
 }
@@ -41,14 +42,30 @@ export interface ResultSummaryProps {
   dimensions: DimensionData[];
 
   /**
-   * テスト名（例: "Big Five性格診断"）
+   * 英語タイトル（例: "BIG FIVE"）
+   * 改行または空白で分割して2行表示
    */
-  testName: string;
+  titleEn?: string;
 
   /**
-   * サイト名（例: "心理測定ラボ"）
+   * カテゴリ（例: "性格特性診断"）
    */
-  siteName: string;
+  category: string;
+
+  /**
+   * 説明文（例: "科学的根拠に基づいた\n5つの主要特性スコアレポート"）
+   * \nで改行
+   */
+  description?: string;
+
+  /**
+   * サイト名（例: "PSYCHOMETRIC LAB"）
+   * デフォルト: "PSYCHOMETRIC LAB"
+   */
+  siteName?: string;
+
+  /** @deprecated Use titleEn instead */
+  testName?: string;
 }
 
 /**

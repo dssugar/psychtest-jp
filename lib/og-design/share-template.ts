@@ -1,11 +1,11 @@
 /**
  * OG画像シェアページの共通テンプレート
- * 全テストで使用可能な汎用HTML生成関数
+ * ResultSummaryCardと完全に同じ構造のHTMLを生成
  */
 
 import type { TestConfig } from '@/lib/tests/types';
 import type { DimensionData } from './types';
-import { OG_COLORS } from './constants';
+import { OG_SIZE } from './constants';
 
 /**
  * スコア表示データ
@@ -44,24 +44,205 @@ export function scoreToPercentage(
 }
 
 /**
- * barレイアウト用のスコア表示HTML生成
+ * barレイアウト用のスコア表示HTML生成（ResultSummaryCardと完全に同じ構造）
  */
-function renderBarScores(scores: DisplayScore[]): string {
-  return scores
-    .map(
-      (s) => `
-    <div class="dimension">
-      <div class="dimension-header">
-        <span class="dimension-label">${s.label}</span>
-        <span class="dimension-score">${s.displayValue}</span>
+function renderBarScores(
+  scores: DisplayScore[],
+  titleEn: string | undefined,
+  category: string,
+  description: string | undefined,
+  siteName: string
+): string {
+  const reportId = Math.floor(Math.random() * 90000) + 10000;
+  const titleLines = titleEn
+    ? titleEn.includes('\n')
+      ? titleEn.split('\n')
+      : titleEn.split(' ')
+    : ['TEST'];
+
+  return `
+    <div style="
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      border: 12px solid #111111;
+      display: flex;
+      aspect-ratio: ${OG_SIZE.width} / ${OG_SIZE.height};
+    ">
+      <!-- 左カラム：タイトルとブランド情報 -->
+      <div style="
+        width: 400px;
+        background: #111111;
+        color: white;
+        padding: 48px 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        border-right: 8px solid #111111;
+      ">
+        <!-- 上部：タイトルエリア -->
+        <div>
+          <div style="
+            font-size: 20px;
+            font-weight: 700;
+            color: #F9FAFB;
+            letter-spacing: 0.15em;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+            width: fit-content;
+          ">
+            ${siteName}
+          </div>
+
+          <div style="
+            font-size: 100px;
+            font-weight: 900;
+            line-height: 0.85;
+            letter-spacing: -0.02em;
+            display: flex;
+            flex-direction: column;
+          ">
+            ${titleLines
+              .map(
+                (line, i) => `
+              <span style="color: ${i === 0 ? '#FFFFFF' : '#E5E7EB'};">
+                ${line}
+              </span>
+            `
+              )
+              .join('')}
+          </div>
+        </div>
+
+        <!-- 下部：装飾・メタ情報 -->
+        <div>
+          <div style="
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 12px;
+          ">
+            ${category}
+          </div>
+
+          ${
+            description
+              ? `
+          <div style="
+            font-size: 16px;
+            color: #9CA3AF;
+            line-height: 1.5;
+            margin-bottom: 24px;
+          ">
+            ${description.split('\n').join('<br />')}
+          </div>
+          `
+              : ''
+          }
+
+          <div style="
+            display: flex;
+            align-items: center;
+            background: #333333;
+            padding: 12px 20px;
+            border-radius: 8px;
+          ">
+            <div style="font-size: 24px; margin-right: 10px;">ID</div>
+            <div style="
+              font-size: 32px;
+              font-weight: 900;
+              font-family: monospace;
+              font-variant-numeric: tabular-nums;
+            ">
+              ${reportId}
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="progress-bar">
-        <div class="progress-fill" style="width: ${s.percentage || 0}%; background: ${s.color}"></div>
+
+      <!-- 右カラム：データエリア -->
+      <div style="
+        flex: 1;
+        background: #F9FAFB;
+        background-image: radial-gradient(circle, rgba(206, 206, 206, 0.4) 2px, transparent 2.5px);
+        background-size: 30px 30px;
+        padding: 20px 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        position: relative;
+      ">
+        ${scores
+          .map(
+            (item, index) => `
+          <div style="
+            display: flex;
+            align-items: center;
+            margin-bottom: ${index === scores.length - 1 ? '0' : '32px'};
+          ">
+            <!-- 項目名 -->
+            <div style="
+              width: 170px;
+              font-size: 32px;
+              font-weight: 700;
+              color: #111111;
+            ">
+              ${item.label}
+            </div>
+
+            <!-- バーエリア -->
+            <div style="
+              flex: 1;
+              height: 68px;
+              background: white;
+              border: 3px solid #111111;
+              margin-right: 24px;
+              overflow: hidden;
+              position: relative;
+              box-shadow: 4px 4px 0px 0px #111111;
+            ">
+              <div style="
+                height: 100%;
+                width: ${item.percentage || 0}%;
+                background: ${item.color};
+                border-right: 3px solid #111111;
+              "></div>
+            </div>
+
+            <!-- スコア数値 -->
+            <div style="
+              width: 90px;
+              text-align: right;
+              font-size: 56px;
+              font-weight: 900;
+              font-family: monospace;
+              color: #111111;
+              line-height: 1;
+              font-variant-numeric: tabular-nums;
+            ">
+              ${item.score}
+            </div>
+          </div>
+        `
+          )
+          .join('')}
+
+        <!-- ウォーターマーク -->
+        <div style="
+          position: absolute;
+          bottom: 20px;
+          right: 20px;
+          font-size: 16px;
+          font-weight: 700;
+          color: #111111;
+          opacity: 0.2;
+        ">
+          psychtest.jp
+        </div>
       </div>
     </div>
-  `
-    )
-    .join('');
+  `;
 }
 
 /**
@@ -88,26 +269,30 @@ function renderSingleScore(score: DisplayScore): string {
  */
 function renderScores(
   scores: DisplayScore[],
-  layoutType: string
+  layoutType: string,
+  titleEn: string | undefined,
+  category: string,
+  description: string | undefined,
+  siteName: string
 ): string {
   switch (layoutType) {
     case 'bar':
-      return renderBarScores(scores);
+      return renderBarScores(scores, titleEn, category, description, siteName);
     case 'single':
       return renderSingleScore(scores[0]);
     case 'radar':
       // TODO: レーダーチャート実装
-      return renderBarScores(scores);
+      return renderBarScores(scores, titleEn, category, description, siteName);
     case 'category':
       // TODO: カテゴリマトリクス実装
-      return renderBarScores(scores);
+      return renderBarScores(scores, titleEn, category, description, siteName);
     default:
-      return renderBarScores(scores);
+      return renderBarScores(scores, titleEn, category, description, siteName);
   }
 }
 
 /**
- * 共通CSSスタイル
+ * 共通CSSスタイル（シェアページ用 - B+C構成）
  */
 function getSharedStyles(): string {
   return `
@@ -116,61 +301,21 @@ function getSharedStyles(): string {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans JP', sans-serif;
       background: #faf8f5;
       min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem;
+      padding: 2rem 1rem;
     }
     .container {
-      max-width: 42rem;
-      width: 100%;
-    }
-    .card {
-      background: white;
-      border: 4px solid #1a1a1a;
-      padding: 2rem;
-      box-shadow: 8px 8px 0px #1a1a1a;
-    }
-    h1 {
-      font-size: 2.25rem;
-      font-weight: 900;
-      margin-bottom: 1.5rem;
+      max-width: 1200px;
+      margin: 0 auto;
     }
 
-    /* Bar layout */
-    .dimension {
-      margin-bottom: 1rem;
-    }
-    .dimension-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 0.5rem;
-    }
-    .dimension-label {
-      font-weight: 700;
-      font-size: 1.125rem;
-    }
-    .dimension-score {
-      font-family: monospace;
-      font-weight: 700;
-    }
-    .progress-bar {
-      height: 2rem;
-      background: #e5e5e5;
-      border: 2px solid #1a1a1a;
-      position: relative;
-    }
-    .progress-fill {
-      height: 100%;
-      border-right: 2px solid #1a1a1a;
-      box-shadow: 4px 4px 0px #1a1a1a;
-    }
-
-    /* Single score layout */
+    /* Single score layout - card-brutal style */
     .single-score {
       text-align: center;
-      padding: 2rem 0;
+      padding: 2rem;
+      background: white;
+      border: 3px solid #000000;
+      margin-bottom: 2rem;
+      box-shadow: 4px 4px 0px #000000;
     }
     .score-main {
       margin-bottom: 1.5rem;
@@ -191,57 +336,135 @@ function getSharedStyles(): string {
       font-size: 1.25rem;
       font-weight: 700;
       padding: 1rem;
-      background: #f5f5f5;
-      border: 2px solid #1a1a1a;
+      background: #fafafa;
+      border: 2px solid #000000;
     }
 
-    /* Disclaimer */
-    .disclaimer {
-      margin-top: 1.5rem;
-      padding: 1rem;
-      background: #fff3cd;
-      border: 2px solid #ffc107;
+    /* CTA Section (Pattern B+C) - card-brutal style */
+    .cta-section {
+      background: white;
+      border: 3px solid #000000;
+      padding: 3rem 2rem;
+      margin: 3rem 0;
+      text-align: center;
+      box-shadow: 4px 4px 0px #000000;
+    }
+    .cta-section h2 {
+      font-size: 2rem;
+      font-weight: 900;
+      color: #1a1a1a;
+      margin-bottom: 1rem;
+      line-height: 1.3;
+    }
+    .cta-section p {
+      font-size: 1.125rem;
+      color: #4a4a4a;
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
+    .button-cta-large {
+      display: inline-block;
+      background: #000000;
+      color: white;
+      font-size: 1.25rem;
+      font-weight: 900;
+      padding: 1.25rem 3rem;
+      text-decoration: none;
+      border: 3px solid #000000;
+      transition: all 0.2s;
+      box-shadow: 4px 4px 0px #000000;
+    }
+    .button-cta-large:hover {
+      background: #333;
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0px #000000;
+    }
+    .features {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+    .features div {
       font-size: 0.875rem;
+      color: #666;
       font-weight: 600;
     }
 
-    .info-box {
-      margin-top: 2rem;
-      padding: 1rem;
-      background: #f5f5f5;
-      border: 2px solid #1a1a1a;
-    }
-    .info-box p {
-      font-size: 0.875rem;
-      color: #4a4a4a;
-    }
-    .buttons {
-      margin-top: 1.5rem;
-      display: flex;
-      gap: 1rem;
-    }
-    .button {
-      flex: 1;
-      text-align: center;
-      padding: 0.75rem 1.5rem;
-      font-weight: 700;
-      text-decoration: none;
-      border: 4px solid #1a1a1a;
-      transition: background 0.2s;
-    }
-    .button-primary {
-      background: #1a1a1a;
-      color: white;
-    }
-    .button-primary:hover {
-      background: #333;
-    }
-    .button-secondary {
+    /* About Test Section (Pattern C) - card-brutal style */
+    .about-test {
       background: white;
-      color: #1a1a1a;
+      border: 3px solid #000000;
+      padding: 2rem;
+      margin: 2rem 0;
+      box-shadow: 4px 4px 0px #000000;
     }
-    .button-secondary:hover {
-      background: #f5f5f5;
+    .about-test h3 {
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: #000000;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 3px solid #000000;
+    }
+    .about-test p {
+      font-size: 1rem;
+      color: #4a4a4a;
+      line-height: 1.8;
+      margin-bottom: 1rem;
+    }
+    .about-test .meta-info {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+    .meta-info-item {
+      background: #fafafa;
+      padding: 1rem;
+      border: 2px solid #000000;
+    }
+    .meta-info-item strong {
+      display: block;
+      font-weight: 700;
+      color: #000000;
+      margin-bottom: 0.5rem;
+      font-size: 0.875rem;
+    }
+    .meta-info-item span {
+      color: #666;
+      font-size: 0.875rem;
+    }
+
+    /* Disclaimer - card-brutal style */
+    .disclaimer {
+      margin: 2rem 0;
+      padding: 1.5rem;
+      background: #fff3cd;
+      border: 3px solid #000000;
+      font-size: 0.875rem;
+      font-weight: 600;
+      line-height: 1.6;
+      box-shadow: 4px 4px 0px #000000;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .cta-section {
+        padding: 2rem 1.5rem;
+      }
+      .cta-section h2 {
+        font-size: 1.5rem;
+      }
+      .button-cta-large {
+        font-size: 1rem;
+        padding: 1rem 2rem;
+      }
+      .features {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
     }
   `;
 }
@@ -262,6 +485,9 @@ export function renderSharePage(
     return new Response('OG image config not found', { status: 500 });
   }
 
+  const { titleEn, category, description } = testConfig.ogImage;
+  const siteName = 'PSYCHOMETRIC LAB';
+
   // OG画像URL生成
   const ogParams = testConfig.ogImage.scoreToParams
     ? testConfig.ogImage.scoreToParams(
@@ -270,7 +496,7 @@ export function renderSharePage(
     : {};
   const ogImageUrl = buildOGImageUrl(origin, testConfig.id, ogParams);
 
-  // HTML生成
+  // HTML生成（B+C構成：ソーシャルプルーフ + 詳細説明）
   const html = `<!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -297,26 +523,68 @@ export function renderSharePage(
 </head>
 <body>
   <div class="container">
-    <div class="card">
-      <h1>${testConfig.scaleInfo.nameJa}結果</h1>
+    <!-- スコアカード表示 -->
+    ${renderScores(scores, testConfig.ogImage.layoutType, titleEn, category, description, siteName)}
 
-      ${renderScores(scores, testConfig.ogImage.layoutType)}
+    <!-- CTA Section (Pattern B: ソーシャルプルーフ) -->
+    <div class="cta-section">
+      <h2>友達の結果を見ましたか？<br>あなたも診断してみませんか？</h2>
+      <p>
+        ${testConfig.scaleInfo.nameJa}で、あなたの特性を科学的に測定できます。<br>
+        友達と結果を比較して、お互いをもっと理解しましょう！
+      </p>
 
-      ${
-        testConfig.ogImage.disclaimer
-          ? `<div class="disclaimer">${testConfig.ogImage.disclaimer}</div>`
-          : ''
-      }
+      <a href="${origin}${testConfig.basePath}" class="button-cta-large">
+        無料で診断する（所要時間: 約${testConfig.scaleInfo.stats.minutes}分）
+      </a>
 
-      <div class="info-box">
-        <p>この結果をシェアして、友達と比較してみましょう！</p>
-      </div>
-
-      <div class="buttons">
-        <a href="${origin}${testConfig.basePath}" class="button button-primary">診断を受ける</a>
-        <a href="${origin}/results${testConfig.basePath}" class="button button-secondary">結果ページへ</a>
+      <div class="features">
+        <div>✓ 完全無料</div>
+        <div>✓ 会員登録不要</div>
+        <div>✓ ${testConfig.scaleInfo.stats.questions}問</div>
       </div>
     </div>
+
+    <!-- About Test Section (Pattern C: 詳細説明) -->
+    <div class="about-test">
+      <h3>この診断について</h3>
+      <p>${testConfig.scaleInfo.description}</p>
+
+      <div class="meta-info">
+        <div class="meta-info-item">
+          <strong>開発者</strong>
+          <span>${testConfig.scaleInfo.developer}</span>
+        </div>
+        <div class="meta-info-item">
+          <strong>信頼性</strong>
+          <span>Cronbach's α = ${testConfig.scaleInfo.reliability.cronbachAlpha}</span>
+        </div>
+        <div class="meta-info-item">
+          <strong>再テスト信頼性</strong>
+          <span>${testConfig.scaleInfo.reliability.testRetest}</span>
+        </div>
+        <div class="meta-info-item">
+          <strong>学術的信頼性</strong>
+          <span>${testConfig.scaleInfo.tier} (引用論文数: ${testConfig.scaleInfo.citations})</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA Again (念押し) -->
+    <div class="cta-section">
+      <h2>今すぐ診断してみましょう</h2>
+      <p>科学的根拠に基づいた信頼性の高い診断です。</p>
+      <a href="${origin}${testConfig.basePath}" class="button-cta-large">
+        診断スタート
+      </a>
+    </div>
+
+    <!-- 免責事項 -->
+    ${
+      testConfig.ogImage?.disclaimer
+        ? `<div class="disclaimer">${testConfig.ogImage.disclaimer}</div>`
+        : ''
+    }
   </div>
 </body>
 </html>`;

@@ -4,6 +4,8 @@
  * デザインコンセプト: Dense & Bold（高密度・高コントラスト）
  * OG画像と完全に同じビジュアルで表示されるカードコンポーネント。
  * 結果ページの最初に配置され、SNSシェア時のプレビューとしても機能。
+ *
+ * 汎用化版：全てのテストに対応
  */
 
 import { OG_SIZE } from '@/lib/og-design/constants';
@@ -11,11 +13,20 @@ import type { ResultSummaryProps } from '@/lib/og-design/types';
 
 export function ResultSummaryCard({
   dimensions,
-  testName,
-  siteName,
+  titleEn,
+  category,
+  description,
+  siteName = 'PSYCHOMETRIC LAB',
 }: ResultSummaryProps) {
   // ランダムID（装飾用）
   const reportId = Math.floor(Math.random() * 90000) + 10000;
+
+  // タイトルを行分割（改行または空白で分割）
+  const titleLines = titleEn
+    ? titleEn.includes('\n')
+      ? titleEn.split('\n')
+      : titleEn.split(' ')
+    : ['TEST'];
 
   return (
     <div
@@ -29,26 +40,37 @@ export function ResultSummaryCard({
         {/* 上部：タイトルエリア */}
         <div className="flex flex-col">
           <div className="text-lg md:text-xl font-bold text-[#F9FAFB] tracking-[0.15em] mb-5 border-b-2 border-[#333] pb-2.5 w-fit">
-            PSYCHOMETRIC LAB
+            {siteName}
           </div>
 
           <div className="text-6xl md:text-7xl lg:text-[100px] font-black leading-[0.85] tracking-tight flex flex-col">
-            <span>BIG</span>
-            <span className="text-[#E5E7EB]">FIVE</span>
+            {titleLines.map((line, i) => (
+              <span
+                key={i}
+                className={i === 0 ? '' : 'text-[#E5E7EB]'}
+              >
+                {line}
+              </span>
+            ))}
           </div>
         </div>
 
         {/* 下部：装飾・メタ情報 */}
         <div className="flex flex-col">
           <div className="text-2xl md:text-[32px] font-bold mb-3">
-            性格特性診断
+            {category}
           </div>
 
-          {/* 説明文の復活 */}
-          <div className="text-sm md:text-base text-[#9CA3AF] leading-relaxed mb-6">
-            科学的根拠に基づいた<br />
-            5つの主要特性スコアレポート
-          </div>
+          {description && (
+            <div className="text-sm md:text-base text-[#9CA3AF] leading-relaxed mb-6">
+              {description.split('\n').map((line, i) => (
+                <span key={i}>
+                  {line}
+                  {i < description.split('\n').length - 1 && <br />}
+                </span>
+              ))}
+            </div>
+          )}
 
           <div className="flex items-center bg-[#333333] px-5 py-3 rounded-lg">
             <div className="text-xl md:text-2xl mr-2.5">ID</div>
@@ -94,8 +116,15 @@ export function ResultSummaryCard({
               />
             </div>
 
-            {/* スコア数値（等幅フォント） */}
-            <div className="w-[70px] md:w-[80px] lg:w-[90px] text-right text-4xl md:text-5xl lg:text-[56px] font-black font-mono text-[#111111] leading-none tabular-nums">
+            {/* スコア数値（等幅フォント、固定幅で右揃え） */}
+            <div
+              className="text-4xl md:text-5xl lg:text-[56px] font-black font-mono text-[#111111] leading-none tabular-nums"
+              style={{
+                width: '100px',
+                textAlign: 'right',
+                fontFeatureSettings: '"tnum" 1',
+              }}
+            >
               {dim.score}
             </div>
           </div>

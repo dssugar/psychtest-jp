@@ -12,6 +12,7 @@ import { ResultSummaryCard } from "@/components/results/ResultSummaryCard";
 import { SocialShareButtons } from "@/components/share/SocialShareButtons";
 import { OG_COLORS, DIMENSION_NAMES, DIMENSION_ORDER } from "@/lib/og-design/constants";
 import type { DimensionData } from "@/lib/og-design/types";
+import { testRegistry } from "@/lib/tests/test-registry";
 
 // テスト情報の定義
 const testInfo: Record<
@@ -137,7 +138,7 @@ export default function DashboardPage() {
     <main className="min-h-screen">
       <div className="container mx-auto px-4 py-12 md:py-20">
         {/* Header */}
-        <div className="max-w-6xl mx-auto mb-12 text-center">
+        <div className="max-w-[1200px] mx-auto mb-12 text-center">
           <DataBadge color="green" size="lg">
             DASHBOARD
           </DataBadge>
@@ -151,7 +152,7 @@ export default function DashboardPage() {
 
         {/* Profile Overview */}
         {completedTests.length > 0 && profile && (
-          <div className="max-w-6xl mx-auto mb-16">
+          <div className="max-w-[1200px] mx-auto mb-16">
             <ProfileOverview
               completedCount={completedTests.length}
               totalAvailable={availableTests.length}
@@ -163,7 +164,7 @@ export default function DashboardPage() {
 
         {/* Completed Tests - ResultSummaryCard Style */}
         {completedTests.length > 0 ? (
-          <div className="max-w-6xl mx-auto mb-16">
+          <div className="max-w-[1200px] mx-auto mb-16">
             <h2 className="text-2xl md:text-3xl text-brutal-black mb-8" style={{ fontFamily: 'var(--font-display-ja)', fontWeight: 700 }}>
               完了した診断
             </h2>
@@ -209,12 +210,15 @@ export default function DashboardPage() {
                   const shareUrl = `${typeof window !== 'undefined' ? window.location.origin : 'https://psychtest.jp'}/results/${testType}?${params.toString()}`;
                   const shareText = `Big Five性格診断の結果 - 心理測定ラボ`;
 
+                  const bigFiveOgConfig = testRegistry.bigfive.ogImage;
+
                   return (
                     <div key={testType} className="space-y-4">
                       <ResultSummaryCard
                         dimensions={dimensions}
-                        testName="Big Five 性格診断"
-                        siteName="psychtest.jp"
+                        titleEn={bigFiveOgConfig?.titleEn}
+                        category={bigFiveOgConfig?.category || "性格特性診断"}
+                        description={bigFiveOgConfig?.description}
                       />
                       <div className="max-w-[1200px] mx-auto space-y-4">
                         <div className="flex gap-3">
@@ -314,7 +318,7 @@ export default function DashboardPage() {
             </div>
           </div>
         ) : (
-          <div className="max-w-6xl mx-auto mb-16">
+          <div className="max-w-[1200px] mx-auto mb-16">
             <Card variant="white" padding="lg" className="bg-brutal-gray-50 text-center">
               <div className="text-6xl mb-4">📊</div>
               <h2 className="text-2xl md:text-3xl text-brutal-black mb-4" style={{ fontFamily: 'var(--font-display-ja)', fontWeight: 700 }}>
@@ -329,14 +333,14 @@ export default function DashboardPage() {
 
         {/* Integrated Analysis */}
         {completedTests.length >= 2 && profile && (
-          <div className="max-w-6xl mx-auto mb-16">
+          <div className="max-w-[1200px] mx-auto mb-16">
             <IntegratedAnalysis profile={profile} completedTests={completedTests} />
           </div>
         )}
 
         {/* Available Tests */}
         {notCompletedTests.length > 0 && (
-          <div className="max-w-6xl mx-auto mb-16">
+          <div className="max-w-[1200px] mx-auto mb-16">
             <h2 className="text-2xl md:text-3xl text-brutal-black mb-8" style={{ fontFamily: 'var(--font-display-ja)', fontWeight: 700 }}>
               {completedTests.length > 0
                 ? "未受験の診断"
@@ -376,7 +380,7 @@ export default function DashboardPage() {
         {/* Stats - ProfileOverviewに統合したため削除 */}
 
         {/* Back to Home */}
-        <div className="max-w-6xl mx-auto text-center">
+        <div className="max-w-[1200px] mx-auto text-center">
           <Link
             href="/"
             className="inline-flex items-center gap-2 text-brutal-gray-800 hover:text-brutal-black font-semibold uppercase tracking-wide text-sm min-h-[44px]"

@@ -8,7 +8,7 @@ export default function AboutPage() {
     <main className="min-h-screen">
       <div className="container mx-auto px-4 py-12 md:py-20">
         {/* Header */}
-        <div className="max-w-6xl mx-auto mb-12 text-center">
+        <div className="max-w-[1200px] mx-auto mb-12 text-center">
           <DataBadge color="green" size="lg">ABOUT</DataBadge>
           <h1 className="text-4xl md:text-5xl lg:text-7xl text-brutal-black mt-6 mb-4 animate-slide-in-up" style={{ fontFamily: 'var(--font-display-ja)', fontWeight: 900 }}>
             心理測定ラボについて
@@ -19,7 +19,7 @@ export default function AboutPage() {
         </div>
 
         {/* Mission Statement */}
-        <div className="max-w-6xl mx-auto mb-16">
+        <div className="max-w-[1200px] mx-auto mb-16">
           <Card variant="white" padding="lg">
             <h2 className="text-3xl md:text-4xl text-brutal-black mb-6 text-center" style={{ fontFamily: 'var(--font-display-ja)', fontWeight: 700 }}>
               私たちのミッション
@@ -34,7 +34,7 @@ export default function AboutPage() {
         </div>
 
         {/* Framework Explanation - 4層構造 */}
-        <div className="max-w-6xl mx-auto mb-16">
+        <div className="max-w-[1200px] mx-auto mb-16">
           <h2 className="text-3xl md:text-4xl text-brutal-black mb-8 text-center" style={{ fontFamily: 'var(--font-display-ja)', fontWeight: 700 }}>
             心理測定の4層構造
           </h2>
@@ -296,7 +296,7 @@ export default function AboutPage() {
         </div>
 
         {/* Why Academic Scales */}
-        <div className="max-w-6xl mx-auto mb-16">
+        <div className="max-w-[1200px] mx-auto mb-16">
           <h2 className="text-3xl md:text-4xl text-brutal-black mb-8 text-center" style={{ fontFamily: 'var(--font-display-ja)', fontWeight: 700 }}>
             なぜ学術的心理尺度なのか
           </h2>
@@ -361,7 +361,7 @@ export default function AboutPage() {
         </div>
 
         {/* Our Standards */}
-        <div className="max-w-6xl mx-auto mb-16">
+        <div className="max-w-[1200px] mx-auto mb-16">
           <h2 className="text-3xl md:text-4xl text-brutal-black mb-8 text-center" style={{ fontFamily: 'var(--font-display-ja)', fontWeight: 700 }}>
             私たちの基準
           </h2>
@@ -399,7 +399,7 @@ export default function AboutPage() {
         </div>
 
         {/* Disclaimer */}
-        <div className="max-w-6xl mx-auto mb-12">
+        <div className="max-w-[1200px] mx-auto mb-12">
           <Card variant="white" padding="lg" className="bg-brutal-gray-50">
             <h3 className="text-xl text-brutal-black mb-4 text-center" style={{ fontFamily: 'var(--font-display-ja)', fontWeight: 700 }}>
               ⚕️ 医療診断ではありません
@@ -413,7 +413,7 @@ export default function AboutPage() {
         </div>
 
         {/* CTA */}
-        <div className="max-w-6xl mx-auto text-center">
+        <div className="max-w-[1200px] mx-auto text-center">
           <h2 className="text-3xl md:text-4xl text-brutal-black mb-6" style={{ fontFamily: 'var(--font-display-ja)', fontWeight: 700 }}>
             診断を始めましょう
           </h2>

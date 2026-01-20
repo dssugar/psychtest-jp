@@ -3,7 +3,7 @@ import { DataBadge } from "@/components/viz/DataBadge";
 
 export default function ReferencesPage() {
   return (
-    <main className="container mx-auto px-4 py-12 max-w-6xl">
+    <main className="container mx-auto px-4 py-12 max-w-[1200px]">
       <h1 className="font-display text-4xl md:text-5xl mb-4 brutal-shadow">
         参考文献・学術的根拠
       </h1>

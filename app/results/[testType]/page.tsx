@@ -94,7 +94,7 @@ export default function DynamicResultPage() {
   return (
     <main className="min-h-screen">
       <div className="container mx-auto px-4 py-12 md:py-20">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-[1200px] mx-auto">
           {/* Header */}
           <div className="text-center mb-12 animate-slide-in-up">
             <div className="flex flex-wrap items-center justify-center gap-3 mb-4">
@@ -461,8 +461,9 @@ function renderBigFiveScoreDisplay(bigFiveResult: BigFiveResult, result: any) {
     <div className="mb-12">
       <ResultSummaryCard
         dimensions={dimensionsForSummary}
-        testName="Big Five 性格診断結果"
-        siteName="心理測定ラボ"
+        titleEn="BIG FIVE"
+        category="性格特性診断"
+        description="科学的根拠に基づいた\n5つの主要特性スコアレポート"
       />
     </div>
   );

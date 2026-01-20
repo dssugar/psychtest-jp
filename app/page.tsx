@@ -13,7 +13,7 @@ export default function Home() {
     <main className="min-h-screen">
       <div className="container mx-auto px-4 py-12 md:py-20">
         {/* Hero Section */}
-        <div className="max-w-6xl mx-auto mb-16">
+        <div className="max-w-[1200px] mx-auto mb-16">
           <div className="text-center mb-8 animate-slide-in-up">
             <h1 className="text-5xl md:text-7xl lg:text-9xl text-brutal-black mb-4 leading-none tracking-wider" style={{ fontFamily: 'var(--font-display-ja)', fontWeight: 900 }}>
               心理測定ラボ
@@ -35,7 +35,7 @@ export default function Home() {
         </div>
 
         {/* PSYCHOLOGICAL FRAMEWORK Section */}
-        <div className="max-w-6xl mx-auto mb-16">
+        <div className="max-w-[1200px] mx-auto mb-16">
           <Card variant="white" padding="lg">
             <div className="mb-8 text-center">
               <DataBadge color="four-layer" size="lg">
@@ -151,7 +151,7 @@ export default function Home() {
         </div>
 
         {/* Available Tests Section */}
-        <div className="max-w-6xl mx-auto mb-16">
+        <div className="max-w-[1200px] mx-auto mb-16">
           <h2 className="text-3xl md:text-4xl text-brutal-black mb-8 text-center tracking-wide" style={{ fontFamily: 'var(--font-display-ja)', fontWeight: 900 }}>
             利用可能な診断
           </h2>
