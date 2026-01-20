@@ -20,11 +20,11 @@ import { addAllEstimations, getInterpretation as getBigFiveInterpretation, type 
 import type { DimensionData } from "@/lib/og-design/types";
 
 // Dynamic interpretation imports for all tests
-import { getInterpretation as getRosenbergInterpretation, getDetailedInterpretation as getRosenbergDetailedInterpretation, type RosenbergResult } from "@/lib/tests/rosenberg";
+import { getDetailedInterpretation as getRosenbergDetailedInterpretation, type RosenbergResult } from "@/lib/tests/rosenberg";
 import { getInterpretation as getSelfConceptInterpretation, type SelfConceptResult } from "@/lib/tests/selfconcept";
 import { getInterpretation as getSwlsInterpretation, type SwlsResult } from "@/lib/tests/swls";
-import { getInterpretation as getPhq9Interpretation, type Phq9Result } from "@/lib/tests/phq9";
-import { getInterpretation as getK6Interpretation, type K6Result } from "@/lib/tests/k6";
+import { getDetailedInterpretation as getPhq9DetailedInterpretation, type Phq9Result } from "@/lib/tests/phq9";
+import { getDetailedInterpretation as getK6DetailedInterpretation, type K6Result } from "@/lib/tests/k6";
 import { getDetailedInterpretation as getIndustriousnessDetailedInterpretation, type IndustriousnessResult } from "@/lib/tests/industriousness";
 
 /**
@@ -344,30 +344,27 @@ function renderDetailedScoreDisplay(
  */
 function renderCircleDetailedDisplay(testType: string, testResult: any, color: string, scaleInfo: any) {
   // 全テストで動的に解釈文を生成（localStorage に保存しない）
-  let interpretation: string;
   let detailedInterpretation: any;
 
   switch (testType) {
     case "rosenberg": {
       const result = testResult as RosenbergResult;
-      interpretation = getRosenbergInterpretation(result.level, result.rawScore, result.percentageScore);
       detailedInterpretation = getRosenbergDetailedInterpretation(result.level, result.rawScore, result.percentageScore);
       break;
     }
     case "selfconcept": {
       const result = testResult as SelfConceptResult;
-      interpretation = getSelfConceptInterpretation(result.level);
-      // Self-Conceptは詳細解釈なし
-      detailedInterpretation = null;
+      const interpretation = getSelfConceptInterpretation(result.level);
+      // Self-Conceptは詳細解釈なし（シンプル版）
+      detailedInterpretation = { summary: interpretation };
       break;
     }
     default:
       // フォールバック（古いlocalStorageデータ用）
-      interpretation = testResult.interpretation || "解釈文が利用できません。";
-      detailedInterpretation = testResult.detailedInterpretation;
+      detailedInterpretation = testResult.detailedInterpretation || { summary: testResult.interpretation || "解釈文が利用できません。" };
   }
 
-  const hasDetailedInterpretation = !!detailedInterpretation;
+  const hasDetailedInterpretation = !!(detailedInterpretation?.dailyLifeImpact);
 
   return (
     <div className="mb-16 space-y-8">
@@ -380,7 +377,7 @@ function renderCircleDetailedDisplay(testType: string, testResult: any, color: s
           結果の解釈
         </h2>
         <MarkdownContent
-          content={hasDetailedInterpretation ? detailedInterpretation.summary : interpretation}
+          content={detailedInterpretation.summary}
         />
       </Card>
 
@@ -490,30 +487,32 @@ function renderClinicalDetailedDisplay(
   const colorHex = dimensions[0]?.color || '#3b82f6';
 
   // Hex色からvariant名にマッピング
-  const colorToVariant = (hex: string): "orange" | "blue" | "green" | "pink" => {
+  const colorToVariant = (hex: string): "orange" | "blue" | "green" | "pink" | "cyan" => {
     if (hex === '#f97316') return 'orange';
     if (hex === '#ec4899') return 'pink';
     if (hex === '#3b82f6') return 'blue';
     if (hex === '#10b981') return 'green';
+    if (hex === '#06b6d4') return 'cyan';
     return 'blue'; // default
   };
   const levelColor = colorToVariant(colorHex);
 
-  // 動的に解釈文を生成
-  let interpretation: string;
+  // 動的に詳細解釈を生成（4セクション構造）
+  let detailedInterpretation: any;
   if (testType === "phq9") {
     const result = testResult as Phq9Result;
-    interpretation = getPhq9Interpretation(result.level);
+    detailedInterpretation = getPhq9DetailedInterpretation(result.level);
   } else if (testType === "k6") {
     const result = testResult as K6Result;
-    interpretation = getK6Interpretation(result.level);
+    detailedInterpretation = getK6DetailedInterpretation(result.level);
   } else {
     // フォールバック
-    interpretation = testResult.interpretation || "解釈文が利用できません。";
+    detailedInterpretation = { summary: testResult.interpretation || "解釈文が利用できません。" };
   }
 
   return (
-    <div className="mb-16">
+    <div className="mb-16 space-y-8">
+      {/* スコア表示 */}
       <Card variant={levelColor} padding="lg">
         <div className="text-center mb-6">
           <div className="text-6xl md:text-8xl font-mono font-bold data-number mb-4">
@@ -530,10 +529,57 @@ function renderClinicalDetailedDisplay(
           </div>
         </div>
         <BrutalProgressBar value={percentageScore} color={levelColor} showValue={false} />
-        <div className="mt-6 text-center text-sm font-mono text-brutal-gray-800">
-          {interpretation}
-        </div>
       </Card>
+
+      {/* 結果の解釈 */}
+      <Card variant="white" padding="lg" className="animate-scale-in">
+        <h2
+          className="text-2xl md:text-3xl lg:text-4xl text-brutal-black mb-6"
+          style={{ fontFamily: "var(--font-display-ja)", fontWeight: 700 }}
+        >
+          結果の解釈
+        </h2>
+        <MarkdownContent content={detailedInterpretation.summary} />
+      </Card>
+
+      {/* 日常生活への影響 */}
+      {detailedInterpretation.dailyLifeImpact && (
+        <Card variant="white" padding="lg">
+          <h3
+            className="text-2xl md:text-3xl text-brutal-black mb-6"
+            style={{ fontFamily: "var(--font-display-ja)", fontWeight: 700 }}
+          >
+            日常生活への影響
+          </h3>
+          <MarkdownContent content={detailedInterpretation.dailyLifeImpact} />
+        </Card>
+      )}
+
+      {/* 心理学的背景 */}
+      {detailedInterpretation.psychBackground && (
+        <Card variant={levelColor} padding="lg">
+          <h3
+            className="text-2xl md:text-3xl text-brutal-black mb-6"
+            style={{ fontFamily: "var(--font-display-ja)", fontWeight: 700 }}
+          >
+            心理学的背景
+          </h3>
+          <MarkdownContent content={detailedInterpretation.psychBackground} />
+        </Card>
+      )}
+
+      {/* 実用的アドバイス */}
+      {detailedInterpretation.practicalAdvice && (
+        <Card variant="white" padding="lg" className="border-brutal-thick border-brutal-black">
+          <h3
+            className="text-2xl md:text-3xl text-brutal-black mb-6"
+            style={{ fontFamily: "var(--font-display-ja)", fontWeight: 700 }}
+          >
+            実用的アドバイス
+          </h3>
+          <MarkdownContent content={detailedInterpretation.practicalAdvice} />
+        </Card>
+      )}
     </div>
   );
 }

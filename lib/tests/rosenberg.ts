@@ -20,6 +20,7 @@ import {
   scaleInfo,
 } from "@/data/rosenberg-questions";
 import type { TestConfig } from "./types";
+import { validateAnswerPattern as validateCommon } from "./validation";
 import type { DimensionData } from "@/lib/og-design/types";
 import { TEST_COLOR_MAP } from "@/lib/og-design/constants";
 
@@ -460,32 +461,15 @@ Baumeister et al. (2003) の研究では、自尊心と仕事のパフォーマ�
 }
 
 /**
- * スコアの信頼性チェック
- * すべて同じ回答（例: 全て3）の場合は警告
+ * Rosenberg Self-Esteem Scale 回答バリデーション
  */
-export function validateAnswerPattern(answers: number[]): {
-  valid: boolean;
-  warning?: string;
-} {
-  const uniqueAnswers = new Set(answers);
-
-  if (uniqueAnswers.size === 1) {
-    return {
-      valid: false,
-      warning:
-        "すべて同じ回答が選択されています。正確な結果を得るため、各質問を注意深くお読みください。",
-    };
-  }
-
-  if (uniqueAnswers.size === 2 && answers.length === 10) {
-    return {
-      valid: true,
-      warning:
-        "回答パターンが単調です。より正確な結果を得るため、各質問に対して率直に答えることをお勧めします。",
-    };
-  }
-
-  return { valid: true };
+function validateAnswerPattern(answers: number[]) {
+  return validateCommon(answers, {
+    expectedLength: 10,
+    minValue: 1,
+    maxValue: 4,
+    messageType: "warning",
+  });
 }
 
 // ============================================================================

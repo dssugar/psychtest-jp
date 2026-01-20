@@ -22,6 +22,7 @@ import {
   scaleInfo,
 } from "@/data/selfconcept-questions";
 import type { TestConfig } from "./types";
+import { validateAnswerPattern as validateCommon } from "./validation";
 import type { DimensionData } from "@/lib/og-design/types";
 import { TEST_COLOR_MAP } from "@/lib/og-design/constants";
 
@@ -120,39 +121,15 @@ export function getInterpretation(
 }
 
 /**
- * 回答パターンの妥当性を検証
- * @param answers 回答配列
- * @returns 検証結果
+ * Self-Concept Clarity Scale 回答バリデーション
  */
-export function validateAnswerPattern(answers: number[]): {
-  valid: boolean;
-  message?: string;
-} {
-  if (answers.length !== 8) {
-    return {
-      valid: false,
-      message: "回答数が不正です（8問必要）",
-    };
-  }
-
-  if (answers.some((answer) => answer < 1 || answer > 5)) {
-    return {
-      valid: false,
-      message: "回答は1-5の範囲で入力してください",
-    };
-  }
-
-  // すべて同じ回答の場合は警告（中心化傾向）
-  const uniqueAnswers = new Set(answers);
-  if (uniqueAnswers.size === 1) {
-    return {
-      valid: false,
-      message:
-        "すべての質問に同じ回答をしています。もう一度、各質問について考えてみてください。",
-    };
-  }
-
-  return { valid: true };
+function validateAnswerPattern(answers: number[]) {
+  return validateCommon(answers, {
+    expectedLength: 8,
+    minValue: 1,
+    maxValue: 5,
+    messageType: "message",
+  });
 }
 
 // ============================================================================

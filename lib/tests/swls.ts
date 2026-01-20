@@ -23,6 +23,7 @@ import {
   scaleInfo,
 } from "@/data/swls-questions";
 import type { TestConfig } from "./types";
+import { validateSwlsAnswerPattern } from "./validation";
 import type { DimensionData } from "@/lib/og-design/types";
 import { TEST_COLOR_MAP } from "@/lib/og-design/constants";
 
@@ -129,39 +130,11 @@ export function getInterpretation(level: SwlsResult["level"]): string {
 }
 
 /**
- * 回答パターンの妥当性を検証
- * @param answers 回答配列
- * @returns 検証結果
+ * SWLS 回答バリデーション
+ * 中立点（4）をすべて選択している場合は許容
  */
-export function validateAnswerPattern(answers: number[]): {
-  valid: boolean;
-  message?: string;
-} {
-  if (answers.length !== 5) {
-    return {
-      valid: false,
-      message: "回答数が不正です（5問必要）",
-    };
-  }
-
-  if (answers.some((answer) => answer < 1 || answer > 7)) {
-    return {
-      valid: false,
-      message: "回答は1-7の範囲で入力してください",
-    };
-  }
-
-  // すべて同じ回答の場合は警告（中立点の4を除く）
-  const uniqueAnswers = new Set(answers);
-  if (uniqueAnswers.size === 1 && answers[0] !== 4) {
-    return {
-      valid: false,
-      message:
-        "すべての質問に同じ回答をしています。もう一度、各質問について考えてみてください。",
-    };
-  }
-
-  return { valid: true };
+function validateAnswerPattern(answers: number[]) {
+  return validateSwlsAnswerPattern(answers);
 }
 
 // =========================================
