@@ -12,12 +12,20 @@ import { DataBadge } from "@/components/viz/DataBadge";
 import { Card } from "@/components/ui/Card";
 import { SocialShareButtons } from "@/components/share/SocialShareButtons";
 import { ResultSummaryCard } from "@/components/results/ResultSummaryCard";
+import { MarkdownContent } from "@/components/results/MarkdownContent";
 
 // BigFive specific imports (for BigFive score display only)
-import { addAllEstimations } from "@/lib/tests/bigfive";
+import { addAllEstimations, getInterpretation as getBigFiveInterpretation, type BigFiveResult } from "@/lib/tests/bigfive";
 import { OG_COLORS, DIMENSION_NAMES, DIMENSION_ORDER } from "@/lib/og-design/constants";
 import type { DimensionData } from "@/lib/og-design/types";
-import type { BigFiveResult } from "@/lib/tests/bigfive";
+
+// Dynamic interpretation imports for all tests
+import { getInterpretation as getRosenbergInterpretation, getDetailedInterpretation as getRosenbergDetailedInterpretation, type RosenbergResult } from "@/lib/tests/rosenberg";
+import { getInterpretation as getSelfConceptInterpretation, type SelfConceptResult } from "@/lib/tests/selfconcept";
+import { getInterpretation as getSwlsInterpretation, type SwlsResult } from "@/lib/tests/swls";
+import { getInterpretation as getPhq9Interpretation, type Phq9Result } from "@/lib/tests/phq9";
+import { getInterpretation as getK6Interpretation, type K6Result } from "@/lib/tests/k6";
+import { getInterpretation as getIndustriousnessInterpretation, type IndustriousnessResult } from "@/lib/tests/industriousness";
 
 /**
  * 動的結果ページ（全テスト統合）
@@ -97,23 +105,12 @@ export default function DynamicResultPage() {
         <div className="max-w-[1200px] mx-auto">
           {/* Header */}
           <div className="text-center mb-12 animate-slide-in-up">
-            <div className="flex flex-wrap items-center justify-center gap-3 mb-4">
-              <DataBadge color={color} size="lg">
-                {scaleInfo.abbreviation} RESULT
-              </DataBadge>
-              <DataBadge color={getLayerColor()} size="md">
-                {getLayerLabel()}
-              </DataBadge>
-            </div>
             <h1
-              className="text-4xl md:text-5xl lg:text-7xl text-brutal-black mt-6 mb-4"
+              className="text-4xl md:text-5xl lg:text-7xl text-brutal-black"
               style={{ fontFamily: "var(--font-display-ja)", fontWeight: 900 }}
             >
               診断結果
             </h1>
-            <p className="text-lg md:text-xl text-brutal-gray-800 font-mono">
-              {scaleInfo.nameJa}
-            </p>
           </div>
 
           {/* Alerts (条件付き) */}
@@ -333,12 +330,12 @@ function renderDetailedScoreDisplay(
 
   // Circle型
   if (scoreDisplay?.type === "circle") {
-    return renderCircleDetailedDisplay(testResult, color, scaleInfo);
+    return renderCircleDetailedDisplay(testType, testResult, color, scaleInfo);
   }
 
   // Progress型
   if (scoreDisplay?.type === "progress") {
-    return renderProgressDetailedDisplay(testResult, color, scoreDisplay);
+    return renderProgressDetailedDisplay(testType, testResult, color, scoreDisplay);
   }
 
   // フォールバック: シンプルなスコア表示
@@ -392,54 +389,105 @@ function renderSingleScoreSummaryCard(testResult: any, color: string, scaleInfo:
 /**
  * Circle型の詳細表示
  */
-function renderCircleDetailedDisplay(testResult: any, color: string, scaleInfo: any) {
+function renderCircleDetailedDisplay(testType: string, testResult: any, color: string, scaleInfo: any) {
+  // 全テストで動的に解釈文を生成（localStorage に保存しない）
+  let interpretation: string;
+  let detailedInterpretation: any;
+
+  switch (testType) {
+    case "rosenberg": {
+      const result = testResult as RosenbergResult;
+      interpretation = getRosenbergInterpretation(result.level, result.rawScore, result.percentageScore);
+      detailedInterpretation = getRosenbergDetailedInterpretation(result.level, result.rawScore, result.percentageScore);
+      break;
+    }
+    case "selfconcept": {
+      const result = testResult as SelfConceptResult;
+      interpretation = getSelfConceptInterpretation(result.level);
+      // Self-Conceptは詳細解釈なし
+      detailedInterpretation = null;
+      break;
+    }
+    default:
+      // フォールバック（古いlocalStorageデータ用）
+      interpretation = testResult.interpretation || "解釈文が利用できません。";
+      detailedInterpretation = testResult.detailedInterpretation;
+  }
+
+  const hasDetailedInterpretation = !!detailedInterpretation;
+
   return (
-    <div className="mb-16">
+    <div className="mb-16 space-y-8">
+      {/* 結果の解釈セクション */}
       <Card variant="white" padding="lg" className="animate-scale-in">
-        <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12">
-          <div className="flex-shrink-0 w-[180px] md:w-[220px] lg:w-[240px]">
-            <ScoreCircle
-              score={testResult.percentageScore}
-              size="lg"
-              color={color as any}
-              label={scaleInfo.nameJa}
-            />
-          </div>
-          <div className="flex-1 space-y-6">
-            <div>
-              <DataBadge color={color as any} size="lg">
-                {testResult.levelLabel || "スコア"}
-              </DataBadge>
-              <h2
-                className="text-2xl md:text-3xl lg:text-4xl text-brutal-black mt-4 mb-4"
-                style={{ fontFamily: "var(--font-display-ja)", fontWeight: 700 }}
-              >
-                評価レベル
-              </h2>
-            </div>
-            <Card
-              variant="white"
-              padding="md"
-              className="bg-brutal-gray-50 border-l-brutal-thick border-l-viz-blue"
-            >
-              <h3 className="font-bold uppercase tracking-wide text-sm text-brutal-gray-900 mb-3">
-                結果の解釈
-              </h3>
-              <p className="text-brutal-gray-900 leading-relaxed">{testResult.interpretation}</p>
-            </Card>
-          </div>
-        </div>
+        <h2
+          className="text-2xl md:text-3xl lg:text-4xl text-brutal-black mb-6"
+          style={{ fontFamily: "var(--font-display-ja)", fontWeight: 700 }}
+        >
+          結果の解釈
+        </h2>
+        <MarkdownContent
+          content={hasDetailedInterpretation ? detailedInterpretation.summary : interpretation}
+        />
       </Card>
+
+      {/* 詳細解釈セクション（Phase 5対応） */}
+      {hasDetailedInterpretation && (
+        <>
+          {/* 日常生活への影響 */}
+          <Card variant="white" padding="lg">
+            <h3
+              className="text-2xl md:text-3xl text-brutal-black mb-6"
+              style={{ fontFamily: "var(--font-display-ja)", fontWeight: 700 }}
+            >
+              日常生活への影響
+            </h3>
+            <MarkdownContent content={detailedInterpretation.dailyLifeImpact} />
+          </Card>
+
+          {/* 心理学的背景 */}
+          <Card variant={color as any} padding="lg">
+            <h3
+              className="text-2xl md:text-3xl text-brutal-black mb-6"
+              style={{ fontFamily: "var(--font-display-ja)", fontWeight: 700 }}
+            >
+              心理学的背景
+            </h3>
+            <MarkdownContent content={detailedInterpretation.psychBackground} />
+          </Card>
+
+          {/* 実用的アドバイス */}
+          <Card variant="white" padding="lg" className="border-brutal-thick border-brutal-black">
+            <h3
+              className="text-2xl md:text-3xl text-brutal-black mb-6"
+              style={{ fontFamily: "var(--font-display-ja)", fontWeight: 700 }}
+            >
+              実用的アドバイス
+            </h3>
+            <MarkdownContent content={detailedInterpretation.practicalAdvice} />
+          </Card>
+        </>
+      )}
     </div>
   );
 }
 
 /**
- * Progress型の詳細表示
+ * Progress型の詳細表示（SWLS用）
  */
-function renderProgressDetailedDisplay(testResult: any, color: string, scoreDisplay: any) {
+function renderProgressDetailedDisplay(testType: string, testResult: any, color: string, scoreDisplay: any) {
+  // 動的に解釈文を生成
+  let interpretation: string;
+  if (testType === "swls") {
+    const result = testResult as SwlsResult;
+    interpretation = getSwlsInterpretation(result.level);
+  } else {
+    // フォールバック
+    interpretation = testResult.interpretation || "解釈文が利用できません。";
+  }
+
   return (
-    <div className="mb-16">
+    <div className="mb-16 space-y-8">
       <Card variant={color as any} padding="lg">
         <div className="text-center mb-6">
           <div className="text-6xl md:text-8xl font-mono font-bold data-number mb-4">
@@ -454,6 +502,17 @@ function renderProgressDetailedDisplay(testResult: any, color: string, scoreDisp
           color={color as any}
           showValue={false}
         />
+      </Card>
+
+      {/* 解釈セクション */}
+      <Card variant="white" padding="lg">
+        <h2
+          className="text-2xl md:text-3xl lg:text-4xl text-brutal-black mb-6"
+          style={{ fontFamily: "var(--font-display-ja)", fontWeight: 700 }}
+        >
+          結果の解釈
+        </h2>
+        <MarkdownContent content={interpretation} />
       </Card>
     </div>
   );
@@ -540,6 +599,19 @@ function renderClinicalDetailedDisplay(
     testResult.percentageScore || (score / scoreDisplay.maxScore) * 100;
   const levelColor = getClinicalLevelColor(testType, testResult);
 
+  // 動的に解釈文を生成
+  let interpretation: string;
+  if (testType === "phq9") {
+    const result = testResult as Phq9Result;
+    interpretation = getPhq9Interpretation(result.level);
+  } else if (testType === "k6") {
+    const result = testResult as K6Result;
+    interpretation = getK6Interpretation(result.level);
+  } else {
+    // フォールバック
+    interpretation = testResult.interpretation || "解釈文が利用できません。";
+  }
+
   return (
     <div className="mb-16">
       <Card variant={levelColor} padding="lg">
@@ -559,7 +631,7 @@ function renderClinicalDetailedDisplay(
         </div>
         <BrutalProgressBar value={percentageScore} color={levelColor} showValue={false} />
         <div className="mt-6 text-center text-sm font-mono text-brutal-gray-800">
-          {testResult.interpretation}
+          {interpretation}
         </div>
       </Card>
     </div>

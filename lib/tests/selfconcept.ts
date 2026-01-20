@@ -37,7 +37,7 @@ export interface SelfConceptResult {
   percentageScore: number;
   level: "very_low" | "low" | "moderate" | "high" | "very_high";
   levelLabel: string;
-  interpretation: string;
+  // NOTE: interpretation は保存せず、表示時に getInterpretation() で動的生成
 }
 
 // ============================================================================
@@ -76,33 +76,22 @@ export function calculateSelfConceptScore(
   // レベル判定
   let level: SelfConceptResult["level"];
   let levelLabel: string;
-  let interpretation: string;
 
   if (rawScore >= 32) {
     level = "very_high";
     levelLabel = "非常に高い";
-    interpretation =
-      "自己認識が非常に明確で安定しています。自分の性格、価値観、信念について確信を持ち、一貫した自己イメージを維持しています。";
   } else if (rawScore >= 28) {
     level = "high";
     levelLabel = "高い";
-    interpretation =
-      "自己認識が明確です。自分自身をよく理解しており、状況によって自己イメージが大きく揺らぐことは少ないです。";
   } else if (rawScore >= 20) {
     level = "moderate";
     levelLabel = "中程度";
-    interpretation =
-      "自己認識は平均的です。ある程度自分を理解していますが、状況によっては自己イメージが揺らぐこともあります。";
   } else if (rawScore >= 14) {
     level = "low";
     levelLabel = "やや低い";
-    interpretation =
-      "自己認識がやや曖昧です。自分がどんな人間かについて確信を持ちにくく、状況によって自己イメージが変化しやすい傾向があります。";
   } else {
     level = "very_low";
     levelLabel = "低い";
-    interpretation =
-      "自己認識が曖昧な状態です。自分自身について混乱しやすく、一貫した自己イメージを持ちにくい傾向があります。自己探求を通じて自己理解を深めることが有益かもしれません。";
   }
 
   return {
@@ -110,8 +99,24 @@ export function calculateSelfConceptScore(
     percentageScore,
     level,
     levelLabel,
-    interpretation,
   };
+}
+
+/**
+ * 解釈文を取得
+ * 表示時に動的生成するため、localStorage に保存しない
+ */
+export function getInterpretation(
+  level: SelfConceptResult["level"]
+): string {
+  const interpretations: Record<SelfConceptResult["level"], string> = {
+    very_high: "自己認識が非常に明確で安定しています。自分の性格、価値観、信念について確信を持ち、一貫した自己イメージを維持しています。",
+    high: "自己認識が明確です。自分自身をよく理解しており、状況によって自己イメージが大きく揺らぐことは少ないです。",
+    moderate: "自己認識は平均的です。ある程度自分を理解していますが、状況によっては自己イメージが揺らぐこともあります。",
+    low: "自己認識がやや曖昧です。自分がどんな人間かについて確信を持ちにくく、状況によって自己イメージが変化しやすい傾向があります。",
+    very_low: "自己認識が曖昧な状態です。自分自身について混乱しやすく、一貫した自己イメージを持ちにくい傾向があります。自己探求を通じて自己理解を深めることが有益かもしれません。",
+  };
+  return interpretations[level];
 }
 
 /**

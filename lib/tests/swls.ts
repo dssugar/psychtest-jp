@@ -45,7 +45,7 @@ export interface SwlsResult {
     | "high"
     | "veryHigh";
   levelLabel: string;
-  interpretation: string;
+  // NOTE: interpretation は保存せず、表示時に getInterpretation() で動的生成
 }
 
 // ============================================================================
@@ -73,36 +73,28 @@ export function calculateSwlsScore(answers: number[]): SwlsResult {
   // レベル判定
   let level: SwlsResult["level"];
   let levelLabel: string;
-  let interpretation: string;
 
   if (rawScore === 35) {
     level = "veryHigh";
     levelLabel = "極めて満足";
-    interpretation = getVeryHighInterpretation();
   } else if (rawScore >= 30) {
     level = "high";
     levelLabel = "満足";
-    interpretation = getHighInterpretation();
   } else if (rawScore >= 25) {
     level = "slightlyAbove";
     levelLabel = "やや満足";
-    interpretation = getSlightlyAboveInterpretation();
   } else if (rawScore >= 20) {
     level = "neutral";
     levelLabel = "中程度";
-    interpretation = getNeutralInterpretation();
   } else if (rawScore >= 15) {
     level = "slightlyBelow";
     levelLabel = "やや不満足";
-    interpretation = getSlightlyBelowInterpretation();
   } else if (rawScore >= 10) {
     level = "low";
     levelLabel = "不満足";
-    interpretation = getLowInterpretation();
   } else {
     level = "veryLow";
     levelLabel = "極めて不満足";
-    interpretation = getVeryLowInterpretation();
   }
 
   return {
@@ -110,8 +102,30 @@ export function calculateSwlsScore(answers: number[]): SwlsResult {
     percentageScore,
     level,
     levelLabel,
-    interpretation,
   };
+}
+
+/**
+ * 解釈文を取得
+ * 表示時に動的生成するため、localStorage に保存しない
+ */
+export function getInterpretation(level: SwlsResult["level"]): string {
+  switch (level) {
+    case "veryHigh":
+      return getVeryHighInterpretation();
+    case "high":
+      return getHighInterpretation();
+    case "slightlyAbove":
+      return getSlightlyAboveInterpretation();
+    case "neutral":
+      return getNeutralInterpretation();
+    case "slightlyBelow":
+      return getSlightlyBelowInterpretation();
+    case "low":
+      return getLowInterpretation();
+    case "veryLow":
+      return getVeryLowInterpretation();
+  }
 }
 
 /**

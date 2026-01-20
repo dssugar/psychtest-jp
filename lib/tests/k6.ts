@@ -30,7 +30,7 @@ export interface K6Result {
   rawScore: number;
   level: K6Level;
   levelLabel: string;
-  interpretation: string;
+  // NOTE: interpretation は保存せず、表示時に getInterpretation() で動的生成
   requiresUrgentCare: boolean;
   timestamp: string;
 }
@@ -84,8 +84,17 @@ export function getK6LevelLabel(level: K6Level): string {
 
 /**
  * レベルに対応する解釈を取得
+ * 表示時に動的生成するため、localStorage に保存しない
  */
-export function getK6Interpretation(level: K6Level): string {
+export function getInterpretation(level: K6Level): string {
+  return getK6Interpretation(level);
+}
+
+/**
+ * レベルに対応する解釈を取得（内部用）
+ * @deprecated 外部からは getInterpretation() を使用してください
+ */
+function getK6Interpretation(level: K6Level): string {
   const interpretations: Record<K6Level, string> = {
     none: `心理的苦痛は最小限の状態です。日本の国民生活基礎調査によると、70.9%の人がこの範囲に該当し、精神疾患を有する可能性は極めて低い健康的な状態です。過去30日間において、神経過敏さ、絶望感、落ち着かなさ、気分の落ち込み、疲労感、無価値感などの症状はほとんど経験しておらず、日常的なストレスに対して適切な対処能力を維持しています。
 
@@ -131,7 +140,6 @@ export function getK6Result(answers: number[]): K6Result {
   const rawScore = calculateK6Score(answers);
   const level = getK6Level(rawScore);
   const levelLabel = getK6LevelLabel(level);
-  const interpretation = getK6Interpretation(level);
 
   // スコア13点以上は専門家への受診を強く推奨
   const requiresUrgentCare = rawScore >= 13;
@@ -141,7 +149,6 @@ export function getK6Result(answers: number[]): K6Result {
     rawScore,
     level,
     levelLabel,
-    interpretation,
     requiresUrgentCare,
     timestamp: new Date().toISOString()
   };

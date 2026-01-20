@@ -36,7 +36,7 @@ export interface Phq9Result {
   percentageScore: number;
   level: "minimal" | "mild" | "moderate" | "moderately_severe" | "severe";
   levelLabel: string;
-  interpretation: string;
+  // NOTE: interpretation は保存せず、表示時に getInterpretation() で動的生成
   suicideRisk: boolean; // 項目9が2点以上の場合 true
   requiresUrgentCare: boolean; // スコア15点以上の場合 true
 }
@@ -72,28 +72,22 @@ export function calculatePhq9Score(answers: number[]): Phq9Result {
   // レベル判定
   let level: Phq9Result["level"];
   let levelLabel: string;
-  let interpretation: string;
 
   if (rawScore >= 20) {
     level = "severe";
     levelLabel = "重度";
-    interpretation = getSevereInterpretation();
   } else if (rawScore >= 15) {
     level = "moderately_severe";
     levelLabel = "やや重度";
-    interpretation = getModeratelySevereInterpretation();
   } else if (rawScore >= 10) {
     level = "moderate";
     levelLabel = "中等度";
-    interpretation = getModerateInterpretation();
   } else if (rawScore >= 5) {
     level = "mild";
     levelLabel = "軽度";
-    interpretation = getMildInterpretation();
   } else {
     level = "minimal";
     levelLabel = "正常";
-    interpretation = getMinimalInterpretation();
   }
 
   return {
@@ -101,10 +95,28 @@ export function calculatePhq9Score(answers: number[]): Phq9Result {
     percentageScore,
     level,
     levelLabel,
-    interpretation,
     suicideRisk,
     requiresUrgentCare,
   };
+}
+
+/**
+ * 解釈文を取得
+ * 表示時に動的生成するため、localStorage に保存しない
+ */
+export function getInterpretation(level: Phq9Result["level"]): string {
+  switch (level) {
+    case "severe":
+      return getSevereInterpretation();
+    case "moderately_severe":
+      return getModeratelySevereInterpretation();
+    case "moderate":
+      return getModerateInterpretation();
+    case "mild":
+      return getMildInterpretation();
+    case "minimal":
+      return getMinimalInterpretation();
+  }
 }
 
 /**

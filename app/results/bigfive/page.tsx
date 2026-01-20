@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { getTestResult, type BigFiveTestResult } from "@/lib/storage";
 import { scaleInfo } from "@/data/bigfive-questions";
-import { dimensionNames, dimensionDescriptions, addAllEstimations, getDimensionInterpretation } from "@/lib/tests/bigfive";
+import { dimensionNames, dimensionDescriptions, addAllEstimations, getDimensionInterpretation, getInterpretation } from "@/lib/tests/bigfive";
 import { BrutalProgressBar } from "@/components/viz/BrutalProgressBar";
 import { StatCard } from "@/components/viz/StatCard";
 import { DataBadge } from "@/components/viz/DataBadge";
@@ -15,6 +15,7 @@ import { EnneagramEstimationCard } from "@/components/bigfive/EnneagramEstimatio
 import type { BigFiveResult } from "@/lib/tests/bigfive";
 import { SocialShareButtons } from "@/components/share/SocialShareButtons";
 import { ResultSummaryCard } from "@/components/results/ResultSummaryCard";
+import { MarkdownContent } from "@/components/results/MarkdownContent";
 import { OG_COLORS, DIMENSION_NAMES, DIMENSION_ORDER } from "@/lib/og-design/constants";
 import type { DimensionData } from "@/lib/og-design/types";
 
@@ -104,21 +105,9 @@ export default function BigFiveResultPage() {
       <div className="container mx-auto px-4 py-12 md:py-20">
         {/* Header */}
         <div className="max-w-[1200px] mx-auto mb-12 text-center">
-          <div className="flex flex-wrap items-center justify-center gap-3 mb-4">
-            <DataBadge color="green" size="lg">BIG FIVE RESULT</DataBadge>
-            <DataBadge color="green" size="md">
-              特性 (TRAIT)
-            </DataBadge>
-            <DataBadge color="blue" size="md">
-              IPIP-120
-            </DataBadge>
-          </div>
-          <h1 className="text-4xl md:text-5xl lg:text-7xl text-brutal-black mt-6 mb-4 animate-slide-in-up" style={{ fontFamily: 'var(--font-display-ja)', fontWeight: 900 }}>
+          <h1 className="text-4xl md:text-5xl lg:text-7xl text-brutal-black animate-slide-in-up" style={{ fontFamily: 'var(--font-display-ja)', fontWeight: 900 }}>
             診断結果
           </h1>
-          <p className="text-lg md:text-xl text-brutal-gray-800 font-mono animate-slide-in-up" style={{ animationDelay: "0.1s" }}>
-            {scaleInfo.nameJa}
-          </p>
         </div>
 
         {/* Result Summary Card - OG画像と完全に同じビジュアル */}
@@ -153,9 +142,15 @@ export default function BigFiveResultPage() {
             <h2 className="text-2xl md:text-3xl text-brutal-black mb-6" style={{ fontFamily: 'var(--font-display-ja)', fontWeight: 700 }}>
               あなたの性格プロファイル
             </h2>
-            <p className="text-lg text-brutal-gray-900 leading-relaxed">
-              {bigFiveResult.interpretation}
-            </p>
+            <MarkdownContent
+              content={getInterpretation({
+                extraversion: bigFiveResult.extraversion,
+                agreeableness: bigFiveResult.agreeableness,
+                conscientiousness: bigFiveResult.conscientiousness,
+                neuroticism: bigFiveResult.neuroticism,
+                openness: bigFiveResult.openness,
+              })}
+            />
           </div>
         </div>
 
@@ -215,9 +210,9 @@ export default function BigFiveResultPage() {
                     <h4 className="font-bold text-brutal-black mb-3 uppercase tracking-wide text-sm">
                       📝 あなたのスコアの解釈
                     </h4>
-                    <p className="text-sm text-brutal-gray-900 leading-relaxed">
-                      {interpretation.summary}
-                    </p>
+                    <div className="text-sm">
+                      <MarkdownContent content={interpretation.summary} />
+                    </div>
                   </div>
                 </div>
               );

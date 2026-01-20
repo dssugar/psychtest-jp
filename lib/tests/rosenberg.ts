@@ -39,8 +39,8 @@ export interface RosenbergResult {
   rawScore: number;
   percentageScore: number;
   level: "very_low" | "low" | "medium" | "high" | "very_high";
-  interpretation: string;  // 簡潔な解釈（結果サマリー用）
-  detailedInterpretation: DetailedInterpretation;  // 詳細解釈（Phase 5準拠）
+  // NOTE: interpretation と detailedInterpretation は保存せず、
+  // 表示時に getInterpretation() / getDetailedInterpretation() で動的生成
 }
 
 // ============================================================================
@@ -89,22 +89,18 @@ export function calculateRosenbergScore(answers: number[]): RosenbergResult {
     level = "very_high";
   }
 
-  // 解釈文（簡潔版）
-  const interpretation = getInterpretation(level, rawScore, percentageScore);
-
-  // 詳細解釈（Phase 5準拠）
-  const detailedInterpretation = getDetailedInterpretation(level, rawScore, percentageScore);
-
   return {
     rawScore,
     percentageScore: Math.round(percentageScore * 10) / 10,
     level,
-    interpretation,
-    detailedInterpretation,
   };
 }
 
-function getInterpretation(
+/**
+ * 簡潔な解釈文を取得（結果サマリー用）
+ * 表示時に動的生成するため、localStorage に保存しない
+ */
+export function getInterpretation(
   level: RosenbergResult["level"],
   rawScore: number,
   percentageScore: number
@@ -123,8 +119,9 @@ function getInterpretation(
 /**
  * 詳細解釈を取得（Phase 5準拠）
  * 各レベル約1,500字の学術的根拠に基づいた解釈
+ * 表示時に動的生成するため、localStorage に保存しない
  */
-function getDetailedInterpretation(
+export function getDetailedInterpretation(
   level: RosenbergResult["level"],
   rawScore: number,
   percentageScore: number

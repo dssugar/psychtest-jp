@@ -117,7 +117,7 @@ export interface BigFiveResult {
   // 30ファセットスコア (IPIP-120のみ: 4-20 each) - optional
   facets?: BigFiveFacets;
 
-  interpretation: string;
+  // NOTE: interpretation は保存せず、表示時に getInterpretation() で動的生成
 
   // 変換推定 (IPIP-120のみ) - optional
   mbtiEstimation?: MBTIEstimation;
@@ -215,13 +215,9 @@ export function calculateBigFiveScore(answers: number[]): BigFiveResult {
     c6_cautiousness: facetScores.c6_cautiousness,
   };
 
-  // 解釈文の生成
-  const interpretation = getInterpretation(domainScores);
-
   return {
     ...domainScores,
     facets,
-    interpretation,
   };
 }
 
@@ -235,9 +231,10 @@ function getScoreLevel(score: number): 'low' | 'medium' | 'high' {
 }
 
 /**
- * 簡潔な解釈文の生成（既存の関数）
+ * 簡潔な解釈文の生成
+ * 表示時に動的生成するため、localStorage に保存しない
  */
-function getInterpretation(scores: {
+export function getInterpretation(scores: {
   extraversion: number;
   agreeableness: number;
   conscientiousness: number;

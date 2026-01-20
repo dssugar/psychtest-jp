@@ -69,8 +69,7 @@ export interface IndustriousnessResult {
   quadrant: IndustriousnessQuadrant;
   quadrantLabel: string; // e.g., "実行者型"
 
-  // 解釈
-  interpretation: string;
+  // NOTE: interpretation は保存せず、表示時に getInterpretation() で動的生成
 }
 
 // ============================================================================
@@ -143,9 +142,6 @@ export function calculateIndustriousnessScore(
     quadrantLabel = "マイペース型";
   }
 
-  // 解釈取得
-  const interpretation = getInterpretation(quadrant, c4_percentile, c5_percentile);
-
   return {
     c4_achievement,
     c5_discipline,
@@ -154,14 +150,14 @@ export function calculateIndustriousnessScore(
     c5_percentile,
     quadrant,
     quadrantLabel,
-    interpretation,
   };
 }
 
 /**
  * 象限に基づく解釈を返す
+ * 表示時に動的生成するため、localStorage に保存しない
  */
-function getInterpretation(
+export function getInterpretation(
   quadrant: IndustriousnessQuadrant,
   c4_percentile: number,
   c5_percentile: number
