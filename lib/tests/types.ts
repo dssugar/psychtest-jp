@@ -1,5 +1,5 @@
 import type { TestType } from "@/lib/storage";
-import type { OGImageConfig } from "@/lib/og-design/types";
+import type { OGImageConfig, DimensionData } from "@/lib/og-design/types";
 
 /**
  * 心理尺度の学術的情報
@@ -186,6 +186,26 @@ export interface TestConfig<TResult, TQuestion extends BaseQuestion = BaseQuesti
   // ========================================
   /** OG画像設定（動的画像生成、シェアページ用） */
   ogImage?: OGImageConfig;
+
+  /**
+   * 結果から次元データ配列を生成（ダッシュボード、ResultSummaryCard用）
+   *
+   * @param result - calculateScore()の戻り値
+   * @returns DimensionData[] - 次元データ配列（表示順）
+   *
+   * @example
+   * // BigFive: 5次元
+   * getDimensions: (result: BigFiveResult) => [
+   *   { key: 'extraversion', label: '外向性', score: 72, percentage: 50, color: '#3b82f6' },
+   *   // ... 他の4次元
+   * ]
+   *
+   * // Single-score: 1次元
+   * getDimensions: (result: RosenbergResult) => [
+   *   { key: 'score', label: 'Total Score', score: 30, percentage: 75, color: '#ec4899' }
+   * ]
+   */
+  getDimensions?: (result: TResult) => DimensionData[];
 
   // ========================================
   // 後方互換性（非推奨）

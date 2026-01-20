@@ -16,6 +16,8 @@
 
 import { questions, scaleOptions, scaleInfo, instructionText } from "@/data/k6-questions";
 import type { TestConfig } from "./types";
+import type { DimensionData } from "@/lib/og-design/types";
+import { TEST_COLOR_MAP } from "@/lib/og-design/constants";
 
 // ============================================================================
 // Types & Interfaces
@@ -194,5 +196,21 @@ export const k6Config: TestConfig<K6Result> = {
     paramsToScore: (params: URLSearchParams) => ({
       score: parseInt(params.get("score") || "7"),
     }),
+  },
+
+  // 🆕 NEW: 1次元データ生成
+  getDimensions: (result: K6Result): DimensionData[] => {
+    const min = 0;
+    const max = 24;
+    const rawScore = result?.rawScore ?? 7;
+    const percentage = ((rawScore - min) / (max - min)) * 100;
+
+    return [{
+      key: 'score',
+      label: 'Total Score',
+      score: rawScore,
+      percentage: percentage,
+      color: TEST_COLOR_MAP['cyan'] || '#06b6d4',
+    }];
   },
 };

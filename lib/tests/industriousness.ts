@@ -25,6 +25,17 @@ import {
   scaleInfo,
 } from "@/data/industriousness-questions";
 import type { TestConfig } from "./types";
+import type { DimensionData } from "@/lib/og-design/types";
+
+// ============================================================================
+// Constants
+// ============================================================================
+
+// 🆕 Industriousness次元の色定義（定数化）
+const INDUSTRIOUSNESS_COLORS = {
+  c4: '#3b82f6', // 青 - Achievement Striving (達成動機)
+  c5: '#10b981', // 緑 - Self-Discipline (自己統制)
+} as const;
 
 // ============================================================================
 // Types & Interfaces
@@ -445,5 +456,28 @@ export const industriousnessConfig: TestConfig<IndustriousnessResult> = {
       c4: parseInt(params.get("c4") || "30"),
       c5: parseInt(params.get("c5") || "30"),
     }),
+  },
+
+  // 🆕 NEW: 2次元データ生成
+  getDimensions: (result: IndustriousnessResult): DimensionData[] => {
+    const c4 = result?.c4_achievement ?? 30;
+    const c5 = result?.c5_discipline ?? 30;
+
+    return [
+      {
+        key: 'c4',
+        label: '達成動機 (C4)',
+        score: c4,
+        percentage: ((c4 - 10) / 40) * 100,
+        color: INDUSTRIOUSNESS_COLORS.c4,
+      },
+      {
+        key: 'c5',
+        label: '自己統制 (C5)',
+        score: c5,
+        percentage: ((c5 - 10) / 40) * 100,
+        color: INDUSTRIOUSNESS_COLORS.c5,
+      },
+    ];
   },
 };

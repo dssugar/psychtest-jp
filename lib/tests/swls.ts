@@ -23,6 +23,8 @@ import {
   scaleInfo,
 } from "@/data/swls-questions";
 import type { TestConfig } from "./types";
+import type { DimensionData } from "@/lib/og-design/types";
+import { TEST_COLOR_MAP } from "@/lib/og-design/constants";
 
 // ============================================================================
 // Types & Interfaces
@@ -605,5 +607,21 @@ export const swlsConfig: TestConfig<SwlsResult> = {
     paramsToScore: (params: URLSearchParams) => ({
       score: parseInt(params.get("score") || "20"),
     }),
+  },
+
+  // 🆕 NEW: 1次元データ生成
+  getDimensions: (result: SwlsResult): DimensionData[] => {
+    const min = 5;
+    const max = 35;
+    const rawScore = result?.rawScore ?? 20;
+    const percentage = result?.percentageScore ?? ((rawScore - min) / (max - min)) * 100;
+
+    return [{
+      key: 'score',
+      label: 'Total Score',
+      score: rawScore,
+      percentage: percentage,
+      color: TEST_COLOR_MAP['blue'] || '#3b82f6',
+    }];
   },
 };

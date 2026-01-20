@@ -27,6 +27,8 @@ import {
 import { estimateMBTI } from "@/lib/tests/mbti-estimation";
 import { estimateEnneagram } from "@/lib/tests/enneagram-estimation";
 import type { TestConfig } from "./types";
+import { DIMENSION_ORDER, DIMENSION_NAMES, OG_COLORS } from "@/lib/og-design/constants";
+import type { DimensionData } from "@/lib/og-design/types";
 
 // ============================================================================
 // Types & Interfaces
@@ -509,5 +511,16 @@ export const bigFiveConfig: TestConfig<BigFiveResult> = {
       neuroticism: parseInt(params.get("n") || "72"),
       openness: parseInt(params.get("o") || "72"),
     }),
+  },
+
+  // 🆕 NEW: 5次元データ生成
+  getDimensions: (result: BigFiveResult): DimensionData[] => {
+    return DIMENSION_ORDER.map((key) => ({
+      key,
+      label: DIMENSION_NAMES[key],
+      score: result[key],
+      percentage: ((result[key] - 24) / 96) * 100,
+      color: OG_COLORS.dimensions[key],
+    }));
   },
 };

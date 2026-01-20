@@ -149,3 +149,18 @@ export const DIMENSION_ORDER = [
   'neuroticism',
   'openness',
 ] as const;
+
+/**
+ * テストカラーマッピング（全single-scoreテスト共通）
+ * TestConfigのcolorフィールドからカラーコードへの変換
+ */
+export const TEST_COLOR_MAP: Record<string, string> = {
+  pink: '#ec4899',
+  orange: '#f97316',
+  cyan: '#06b6d4',
+  yellow: '#eab308',
+  purple: '#a855f7',
+  green: '#10b981',
+  blue: '#3b82f6',
+  black: '#111111',
+} as const;

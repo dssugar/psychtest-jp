@@ -10,7 +10,6 @@ import { ProfileOverview } from "@/components/dashboard/ProfileOverview";
 import { IntegratedAnalysis } from "@/components/dashboard/IntegratedAnalysis";
 import { ResultSummaryCard } from "@/components/results/ResultSummaryCard";
 import { SocialShareButtons } from "@/components/share/SocialShareButtons";
-import { OG_COLORS, DIMENSION_NAMES, DIMENSION_ORDER } from "@/lib/og-design/constants";
 import type { DimensionData } from "@/lib/og-design/types";
 import { testRegistry } from "@/lib/tests/test-registry";
 
@@ -179,62 +178,8 @@ export default function DashboardPage() {
                 if (!config) return null;
                 const ogImage = config.ogImage;
 
-                // Color mapping
-                const colorMap: Record<string, string> = {
-                  pink: '#ec4899', orange: '#f97316', cyan: '#06b6d4',
-                  yellow: '#eab308', purple: '#a855f7', green: '#10b981', blue: '#3b82f6',
-                };
-
-                // 次元データの生成（テストタイプ別）
-                let dimensions: DimensionData[] = [];
-
-                if (testType === 'bigfive') {
-                  // Big Five: 5次元
-                  const result = testResult.result as any;
-                  dimensions = DIMENSION_ORDER.map((key) => ({
-                    key,
-                    label: DIMENSION_NAMES[key],
-                    score: result[key],
-                    percentage: ((result[key] - 24) / 96) * 100,
-                    color: OG_COLORS.dimensions[key],
-                  }));
-                } else if (testType === 'industriousness') {
-                  // Industriousness: 2次元
-                  const result = testResult.result as any;
-                  const c4 = result?.c4_achievement ?? 30;
-                  const c5 = result?.c5_discipline ?? 30;
-                  dimensions = [
-                    {
-                      key: 'c4',
-                      label: '達成動機 (C4)',
-                      score: c4,
-                      percentage: ((c4 - 10) / 40) * 100,
-                      color: '#3b82f6',
-                    },
-                    {
-                      key: 'c5',
-                      label: '自己統制 (C5)',
-                      score: c5,
-                      percentage: ((c5 - 10) / 40) * 100,
-                      color: '#10b981',
-                    },
-                  ];
-                } else if (ogImage) {
-                  // 単一スコアテスト
-                  const result = testResult.result as any;
-                  const min = ogImage.scoreDisplay?.min || 0;
-                  const max = ogImage.scoreDisplay?.max || 100;
-                  const rawScore = result?.rawScore ?? min;
-                  const percentage = result?.percentageScore ?? ((rawScore - min) / (max - min)) * 100;
-
-                  dimensions = [{
-                    key: 'score',
-                    label: 'Total Score',
-                    score: rawScore,
-                    percentage: percentage,
-                    color: colorMap[info.color] || '#3b82f6',
-                  }];
-                }
+                // 🆕 統一パターン: config.getDimensions()を使用
+                const dimensions = config.getDimensions?.(testResult.result as any) || [];
 
                 // ogImageとdimensionsがあればResultSummaryCard表示
                 if (ogImage && dimensions.length > 0) {

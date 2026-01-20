@@ -41,7 +41,7 @@ export interface TestScoreData {
 export function extractTestScore(
   testType: SupportedTestType,
   testData: TestResult<unknown>,
-  config: TestConfig<unknown>
+  config: TestConfig<any>
 ): TestScoreData {
   // rosenberg と selfconcept は同じ構造（rawScore + percentageScore）
   if (testType === "rosenberg" || testType === "selfconcept") {
