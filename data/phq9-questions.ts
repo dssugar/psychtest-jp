@@ -142,3 +142,60 @@ export const scaleInfo: ScaleInfo = {
     minutes: 3,
   },
 };
+
+/**
+ * スコア区分（5段階）
+ *
+ * 学術的根拠:
+ * Kroenke et al. (2001) の原著論文に基づく標準的な区分
+ * カットオフ値10点以上で専門家への相談を推奨（感度88%、特異度88%）
+ *
+ * 区分:
+ * - 正常: 0-4点 (Minimal depression)
+ * - 軽度: 5-9点 (Mild depression)
+ * - 中等度: 10-14点 (Moderate depression) ※専門家相談推奨
+ * - やや重度: 15-19点 (Moderately severe depression) ※速やかに受診
+ * - 重度: 20-27点 (Severe depression) ※直ちに受診
+ */
+export const scoreRanges = [
+  {
+    min: 0,
+    max: 4,
+    level: "minimal" as const,
+    label: "正常",
+    labelEn: "Minimal",
+    description: "抑うつ症状がほとんど見られない状態です。",
+  },
+  {
+    min: 5,
+    max: 9,
+    level: "mild" as const,
+    label: "軽度",
+    labelEn: "Mild",
+    description: "軽度の抑うつ症状が見られます。",
+  },
+  {
+    min: 10,
+    max: 14,
+    level: "moderate" as const,
+    label: "中等度",
+    labelEn: "Moderate",
+    description: "中等度の抑うつ症状があります。専門家への相談を推奨します。",
+  },
+  {
+    min: 15,
+    max: 19,
+    level: "moderately_severe" as const,
+    label: "やや重度",
+    labelEn: "Moderately Severe",
+    description: "やや重度の抑うつ症状があります。速やかに専門家を受診してください。",
+  },
+  {
+    min: 20,
+    max: 27,
+    level: "severe" as const,
+    label: "重度",
+    labelEn: "Severe",
+    description: "重度の抑うつ症状があります。直ちに専門家を受診してください。",
+  },
+] as const;

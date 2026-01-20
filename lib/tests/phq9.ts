@@ -19,6 +19,7 @@ import {
   phq9Questions,
   scaleOptions,
   scaleInfo,
+  scoreRanges,
 } from "@/data/phq9-questions";
 import type { TestConfig } from "./types";
 import { validateAnswerPattern as validateCommon } from "./validation";
@@ -461,6 +462,35 @@ PHQ-9スコアが20-27点の範囲にあります。これは重度の抑うつ�
   `.trim();
 }
 
+/**
+ * レベルラベルを取得（OG画像用）
+ */
+export function getLevelLabel(level: Phq9Result["level"]): string {
+  const labels = {
+    minimal: "正常範囲",
+    mild: "軽度のうつ症状",
+    moderate: "中等度のうつ症状",
+    moderately_severe: "やや重度のうつ症状",
+    severe: "重度のうつ症状",
+  };
+  return labels[level];
+}
+
+/**
+ * 短い解釈文を取得（OG画像用）
+ * 2行程度の要約
+ */
+export function getShortInterpretation(level: Phq9Result["level"]): string {
+  const interpretations = {
+    minimal: "抑うつ症状がほとんど見られない、\n心理的健康状態が良好な範囲です。",
+    mild: "軽度の抑うつ症状が見られます。\nセルフケアと経過観察を推奨します。",
+    moderate: "中等度の抑うつ症状があります。\n専門家への相談を推奨します。",
+    moderately_severe: "やや重度の抑うつ症状があります。\n速やかに専門家を受診してください。",
+    severe: "重度の抑うつ症状があります。\n直ちに専門家を受診してください。",
+  };
+  return interpretations[level];
+}
+
 // ============================================================================
 // Test Configuration
 // ============================================================================
@@ -515,10 +545,28 @@ export const phq9Config: TestConfig<Phq9Result> = {
     scoreDisplay: { type: "raw", min: 0, max: 27, unit: "" },
     scoreToParams: (result: Phq9Result) => ({
       score: (result?.rawScore ?? 7).toString(),
+      level: result?.level ?? "mild",
     }),
-    paramsToScore: (params: URLSearchParams) => ({
-      score: parseInt(params.get("score") || "7"),
-    }),
+    paramsToScore: (params: URLSearchParams): Phq9Result => {
+      const rawScore = parseInt(params.get("score") || "7");
+      const level = (params.get("level") as Phq9Result["level"]) || "mild";
+      const percentageScore = (rawScore / 27) * 100;
+      return {
+        rawScore,
+        percentageScore: Math.round(percentageScore * 10) / 10,
+        level,
+        levelLabel: getLevelLabel(level),
+        requiresUrgentCare: level === "moderately_severe" || level === "severe",
+        suicideRisk: false,
+      };
+    },
+    getLevelLabel: (result: Phq9Result) => getLevelLabel(result?.level ?? "mild"),
+    getShortInterpretation: (result: Phq9Result) => getShortInterpretation(result?.level ?? "mild"),
+    scoreRanges: scoreRanges.map((range) => ({
+      min: range.min,
+      max: range.max,
+      label: range.label,
+    })),
   },
 
   // 🆕 NEW: 1次元データ生成（レベルベースの色付き）

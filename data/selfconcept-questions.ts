@@ -73,6 +73,45 @@ export const scaleOptions: ScaleOption[] = [
   { label: "非常に当てはまる", value: 5 },
 ];
 
+/**
+ * スコア区分（3段階）
+ *
+ * 学術的根拠:
+ * Campbell et al. (1996) の原著論文では、12項目版のSCCSで平均値約3.5（1-5スケール）が報告されている。
+ * 8項目版では、平均約28点（範囲8-40）と推定される。
+ *
+ * 区分:
+ * - 低い明確性: 8-20点（自己理解が不明瞭）
+ * - 平均的: 21-32点（一般的な自己理解）
+ * - 高い明確性: 33-40点（明確な自己理解）
+ */
+export const scoreRanges = [
+  {
+    min: 8,
+    max: 20,
+    level: "low" as const,
+    label: "低め",
+    labelEn: "Low",
+    description: "自己概念の明確さが低めです。",
+  },
+  {
+    min: 21,
+    max: 32,
+    level: "medium" as const,
+    label: "平均的",
+    labelEn: "Average",
+    description: "自己概念の明確さは平均的です。",
+  },
+  {
+    min: 33,
+    max: 40,
+    level: "high" as const,
+    label: "高め",
+    labelEn: "High",
+    description: "自己概念の明確さが高めです。",
+  },
+] as const;
+
 export const scaleInfo: ScaleInfo = {
   name: "Self-Concept Clarity",
   nameJa: "自己概念の明確さ",

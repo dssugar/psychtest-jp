@@ -21,6 +21,7 @@ import {
   swlsQuestions,
   scaleOptions,
   scaleInfo,
+  scoreRanges,
 } from "@/data/swls-questions";
 import type { TestConfig, InterpretationData } from "./types";
 import { validateSwlsAnswerPattern } from "./validation";
@@ -38,13 +39,13 @@ export interface SwlsResult {
   rawScore: number;
   percentageScore: number;
   level:
-    | "veryLow"
-    | "low"
-    | "slightlyBelow"
+    | "extremely_dissatisfied"
+    | "dissatisfied"
+    | "slightly_dissatisfied"
     | "neutral"
-    | "slightlyAbove"
-    | "high"
-    | "veryHigh";
+    | "slightly_satisfied"
+    | "satisfied"
+    | "extremely_satisfied";
   levelLabel: string;
   // NOTE: interpretation は保存せず、表示時に getInterpretation() で動的生成
 }
@@ -75,26 +76,26 @@ export function calculateSwlsScore(answers: number[]): SwlsResult {
   let level: SwlsResult["level"];
   let levelLabel: string;
 
-  if (rawScore === 35) {
-    level = "veryHigh";
+  if (rawScore >= 31) {
+    level = "extremely_satisfied";
     levelLabel = "極めて満足";
-  } else if (rawScore >= 30) {
-    level = "high";
+  } else if (rawScore >= 26) {
+    level = "satisfied";
     levelLabel = "満足";
-  } else if (rawScore >= 25) {
-    level = "slightlyAbove";
+  } else if (rawScore >= 21) {
+    level = "slightly_satisfied";
     levelLabel = "やや満足";
-  } else if (rawScore >= 20) {
+  } else if (rawScore === 20) {
     level = "neutral";
-    levelLabel = "中程度";
+    levelLabel = "中立";
   } else if (rawScore >= 15) {
-    level = "slightlyBelow";
+    level = "slightly_dissatisfied";
     levelLabel = "やや不満足";
   } else if (rawScore >= 10) {
-    level = "low";
+    level = "dissatisfied";
     levelLabel = "不満足";
   } else {
-    level = "veryLow";
+    level = "extremely_dissatisfied";
     levelLabel = "極めて不満足";
   }
 
@@ -107,28 +108,74 @@ export function calculateSwlsScore(answers: number[]): SwlsResult {
 }
 
 /**
+ * レベルラベルを取得（OG画像用）
+ */
+export function getLevelLabel(level: SwlsResult["level"]): string {
+  const labels = {
+    extremely_dissatisfied: "極めて不満足",
+    dissatisfied: "不満足",
+    slightly_dissatisfied: "やや不満足",
+    neutral: "中立",
+    slightly_satisfied: "やや満足",
+    satisfied: "満足",
+    extremely_satisfied: "極めて満足",
+  };
+  return labels[level];
+}
+
+/**
+ * 短い解釈文を取得（OG画像用）
+ * 2行程度の要約
+ */
+export function getShortInterpretation(level: SwlsResult["level"]): string {
+  const interpretations = {
+    extremely_dissatisfied: "人生に対して極めて強い不満を感じています。\n専門家のサポートを検討すべきレベルです。",
+    dissatisfied: "人生に対して不満を感じています。\n多くの領域で改善が必要だと感じています。",
+    slightly_dissatisfied: "人生に対してやや不満を感じています。\nいくつかの領域で改善の余地があります。",
+    neutral: "人生に対して中立的な評価です。\n満足も不満足もない状態です。",
+    slightly_satisfied: "人生に対してやや満足しています。\n全体的には肯定的な状態です。",
+    satisfied: "人生に対して満足しています。\n健康的で幸福な状態です。",
+    extremely_satisfied: "人生に対して極めて高い満足を感じています。\n理想的な幸福状態です。",
+  };
+  return interpretations[level];
+}
+
+/**
  * 詳細解釈を取得（InterpretationData型）
  * 表示時に動的生成するため、localStorage に保存しない
  */
-export function getDetailedInterpretation(level: SwlsResult["level"]): InterpretationData {
-  switch (level) {
-    case "veryHigh":
+export function getDetailedInterpretation(level: SwlsResult["level"] | string): InterpretationData {
+  // 後方互換性: 古いlevel値を新しい形式にマッピング
+  const levelMap: Record<string, SwlsResult["level"]> = {
+    veryLow: "extremely_dissatisfied",
+    low: "dissatisfied",
+    slightlyBelow: "slightly_dissatisfied",
+    neutral: "neutral",
+    slightlyAbove: "slightly_satisfied",
+    high: "satisfied",
+    veryHigh: "extremely_satisfied",
+  };
+
+  const normalizedLevel = (levelMap[level as string] || level) as SwlsResult["level"];
+
+  switch (normalizedLevel) {
+    case "extremely_satisfied":
       return getVeryHighInterpretation();
-    case "high":
+    case "satisfied":
       return getHighInterpretation();
-    case "slightlyAbove":
+    case "slightly_satisfied":
       return getSlightlyAboveInterpretation();
     case "neutral":
       return getNeutralInterpretation();
-    case "slightlyBelow":
+    case "slightly_dissatisfied":
       return getSlightlyBelowInterpretation();
-    case "low":
+    case "dissatisfied":
       return getLowInterpretation();
-    case "veryLow":
+    case "extremely_dissatisfied":
       return getVeryLowInterpretation();
     default:
       // フォールバック: 予期しないレベル値の場合
-      console.error("Unexpected SWLS level value:", level);
+      console.error("Unexpected SWLS level value:", level, "normalized:", normalizedLevel);
       return {
         summary: "解釈文の生成中にエラーが発生しました。スコアを再計算してください。"
       };
@@ -573,10 +620,28 @@ export const swlsConfig: TestConfig<SwlsResult> = {
     scoreDisplay: { type: "raw", min: 5, max: 35, unit: "" },
     scoreToParams: (result: SwlsResult) => ({
       score: (result?.rawScore ?? 20).toString(),
+      level: result?.level ?? "neutral",
     }),
-    paramsToScore: (params: URLSearchParams) => ({
-      score: parseInt(params.get("score") || "20"),
-    }),
+    paramsToScore: (params: URLSearchParams): SwlsResult => {
+      const rawScore = parseInt(params.get("score") || "20");
+      const level = (params.get("level") as SwlsResult["level"]) || "neutral";
+      const min = 5;
+      const max = 35;
+      const percentageScore = ((rawScore - min) / (max - min)) * 100;
+      return {
+        rawScore,
+        percentageScore: Math.round(percentageScore * 10) / 10,
+        level,
+        levelLabel: getLevelLabel(level),
+      };
+    },
+    getLevelLabel: (result: SwlsResult) => getLevelLabel(result?.level ?? "neutral"),
+    getShortInterpretation: (result: SwlsResult) => getShortInterpretation(result?.level ?? "neutral"),
+    scoreRanges: scoreRanges.map((range) => ({
+      min: range.min,
+      max: range.max,
+      label: range.label,
+    })),
   },
 
   // 🆕 NEW: 1次元データ生成

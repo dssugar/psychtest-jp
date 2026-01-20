@@ -14,7 +14,7 @@
  *            Psychological Medicine, 32(6), 959-976.
  */
 
-import { questions, scaleOptions, scaleInfo, instructionText } from "@/data/k6-questions";
+import { questions, scaleOptions, scaleInfo, instructionText, scoreRanges } from "@/data/k6-questions";
 import type { TestConfig } from "./types";
 import type { DimensionData } from "@/lib/og-design/types";
 import { TEST_COLOR_MAP } from "@/lib/og-design/constants";
@@ -275,6 +275,33 @@ export function getK6Result(answers: number[]): K6Result {
   };
 }
 
+/**
+ * レベルラベルを取得（OG画像用）
+ */
+export function getLevelLabel(level: K6Level): string {
+  const labels = {
+    none: "問題なし",
+    mild: "軽度の心理的苦痛",
+    moderate: "中等度の心理的苦痛",
+    severe: "重度の心理的苦痛",
+  };
+  return labels[level];
+}
+
+/**
+ * 短い解釈文を取得（OG画像用）
+ * 2行程度の要約
+ */
+export function getShortInterpretation(level: K6Level): string {
+  const interpretations = {
+    none: "心理的苦痛はほとんど見られません。\n健康的な心理状態です。",
+    mild: "軽度の心理的苦痛があります。\nセルフケアで対処可能な範囲です。",
+    moderate: "中等度の心理的苦痛があります。\n専門家への相談を検討してください。",
+    severe: "重度の心理的苦痛があります。\n専門家への相談を強く推奨します。",
+  };
+  return interpretations[level];
+}
+
 // ============================================================================
 // Test Configuration
 // ============================================================================
@@ -319,10 +346,27 @@ export const k6Config: TestConfig<K6Result> = {
     scoreDisplay: { type: "raw", min: 0, max: 24, unit: "" },
     scoreToParams: (result: K6Result) => ({
       score: (result?.rawScore ?? 7).toString(),
+      level: result?.level ?? "mild",
     }),
-    paramsToScore: (params: URLSearchParams) => ({
-      score: parseInt(params.get("score") || "7"),
-    }),
+    paramsToScore: (params: URLSearchParams): K6Result => {
+      const rawScore = parseInt(params.get("score") || "7");
+      const level = (params.get("level") as K6Level) || "mild";
+      return {
+        answers: [],
+        rawScore,
+        level,
+        levelLabel: getLevelLabel(level),
+        requiresUrgentCare: level === "severe",
+        timestamp: new Date().toISOString(),
+      };
+    },
+    getLevelLabel: (result: K6Result) => getLevelLabel(result?.level ?? "mild"),
+    getShortInterpretation: (result: K6Result) => getShortInterpretation(result?.level ?? "mild"),
+    scoreRanges: scoreRanges.map((range) => ({
+      min: range.min,
+      max: range.max,
+      label: range.label,
+    })),
   },
 
   // 🆕 NEW: 1次元データ生成（レベルベースの色付き）

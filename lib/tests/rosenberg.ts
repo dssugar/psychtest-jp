@@ -117,10 +117,21 @@ export function getInterpretation(
  * 表示時に動的生成するため、localStorage に保存しない
  */
 export function getDetailedInterpretation(
-  level: RosenbergResult["level"],
+  level: RosenbergResult["level"] | string,
   rawScore: number,
   percentageScore: number
 ): DetailedInterpretation {
+  // 後方互換性: 古いlevel値を新しい形式にマッピング
+  const levelMap: Record<string, RosenbergResult["level"]> = {
+    very_low: "low",
+    low: "low",
+    medium: "medium",
+    high: "high",
+    very_high: "high",
+  };
+
+  const normalizedLevel = (levelMap[level as string] || level) as RosenbergResult["level"];
+
   const interpretations: Record<RosenbergResult["level"], DetailedInterpretation> = {
     low: {
       summary: `自尊心が低い状態です（スコア: ${rawScore}/40点、${percentageScore.toFixed(1)}%）。自分自身を肯定的に捉えることが難しく、自己評価が低い傾向があります。日常生活において、自信のなさが様々な場面で影響を及ぼしています。この状態は将来的なメンタルヘルス問題のリスク因子となる可能性があるため、早期の対処が重要です。適切なセルフケアと、必要に応じた専門家のサポートにより、自尊心を高めることができます。`,
@@ -310,7 +321,7 @@ Rosenbergの理論的枠組みでは、自尊心は他者からの評価の解�
 
   };
 
-  return interpretations[level];
+  return interpretations[normalizedLevel];
 }
 
 /**

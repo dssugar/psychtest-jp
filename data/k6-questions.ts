@@ -106,3 +106,51 @@ export const scaleInfo: ScaleInfo = {
     minutes: 2,
   },
 };
+
+/**
+ * スコア区分（4段階）
+ *
+ * 学術的根拠:
+ * Kessler et al. (2002) および日本の国民生活基礎調査で使用される標準的な区分
+ * カットオフ値13点以上で精神疾患の可能性が高い（特異度96%）
+ *
+ * 区分:
+ * - 問題なし: 0-4点 (No distress)
+ * - 軽度: 5-9点 (Mild distress)
+ * - 中等度: 10-12点 (Moderate distress)
+ * - 重度: 13-24点 (Severe distress) ※精神疾患の可能性
+ */
+export const scoreRanges = [
+  {
+    min: 0,
+    max: 4,
+    level: "no" as const,
+    label: "問題なし",
+    labelEn: "No Distress",
+    description: "心理的苦痛はほとんど見られません。",
+  },
+  {
+    min: 5,
+    max: 9,
+    level: "mild" as const,
+    label: "軽度",
+    labelEn: "Mild",
+    description: "軽度の心理的苦痛があります。",
+  },
+  {
+    min: 10,
+    max: 12,
+    level: "moderate" as const,
+    label: "中等度",
+    labelEn: "Moderate",
+    description: "中等度の心理的苦痛があります。",
+  },
+  {
+    min: 13,
+    max: 24,
+    level: "severe" as const,
+    label: "重度",
+    labelEn: "Severe",
+    description: "重度の心理的苦痛があります。精神疾患の可能性が高いです。",
+  },
+] as const;

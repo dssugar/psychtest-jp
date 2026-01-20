@@ -119,3 +119,78 @@ export const scaleInfo: ScaleInfo = {
     minutes: 1,
   },
 };
+
+/**
+ * スコア区分（7段階）
+ *
+ * 学術的根拠:
+ * Diener et al. (1985) の原著論文に基づく標準的な区分
+ * Pavot & Diener (1993, 2008) による解釈ガイドライン
+ *
+ * 区分:
+ * - 極めて不満足: 5-9点 (Extremely Dissatisfied)
+ * - 不満足: 10-14点 (Dissatisfied)
+ * - やや不満足: 15-19点 (Slightly Dissatisfied)
+ * - 中立: 20点 (Neutral)
+ * - やや満足: 21-25点 (Slightly Satisfied)
+ * - 満足: 26-30点 (Satisfied)
+ * - 極めて満足: 31-35点 (Extremely Satisfied)
+ */
+export const scoreRanges = [
+  {
+    min: 5,
+    max: 9,
+    level: "extremely_dissatisfied" as const,
+    label: "極めて不満足",
+    labelEn: "Extremely Dissatisfied",
+    description: "人生に対して極めて強い不満を感じています。",
+  },
+  {
+    min: 10,
+    max: 14,
+    level: "dissatisfied" as const,
+    label: "不満足",
+    labelEn: "Dissatisfied",
+    description: "人生に対して不満を感じています。",
+  },
+  {
+    min: 15,
+    max: 19,
+    level: "slightly_dissatisfied" as const,
+    label: "やや不満足",
+    labelEn: "Slightly Dissatisfied",
+    description: "人生に対してやや不満を感じています。",
+  },
+  {
+    min: 20,
+    max: 20,
+    level: "neutral" as const,
+    label: "中立",
+    labelEn: "Neutral",
+    description: "人生に対して中立的な評価です。",
+  },
+  {
+    min: 21,
+    max: 25,
+    level: "slightly_satisfied" as const,
+    label: "やや満足",
+    labelEn: "Slightly Satisfied",
+    description: "人生に対してやや満足しています。",
+  },
+  {
+    min: 26,
+    max: 30,
+    level: "satisfied" as const,
+    label: "満足",
+    labelEn: "Satisfied",
+    description: "人生に対して満足しています。",
+  },
+  {
+    min: 31,
+    max: 35,
+    level: "extremely_satisfied" as const,
+    label: "極めて満足",
+    labelEn: "Extremely Satisfied",
+    description: "人生に対して極めて高い満足を感じています。",
+  },
+] as const;
