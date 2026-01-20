@@ -96,16 +96,19 @@ npm run build
 psychtest-jp/
 ├── app/                    # Next.js App Router
 │   ├── page.tsx           # トップページ
+│   ├── [testType]/        # テスト説明ページ（動的ルート）
+│   │   └── page.tsx       # 各テストのランディングページ
+│   ├── test/              # テスト実施ページ
+│   │   └── [testType]/    # 動的ルート（全テスト統一UI）
+│   │       └── page.tsx
+│   ├── results/           # テスト結果ページ
+│   │   ├── [testType]/    # 動的ルート（汎用結果表示）
+│   │   │   └── page.tsx
+│   │   └── bigfive/       # Big Five専用結果ページ（ファセット詳細あり）
+│   │       └── page.tsx
 │   ├── dashboard/         # 統合ダッシュボード
-│   ├── bigfive/           # Big Five 性格診断
-│   ├── industriousness/   # 勤勉性 / やり抜く力 (Grit)
-│   ├── rosenberg/         # Rosenberg 自尊心尺度
-│   ├── phq9/              # PHQ-9 うつ病スクリーニング
-│   ├── k6/                # K6 心理的苦痛スクリーニング
-│   ├── swls/              # SWLS 人生満足度尺度
-│   ├── selfconcept/       # 自己概念の明確さ尺度
-│   ├── results/           # 各テストの結果ページ
 │   ├── share/             # SNSシェア用ページ (動的OGメタデータ生成)
+│   │   └── [test]/
 │   ├── about/             # サイト概要
 │   ├── privacy/           # プライバシーポリシー
 │   ├── terms/             # 利用規約

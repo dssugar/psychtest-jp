@@ -501,20 +501,19 @@ vs. commutest.com:
 
 When adding a new psychological test/scale, **ALWAYS** update the following files:
 
-### Phase 6: Core Code Generation (3 files)
+### Phase 6: Core Code Generation (2 files)
 - [ ] `data/{scale}-questions.ts` - Question data, scale info, scale labels
-- [ ] `lib/scoring/{scale}.ts` - Scoring logic, interpretation function
-- [ ] `lib/tests/configs/{scale}.ts` - Test configuration (TestConfig)
+- [ ] `lib/tests/{scale}.ts` - Scoring logic, interpretation function, TestConfig
 
-### Phase 7: Page Generation (3 files)
-- [ ] `app/{scale}/page.tsx` - Landing page with scale description
-- [ ] `app/{scale}/test/page.tsx` - Test interface with questions
-- [ ] `app/results/{scale}/page.tsx` - Results display page
+### Phase 7: Page Generation (0 files - 動的ルート使用)
+- **動的ルート使用**: `app/[testType]/page.tsx`, `app/test/[testType]/page.tsx`, `app/results/[testType]/page.tsx` が自動的に新規テストに対応
+- 新規ファイル作成は**不要**（レジストリ登録のみで自動生成）
+- **例外**: 特殊な結果表示が必要な場合のみ `app/results/{scale}/page.tsx` を個別作成（例: Big Five のファセット詳細）
 
 ### Phase 8: Integration (4 files)
 - [ ] `lib/tests/test-registry.ts` - Add import and register config
 - [ ] `lib/storage.ts` - Add to TestType union, add TestResult type, add to UserProfile.tests
-- [ ] `app/page.tsx` - Add to LAYER I/II/III/IV list (✅) AND add test card
+- [ ] `app/page.tsx` - Add to LAYER I/II/III/IV list (✅) AND add test card (StatCardコンポーネント使用)
 - [ ] `app/dashboard/page.tsx` - Add to testInfo Record with available: true
 
 ### Documentation Updates (3 files + total count)
@@ -524,12 +523,10 @@ When adding a new psychological test/scale, **ALWAYS** update the following file
   - [ ] Key Scales Reference (add detailed section)
   - [ ] Total question count (calculate: previous + new items)
 - [ ] `README.md` - Update:
-  - [ ] Project structure (add `app/{scale}/` directory)
-  - [ ] Project structure (add `lib/scoring/{scale}.ts`)
-  - [ ] Project structure (add `data/{scale}-questions.ts`)
   - [ ] Implemented features list (add new test with ✅)
   - [ ] Total question count (same as CLAUDE.md)
   - [ ] License & Academic References section (add citation)
+  - **注**: プロジェクト構造は動的ルート使用のため更新不要
 - [ ] `ROADMAP.md` - Update:
   - [ ] Current status date (e.g., 2026-01-20)
   - [ ] Phase 1 completed tests list (add new test)
