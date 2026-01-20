@@ -795,7 +795,7 @@ function renderShareButtons(testType: string, testResult: any, config: any) {
   if (config.ogImage?.scoreToParams) {
     const params = config.ogImage.scoreToParams(testResult);
     const queryString = new URLSearchParams(params).toString();
-    shareUrl = `${origin}/og/${testType}?${queryString}`;
+    shareUrl = `${origin}/share/${testType}?${queryString}`;
   } else if (testType === "bigfive") {
     // BigFive special case (uses /share route)
     shareUrl = `${origin}/share/bigfive?e=${testResult.extraversion}&a=${testResult.agreeableness}&c=${testResult.conscientiousness}&n=${testResult.neuroticism}&o=${testResult.openness}`;

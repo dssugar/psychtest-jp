@@ -130,7 +130,7 @@ export default function BigFiveResultPage() {
               診断結果をSNSでシェアできます。リンクをシェアすると、SNS上で上記のサマリーカードが表示されます。
             </p>
             <SocialShareButtons
-              shareUrl={`${typeof window !== 'undefined' ? window.location.origin : ''}/share/bigfive/?e=${bigFiveResult.extraversion}&a=${bigFiveResult.agreeableness}&c=${bigFiveResult.conscientiousness}&n=${bigFiveResult.neuroticism}&o=${bigFiveResult.openness}`}
+              shareUrl={`${typeof window !== 'undefined' ? window.location.origin : ''}/share/bigfive?e=${bigFiveResult.extraversion}&a=${bigFiveResult.agreeableness}&c=${bigFiveResult.conscientiousness}&n=${bigFiveResult.neuroticism}&o=${bigFiveResult.openness}`}
               text="Big Five性格診断の結果をシェア！"
             />
           </div>
