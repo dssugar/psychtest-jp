@@ -41,12 +41,14 @@ export function MarkdownContent({ content, className = '' }: MarkdownContentProp
           </ul>
         ),
         ol: ({ children }) => (
-          <ol className="list-decimal list-inside space-y-2 mb-4 text-brutal-gray-900">
+          <ol className="list-decimal list-outside ml-5 space-y-2 mb-4 text-brutal-gray-900">
             {children}
           </ol>
         ),
         li: ({ children }) => (
-          <li className="text-lg leading-relaxed">{children}</li>
+          <li className="text-lg leading-relaxed pl-2">
+            <span className="inline">{children}</span>
+          </li>
         ),
         strong: ({ children }) => (
           <strong className="font-bold text-brutal-black">{children}</strong>

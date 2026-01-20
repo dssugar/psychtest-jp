@@ -43,7 +43,7 @@ export const onRequest: PagesFunction<{ test: string }> = async (context) => {
       if (testString === 'bigfive') {
         return renderBigFiveOG(url);
       } else if (testString === 'industriousness') {
-        return renderIndustriousnessOG(url);
+        return renderIndustriousnessOG(url, config);
       }
       return renderFallbackOG(testString);
 
@@ -695,7 +695,7 @@ async function renderSingleScoreOG(url: URL, config: SingleScoreOGConfig) {
 /**
  * Industriousness OG画像生成（2バーレイアウト）
  */
-async function renderIndustriousnessOG(url: URL) {
+async function renderIndustriousnessOG(url: URL, config: any) {
   // フォント読み込み（Google Fontsから）
   const fontDataBold = await fetch(
     'https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700&display=swap'
@@ -719,26 +719,14 @@ async function renderIndustriousnessOG(url: URL) {
   const c4 = parseInt(url.searchParams.get('c4') || '30');
   const c5 = parseInt(url.searchParams.get('c5') || '30');
 
-  // スコアをパーセンテージに変換 (10-50 → 0-100)
-  const toPercentage = (score: number) => Math.round(((score - 10) / 40) * 100);
+  // testResult オブジェクトを構築
+  const testResult = {
+    c4_achievement: c4,
+    c5_discipline: c5,
+  };
 
-  // 2次元データ
-  const dimensions = [
-    {
-      key: 'c4',
-      label: '達成動機 (C4)',
-      score: c4,
-      percentage: toPercentage(c4),
-      color: '#3b82f6', // blue
-    },
-    {
-      key: 'c5',
-      label: '自己統制 (C5)',
-      score: c5,
-      percentage: toPercentage(c5),
-      color: '#10b981', // green
-    },
-  ];
+  // config.getDimensions() を使用してデータソースを統一
+  const dimensions = config.getDimensions?.(testResult) || [];
 
   // ランダムID（装飾用）
   const reportId = Math.floor(Math.random() * 90000) + 10000;
@@ -877,7 +865,7 @@ async function renderIndustriousnessOG(url: URL) {
             position: 'relative',
           }}
         >
-          {dimensions.map((item, index) => (
+          {dimensions.map((item: any, index: number) => (
             <div
               key={item.key}
               style={{

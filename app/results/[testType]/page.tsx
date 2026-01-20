@@ -13,6 +13,7 @@ import { Card } from "@/components/ui/Card";
 import { SocialShareButtons } from "@/components/share/SocialShareButtons";
 import { ResultSummaryCard } from "@/components/results/ResultSummaryCard";
 import { MarkdownContent } from "@/components/results/MarkdownContent";
+import { QuadrantMatrix } from "@/components/industriousness/QuadrantMatrix";
 
 // BigFive specific imports (for BigFive score display only)
 import { addAllEstimations, getInterpretation as getBigFiveInterpretation, type BigFiveResult } from "@/lib/tests/bigfive";
@@ -25,7 +26,7 @@ import { getInterpretation as getSelfConceptInterpretation, type SelfConceptResu
 import { getInterpretation as getSwlsInterpretation, type SwlsResult } from "@/lib/tests/swls";
 import { getInterpretation as getPhq9Interpretation, type Phq9Result } from "@/lib/tests/phq9";
 import { getInterpretation as getK6Interpretation, type K6Result } from "@/lib/tests/k6";
-import { getInterpretation as getIndustriousnessInterpretation, type IndustriousnessResult } from "@/lib/tests/industriousness";
+import { getDetailedInterpretation as getIndustriousnessDetailedInterpretation, type IndustriousnessResult } from "@/lib/tests/industriousness";
 
 /**
  * 動的結果ページ（全テスト統合）
@@ -284,7 +285,7 @@ function renderResultSummaryCard(
 
   // Industriousness: 2次元表示
   if (testType === "industriousness") {
-    return renderIndustriousnessSummaryCard(testResult);
+    return renderIndustriousnessSummaryCard(testResult, config);
   }
 
   // PHQ-9/K6: 単一スコア（レベル色）
@@ -303,6 +304,12 @@ function renderResultSummaryCard(
 
 /**
  * Detailed Score Display のレンダリング
+ *
+ * 設計ノート:
+ * - 各テストに特有の詳細表示が必要な場合は、if/switch で分岐して専用関数を呼ぶ
+ * - 全テストが特殊実装を持つわけではないため、Config駆動にすると過剰設計になる
+ * - 現状7-8テストでは if 分岐で十分シンプル。15個以上になったら再検討を推奨
+ * - Locality of Behavior: すべての分岐が1箇所に集約されているため理解しやすい
  */
 function renderDetailedScoreDisplay(
   testType: string,
@@ -675,24 +682,9 @@ function renderBigFiveDetailedDisplay(bigFiveResult: BigFiveResult) {
 /**
  * Industriousness Summary Card
  */
-function renderIndustriousnessSummaryCard(testResult: any) {
-  const toPercentage = (score: number) => Math.round(((score - 10) / 40) * 100);
-  const dimensionData: DimensionData[] = [
-    {
-      key: 'c4',
-      label: '達成動機 (C4)',
-      score: testResult.c4_achievement,
-      percentage: toPercentage(testResult.c4_achievement),
-      color: '#3b82f6', // blue
-    },
-    {
-      key: 'c5',
-      label: '自己統制 (C5)',
-      score: testResult.c5_discipline,
-      percentage: toPercentage(testResult.c5_discipline),
-      color: '#10b981', // green
-    },
-  ];
+function renderIndustriousnessSummaryCard(testResult: any, config: any) {
+  // config.getDimensions() を使用してデータソースを統一
+  const dimensionData = config.getDimensions?.(testResult) || [];
 
   return (
     <div className="mb-12">
@@ -710,38 +702,65 @@ function renderIndustriousnessSummaryCard(testResult: any) {
  * Industriousness Detailed Display
  */
 function renderIndustriousnessDetailedDisplay(testResult: any) {
+  const result = testResult as IndustriousnessResult;
+  const detailedInterpretation = getIndustriousnessDetailedInterpretation(
+    result.quadrant,
+    result.c4_percentile,
+    result.c5_percentile
+  );
+
   return (
-    <div className="mb-16">
+    <div className="mb-16 space-y-8">
+      {/* 2×2象限マトリクス */}
+      <QuadrantMatrix
+        c4_percentile={testResult.c4_percentile}
+        c5_percentile={testResult.c5_percentile}
+        quadrant={testResult.quadrant}
+        quadrantLabel={testResult.quadrantLabel}
+      />
+
+      {/* 結果の解釈 */}
+      <Card variant="white" padding="lg" className="animate-scale-in">
+        <h2
+          className="text-2xl md:text-3xl lg:text-4xl text-brutal-black mb-6"
+          style={{ fontFamily: "var(--font-display-ja)", fontWeight: 700 }}
+        >
+          結果の解釈
+        </h2>
+        <MarkdownContent content={detailedInterpretation.summary} />
+      </Card>
+
+      {/* 日常生活への影響 */}
+      <Card variant="white" padding="lg">
+        <h3
+          className="text-2xl md:text-3xl text-brutal-black mb-6"
+          style={{ fontFamily: "var(--font-display-ja)", fontWeight: 700 }}
+        >
+          日常生活への影響
+        </h3>
+        <MarkdownContent content={detailedInterpretation.dailyLifeImpact} />
+      </Card>
+
+      {/* 心理学的背景 */}
       <Card variant="green" padding="lg">
-        <div className="text-center mb-8">
-          <h2
-            className="text-3xl md:text-4xl text-brutal-black mb-4"
-            style={{ fontFamily: "var(--font-display-ja)", fontWeight: 700 }}
-          >
-            あなたのタイプ: {testResult.quadrantLabel}
-          </h2>
-          <div className="text-5xl font-mono font-bold data-number">
-            {testResult.rawScore}点
-          </div>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <div className="text-sm font-bold uppercase tracking-wide mb-2">目標達成意欲 (C4)</div>
-            <BrutalProgressBar
-              value={(testResult.c4_achievement / 50) * 100}
-              color="blue"
-              label={`${testResult.c4_achievement}/50`}
-            />
-          </div>
-          <div>
-            <div className="text-sm font-bold uppercase tracking-wide mb-2">自己統制力 (C5)</div>
-            <BrutalProgressBar
-              value={(testResult.c5_discipline / 50) * 100}
-              color="green"
-              label={`${testResult.c5_discipline}/50`}
-            />
-          </div>
-        </div>
+        <h3
+          className="text-2xl md:text-3xl text-brutal-black mb-6"
+          style={{ fontFamily: "var(--font-display-ja)", fontWeight: 700 }}
+        >
+          心理学的背景
+        </h3>
+        <MarkdownContent content={detailedInterpretation.psychBackground} />
+      </Card>
+
+      {/* 実用的アドバイス */}
+      <Card variant="white" padding="lg" className="border-brutal-thick border-brutal-black">
+        <h3
+          className="text-2xl md:text-3xl text-brutal-black mb-6"
+          style={{ fontFamily: "var(--font-display-ja)", fontWeight: 700 }}
+        >
+          実用的アドバイス
+        </h3>
+        <MarkdownContent content={detailedInterpretation.practicalAdvice} />
       </Card>
     </div>
   );

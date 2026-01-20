@@ -8,8 +8,94 @@
  * 汎用化版：全てのテストに対応
  */
 
+'use client';
+
+import { useLayoutEffect, useRef, useState } from 'react';
 import { OG_SIZE } from '@/lib/og-design/constants';
 import type { ResultSummaryProps } from '@/lib/og-design/types';
+
+/**
+ * 個別ラベルの自動フィットコンポーネント（右カラムのグラフラベル用）
+ */
+function AutoFitLabel({ label }: { label: string }) {
+  const labelRef = useRef<HTMLDivElement>(null);
+  const [scaleX, setScaleX] = useState(1);
+
+  useLayoutEffect(() => {
+    if (labelRef.current) {
+      const container = labelRef.current.parentElement;
+      if (!container) return;
+
+      // 一時的にscaleをリセットして実際の幅を測定
+      labelRef.current.style.transform = 'none';
+      const textWidth = labelRef.current.scrollWidth;
+      const containerWidth = container.offsetWidth;
+
+      if (textWidth > containerWidth) {
+        // はみ出る場合は縮小率を計算（余裕を持たせるため0.95倍）
+        const newScale = (containerWidth / textWidth) * 0.95;
+        setScaleX(newScale);
+      } else {
+        setScaleX(1);
+      }
+    }
+  }, [label]);
+
+  return (
+    <div
+      ref={labelRef}
+      className="text-2xl md:text-3xl lg:text-[32px] font-bold text-[#111111] whitespace-nowrap"
+      style={{
+        transform: `scaleX(${scaleX})`,
+        transformOrigin: 'left center',
+      }}
+    >
+      {label}
+    </div>
+  );
+}
+
+/**
+ * タイトル行の自動フィットコンポーネント（左カラムの大タイトル用）
+ */
+function AutoFitTitleLine({ children, isFirstLine }: { children: string; isFirstLine: boolean }) {
+  const titleRef = useRef<HTMLSpanElement>(null);
+  const [scaleX, setScaleX] = useState(1);
+
+  useLayoutEffect(() => {
+    if (titleRef.current) {
+      const container = titleRef.current.parentElement;
+      if (!container) return;
+
+      // 一時的にscaleをリセットして実際の幅を測定
+      titleRef.current.style.transform = 'none';
+      const textWidth = titleRef.current.scrollWidth;
+      const containerWidth = container.offsetWidth;
+
+      if (textWidth > containerWidth) {
+        // はみ出る場合は縮小率を計算（余裕を持たせるため0.98倍）
+        const newScale = (containerWidth / textWidth) * 0.98;
+        setScaleX(newScale);
+      } else {
+        setScaleX(1);
+      }
+    }
+  }, [children]);
+
+  return (
+    <span
+      ref={titleRef}
+      className={isFirstLine ? '' : 'text-[#E5E7EB]'}
+      style={{
+        display: 'block',
+        transform: `scaleX(${scaleX})`,
+        transformOrigin: 'left center',
+      }}
+    >
+      {children}
+    </span>
+  );
+}
 
 export function ResultSummaryCard({
   dimensions,
@@ -20,8 +106,8 @@ export function ResultSummaryCard({
 }: ResultSummaryProps) {
   // タイトルを行分割（改行または空白で分割）
   const titleLines = titleEn
-    ? titleEn.includes('\n')
-      ? titleEn.split('\n')
+    ? titleEn.includes('\n') || titleEn.includes('\\n')
+      ? titleEn.split(/\\n|\n/)
       : titleEn.split(' ')
     : ['TEST'];
 
@@ -42,12 +128,9 @@ export function ResultSummaryCard({
 
           <div className="text-6xl md:text-7xl lg:text-[100px] font-black leading-[0.85] tracking-tight flex flex-col">
             {titleLines.map((line, i) => (
-              <span
-                key={i}
-                className={i === 0 ? '' : 'text-[#E5E7EB]'}
-              >
+              <AutoFitTitleLine key={i} isFirstLine={i === 0}>
                 {line}
-              </span>
+              </AutoFitTitleLine>
             ))}
           </div>
         </div>
@@ -60,10 +143,10 @@ export function ResultSummaryCard({
 
           {description && (
             <div className="text-sm md:text-base text-[#9CA3AF] leading-relaxed mb-6">
-              {description.split('\n').map((line, i) => (
+              {description.split(/\\n|\n/).map((line, i, arr) => (
                 <span key={i}>
                   {line}
-                  {i < description.split('\n').length - 1 && <br />}
+                  {i < arr.length - 1 && <br />}
                 </span>
               ))}
             </div>
@@ -88,8 +171,8 @@ export function ResultSummaryCard({
             }}
           >
             {/* 項目名 */}
-            <div className="w-[130px] md:w-[150px] lg:w-[170px] text-2xl md:text-3xl lg:text-[32px] font-bold text-[#111111]">
-              {dim.label}
+            <div className="w-[130px] md:w-[150px] lg:w-[170px]">
+              <AutoFitLabel label={dim.label} />
             </div>
 
             {/* バーエリア（極太化 + 密集） */}
