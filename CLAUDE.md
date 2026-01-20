@@ -349,12 +349,28 @@ interface ValidationResult {
 
 #### IPIP-NEO (Big Five) ✅ **Implemented**
 - **Public Domain** (completely free)
-- Goldberg (1992), International Personality Item Pool
-- Versions: 300-item (research), 120-item (standard), 60-item (short), 20-item Mini-IPIP (ultra-short)
+- **Developer**: Goldberg (1992) [IPIP]; Johnson (2014) [IPIP-NEO-120]
+- **Journal**: Journal of Research in Personality, 48, 76-88
+- **Tier S (Gold Standard)**: 最高レベルの学術的信頼性
+  - **Cronbach's α**: 0.81-0.90 (5次元), 0.63-0.88 (30ファセット)
+  - **Test-Retest**: r = 0.83-0.91 (2年間) ※NEO-PI-R同等
+  - **Citations**: 500+ (IPIP-120), 数万件 (Big Five理論全体)
+- **Versions**: 300-item (研究用), 120-item (標準), 60-item (短縮), 20-item Mini-IPIP (超短縮)
 - **Current implementation**: 120-item version (30 facets)
-- Measures: Extraversion, Agreeableness, Conscientiousness, Neuroticism, Openness
-- Each domain has 6 facets (4 items per facet)
-- Resource: https://ipip.ori.org/
+- **Measures**: 5次元 × 30ファセット
+  - **Neuroticism (神経症傾向)**: 感情の安定性、ストレス反応
+  - **Extraversion (外向性)**: 社交性、活動性、ポジティブ感情
+  - **Openness (開放性)**: 知的好奇心、創造性、新しい経験への開放性
+  - **Agreeableness (協調性)**: 利他性、共感性、協力性
+  - **Conscientiousness (誠実性)**: 計画性、勤勉性、自己規律
+- **Scoring**:
+  - 5-point Likert scale (1-5)
+  - Dimension scores: 24-120 points (Low: 24-60, Medium: 61-83, High: 84-120)
+  - Facet scores: 4-20 points
+  - 55 reverse-scored items (45.8%)
+- **商用版との比較**: NEO-PI-R ($300-400 USD) と同等の測定精度を無料で提供
+- **Academic Superiority**: MBTI/16Personalitiesと異なり、再テスト信頼性が高く(r > .80)、学術的に検証済み
+- **Resource**: https://ipip.ori.org/
 
 #### Industriousness / Grit ✅ **Implemented**
 - **Public Domain** (IPIP-300)

@@ -230,7 +230,11 @@ psychtest-jp/
 ## ライセンス・学術的根拠
 
 使用している心理尺度：
-- **Big Five (IPIP-NEO)**: Public Domain（Goldberg, 1992）
+- **Big Five (IPIP-NEO-120)**: Public Domain（Goldberg, 1992 [IPIP]; Johnson, 2014 [120-item]）
+  - **Tier S (Gold Standard)**: α = 0.81-0.90 (次元), 0.63-0.88 (ファセット), test-retest r = 0.83-0.91 (2年間)
+  - 5次元（神経症傾向・外向性・開放性・協調性・誠実性）× 30ファセット = 120項目
+  - 商用版NEO-PI-R（$300-400）と同等の測定精度を持つ無料版
+  - 500+ citations (IPIP-120), 数万件 (Big Five理論全体)
 - **Industriousness / Grit (IPIP-300 C4+C5)**: Public Domain（DeYoung et al., 2007）- Grit Scale代替、α = 0.82
 - **Rosenberg Self-Esteem Scale**: Rosenberg (1965) - 50,000+引用
 - **PHQ-9**: Kroenke et al. (2001) - 無料利用可（Pfizer提供）
