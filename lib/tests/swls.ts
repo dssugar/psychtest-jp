@@ -1,4 +1,32 @@
-import { swlsQuestions } from "@/data/swls-questions";
+/**
+ * Satisfaction With Life Scale (SWLS) - Scoring & Configuration
+ *
+ * SWLS の採点とレベル判定
+ *
+ * スコア範囲: 5-35点
+ * - 5-9点: 極めて不満足
+ * - 10-14点: 不満足
+ * - 15-19点: やや不満足
+ * - 20点: 中程度
+ * - 21-25点: やや満足
+ * - 26-30点: 満足
+ * - 31-35点: 極めて満足
+ *
+ * @reference Diener, E., Emmons, R. A., Larsen, R. J., & Griffin, S. (1985).
+ *            The Satisfaction With Life Scale. Journal of Personality Assessment,
+ *            49(1), 71-75.
+ */
+
+import {
+  swlsQuestions,
+  scaleOptions,
+  scaleInfo,
+} from "@/data/swls-questions";
+import type { TestConfig } from "./types";
+
+// ============================================================================
+// Types & Interfaces
+// ============================================================================
 
 /**
  * SWLS の結果型
@@ -17,6 +45,10 @@ export interface SwlsResult {
   levelLabel: string;
   interpretation: string;
 }
+
+// ============================================================================
+// Scoring Logic
+// ============================================================================
 
 /**
  * SWLS スコアを計算
@@ -532,3 +564,31 @@ SWLSで満点（35点）を取ることは統計的に稀で、一般集団で�
 **あなたの命は尊く、かけがえのないものです。この幸福を大切にし、周囲にも分かち合ってください。**
   `.trim();
 }
+
+// ============================================================================
+// Test Configuration
+// ============================================================================
+
+/**
+ * SWLS (Satisfaction With Life Scale) テスト設定
+ */
+export const swlsConfig: TestConfig<SwlsResult> = {
+  id: "swls",
+  color: "blue", // ウェルビーイング系はblueで統一
+  basePath: "/swls",
+  questions: swlsQuestions,
+  scaleOptions,
+  calculateScore: calculateSwlsScore,
+  validateAnswers: validateAnswerPattern,
+  scaleInfo,
+  selectedButtonColor: "blue", // SWLSのみ青色ボタン
+
+  // 結果ページ設定
+  scoreDisplay: {
+    type: "circle",
+    maxScore: 35,
+  },
+  resultExtensions: {
+    shareButtons: true,
+  },
+};

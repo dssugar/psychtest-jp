@@ -2,8 +2,8 @@
 
 import { DataBadge } from "@/components/viz/DataBadge";
 import { BrutalProgressBar } from "@/components/viz/BrutalProgressBar";
-import { mbtiTypeDescriptions, confidenceLevelDescriptions } from "@/lib/scoring/mbti-estimation";
-import type { MBTIEstimation } from "@/lib/scoring/bigfive";
+import { mbtiTypeDescriptions, confidenceLevelDescriptions } from "@/lib/tests/mbti-estimation";
+import type { MBTIEstimation } from "@/lib/tests/bigfive";
 
 interface MBTIEstimationCardProps {
   estimation: MBTIEstimation;

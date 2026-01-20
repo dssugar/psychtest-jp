@@ -14,10 +14,10 @@ import { SocialShareButtons } from "@/components/share/SocialShareButtons";
 import { ResultSummaryCard } from "@/components/results/ResultSummaryCard";
 
 // BigFive specific imports (for BigFive score display only)
-import { addAllEstimations } from "@/lib/scoring/bigfive";
+import { addAllEstimations } from "@/lib/tests/bigfive";
 import { OG_COLORS, DIMENSION_NAMES, DIMENSION_ORDER } from "@/lib/og-design/constants";
 import type { DimensionData } from "@/lib/og-design/types";
-import type { BigFiveResult } from "@/lib/scoring/bigfive";
+import type { BigFiveResult } from "@/lib/tests/bigfive";
 
 /**
  * 動的結果ページ（全テスト統合）

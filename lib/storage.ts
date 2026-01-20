@@ -1,10 +1,10 @@
-import { RosenbergResult } from "./scoring/rosenberg";
-import { BigFiveResult } from "./scoring/bigfive";
-import { SelfConceptResult } from "./scoring/selfconcept";
-import { Phq9Result } from "./scoring/phq9";
-import { SwlsResult } from "./scoring/swls";
-import { K6Result } from "./scoring/k6";
-import { IndustriousnessResult } from "./scoring/industriousness";
+import { RosenbergResult } from "./tests/rosenberg";
+import { BigFiveResult } from "./tests/bigfive";
+import { SelfConceptResult } from "./tests/selfconcept";
+import { Phq9Result } from "./tests/phq9";
+import { SwlsResult } from "./tests/swls";
+import { K6Result } from "./tests/k6";
+import { IndustriousnessResult } from "./tests/industriousness";
 
 // ============================================================
 // Type Definitions

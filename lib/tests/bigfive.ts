@@ -1,6 +1,36 @@
-import { bigFiveQuestions } from "@/data/bigfive-questions";
-import { estimateMBTI } from "./mbti-estimation";
-import { estimateEnneagram } from "./enneagram-estimation";
+/**
+ * Big Five (IPIP-120) - Scoring & Configuration
+ *
+ * Big Five personality traits測定 (IPIP-NEO 120-item version)
+ *
+ * 5次元 (Domains): 各24-120点
+ * - Extraversion (外向性)
+ * - Agreeableness (協調性)
+ * - Conscientiousness (誠実性)
+ * - Neuroticism (神経症傾向)
+ * - Openness (開放性)
+ *
+ * 30ファセット (Facets): 各4-20点
+ * - 各次元に6つのファセット
+ * - 各ファセットに4項目
+ *
+ * @reference Goldberg, L. R. (1992). The development of markers for the Big-Five
+ *            factor structure. Psychological Assessment, 4(1), 26-42.
+ * @reference International Personality Item Pool: https://ipip.ori.org/
+ */
+
+import {
+  bigFiveQuestions,
+  scaleOptions,
+  scaleInfo,
+} from "@/data/bigfive-questions";
+import { estimateMBTI } from "@/lib/tests/mbti-estimation";
+import { estimateEnneagram } from "@/lib/tests/enneagram-estimation";
+import type { TestConfig } from "./types";
+
+// ============================================================================
+// Types & Interfaces
+// ============================================================================
 
 /**
  * MBTI推定結果
@@ -91,6 +121,10 @@ export interface BigFiveResult {
   mbtiEstimation?: MBTIEstimation;
   enneagramEstimation?: EnneagramEstimation;
 }
+
+// ============================================================================
+// Scoring Logic
+// ============================================================================
 
 /**
  * Big Five スコア計算 (IPIP-120)
@@ -346,3 +380,33 @@ export function addEnneagramEstimation(result: BigFiveResult): BigFiveResult {
 export function addAllEstimations(result: BigFiveResult): BigFiveResult {
   return addEnneagramEstimation(addMBTIEstimation(result));
 }
+
+// ============================================================================
+// Test Configuration
+// ============================================================================
+
+/**
+ * Big Five (IPIP-120) テスト設定
+ */
+export const bigFiveConfig: TestConfig<BigFiveResult> = {
+  id: "bigfive",
+  color: "green",
+  basePath: "/bigfive",
+  questions: bigFiveQuestions,
+  scaleOptions,
+  calculateScore: calculateBigFiveScore,
+  validateAnswers: validateAnswerPattern,
+  scaleInfo,
+  testVersion: "ipip-120",
+
+  // 結果ページ設定
+  scoreDisplay: {
+    type: "multibar",
+    maxScore: 5,
+  },
+  resultExtensions: {
+    shareButtons: true,
+    facetsDisplay: true,
+    estimations: true,
+  },
+};

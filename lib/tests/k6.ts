@@ -1,5 +1,5 @@
 /**
- * K6 Scoring Logic
+ * K6 (Kessler Psychological Distress Scale) - Scoring & Configuration
  *
  * Kessler Psychological Distress Scale (K6) の採点とレベル判定
  *
@@ -14,6 +14,13 @@
  *            Psychological Medicine, 32(6), 959-976.
  */
 
+import { questions, scaleOptions, scaleInfo, instructionText } from "@/data/k6-questions";
+import type { TestConfig } from "./types";
+
+// ============================================================================
+// Types & Interfaces
+// ============================================================================
+
 export type K6Level = "none" | "mild" | "moderate" | "severe";
 
 export interface K6Result {
@@ -25,6 +32,10 @@ export interface K6Result {
   requiresUrgentCare: boolean;
   timestamp: string;
 }
+
+// ============================================================================
+// Scoring Logic
+// ============================================================================
 
 /**
  * K6のスコアを計算
@@ -133,3 +144,40 @@ export function getK6Result(answers: number[]): K6Result {
     timestamp: new Date().toISOString()
   };
 }
+
+// ============================================================================
+// Test Configuration
+// ============================================================================
+
+/**
+ * K6 (Kessler Psychological Distress Scale) テスト設定
+ */
+export const k6Config: TestConfig<K6Result> = {
+  id: "k6",
+  color: "cyan",
+  basePath: "/k6",
+  questions,
+  scaleOptions,
+  calculateScore: getK6Result,
+  scaleInfo,
+  headerInstruction: instructionText,
+
+  // 結果ページ設定
+  scoreDisplay: {
+    type: "progress",
+    maxScore: 24,
+  },
+  resultAlerts: [
+    {
+      type: "urgent",
+      condition: (result: K6Result) => result.rawScore >= 13,
+      title: "専門家への相談を推奨します",
+      message:
+        "あなたのスコアは13点以上です。重度の心理的苦痛が示唆されています。精神科医または心療内科医への受診をご検討ください。",
+    },
+  ],
+  resultExtensions: {
+    shareButtons: true,
+    treatmentEvidence: true,
+  },
+};

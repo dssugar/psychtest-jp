@@ -2,8 +2,8 @@
 
 import { DataBadge } from "@/components/viz/DataBadge";
 import { BrutalProgressBar } from "@/components/viz/BrutalProgressBar";
-import { enneagramTypeDescriptions } from "@/lib/scoring/enneagram-estimation";
-import type { EnneagramEstimation } from "@/lib/scoring/bigfive";
+import { enneagramTypeDescriptions } from "@/lib/tests/enneagram-estimation";
+import type { EnneagramEstimation } from "@/lib/tests/bigfive";
 
 interface EnneagramEstimationCardProps {
   estimation: EnneagramEstimation;

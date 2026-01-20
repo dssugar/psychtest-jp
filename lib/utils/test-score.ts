@@ -1,8 +1,8 @@
 import type { TestResult } from "@/lib/storage";
 import type { TestConfig } from "@/lib/tests/types";
-import type { RosenbergResult } from "@/lib/scoring/rosenberg";
-import type { SelfConceptResult } from "@/lib/scoring/selfconcept";
-import type { BigFiveResult } from "@/lib/scoring/bigfive";
+import type { RosenbergResult } from "@/lib/tests/rosenberg";
+import type { SelfConceptResult } from "@/lib/tests/selfconcept";
+import type { BigFiveResult } from "@/lib/tests/bigfive";
 
 /**
  * スコア抽出に対応しているテストタイプ

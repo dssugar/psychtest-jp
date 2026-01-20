@@ -1,6 +1,6 @@
 import type { UserProfile, TestType } from "@/lib/storage";
-import type { BigFiveResult, BigFiveFacets } from "@/lib/scoring/bigfive";
-import { dimensionNames } from "@/lib/scoring/bigfive";
+import type { BigFiveResult, BigFiveFacets } from "@/lib/tests/bigfive";
+import { dimensionNames } from "@/lib/tests/bigfive";
 import { facetNames } from "@/data/facet-names";
 
 /**

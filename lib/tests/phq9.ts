@@ -1,4 +1,30 @@
-import { phq9Questions } from "@/data/phq9-questions";
+/**
+ * PHQ-9 (Patient Health Questionnaire-9) - Scoring & Configuration
+ *
+ * PHQ-9 の採点とレベル判定
+ *
+ * スコア範囲: 0-27点
+ * - 0-4点: 正常 (Minimal depression)
+ * - 5-9点: 軽度 (Mild depression)
+ * - 10-14点: 中等度 (Moderate depression)
+ * - 15-19点: やや重度 (Moderately severe depression)
+ * - 20-27点: 重度 (Severe depression)
+ *
+ * @reference Kroenke, K., Spitzer, R. L., & Williams, J. B. (2001). The PHQ-9:
+ *            Validity of a brief depression severity measure. Journal of General
+ *            Internal Medicine, 16(9), 606-613.
+ */
+
+import {
+  phq9Questions,
+  scaleOptions,
+  scaleInfo,
+} from "@/data/phq9-questions";
+import type { TestConfig } from "./types";
+
+// ============================================================================
+// Types & Interfaces
+// ============================================================================
 
 /**
  * PHQ-9 の結果型
@@ -12,6 +38,10 @@ export interface Phq9Result {
   suicideRisk: boolean; // 項目9が2点以上の場合 true
   requiresUrgentCare: boolean; // スコア15点以上の場合 true
 }
+
+// ============================================================================
+// Scoring Logic
+// ============================================================================
 
 /**
  * PHQ-9 スコアを計算
@@ -291,3 +321,50 @@ PHQ-9スコアが20-27点の範囲にあります。これは重度の抑うつ�
 **あなたの命は尊く、かけがえのないものです。今は苦しくても、助けを求め、治療を受けることで、必ず状況は改善します。どうか、希望を捨てずに、一歩を踏み出してください。**
   `.trim();
 }
+
+// ============================================================================
+// Test Configuration
+// ============================================================================
+
+/**
+ * PHQ-9 (Patient Health Questionnaire-9) テスト設定
+ */
+export const phq9Config: TestConfig<Phq9Result> = {
+  id: "phq9",
+  color: "orange", // メンタルヘルス系はorangeで統一
+  basePath: "/phq9",
+  questions: phq9Questions,
+  scaleOptions,
+  calculateScore: calculatePhq9Score,
+  validateAnswers: validateAnswerPattern,
+  scaleInfo,
+
+  // 結果ページ設定
+  scoreDisplay: {
+    type: "progress",
+    maxScore: 27,
+  },
+  resultAlerts: [
+    {
+      type: "crisis",
+      condition: (result: Phq9Result) => result.suicideRisk === true,
+      title: "⚠️ 緊急: 自殺念慮が検出されました",
+      message:
+        "あなたの回答から、深刻な危機的状況が示唆されています。すぐに専門家に相談するか、以下の相談窓口に連絡してください。",
+      contacts: [
+        { name: "いのちの電話", number: "0570-783-556" },
+        { name: "こころの健康相談統一ダイヤル", number: "0570-064-556" },
+      ],
+    },
+    {
+      type: "urgent",
+      condition: (result: Phq9Result) => result.requiresUrgentCare === true,
+      title: "専門家への相談を推奨します",
+      message:
+        "あなたのスコアは15点以上です。中等度以上のうつ症状が示唆されています。精神科医または心療内科医への受診をご検討ください。",
+    },
+  ],
+  resultExtensions: {
+    shareButtons: true,
+  },
+};

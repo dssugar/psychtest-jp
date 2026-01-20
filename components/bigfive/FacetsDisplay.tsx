@@ -4,7 +4,7 @@ import { useState } from "react";
 import { BrutalProgressBar } from "@/components/viz/BrutalProgressBar";
 import { DataBadge } from "@/components/viz/DataBadge";
 import { facetNames, facetDescriptions, facetsByDomain } from "@/data/facet-names";
-import type { BigFiveFacets } from "@/lib/scoring/bigfive";
+import type { BigFiveFacets } from "@/lib/tests/bigfive";
 
 interface FacetsDisplayProps {
   facets: BigFiveFacets;

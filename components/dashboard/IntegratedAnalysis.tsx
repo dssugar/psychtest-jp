@@ -10,7 +10,7 @@ import {
   generateMultiTestSynthesis,
   bigFiveToPercentage,
 } from "@/lib/analysis/synthesis";
-import { dimensionNames } from "@/lib/scoring/bigfive";
+import { dimensionNames } from "@/lib/tests/bigfive";
 
 interface IntegratedAnalysisProps {
   profile: UserProfile;

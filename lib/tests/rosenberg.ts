@@ -1,4 +1,29 @@
-import { rosenbergQuestions } from "@/data/rosenberg-questions";
+/**
+ * Rosenberg Self-Esteem Scale (RSES) - Scoring & Configuration
+ *
+ * Rosenberg自尊心尺度の採点とレベル判定
+ *
+ * スコア範囲: 10-40点
+ * - 10-14点: 非常に低い自尊心
+ * - 15-19点: 低い自尊心
+ * - 20-29点: 平均的な自尊心
+ * - 30-34点: 高い自尊心
+ * - 35-40点: 非常に高い自尊心
+ *
+ * @reference Rosenberg, M. (1965). Society and the adolescent self-image.
+ *            Princeton, NJ: Princeton University Press.
+ */
+
+import {
+  rosenbergQuestions,
+  scaleOptions,
+  scaleInfo,
+} from "@/data/rosenberg-questions";
+import type { TestConfig } from "./types";
+
+// ============================================================================
+// Types & Interfaces
+// ============================================================================
 
 export interface RosenbergResult {
   rawScore: number;
@@ -6,6 +31,10 @@ export interface RosenbergResult {
   level: "very_low" | "low" | "medium" | "high" | "very_high";
   interpretation: string;
 }
+
+// ============================================================================
+// Scoring Logic
+// ============================================================================
 
 /**
  * Rosenberg自尊心尺度のスコア計算
@@ -104,3 +133,30 @@ export function validateAnswerPattern(answers: number[]): {
 
   return { valid: true };
 }
+
+// ============================================================================
+// Test Configuration
+// ============================================================================
+
+/**
+ * RSES (Rosenberg Self-Esteem Scale) テスト設定
+ */
+export const rosenbergConfig: TestConfig<RosenbergResult> = {
+  id: "rosenberg",
+  color: "pink",
+  basePath: "/rosenberg",
+  questions: rosenbergQuestions,
+  scaleOptions,
+  calculateScore: calculateRosenbergScore,
+  validateAnswers: validateAnswerPattern,
+  scaleInfo,
+
+  // 結果ページ設定
+  scoreDisplay: {
+    type: "circle",
+    maxScore: 40,
+  },
+  resultExtensions: {
+    shareButtons: true,
+  },
+};

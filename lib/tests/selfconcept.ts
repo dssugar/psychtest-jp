@@ -1,4 +1,31 @@
-import { selfConceptQuestions } from "@/data/selfconcept-questions";
+/**
+ * Self-Concept Clarity Scale (SCCS) - Scoring & Configuration
+ *
+ * Self-Concept Clarity の採点とレベル判定
+ *
+ * スコア範囲: 8-40点（短縮版）
+ * - 8-13点: 低い（自己認識が曖昧）
+ * - 14-19点: やや低い
+ * - 20-27点: 中程度
+ * - 28-31点: 高い
+ * - 32-40点: 非常に高い
+ *
+ * @reference Campbell, J. D., Trapnell, P. D., Heine, S. J., Katz, I. M.,
+ *            Lavallee, L. F., & Lehman, D. R. (1996). Self-concept clarity:
+ *            Measurement, personality correlates, and cultural boundaries.
+ *            Journal of Personality and Social Psychology, 70(1), 141-156.
+ */
+
+import {
+  selfConceptQuestions,
+  scaleOptions,
+  scaleInfo,
+} from "@/data/selfconcept-questions";
+import type { TestConfig } from "./types";
+
+// ============================================================================
+// Types & Interfaces
+// ============================================================================
 
 /**
  * Self-Concept Clarity (SCC) の結果型
@@ -10,6 +37,10 @@ export interface SelfConceptResult {
   levelLabel: string;
   interpretation: string;
 }
+
+// ============================================================================
+// Scoring Logic
+// ============================================================================
 
 /**
  * Self-Concept Clarity スコアを計算
@@ -116,3 +147,27 @@ export function validateAnswerPattern(answers: number[]): {
 
   return { valid: true };
 }
+
+// ============================================================================
+// Test Configuration
+// ============================================================================
+
+/**
+ * Self-Concept Clarity Scale テスト設定
+ */
+export const selfConceptConfig: TestConfig<SelfConceptResult> = {
+  id: "selfconcept",
+  color: "blue",
+  basePath: "/selfconcept",
+  questions: selfConceptQuestions,
+  scaleOptions,
+  calculateScore: calculateSelfConceptScore,
+  validateAnswers: validateAnswerPattern,
+  scaleInfo,
+
+  // 結果ページ設定
+  scoreDisplay: {
+    type: "circle",
+    maxScore: 60,
+  },
+};

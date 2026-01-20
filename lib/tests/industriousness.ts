@@ -1,4 +1,34 @@
-import { industriousnessQuestions } from "@/data/industriousness-questions";
+/**
+ * Industriousness / Grit (IPIP-300 C4+C5) - Scoring & Configuration
+ *
+ * 勤勉性 / やり抜く力の採点と象限判定
+ *
+ * サブスケール:
+ * - C4: Achievement Striving (達成動機) - 10-50点
+ * - C5: Self-Discipline (自己鍛錬) - 10-50点
+ * - 合計: 20-100点
+ *
+ * 象限タイプ (2×2 matrix):
+ * - 実行者型 (Achiever): High C4, High C5
+ * - 構想家型 (Visionary): High C4, Low C5
+ * - 着実型 (Steady): Low C4, High C5
+ * - マイペース型 (Relaxed): Low C4, Low C5
+ *
+ * @reference DeYoung, C. G., Quilty, L. C., & Peterson, J. B. (2007). Between
+ *            facets and domains: 10 aspects of the Big Five. Journal of Personality
+ *            and Social Psychology, 93(5), 880-896.
+ */
+
+import {
+  industriousnessQuestions,
+  scaleOptions,
+  scaleInfo,
+} from "@/data/industriousness-questions";
+import type { TestConfig } from "./types";
+
+// ============================================================================
+// Types & Interfaces
+// ============================================================================
 
 /**
  * 勤勉性の象限タイプ
@@ -31,6 +61,10 @@ export interface IndustriousnessResult {
   // 解釈
   interpretation: string;
 }
+
+// ============================================================================
+// Scoring Logic
+// ============================================================================
 
 /**
  * 勤勉性スコア計算
@@ -372,3 +406,28 @@ function getPercentileLabel(percentile: number): string {
   if (percentile >= 25) return "やや低い";
   return "低い";
 }
+
+// ============================================================================
+// Test Configuration
+// ============================================================================
+
+/**
+ * Industriousness (勤勉性) テスト設定
+ */
+export const industriousnessConfig: TestConfig<IndustriousnessResult> = {
+  id: "industriousness",
+  color: "green",
+  basePath: "/industriousness",
+  questions: industriousnessQuestions,
+  scaleOptions,
+  calculateScore: calculateIndustriousnessScore,
+  scaleInfo,
+
+  // 結果ページ設定
+  scoreDisplay: {
+    type: "matrix",
+  },
+  resultExtensions: {
+    shareButtons: true,
+  },
+};
