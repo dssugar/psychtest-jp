@@ -591,4 +591,19 @@ export const swlsConfig: TestConfig<SwlsResult> = {
   resultExtensions: {
     shareButtons: true,
   },
+
+  // OG画像設定
+  ogImage: {
+    layoutType: "single",
+    titleEn: "LIFE\nSATISFACTION",
+    category: "人生満足度診断",
+    description: "主観的幸福感の測定\n5項目で人生の充実度を評価",
+    scoreDisplay: { type: "raw", min: 5, max: 35, unit: "" },
+    scoreToParams: (result: SwlsResult) => ({
+      score: (result?.rawScore ?? 20).toString(),
+    }),
+    paramsToScore: (params: URLSearchParams) => ({
+      score: parseInt(params.get("score") || "20"),
+    }),
+  },
 };

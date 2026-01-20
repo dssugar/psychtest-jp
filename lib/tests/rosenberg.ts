@@ -159,4 +159,19 @@ export const rosenbergConfig: TestConfig<RosenbergResult> = {
   resultExtensions: {
     shareButtons: true,
   },
+
+  // OG画像設定
+  ogImage: {
+    layoutType: "single",
+    titleEn: "SELF\nESTEEM",
+    category: "自尊心診断",
+    description: "Rosenberg自尊心尺度\n学術的に信頼された自己評価",
+    scoreDisplay: { type: "raw", min: 10, max: 40, unit: "" },
+    scoreToParams: (result: RosenbergResult) => ({
+      score: (result?.rawScore ?? 25).toString(),
+    }),
+    paramsToScore: (params: URLSearchParams) => ({
+      score: parseInt(params.get("score") || "25"),
+    }),
+  },
 };

@@ -367,4 +367,19 @@ export const phq9Config: TestConfig<Phq9Result> = {
   resultExtensions: {
     shareButtons: true,
   },
+
+  // OG画像設定
+  ogImage: {
+    layoutType: "single",
+    titleEn: "PHQ-9",
+    category: "うつ病スクリーニング",
+    description: "抑うつ症状の評価\n医学的エビデンスに基づく",
+    scoreDisplay: { type: "raw", min: 0, max: 27, unit: "" },
+    scoreToParams: (result: Phq9Result) => ({
+      score: (result?.rawScore ?? 7).toString(),
+    }),
+    paramsToScore: (params: URLSearchParams) => ({
+      score: parseInt(params.get("score") || "7"),
+    }),
+  },
 };

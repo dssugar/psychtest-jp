@@ -180,4 +180,19 @@ export const k6Config: TestConfig<K6Result> = {
     shareButtons: true,
     treatmentEvidence: true,
   },
+
+  // OG画像設定
+  ogImage: {
+    layoutType: "single",
+    titleEn: "K6",
+    category: "心理的苦痛評価",
+    description: "厚生労働省も採用する\n心理的ストレス測定",
+    scoreDisplay: { type: "raw", min: 0, max: 24, unit: "" },
+    scoreToParams: (result: K6Result) => ({
+      score: (result?.rawScore ?? 7).toString(),
+    }),
+    paramsToScore: (params: URLSearchParams) => ({
+      score: parseInt(params.get("score") || "7"),
+    }),
+  },
 };

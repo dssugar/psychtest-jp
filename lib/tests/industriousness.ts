@@ -430,4 +430,20 @@ export const industriousnessConfig: TestConfig<IndustriousnessResult> = {
   resultExtensions: {
     shareButtons: true,
   },
+
+  // OG画像設定
+  ogImage: {
+    layoutType: "bar",
+    titleEn: "INDUSTRI-\nOUSNESS",
+    category: "勤勉性診断",
+    description: "やり抜く力を測定\n2つの次元で評価",
+    scoreToParams: (result: IndustriousnessResult) => ({
+      c4: (result?.c4_achievement ?? 30).toString(),
+      c5: (result?.c5_discipline ?? 30).toString(),
+    }),
+    paramsToScore: (params: URLSearchParams) => ({
+      c4: parseInt(params.get("c4") || "30"),
+      c5: parseInt(params.get("c5") || "30"),
+    }),
+  },
 };

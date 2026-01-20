@@ -170,4 +170,19 @@ export const selfConceptConfig: TestConfig<SelfConceptResult> = {
     type: "circle",
     maxScore: 60,
   },
+
+  // OG画像設定
+  ogImage: {
+    layoutType: "single",
+    titleEn: "SELF-CONCEPT\nCLARITY",
+    category: "自己認識明確性診断",
+    description: "自己理解の明瞭さを測定\n自分を知る力を評価",
+    scoreDisplay: { type: "raw", min: 8, max: 40, unit: "" },
+    scoreToParams: (result: SelfConceptResult) => ({
+      score: (result?.rawScore ?? 24).toString(),
+    }),
+    paramsToScore: (params: URLSearchParams) => ({
+      score: parseInt(params.get("score") || "24"),
+    }),
+  },
 };

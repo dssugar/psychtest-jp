@@ -173,144 +173,134 @@ export default function DashboardPage() {
               {completedTests.map((testType) => {
                 const info = testInfo[testType];
                 const testResult = profile?.tests[testType];
+                if (!info || !testResult || !('result' in testResult)) return null;
 
-                // testInfoに定義がない、または結果がない場合はスキップ
-                if (!info || !testResult) return null;
+                const config = testRegistry[testType as keyof typeof testRegistry];
+                if (!config) return null;
+                const ogImage = config.ogImage;
 
-                // Big Fiveの場合: ResultSummaryCardを使用
-                if (testType === 'bigfive' && 'result' in testResult) {
-                  const bigFiveResult = testResult.result as {
-                    openness: number;
-                    conscientiousness: number;
-                    extraversion: number;
-                    agreeableness: number;
-                    neuroticism: number;
-                  };
+                // Color mapping
+                const colorMap: Record<string, string> = {
+                  pink: '#ec4899', orange: '#f97316', cyan: '#06b6d4',
+                  yellow: '#eab308', purple: '#a855f7', green: '#10b981', blue: '#3b82f6',
+                };
 
-                  // dimensions配列を構築
-                  const dimensions: DimensionData[] = DIMENSION_ORDER.map((key) => {
-                    const score = bigFiveResult[key];
-                    return {
-                      key,
-                      label: DIMENSION_NAMES[key],
-                      score,
-                      percentage: ((score - 24) / (120 - 24)) * 100, // 24-120 → 0-100%
-                      color: OG_COLORS.dimensions[key],
-                    };
-                  });
+                // 次元データの生成（テストタイプ別）
+                let dimensions: DimensionData[] = [];
 
-                  // OG画像用のURLパラメータを含める（e, a, c, n, o）
-                  const params = new URLSearchParams({
-                    e: bigFiveResult.extraversion.toString(),
-                    a: bigFiveResult.agreeableness.toString(),
-                    c: bigFiveResult.conscientiousness.toString(),
-                    n: bigFiveResult.neuroticism.toString(),
-                    o: bigFiveResult.openness.toString(),
-                  });
-                  const shareUrl = `${typeof window !== 'undefined' ? window.location.origin : 'https://psychtest.jp'}/results/${testType}?${params.toString()}`;
-                  const shareText = `Big Five性格診断の結果 - 心理測定ラボ`;
+                if (testType === 'bigfive') {
+                  // Big Five: 5次元
+                  const result = testResult.result as any;
+                  dimensions = DIMENSION_ORDER.map((key) => ({
+                    key,
+                    label: DIMENSION_NAMES[key],
+                    score: result[key],
+                    percentage: ((result[key] - 24) / 96) * 100,
+                    color: OG_COLORS.dimensions[key],
+                  }));
+                } else if (testType === 'industriousness') {
+                  // Industriousness: 2次元
+                  const result = testResult.result as any;
+                  const c4 = result?.c4_achievement ?? 30;
+                  const c5 = result?.c5_discipline ?? 30;
+                  dimensions = [
+                    {
+                      key: 'c4',
+                      label: '達成動機 (C4)',
+                      score: c4,
+                      percentage: ((c4 - 10) / 40) * 100,
+                      color: '#3b82f6',
+                    },
+                    {
+                      key: 'c5',
+                      label: '自己統制 (C5)',
+                      score: c5,
+                      percentage: ((c5 - 10) / 40) * 100,
+                      color: '#10b981',
+                    },
+                  ];
+                } else if (ogImage) {
+                  // 単一スコアテスト
+                  const result = testResult.result as any;
+                  const min = ogImage.scoreDisplay?.min || 0;
+                  const max = ogImage.scoreDisplay?.max || 100;
+                  const rawScore = result?.rawScore ?? min;
+                  const percentage = result?.percentageScore ?? ((rawScore - min) / (max - min)) * 100;
 
-                  const bigFiveOgConfig = testRegistry.bigfive.ogImage;
+                  dimensions = [{
+                    key: 'score',
+                    label: 'Total Score',
+                    score: rawScore,
+                    percentage: percentage,
+                    color: colorMap[info.color] || '#3b82f6',
+                  }];
+                }
+
+                // ogImageとdimensionsがあればResultSummaryCard表示
+                if (ogImage && dimensions.length > 0) {
+                  const params = ogImage.scoreToParams?.(testResult.result) || {};
+                  const shareUrl = `${typeof window !== 'undefined' ? window.location.origin : ''}/og/${testType}?${new URLSearchParams(params).toString()}`;
 
                   return (
                     <div key={testType} className="space-y-4">
                       <ResultSummaryCard
                         dimensions={dimensions}
-                        titleEn={bigFiveOgConfig?.titleEn}
-                        category={bigFiveOgConfig?.category || "性格特性診断"}
-                        description={bigFiveOgConfig?.description}
+                        titleEn={ogImage.titleEn}
+                        category={ogImage.category}
+                        description={ogImage.description}
                       />
                       <div className="max-w-[1200px] mx-auto space-y-4">
+                        {/* アクションボタン */}
                         <div className="flex gap-3">
                           <Link
                             href={`/results/${testType}`}
-                            className="btn-brutal flex-1 bg-brutal-black text-brutal-white px-6 py-3 text-sm text-center min-h-[44px]"
+                            className="btn-brutal flex-1 bg-brutal-black text-brutal-white px-6 py-3 text-sm text-center"
                           >
                             詳細な結果を見る
                           </Link>
                           <Link
                             href={`${info.path}/test`}
-                            className="btn-brutal flex-1 bg-brutal-white text-brutal-black px-6 py-3 text-sm text-center min-h-[44px]"
+                            className="btn-brutal flex-1 bg-brutal-white text-brutal-black px-6 py-3 text-sm text-center"
                           >
                             再受験する
                           </Link>
                         </div>
+                        {/* シェアボタン */}
                         <Card variant="white" padding="sm">
                           <div className="text-xs font-semibold uppercase tracking-wide text-brutal-gray-600 mb-2">
                             結果をシェア
                           </div>
-                          <SocialShareButtons
-                            shareUrl={shareUrl}
-                            text={shareText}
-                          />
+                          <SocialShareButtons shareUrl={shareUrl} text={`${info.nameJa}の結果`} />
                         </Card>
                       </div>
                     </div>
                   );
                 }
 
-                // その他のテスト: 従来通りのCard表示
-                const shareUrl = `${typeof window !== 'undefined' ? window.location.origin : 'https://psychtest.jp'}/results/${testType}`;
-                const shareText = `${info.nameJa}の結果 - 心理測定ラボ`;
-
+                // フォールバック: ogImageがないテスト用汎用Card
+                const shareUrl = `${typeof window !== 'undefined' ? window.location.origin : ''}/results/${testType}`;
                 return (
-                  <div key={testType} className="space-y-4">
+                  <div key={testType}>
                     <Card variant="white" padding="md">
                       <div className="flex items-start justify-between mb-4">
-                        <DataBadge color={info.color} size="md">
-                          {info.name}
-                        </DataBadge>
+                        <DataBadge color={info.color} size="md">{info.name}</DataBadge>
                         <div className="text-xs font-mono text-brutal-gray-800">
-                          {new Date(testResult.completedAt).toLocaleDateString(
-                            "ja-JP",
-                            {
-                              year: "numeric",
-                              month: "short",
-                              day: "numeric",
-                            }
-                          )}
+                          {new Date(testResult.completedAt).toLocaleDateString("ja-JP", {
+                            year: "numeric", month: "short", day: "numeric",
+                          })}
                         </div>
                       </div>
-
                       <h3 className="text-xl md:text-2xl text-brutal-black mb-2" style={{ fontFamily: 'var(--font-display-ja)', fontWeight: 700 }}>
                         {info.nameJa}
                       </h3>
-
-                      <div className="flex items-center gap-2 mb-6">
-                        <span className="text-sm text-brutal-gray-800">
-                          {info.dimension}
-                        </span>
-                        {testResult.retakeCount > 0 && (
-                          <DataBadge color="black" size="sm">
-                            再受験 {testResult.retakeCount}回
-                          </DataBadge>
-                        )}
-                      </div>
-
                       <div className="flex gap-3">
-                        <Link
-                          href={`/results/${testType}`}
-                          className="btn-brutal flex-1 bg-brutal-black text-brutal-white px-6 py-3 text-sm text-center min-h-[44px]"
-                        >
+                        <Link href={`/results/${testType}`} className="btn-brutal flex-1 bg-brutal-black text-brutal-white px-6 py-3 text-sm text-center">
                           結果を見る
                         </Link>
-                        <Link
-                          href={`${info.path}/test`}
-                          className="btn-brutal flex-1 bg-brutal-white text-brutal-black px-6 py-3 text-sm text-center min-h-[44px]"
-                        >
+                        <Link href={`${info.path}/test`} className="btn-brutal flex-1 bg-brutal-white text-brutal-black px-6 py-3 text-sm text-center">
                           再受験する
                         </Link>
                       </div>
-                    </Card>
-
-                    <Card variant="white" padding="sm">
-                      <div className="text-xs font-semibold uppercase tracking-wide text-brutal-gray-600 mb-2">
-                        結果をシェア
-                      </div>
-                      <SocialShareButtons
-                        shareUrl={shareUrl}
-                        text={shareText}
-                      />
                     </Card>
                   </div>
                 );
