@@ -49,6 +49,7 @@ export function Card({
 
   const combinedClassName = cn(
     "card-brutal",
+    "border-[3px]",
     variantClasses[variant],
     paddingClasses[padding],
     hoverClasses,
