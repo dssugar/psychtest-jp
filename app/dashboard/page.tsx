@@ -10,6 +10,7 @@ import { ProfileOverview } from "@/components/dashboard/ProfileOverview";
 import { IntegratedAnalysis } from "@/components/dashboard/IntegratedAnalysis";
 import { ResultSummaryCard } from "@/components/results/ResultSummaryCard";
 import { SocialShareButtons } from "@/components/share/SocialShareButtons";
+import { CustomInstructionsExportButton } from "@/components/export/CustomInstructionsExportButton";
 import type { DimensionData } from "@/lib/og-design/types";
 import { testRegistry } from "@/lib/tests/test-registry";
 
@@ -158,6 +159,13 @@ export default function DashboardPage() {
               completedTests={completedTests}
               profile={profile}
             />
+          </div>
+        )}
+
+        {/* AI Assistant Export */}
+        {completedTests.length > 0 && (
+          <div className="max-w-[1200px] mx-auto mb-16">
+            <CustomInstructionsExportButton />
           </div>
         )}
 
