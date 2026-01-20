@@ -41,6 +41,36 @@ npm run test:e2e     # Run E2E tests (Playwright)
 npm run test:e2e:ui  # E2E tests with UI mode
 ```
 
+### OG画像の確認方法
+
+**重要**: OG画像はCloudflare Pages Functionsで実装されているため、`npm run dev`では表示されません。以下の手順が必要です：
+
+```bash
+# 1. ビルド（静的ファイル + Functions）
+npm run build
+# → out/ ディレクトリに出力
+
+# 2. Cloudflare Pages ローカルサーバーを起動
+npx wrangler pages dev out
+# → http://localhost:8788 でサーバーが起動（ポートは異なる場合あり）
+
+# 3. ブラウザでOG画像URLを開く
+# ⚠️ ポート番号はwranglerの出力を確認してください（通常8788）
+
+# 単一スコアテスト（score + level パラメータ）
+http://localhost:8788/og/rosenberg?score=32&level=high
+http://localhost:8788/og/phq9?score=15&level=moderately_severe
+http://localhost:8788/og/k6?score=13&level=severe
+http://localhost:8788/og/swls?score=30&level=satisfied
+http://localhost:8788/og/selfconcept?score=24&level=medium
+
+# 多次元テスト（次元別スコア）
+http://localhost:8788/og/bigfive?o=85&c=72&e=45&a=68&n=35
+http://localhost:8788/og/industriousness?achievement=75&discipline=82
+```
+
+**通常の開発**: UIの変更のみなら `npm run dev` (port 3000) で十分です。OG画像の確認時のみビルド + wrangler が必要です。
+
 ## Architecture
 
 ### Data Model - Trait-State-Outcome-Skill Framework

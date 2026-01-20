@@ -137,23 +137,41 @@ async function renderDimensionBarOG(url: URL, config: any) {
               style={{
                 display: 'flex',
                 flexDirection: 'column',
-                fontSize: `${OG_TYPOGRAPHY.titleSize}px`,
                 fontWeight: OG_TYPOGRAPHY.titleWeight,
                 lineHeight: OG_TYPOGRAPHY.titleLineHeight,
                 letterSpacing: OG_TYPOGRAPHY.titleLetterSpacing,
               }}
             >
-              {titleLines.map((line: string, index: number) => (
-                <span
-                  key={index}
-                  style={{
-                    display: 'flex',
-                    color: index === 0 ? OG_COLORS.leftText : OG_COLORS.leftTextSecondary,
-                  }}
-                >
-                  {line}
-                </span>
-              ))}
+              {titleLines.map((line: string, index: number) => {
+                // 文字数に応じて横幅と文字間隔を調整（英語大文字を想定）
+                const baseLengthThreshold = 5; // 5文字まではフルサイズ
+
+                let scaleX = 1;
+                let letterSpacing = '-0.02em'; // デフォルトで少し詰める
+
+                if (line.length > baseLengthThreshold) {
+                  // 横幅のみを圧縮（高さは100pxのまま）
+                  scaleX = baseLengthThreshold / line.length;
+                  // 長い場合はさらに文字間隔を詰める
+                  letterSpacing = '-0.05em';
+                }
+
+                return (
+                  <span
+                    key={index}
+                    style={{
+                      display: 'flex',
+                      fontSize: `${OG_TYPOGRAPHY.titleSize}px`, // 100px固定
+                      color: index === 0 ? OG_COLORS.leftText : OG_COLORS.leftTextSecondary,
+                      transform: `scaleX(${scaleX})`,
+                      transformOrigin: 'left center',
+                      letterSpacing: letterSpacing,
+                    }}
+                  >
+                    {line}
+                  </span>
+                );
+              })}
             </div>
           </div>
 
@@ -231,20 +249,26 @@ async function renderDimensionBarOG(url: URL, config: any) {
             backgroundImage: OG_COLORS.gridPattern,
             backgroundSize: `${OG_COLORS.gridSize} ${OG_COLORS.gridSize}`,
             padding: `${OG_LAYOUT.rightPaddingY}px ${OG_LAYOUT.rightPaddingX}px`,
-            justifyContent: isSingleScore ? 'space-between' : 'center',
+            justifyContent: 'center',
             position: 'relative',
           }}
         >
           {/* 単一スコアの場合：3段レイアウト */}
           {isSingleScore && levelLabel ? (
-            <>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                width: '100%',
+              }}
+            >
               {/* 上段：判定ラベル */}
               <div
                 style={{
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
-                  marginBottom: '30px',
+                  marginBottom: '24px',
                 }}
               >
                 <div
@@ -266,7 +290,7 @@ async function renderDimensionBarOG(url: URL, config: any) {
                 style={{
                   display: 'flex',
                   flexDirection: 'column',
-                  marginBottom: '30px',
+                  marginBottom: '24px',
                 }}
               >
                 {/* スコア数値（バーの上、中央配置） */}
@@ -274,7 +298,7 @@ async function renderDimensionBarOG(url: URL, config: any) {
                   style={{
                     display: 'flex',
                     justifyContent: 'center',
-                    marginBottom: '12px',
+                    marginBottom: '16px',
                   }}
                 >
                   <div
@@ -430,10 +454,16 @@ async function renderDimensionBarOG(url: URL, config: any) {
                   </div>
                 </div>
               )}
-            </>
+            </div>
           ) : (
             // 複数スコアの場合：既存のバーレイアウト
-            <>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                width: '100%',
+              }}
+            >
               {dimensions.map((item: any, index: number) => (
                 <div
                   key={item.key}
@@ -498,7 +528,7 @@ async function renderDimensionBarOG(url: URL, config: any) {
                   </div>
                 </div>
               ))}
-            </>
+            </div>
           )}
 
           {/* ウォーターマーク */}

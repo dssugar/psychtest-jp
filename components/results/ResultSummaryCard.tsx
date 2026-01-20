@@ -213,7 +213,7 @@ export function ResultSummaryCard({
 
       {/* 右カラム：データエリア（グラフ最大化） */}
       <div
-        className={`flex-1 bg-[#F9FAFB] px-8 md:px-[40px] py-4 md:py-[20px] flex flex-col ${isSingleScore ? 'justify-between' : 'justify-center'} relative`}
+        className="flex-1 bg-[#F9FAFB] px-8 md:px-[40px] py-4 md:py-[20px] flex flex-col justify-center relative"
         style={{
           backgroundImage: 'radial-gradient(circle, rgba(206, 206, 206, 0.4) 2px, transparent 2.5px)',
           backgroundSize: '30px 30px',
@@ -223,16 +223,16 @@ export function ResultSummaryCard({
         {isSingleScore && levelLabel ? (
           <>
             {/* 上段：判定ラベル */}
-            <div className="flex flex-col items-center mb-8">
+            <div className="flex flex-col items-center mb-6">
               <div className="text-5xl md:text-6xl lg:text-[72px] font-black text-[#111111] text-center leading-tight">
                 {levelLabel}
               </div>
             </div>
 
             {/* 中段：スコア + バー + 境界線ラベル */}
-            <div className="flex flex-col mb-8">
+            <div className="flex flex-col mb-6">
               {/* スコア数値（バーの上、中央配置） */}
-              <div className="flex justify-center mb-3">
+              <div className="flex justify-center mb-4">
                 <div
                   className="text-6xl md:text-7xl lg:text-[96px] font-black font-mono text-[#111111] leading-none tabular-nums"
                   style={{
