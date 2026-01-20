@@ -199,7 +199,7 @@ export default function IndustriousnessPage() {
             {/* CTA Button */}
             <div className="flex justify-center mt-12">
               <Link
-                href="/industriousness/test"
+                href="/test/industriousness"
                 className="btn-brutal bg-viz-green text-brutal-white px-12 py-5 text-xl font-bold uppercase tracking-wider hover:translate-x-1 hover:translate-y-1 transition-transform"
               >
                 診断を始める →

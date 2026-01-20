@@ -1,6 +1,6 @@
 import {
   phq9Questions,
-  scaleLabels,
+  scaleOptions,
   scaleInfo,
 } from "@/data/phq9-questions";
 import {
@@ -16,10 +16,10 @@ import type { TestConfig } from "../types";
 export const phq9Config: TestConfig<Phq9Result> = {
   id: "phq9",
   color: "orange", // メンタルヘルス系はorangeで統一
+  basePath: "/phq9",
   questions: phq9Questions,
-  scaleLabels,
+  scaleOptions,
   calculateScore: calculatePhq9Score,
   validateAnswers: validateAnswerPattern,
   scaleInfo,
-  basePath: "/phq9",
 };

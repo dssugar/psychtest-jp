@@ -1,4 +1,4 @@
-import type { BaseQuestion, ScaleInfo } from "@/lib/tests/types";
+import type { BaseQuestion, ScaleInfo, ScaleOption } from "@/lib/tests/types";
 
 /**
  * SWLS (Satisfaction With Life Scale)
@@ -76,14 +76,14 @@ export const swlsQuestions: BaseQuestion[] = [
   },
 ];
 
-export const scaleLabels: string[] = [
-  "全く当てはまらない",
-  "ほとんど当てはまらない",
-  "やや当てはまらない",
-  "どちらとも言えない",
-  "当てはまる",
-  "かなり当てはまる",
-  "とても当てはまる",
+export const scaleOptions: ScaleOption[] = [
+  { label: "全く当てはまらない", value: 1 },
+  { label: "ほとんど当てはまらない", value: 2 },
+  { label: "やや当てはまらない", value: 3 },
+  { label: "どちらとも言えない", value: 4 },
+  { label: "当てはまる", value: 5 },
+  { label: "かなり当てはまる", value: 6 },
+  { label: "とても当てはまる", value: 7 },
 ];
 
 export const scaleInfo: ScaleInfo = {

@@ -1,6 +1,6 @@
 import {
   swlsQuestions,
-  scaleLabels,
+  scaleOptions,
   scaleInfo,
 } from "@/data/swls-questions";
 import {
@@ -16,10 +16,11 @@ import type { TestConfig } from "../types";
 export const swlsConfig: TestConfig<SwlsResult> = {
   id: "swls",
   color: "blue", // ウェルビーイング系はblueで統一
+  basePath: "/swls",
   questions: swlsQuestions,
-  scaleLabels,
+  scaleOptions,
   calculateScore: calculateSwlsScore,
   validateAnswers: validateAnswerPattern,
   scaleInfo,
-  basePath: "/swls",
+  selectedButtonColor: "blue", // SWLSのみ青色ボタン
 };

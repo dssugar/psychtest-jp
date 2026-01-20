@@ -14,7 +14,7 @@
  * https://github.com/Alheimsins/b5-johnson-120-ipip-neo-pi-r
  */
 
-import type { BaseQuestion, ScaleInfo } from "@/lib/tests/types";
+import type { BaseQuestion, ScaleInfo, ScaleOption } from "@/lib/tests/types";
 
 export interface BigFiveQuestion extends BaseQuestion {
   textEn?: string; // English reference (optional)
@@ -25,14 +25,14 @@ export interface BigFiveQuestion extends BaseQuestion {
 }
 
 /**
- * 5点リッカート尺度
+ * 5点リッカート尺度（1-5点）
  */
-export const scaleLabels = [
-  "まったく当てはまらない",
-  "あまり当てはまらない",
-  "どちらとも言えない",
-  "やや当てはまる",
-  "とても当てはまる",
+export const scaleOptions: ScaleOption[] = [
+  { label: "まったく当てはまらない", value: 1 },
+  { label: "あまり当てはまらない", value: 2 },
+  { label: "どちらとも言えない", value: 3 },
+  { label: "やや当てはまる", value: 4 },
+  { label: "とても当てはまる", value: 5 },
 ];
 
 /**

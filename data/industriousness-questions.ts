@@ -17,7 +17,7 @@
  * https://ipip.ori.org/JapaneseIPIP-NEOFacets.htm
  */
 
-import type { BaseQuestion, ScaleInfo } from "@/lib/tests/types";
+import type { BaseQuestion, ScaleInfo, ScaleOption } from "@/lib/tests/types";
 
 export interface IndustriousnessQuestion extends BaseQuestion {
   originalId: number; // IPIP-300 item number (271-290)
@@ -27,14 +27,14 @@ export interface IndustriousnessQuestion extends BaseQuestion {
 }
 
 /**
- * 5点リッカート尺度
+ * 5点リッカート尺度（1-5点）
  */
-export const scaleLabels = [
-  "全く当てはまらない",
-  "あまり当てはまらない",
-  "どちらとも言えない",
-  "やや当てはまる",
-  "非常に当てはまる",
+export const scaleOptions: ScaleOption[] = [
+  { label: "全く当てはまらない", value: 1 },
+  { label: "あまり当てはまらない", value: 2 },
+  { label: "どちらとも言えない", value: 3 },
+  { label: "やや当てはまる", value: 4 },
+  { label: "非常に当てはまる", value: 5 },
 ];
 
 /**

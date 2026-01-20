@@ -1,4 +1,4 @@
-import type { BaseQuestion, ScaleInfo } from "@/lib/tests/types";
+import type { BaseQuestion, ScaleInfo, ScaleOption } from "@/lib/tests/types";
 
 /**
  * K6 (Kessler Psychological Distress Scale) Questions
@@ -60,12 +60,15 @@ export const questions: K6Question[] = [
   }
 ];
 
-export const scaleLabels: string[] = [
-  "まったくない",
-  "少しだけ",
-  "ときどき",
-  "たいてい",
-  "いつも"
+/**
+ * 5点リッカート尺度（0-4点、疫学調査標準）
+ */
+export const scaleOptions: ScaleOption[] = [
+  { label: "まったくない", value: 0 },
+  { label: "少しだけ", value: 1 },
+  { label: "ときどき", value: 2 },
+  { label: "たいてい", value: 3 },
+  { label: "いつも", value: 4 },
 ];
 
 export const instructionText = "過去30日の間に、どれくらいの頻度で次のことがありましたか。";

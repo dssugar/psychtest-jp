@@ -1,4 +1,4 @@
-import { questions, scaleLabels, scaleInfo } from "@/data/k6-questions";
+import { questions, scaleOptions, scaleInfo, instructionText } from "@/data/k6-questions";
 import { getK6Result, type K6Result } from "@/lib/scoring/k6";
 import type { TestConfig } from "../types";
 
@@ -8,9 +8,10 @@ import type { TestConfig } from "../types";
 export const k6Config: TestConfig<K6Result> = {
   id: "k6",
   color: "cyan",
+  basePath: "/k6",
   questions,
-  scaleLabels,
+  scaleOptions,
   calculateScore: getK6Result,
   scaleInfo,
-  basePath: "/k6",
+  headerInstruction: instructionText,
 };

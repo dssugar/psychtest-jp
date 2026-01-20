@@ -14,22 +14,22 @@
  * Citations: 50,000+
  */
 
-import type { BaseQuestion, ScaleInfo } from "@/lib/tests/types";
+import type { BaseQuestion, ScaleInfo, ScaleOption } from "@/lib/tests/types";
 
 export type RosenbergQuestion = BaseQuestion;
 
 /**
- * 4点リッカート尺度
+ * 4点リッカート尺度（1-4点）
  * 1: まったくそう思わない
  * 2: そう思わない
  * 3: そう思う
  * 4: 非常にそう思う
  */
-export const scaleLabels = [
-  "まったくそう思わない",
-  "そう思わない",
-  "そう思う",
-  "非常にそう思う",
+export const scaleOptions: ScaleOption[] = [
+  { label: "まったくそう思わない", value: 1 },
+  { label: "そう思わない", value: 2 },
+  { label: "そう思う", value: 3 },
+  { label: "非常にそう思う", value: 4 },
 ];
 
 /**

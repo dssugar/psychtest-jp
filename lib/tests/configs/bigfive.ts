@@ -1,6 +1,6 @@
 import {
   bigFiveQuestions,
-  scaleLabels,
+  scaleOptions,
   scaleInfo,
 } from "@/data/bigfive-questions";
 import {
@@ -16,10 +16,11 @@ import type { TestConfig } from "../types";
 export const bigFiveConfig: TestConfig<BigFiveResult> = {
   id: "bigfive",
   color: "green",
+  basePath: "/bigfive",
   questions: bigFiveQuestions,
-  scaleLabels,
+  scaleOptions,
   calculateScore: calculateBigFiveScore,
   validateAnswers: validateAnswerPattern,
   scaleInfo,
-  basePath: "/bigfive",
+  testVersion: "ipip-120",
 };

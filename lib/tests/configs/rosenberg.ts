@@ -1,6 +1,6 @@
 import {
   rosenbergQuestions,
-  scaleLabels,
+  scaleOptions,
   scaleInfo,
 } from "@/data/rosenberg-questions";
 import {
@@ -16,10 +16,10 @@ import type { TestConfig } from "../types";
 export const rosenbergConfig: TestConfig<RosenbergResult> = {
   id: "rosenberg",
   color: "pink",
+  basePath: "/rosenberg",
   questions: rosenbergQuestions,
-  scaleLabels,
+  scaleOptions,
   calculateScore: calculateRosenbergScore,
   validateAnswers: validateAnswerPattern,
   scaleInfo,
-  basePath: "/rosenberg",
 };

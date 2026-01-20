@@ -1,6 +1,6 @@
 import {
   selfConceptQuestions,
-  scaleLabels,
+  scaleOptions,
   scaleInfo,
 } from "@/data/selfconcept-questions";
 import {
@@ -16,10 +16,10 @@ import type { TestConfig } from "../types";
 export const selfConceptConfig: TestConfig<SelfConceptResult> = {
   id: "selfconcept",
   color: "blue",
+  basePath: "/selfconcept",
   questions: selfConceptQuestions,
-  scaleLabels,
+  scaleOptions,
   calculateScore: calculateSelfConceptScore,
   validateAnswers: validateAnswerPattern,
   scaleInfo,
-  basePath: "/selfconcept",
 };

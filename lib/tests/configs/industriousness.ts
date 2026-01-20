@@ -1,6 +1,6 @@
 import {
   industriousnessQuestions,
-  scaleLabels,
+  scaleOptions,
   scaleInfo,
 } from "@/data/industriousness-questions";
 import { calculateIndustriousnessScore } from "@/lib/scoring/industriousness";
@@ -13,9 +13,9 @@ import type { TestConfig } from "../types";
 export const industriousnessConfig: TestConfig<IndustriousnessResult> = {
   id: "industriousness",
   color: "green",
+  basePath: "/industriousness",
   questions: industriousnessQuestions,
-  scaleLabels,
+  scaleOptions,
   calculateScore: calculateIndustriousnessScore,
   scaleInfo,
-  basePath: "/industriousness",
 };

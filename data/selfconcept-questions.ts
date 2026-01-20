@@ -1,4 +1,4 @@
-import type { BaseQuestion, ScaleInfo } from "@/lib/tests/types";
+import type { BaseQuestion, ScaleInfo, ScaleOption } from "@/lib/tests/types";
 
 /**
  * IPIP Self-Consciousness Scale (神経症傾向ドメイン)
@@ -65,12 +65,12 @@ export const selfConceptQuestions: BaseQuestion[] = [
   },
 ];
 
-export const scaleLabels: string[] = [
-  "全く当てはまらない",
-  "あまり当てはまらない",
-  "どちらとも言えない",
-  "やや当てはまる",
-  "非常に当てはまる",
+export const scaleOptions: ScaleOption[] = [
+  { label: "全く当てはまらない", value: 1 },
+  { label: "あまり当てはまらない", value: 2 },
+  { label: "どちらとも言えない", value: 3 },
+  { label: "やや当てはまる", value: 4 },
+  { label: "非常に当てはまる", value: 5 },
 ];
 
 export const scaleInfo: ScaleInfo = {

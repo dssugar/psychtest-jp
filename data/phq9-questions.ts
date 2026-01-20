@@ -1,4 +1,4 @@
-import type { BaseQuestion, ScaleInfo } from "@/lib/tests/types";
+import type { BaseQuestion, ScaleInfo, ScaleOption } from "@/lib/tests/types";
 
 /**
  * PHQ-9 (Patient Health Questionnaire-9)
@@ -99,11 +99,14 @@ export const phq9Questions: BaseQuestion[] = [
   },
 ];
 
-export const scaleLabels: string[] = [
-  "全くない",
-  "数日",
-  "半分以上",
-  "ほとんど毎日",
+/**
+ * 4点リッカート尺度（0-3点、医学的定義）
+ */
+export const scaleOptions: ScaleOption[] = [
+  { label: "全くない", value: 0 },
+  { label: "数日", value: 1 },
+  { label: "半分以上", value: 2 },
+  { label: "ほとんど毎日", value: 3 },
 ];
 
 export const scaleInfo: ScaleInfo = {

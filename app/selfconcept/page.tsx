@@ -149,7 +149,7 @@ export default function SelfConceptPage() {
           {/* CTA Section */}
           <div className="text-center mb-8">
             <Link
-              href="/selfconcept/test"
+              href="/test/selfconcept"
               className="btn-brutal inline-block bg-brutal-black text-brutal-white px-12 py-5 text-lg mb-4 min-h-[44px]"
             >
               診断を始める

@@ -159,7 +159,7 @@ export default function K6Page() {
           {/* CTA Button */}
           <div className="text-center mb-12 animate-scale-in" style={{ animationDelay: "0.3s" }}>
             <Link
-              href="/k6/test"
+              href="/test/k6"
               className="inline-block bg-viz-cyan text-brutal-white px-12 py-4 text-xl font-bold uppercase tracking-wide border-brutal border-brutal-black hover-lift shadow-brutal-lg transition-transform duration-200"
             >
               診断を開始

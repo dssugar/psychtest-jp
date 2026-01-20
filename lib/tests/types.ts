@@ -59,12 +59,36 @@ export interface ScaleInfo {
 }
 
 /**
+ * 回答選択肢（点数付き）
+ */
+export interface ScaleOption {
+  /** 表示ラベル */
+  label: string;
+  /** この選択肢の点数（学術的定義による） */
+  value: number;
+}
+
+/**
  * 質問データの基本型
  */
 export interface BaseQuestion {
   id: number;
   text: string;
   reverse?: boolean;
+  /** 質問固有の選択肢（オプショナル、なければconfig.scaleOptionsを使用） */
+  scaleOptions?: ScaleOption[];
+}
+
+/**
+ * バリデーション結果（統一型）
+ */
+export interface ValidationResult {
+  /** バリデーションが成功したか */
+  valid: boolean;
+  /** 警告メッセージ（確認ダイアログ用） */
+  warning?: string;
+  /** エラーメッセージ（ブロック用） */
+  message?: string;
 }
 
 /**
@@ -75,25 +99,37 @@ export interface TestConfig<TResult, TQuestion extends BaseQuestion = BaseQuesti
   id: TestType;
   /** テーマカラー */
   color: "blue" | "pink" | "green" | "orange" | "yellow" | "black" | "cyan";
+  /** ベースパス（例: "/phq9"） */
+  basePath: string;
 
   /** 質問データ */
   questions: TQuestion[];
-  /** 回答スケールのラベル */
-  scaleLabels: string[];
+  /** デフォルトの回答選択肢（質問ごとに上書き可能） */
+  scaleOptions: ScaleOption[];
 
   /** スコア計算関数 */
   calculateScore: (answers: number[]) => TResult;
   /** 回答パターンのバリデーション（オプション） */
-  validateAnswers?: (answers: number[]) => {
-    valid: boolean;
-    warning?: string;
-  };
+  validateAnswers?: (answers: number[]) => ValidationResult;
 
   /** 尺度情報 */
   scaleInfo: ScaleInfo;
 
-  /** ベースパス（例: "/sccs"） */
-  basePath: string;
+  // ========================================
+  // テストレベルの設定（オプショナル）
+  // ========================================
+  /** ヘッダーの指示文（K6のinstructionTextなど） */
+  headerInstruction?: string;
+  /** テストバージョン（BigFive "ipip-120"など） */
+  testVersion?: string;
+  /** 選択ボタンの色バリエーション（デフォルト: "black"） */
+  selectedButtonColor?: "black" | "blue";
+
+  // ========================================
+  // 後方互換性（非推奨）
+  // ========================================
+  /** @deprecated Use scaleOptions instead */
+  scaleLabels?: string[];
 }
 
 /**

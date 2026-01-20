@@ -169,7 +169,7 @@ export default function BigFivePage() {
           {/* CTA Section */}
           <div className="text-center mb-8">
             <Link
-              href="/bigfive/test"
+              href="/test/bigfive"
               className="btn-brutal inline-block bg-brutal-black text-brutal-white px-12 py-5 text-lg mb-4 min-h-[44px]"
             >
               診断を始める
