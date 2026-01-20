@@ -259,7 +259,7 @@ export default function DashboardPage() {
                             詳細な結果を見る
                           </Link>
                           <Link
-                            href={`${info.path}/test`}
+                            href={`/test/${testType}`}
                             className="btn-brutal flex-1 bg-brutal-white text-brutal-black px-6 py-3 text-sm text-center"
                           >
                             再受験する
@@ -297,7 +297,7 @@ export default function DashboardPage() {
                         <Link href={`/results/${testType}`} className="btn-brutal flex-1 bg-brutal-black text-brutal-white px-6 py-3 text-sm text-center">
                           結果を見る
                         </Link>
-                        <Link href={`${info.path}/test`} className="btn-brutal flex-1 bg-brutal-white text-brutal-black px-6 py-3 text-sm text-center">
+                        <Link href={`/test/${testType}`} className="btn-brutal flex-1 bg-brutal-white text-brutal-black px-6 py-3 text-sm text-center">
                           再受験する
                         </Link>
                       </div>

@@ -383,7 +383,7 @@ export default function BigFiveResultPage() {
         {/* Action Buttons */}
         <div className="max-w-[1200px] mx-auto flex flex-col sm:flex-row gap-4 justify-center">
           <Link
-            href="/bigfive/test"
+            href="/test/bigfive"
             className="btn-brutal bg-brutal-white text-brutal-black px-10 py-4 text-center min-h-[44px]"
           >
             もう一度診断する
