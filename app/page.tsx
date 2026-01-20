@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { StatCard } from "@/components/viz/StatCard";
 import { DataBadge } from "@/components/viz/DataBadge";
 import { Card } from "@/components/ui/Card";
@@ -64,8 +65,8 @@ export default function Home() {
                   </p>
                 </div>
                 <ul className="text-xs text-brutal-gray-800 space-y-1">
-                  <li>• 性格特性 (Big Five) ✅</li>
-                  <li>• 勤勉性 (Industriousness / Grit) ✅</li>
+                  <li>• <Link href="/bigfive" className="text-viz-green hover:underline font-semibold">性格特性 (Big Five)</Link> ✅</li>
+                  <li>• <Link href="/industriousness" className="text-viz-green hover:underline font-semibold">勤勉性 (Industriousness / Grit)</Link> ✅</li>
                   <li>• 愛着スタイル (Attachment) * <span className="text-brutal-gray-600">← ECR-R</span></li>
                   <li>• 自己効力感 (Self-Efficacy) * <span className="text-brutal-gray-600">← GSE</span></li>
                 </ul>
@@ -113,11 +114,11 @@ export default function Home() {
                   </p>
                 </div>
                 <ul className="text-xs text-brutal-gray-800 space-y-1">
-                  <li>• うつ病スクリーニング (PHQ-9) ✅</li>
-                  <li>• 心理的苦痛スクリーニング (K6) ✅</li>
+                  <li>• <Link href="/phq9" className="text-viz-blue hover:underline font-semibold">うつ病スクリーニング (PHQ-9)</Link> ✅</li>
+                  <li>• <Link href="/k6" className="text-viz-blue hover:underline font-semibold">心理的苦痛スクリーニング (K6)</Link> ✅</li>
                   <li>• 不安症スクリーニング (GAD-7)</li>
                   <li>• ストレス (DASS-21) * <span className="text-brutal-gray-600">← PSS-10</span></li>
-                  <li>• 自己概念明確性 (Self-Concept) ✅ <span className="text-brutal-gray-600">← IPIP Self-Consciousness</span></li>
+                  <li>• <Link href="/selfconcept" className="text-viz-blue hover:underline font-semibold">自己概念明確性 (Self-Concept)</Link> ✅ <span className="text-brutal-gray-600">← IPIP Self-Consciousness</span></li>
                 </ul>
               </Card>
 
@@ -139,8 +140,8 @@ export default function Home() {
                   </p>
                 </div>
                 <ul className="text-xs text-brutal-gray-800 space-y-1">
-                  <li>• 自尊心 (Rosenberg) ✅</li>
-                  <li>• 人生満足度 (SWLS) ✅</li>
+                  <li>• <Link href="/rosenberg" className="text-viz-pink hover:underline font-semibold">自尊心 (Rosenberg)</Link> ✅</li>
+                  <li>• <Link href="/swls" className="text-viz-pink hover:underline font-semibold">人生満足度 (SWLS)</Link> ✅</li>
                   <li>• キャリア適性 (RIASEC)</li>
                   <li>• 孤独感 (Loneliness)</li>
                 </ul>
