@@ -124,7 +124,7 @@ export const OG_TYPOGRAPHY = {
   labelWeight: 700,
 
   // スコア数値（さらに巨大化）
-  scoreSize: 56,                // 48→56
+  scoreSize: 96,                // 48→56→96
   scoreWeight: 900,
 } as const;
 

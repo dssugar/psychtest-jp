@@ -250,7 +250,7 @@ async function renderDimensionBarOG(url: URL, config: any) {
                 <div
                   style={{
                     display: 'flex',
-                    fontSize: '52px',
+                    fontSize: '72px',
                     fontWeight: 900,
                     color: OG_COLORS.textMain,
                     textAlign: 'center',
@@ -387,9 +387,9 @@ async function renderDimensionBarOG(url: URL, config: any) {
                               position: 'absolute',
                               left: `${centerPercent}%`,
                               transform: 'translateX(-50%)',
-                              fontSize: '14px',
+                              fontSize: '18px',
+                              fontWeight: 700,
                               color: OG_COLORS.textMain,
-                              opacity: 0.6,
                             }}
                           >
                             {range.label}
@@ -409,16 +409,16 @@ async function renderDimensionBarOG(url: URL, config: any) {
                     flexDirection: 'column',
                     backgroundColor: '#F3F4F6',
                     padding: '24px',
-                    borderRadius: '8px',
-                    border: `2px solid ${OG_COLORS.border}`,
+                    border: `3px solid ${OG_COLORS.border}`,
                   }}
                 >
                   <div
                     style={{
                       display: 'flex',
                       flexDirection: 'column',
-                      fontSize: '22px',
-                      color: '#4B5563',
+                      fontSize: '28px',
+                      fontWeight: 700,
+                      color: OG_COLORS.textMain,
                       lineHeight: 1.6,
                     }}
                   >

@@ -335,9 +335,9 @@ function validateAnswerPattern(answers: number[]) {
  */
 export function getLevelLabel(level: RosenbergResult["level"]): string {
   const labels = {
-    low: "低めの自尊心 (Low)",
-    medium: "平均的な自尊心 (Average)",
-    high: "高めの自尊心 (High)",
+    low: "低めの自尊心",
+    medium: "平均的な自尊心",
+    high: "高めの自尊心",
   };
   return labels[level];
 }

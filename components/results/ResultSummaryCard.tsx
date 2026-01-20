@@ -197,7 +197,7 @@ export function ResultSummaryCard({
           <>
             {/* 上段：判定ラベル */}
             <div className="flex flex-col items-center mb-8">
-              <div className="text-4xl md:text-5xl lg:text-[52px] font-black text-[#111111] text-center leading-tight">
+              <div className="text-5xl md:text-6xl lg:text-[72px] font-black text-[#111111] text-center leading-tight">
                 {levelLabel}
               </div>
             </div>
@@ -207,7 +207,7 @@ export function ResultSummaryCard({
               {/* スコア数値（バーの上、中央配置） */}
               <div className="flex justify-center mb-3">
                 <div
-                  className="text-4xl md:text-5xl lg:text-[56px] font-black font-mono text-[#111111] leading-none tabular-nums"
+                  className="text-6xl md:text-7xl lg:text-[96px] font-black font-mono text-[#111111] leading-none tabular-nums"
                   style={{
                     fontFeatureSettings: '"tnum" 1',
                   }}
@@ -278,7 +278,7 @@ export function ResultSummaryCard({
                         return (
                           <div
                             key={index}
-                            className="absolute text-xs md:text-sm text-[#111111] opacity-60 transform -translate-x-1/2"
+                            className="absolute text-base md:text-lg font-bold text-[#111111] transform -translate-x-1/2"
                             style={{
                               left: `${centerPercent}%`,
                             }}
@@ -295,8 +295,8 @@ export function ResultSummaryCard({
 
             {/* 下段：解説文 */}
             {shortInterpretation && (
-              <div className="bg-[#F3F4F6] p-6 rounded-lg border-2 border-[#111111]">
-                <div className="text-lg md:text-xl lg:text-[22px] text-[#4B5563] leading-relaxed">
+              <div className="bg-[#F3F4F6] p-6 border-[3px] border-[#111111]">
+                <div className="text-xl md:text-2xl lg:text-[28px] font-bold text-[#111111] leading-relaxed">
                   {shortInterpretation.split('\n').map((line: string, i: number) => (
                     <span key={i}>
                       {line}
