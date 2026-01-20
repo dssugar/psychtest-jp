@@ -440,10 +440,6 @@ export const bigFiveConfig: TestConfig<BigFiveResult> = {
   testVersion: "ipip-120",
 
   // 結果ページ設定
-  scoreDisplay: {
-    type: "multibar",
-    maxScore: 5,
-  },
   resultExtensions: {
     shareButtons: true,
     facetsDisplay: true,

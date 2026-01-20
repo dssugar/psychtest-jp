@@ -93,6 +93,21 @@ export interface ValidationResult {
 }
 
 /**
+ * 解釈データの統一型
+ * 全テストがこの型を返すことで、表示ロジックを統一
+ */
+export interface InterpretationData {
+  /** 結果の解釈（必須） */
+  summary: string;
+  /** 日常生活への影響（オプショナル） */
+  dailyLifeImpact?: string;
+  /** 心理学的背景（オプショナル） */
+  psychBackground?: string;
+  /** 実用的アドバイス（オプショナル） */
+  practicalAdvice?: string;
+}
+
+/**
  * アラート設定
  */
 export interface AlertConfig {
@@ -113,11 +128,12 @@ export interface AlertConfig {
 
 /**
  * スコア表示設定
+ * @deprecated scoreDisplay.type は使用されていません。PHQ-9/K6では maxScore のみ使用。
  */
 export interface ScoreDisplayConfig {
-  /** 表示タイプ */
-  type: "circle" | "progress" | "multibar" | "matrix";
-  /** 最大スコア（circle/progress用） */
+  /** @deprecated 表示タイプ（もう使われていない） */
+  type?: "circle" | "progress" | "multibar" | "matrix";
+  /** 最大スコア（PHQ-9/K6の臨床系表示で使用） */
   maxScore?: number;
   /** パーセンテージ計算式（オプション） */
   percentageFormula?: (result: any) => number;

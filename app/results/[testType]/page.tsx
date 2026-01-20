@@ -18,10 +18,11 @@ import { QuadrantMatrix } from "@/components/industriousness/QuadrantMatrix";
 // BigFive specific imports (for BigFive score display only)
 import { addAllEstimations, getInterpretation as getBigFiveInterpretation, type BigFiveResult } from "@/lib/tests/bigfive";
 import type { DimensionData } from "@/lib/og-design/types";
+import type { InterpretationData } from "@/lib/tests/types";
 
 // Dynamic interpretation imports for all tests
 import { getDetailedInterpretation as getRosenbergDetailedInterpretation, type RosenbergResult } from "@/lib/tests/rosenberg";
-import { getInterpretation as getSelfConceptInterpretation, type SelfConceptResult } from "@/lib/tests/selfconcept";
+import { getDetailedInterpretation as getSelfConceptDetailedInterpretation, type SelfConceptResult } from "@/lib/tests/selfconcept";
 import { getInterpretation as getSwlsInterpretation, type SwlsResult } from "@/lib/tests/swls";
 import { getDetailedInterpretation as getPhq9DetailedInterpretation, type Phq9Result } from "@/lib/tests/phq9";
 import { getDetailedInterpretation as getK6DetailedInterpretation, type K6Result } from "@/lib/tests/k6";
@@ -314,14 +315,19 @@ function renderDetailedScoreDisplay(
     return renderClinicalDetailedDisplay(testType, testResult, scoreDisplay, color, config);
   }
 
-  // Circle型
-  if (scoreDisplay?.type === "circle") {
-    return renderCircleDetailedDisplay(testType, testResult, color, scaleInfo);
+  // Rosenberg: 詳細解釈
+  if (testType === "rosenberg") {
+    return renderRosenbergDetailedDisplay(testResult, color, scoreDisplay);
   }
 
-  // Progress型
-  if (scoreDisplay?.type === "progress") {
-    return renderProgressDetailedDisplay(testType, testResult, color, scoreDisplay);
+  // Self-Concept: 詳細解釈
+  if (testType === "selfconcept") {
+    return renderSelfConceptDetailedDisplay(testResult, color, scoreDisplay);
+  }
+
+  // SWLS: シンプル解釈
+  if (testType === "swls") {
+    return renderSwlsDetailedDisplay(testResult, color, scoreDisplay);
   }
 
   // フォールバック: シンプルなスコア表示
@@ -340,7 +346,106 @@ function renderDetailedScoreDisplay(
 }
 
 /**
- * Circle型の詳細表示
+ * 解釈データを統一フォーマットで表示する共通関数
+ *
+ * @param interpretation - InterpretationData型のデータ
+ * @param color - セクションのテーマカラー
+ */
+function renderDetailedInterpretation(
+  interpretation: InterpretationData,
+  color: string
+) {
+  return (
+    <div className="mb-16 space-y-8">
+      {/* 結果の解釈（必須） */}
+      <Card variant="white" padding="lg" className="animate-scale-in">
+        <h2
+          className="text-2xl md:text-3xl lg:text-4xl text-brutal-black mb-6"
+          style={{ fontFamily: "var(--font-display-ja)", fontWeight: 700 }}
+        >
+          結果の解釈
+        </h2>
+        <MarkdownContent content={interpretation.summary} />
+      </Card>
+
+      {/* 日常生活への影響（存在する場合のみ） */}
+      {interpretation.dailyLifeImpact && (
+        <Card variant="white" padding="lg">
+          <h3
+            className="text-2xl md:text-3xl text-brutal-black mb-6"
+            style={{ fontFamily: "var(--font-display-ja)", fontWeight: 700 }}
+          >
+            日常生活への影響
+          </h3>
+          <MarkdownContent content={interpretation.dailyLifeImpact} />
+        </Card>
+      )}
+
+      {/* 心理学的背景（存在する場合のみ） */}
+      {interpretation.psychBackground && (
+        <Card variant={color as any} padding="lg">
+          <h3
+            className="text-2xl md:text-3xl text-brutal-black mb-6"
+            style={{ fontFamily: "var(--font-display-ja)", fontWeight: 700 }}
+          >
+            心理学的背景
+          </h3>
+          <MarkdownContent content={interpretation.psychBackground} />
+        </Card>
+      )}
+
+      {/* 実用的アドバイス（存在する場合のみ） */}
+      {interpretation.practicalAdvice && (
+        <Card variant="white" padding="lg" className="border-brutal-thick border-brutal-black">
+          <h3
+            className="text-2xl md:text-3xl text-brutal-black mb-6"
+            style={{ fontFamily: "var(--font-display-ja)", fontWeight: 700 }}
+          >
+            実用的アドバイス
+          </h3>
+          <MarkdownContent content={interpretation.practicalAdvice} />
+        </Card>
+      )}
+    </div>
+  );
+}
+
+/**
+ * Rosenberg Detailed Display
+ */
+function renderRosenbergDetailedDisplay(testResult: any, color: string, scoreDisplay: any) {
+  const result = testResult as RosenbergResult;
+  const interpretation = getRosenbergDetailedInterpretation(
+    result.level,
+    result.rawScore,
+    result.percentageScore
+  );
+  return renderDetailedInterpretation(interpretation, color);
+}
+
+/**
+ * Self-Concept Detailed Display
+ */
+function renderSelfConceptDetailedDisplay(testResult: any, color: string, scoreDisplay: any) {
+  const result = testResult as SelfConceptResult;
+  const interpretation = getSelfConceptDetailedInterpretation(result.level);
+  return renderDetailedInterpretation(interpretation, color);
+}
+
+/**
+ * SWLS Detailed Display
+ */
+function renderSwlsDetailedDisplay(testResult: any, color: string, scoreDisplay: any) {
+  const result = testResult as SwlsResult;
+  const interpretationText = getSwlsInterpretation(result.level);
+  const interpretation: InterpretationData = {
+    summary: interpretationText,
+  };
+  return renderDetailedInterpretation(interpretation, color);
+}
+
+/**
+ * @deprecated 旧Circle型の詳細表示（削除予定）
  */
 function renderCircleDetailedDisplay(testType: string, testResult: any, color: string, scaleInfo: any) {
   // 全テストで動的に解釈文を生成（localStorage に保存しない）
@@ -354,9 +459,7 @@ function renderCircleDetailedDisplay(testType: string, testResult: any, color: s
     }
     case "selfconcept": {
       const result = testResult as SelfConceptResult;
-      const interpretation = getSelfConceptInterpretation(result.level);
-      // Self-Conceptは詳細解釈なし（シンプル版）
-      detailedInterpretation = { summary: interpretation };
+      detailedInterpretation = getSelfConceptDetailedInterpretation(result.level);
       break;
     }
     default:

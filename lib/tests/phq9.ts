@@ -480,7 +480,6 @@ export const phq9Config: TestConfig<Phq9Result> = {
 
   // 結果ページ設定
   scoreDisplay: {
-    type: "progress",
     maxScore: 27,
   },
   resultAlerts: [

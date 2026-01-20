@@ -294,7 +294,6 @@ export const k6Config: TestConfig<K6Result> = {
 
   // 結果ページ設定
   scoreDisplay: {
-    type: "progress",
     maxScore: 24,
   },
   resultAlerts: [

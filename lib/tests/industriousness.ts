@@ -672,9 +672,6 @@ export const industriousnessConfig: TestConfig<IndustriousnessResult> = {
   scaleInfo,
 
   // 結果ページ設定
-  scoreDisplay: {
-    type: "matrix",
-  },
   resultExtensions: {
     shareButtons: true,
   },

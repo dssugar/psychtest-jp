@@ -126,6 +126,10 @@ export function getInterpretation(level: SwlsResult["level"]): string {
       return getLowInterpretation();
     case "veryLow":
       return getVeryLowInterpretation();
+    default:
+      // フォールバック: 予期しないレベル値の場合
+      console.error("Unexpected SWLS level value:", level);
+      return "解釈文の生成中にエラーが発生しました。スコアを再計算してください。";
   }
 }
 
@@ -573,10 +577,6 @@ export const swlsConfig: TestConfig<SwlsResult> = {
   selectedButtonColor: "blue", // SWLSのみ青色ボタン
 
   // 結果ページ設定
-  scoreDisplay: {
-    type: "circle",
-    maxScore: 35,
-  },
   resultExtensions: {
     shareButtons: true,
   },

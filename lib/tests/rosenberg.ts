@@ -490,10 +490,6 @@ export const rosenbergConfig: TestConfig<RosenbergResult> = {
   scaleInfo,
 
   // 結果ページ設定
-  scoreDisplay: {
-    type: "circle",
-    maxScore: 40,
-  },
   resultExtensions: {
     shareButtons: true,
   },
