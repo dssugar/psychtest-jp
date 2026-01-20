@@ -1,6 +1,15 @@
 import type { ValidationResult } from "./types";
 
 /**
+ * 共通バリデーションロジック
+ *
+ * 設計ノート:
+ * - 以前は各テストファイル（rosenberg.ts, phq9.ts等）に同じバリデーション関数が重複していた
+ * - DRY原則に従い、このファイルに共通ロジックを抽出（2026-01-20）
+ * - テスト固有の要件（質問数、範囲、許容値）は設定で表現
+ */
+
+/**
  * 回答パターンバリデーション設定
  */
 export interface ValidationConfig {

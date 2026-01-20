@@ -170,10 +170,11 @@ psychtest-jp/
     → 分析層 (synthesis.ts) → UI層 (app/, components/)
 ```
 
-**3. Locality of Behavior**
-- 1つのテストに関わるコードは1-2ファイルに集約
-- `lib/tests/rosenberg.ts`: 型定義、スコアリング、解釈、バリデーション、config
-- `data/rosenberg-questions.ts`: 質問データ、選択肢、尺度情報
+**3. Data/Logic Separation（データ/ロジック分離）**
+- **data/**: 質問データ・選択肢・学術メタデータ（学術的に固定、ほぼ読み取り専用）
+- **lib/tests/**: スコアリング・解釈・バリデーション（開発・拡張対象）
+- 責務の明確な分離により、データの学術的正確性を保護
+- 重複なし：data/ → lib/tests/ への一方向インポート
 
 **4. 型安全性**
 - 全レイヤーでTypeScriptの厳密な型定義

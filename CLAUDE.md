@@ -270,28 +270,39 @@ components/
 - 再利用可能なビジュアライゼーションは`viz/`に集約
 - ダッシュボード機能は`dashboard/`に集約
 
-### File Organization Strategy (Locality of Behavior)
+### File Organization Strategy (Data/Logic Separation)
 
-**原則**: 関連するコードは近くに配置（凝集度優先）
+**設計判断**: データ層とロジック層を意図的に分離
 
 ```
-lib/tests/rosenberg.ts
+data/rosenberg-questions.ts (データ層)
+├─ rosenbergQuestions配列  ← 質問データ（純粋なデータ）
+├─ scaleOptions配列         ← 選択肢定義（テスト固有）
+└─ scaleInfo (ScaleInfo)    ← 学術メタデータ
+
+lib/tests/rosenberg.ts (ロジック層)
 ├─ RosenbergResult型定義
-├─ calculateRosenbergScore()
-├─ getInterpretation()
-├─ validateAnswerPattern()
-└─ rosenbergConfig (TestConfig)
-
-data/rosenberg-questions.ts
-├─ rosenbergQuestions配列
-├─ scaleOptions配列
-└─ scaleInfo (ScaleInfo)
+├─ calculateRosenbergScore()  ← スコアリングロジック
+├─ getInterpretation()         ← 解釈文生成
+└─ rosenbergConfig             ← TestConfig（上記をまとめる）
 ```
+
+**なぜ統合しないのか？**
+- ✅ **責務の明確な分離**: データ編集 vs ロジック実装が独立
+- ✅ **データの再利用性**: 質問データを他の用途（翻訳検証、項目分析等）で利用可能
+- ✅ **重複なし**: data/ → lib/tests/ への一方向のインポートのみ
+- ✅ **変更頻度の違い**: 質問データは固定、ロジックは拡張あり
+
+**統合を検討したが却下した理由（2026-01-20）**:
+- Locality of Behavior原則では1ファイル統合が理想だが、このプロジェクトでは：
+  - 質問データ（学術的に固定）とロジック（拡張・改善が必要）の性質が異なる
+  - ファイルサイズ（Big Fiveで1800行超）より責務分離を優先
+  - data/はほぼ読み取り専用、lib/tests/は開発対象という明確な区別
 
 **メリット**:
-- 1つのテストに関わるコードが1-2ファイルに集約
-- 変更時の影響範囲が明確
-- コードレビューが容易
+- データ編集時にロジックに触れるリスクがない
+- 質問データの学術的正確性を保護
+- コードレビュー時の焦点が明確（データ vs ロジック）
 
 ### Type Safety & Validation
 
