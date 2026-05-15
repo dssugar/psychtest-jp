@@ -119,6 +119,35 @@ http://localhost:8788/og/industriousness?achievement=75&discipline=82
 
 ---
 
+## Git Workflow (Project Override)
+
+グローバル `~/.claude/CLAUDE.md` の **"Protect Main: No direct commits to main/master"** ルールは、このプロジェクトでは **適用されない**。
+
+**WHY（このプロジェクトに限った例外理由）**:
+- Solo development（contributor 1 名のみ）。PR review レビュアーが存在せず、PR を経由する実益がない。
+- 現フェーズは wedge 検証期（Phase 1.x）。仮説検証のために高速イテレーションが必要で、ブランチ → PR → merge のオーバーヘッドはコストに対して益が小さい。
+- Production user 影響は限定的（apex は Cloudflare Access gated、www のみ公開、トラフィック軽微）。
+
+**ALLOWED**:
+- ✅ `master` への直接 commit
+- ✅ `master` への直接 push (`git push origin master`)
+
+**STILL REQUIRED**（グローバルルール継続適用）:
+- Conventional Commits (`feat:`, `fix:`, `docs:`, ...)
+- Atomic commits（1 機能 = 1 commit）
+- Japanese commit messages（WHAT + WHY）
+- Pre-commit hook を `--no-verify` でスキップしない
+- Force push (`--force`) は明示的承認を得てから
+
+**WHEN THIS OVERRIDE EXPIRES**:
+- 他の contributor が join した時
+- Production user 数が顕著に増加した時（DAU > 100 目安）
+- Phase 2 以降で wedge 実験フェーズを脱した時
+
+これらの条件に該当した時点で本セクションを撤回し、グローバルルール（feature branch + PR review）に戻る。
+
+---
+
 ## Architecture & Design Patterns
 
 ### Core Design Principles
