@@ -1,0 +1,17 @@
+# Cloudflare Pages Functions local dev env vars.
+# Copy this file to `.dev.vars` (gitignored) and fill in real values.
+# Production: set in Cloudflare Pages Dashboard → Settings → Environment variables,
+# or via `wrangler pages secret put <KEY> --project-name=psychtest-jp`.
+
+# === vLLM endpoint (self-hosted, Cloudflare Tunnel 経由) ===
+# 末尾の /chat/completions は付けない。function 側で自動付与する。
+LLM_BASE_URL=https://vllm.psychtest.jp/v1
+LLM_MODEL=nvidia/Gemma-4-26B-A4B-NVFP4
+
+# === vLLM 本体の api-key (vLLM 起動時の --api-key) ===
+VLLM_API_KEY=
+
+# === Cloudflare Access service token (1段目の認証) ===
+# Zero Trust → Access → Service Tokens で発行
+CF_ACCESS_CLIENT_ID=
+CF_ACCESS_CLIENT_SECRET=

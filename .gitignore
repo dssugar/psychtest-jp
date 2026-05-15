@@ -39,6 +39,7 @@ playwright/.cache/
 
 # cloudflare
 .wrangler/
+.dev.vars
 
 # WSL metadata
 *:Zone.Identifier
