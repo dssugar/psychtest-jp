@@ -252,14 +252,25 @@ export default function UranaiProtoPage() {
             )}
           </div>
 
-          <div className="text-center mt-16">
-            <Link
-              href="/"
-              className="inline-flex items-center gap-2 text-brutal-gray-800 hover:text-brutal-black font-semibold uppercase tracking-wide text-sm"
-            >
-              <span>←</span>
-              <span>トップページに戻る</span>
-            </Link>
+          <div className="text-center mt-16 space-y-3">
+            <div>
+              <Link
+                href="/uranai-chat"
+                className="inline-flex items-center gap-2 text-brutal-gray-800 hover:text-brutal-black font-semibold uppercase tracking-wide text-sm"
+              >
+                <span>→</span>
+                <span>専属占い師チャットモードを試す</span>
+              </Link>
+            </div>
+            <div>
+              <Link
+                href="/"
+                className="inline-flex items-center gap-2 text-brutal-gray-800 hover:text-brutal-black font-semibold uppercase tracking-wide text-sm"
+              >
+                <span>←</span>
+                <span>トップページに戻る</span>
+              </Link>
+            </div>
           </div>
         </div>
       </div>
