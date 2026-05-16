@@ -1,7 +1,7 @@
 # psychtest.jp - 実装ロードマップ
 
-> **最終更新**: 2026-05-16 (v2.3、Phase 2.1.β scale_meta 完了反映)
-> **前版**: v2.2 (2026-05-16) sub-phase 分割 / v2.1 (2026-05-16) Phase 2.1 完了反映 / v2.0 (2026-05-16) ロードマップ見直し / v1.0 (2026-01-20) 心理尺度路線中心
+> **最終更新**: 2026-05-16 (v2.4、Phase 2.1.γ ipip-seed-completeness 完了反映)
+> **前版**: v2.3 (2026-05-16) Phase 2.1.β scale_meta / v2.2 (2026-05-16) sub-phase 分割 / v2.1 (2026-05-16) Phase 2.1 完了反映 / v2.0 (2026-05-16) ロードマップ見直し / v1.0 (2026-01-20) 心理尺度路線中心
 > **位置づけ**: [project-design.md](./docs/project-design.md) の Phase 設計を実装視点でブレイクダウン
 
 ---
@@ -125,6 +125,45 @@ spec: `docs/specs/scale-meta-wedge-2026-05.md`
 - 17 inventories / 36 instruments 全件 → 本 wedge は 12 scale のみ、残りは Phase 3.x 以降
 - Self-Concept の textEn 追加 + IPIP master 紐付け → Phase 2.2.2 で扱う
 - 371 行 skip 修復 → Phase 2.1.γ で別 office-hours
+
+### 2.1.γ ipip-seed-completeness wedge ✅ 2026-05-16
+
+`scale_meta.official_total_items` と `scales` COUNT の乖離を修復し、IPIP 統一 DB の moat (= 一次キーマスタの完全性) を強化。Phase 1 (機械的修復) + Phase 2 (instrument 別手動 audit) を一気通貫で実施。
+
+実装サマリ (commits `c04f1bb` + `c5ba87d`):
+
+**Phase 1: 機械的修復 + diagnostic 整備 (commit `c04f1bb`)**
+- [x] ORVIS を scale_meta + scales 両 table から tombstone 除外 (= IPIP master 完全不在の Holland RIASEC 系、UI 化計画なし)
+- [x] `scripts/seed-ipip.ts` に `lookupItemId()` 6 段階突合導入 (override → normalize → 縮約 → am prefix → 末尾補完 → 単複)
+- [x] `data/ipip-master/tedone-overrides.json` 新規 (手動 audit hook、value 形式 `[A-Z]\d+` で validate)
+- [x] Tedone Table 内重複行 pre-dedupe (instrument + normalize)
+- [x] `scripts/.cache/seed-skip-report.json` 生成 (instrument 別 skip 集計、Phase 2 audit 入力)
+
+**Phase 2: 17 inventory audit (commit `c5ba87d`)**
+- [x] IPIP 公式 Key page と Tedone Table の wording 突合 (WebFetch + IPIP master 内 keyword search)
+- [x] `data/ipip-master/ipip-master-corrections.json` 新規: IPIP master 側 typo を ID 体系保持のまま訂正 (T1442 / B20 / B22 / V139)
+- [x] tedone-overrides.json 拡充 16 manual mappings (CAT-PD 6 / AB5C 2 / 他 8 = hyphen / quote / em-dash / 単複 / Tedone typo / I prefix)
+- [x] `lookupItemId()` bulk "that" 補完 rule (`Believe X` ↔ `Believe that X` + `Do X Y` ↔ `Do X that Y` 後置構造)
+
+**数値結果**:
+| 指標 | Before | After |
+|---|---|---|
+| skip 総数 | 371 | 205 (= ORAIS 199 + 真の Pattern E 6) |
+| Non-ORAIS skip | 172 | **6** (= 96% 削減) |
+| scales 行 | 3,331 | 3,402 (+71) |
+| scale_meta rows | 12 | 11 (ORVIS tombstone) |
+| 完全救出 instrument | — | AB5C / 6FPQ / BIS_BAS / Buss1980 / CPI / Foa1998 / Foa2002 / Goldberg1999 / HEXACO_PI / HPI-HIC / Hoyle2002 / IPIP-IPC / JPI / MPQ / Radloff1977 / VIA + 連鎖 |
+| INVARIANT | bigfive 120/120 / industriousness 20/20 / normEnToId 3320 unique | 全維持 ✅ |
+
+**残 Pattern E 6 件** (= 真の IPIP master 不在 or 意味反転で却下):
+- BFAS 2 (Do not have an assertive personality / Rarely put people under pressure)
+- CAT-PD 1 (I am known for saying offensive things)
+- TCI+NEO 1 (Believe ... right or wrong = X184 と or/and 意味反転、Daisuke 前回 revert と整合)
+- 16PF 1 (Believe ... whole truth = X139 と truth/story 意味差大)
+
+→ Phase 2 後半で IPIP master 拡張 (`source='tedone_extension'`) or scale tombstone を別 wedge で判断。
+
+spec: `docs/specs/ipip-seed-completeness-2026-05.md`
 
 ### 2.2 既存 IPIP 系尺度の内部 migration (UX 維持)
 
@@ -323,15 +362,16 @@ SELECT scale_id, COUNT(*)
 **最優先 (今すぐ着手可能)**:
 1. ~~生年月日 profile 永続化~~ ✅ 完了 (commit 91c210a)
 2. ~~Phase 2.1 IPIP 統一項目 DB~~ ✅ 完了 (commit c34a4ba 系)
-3. **Phase 2.1.α** BigFive audit 反映 — 16 件中 high+medium で明確分のみ data + DB 同期
-4. **Phase 2.2.1** Industriousness migration — adapter 追加のみ、textEn 完備で即着手可
-5. **Phase 2.6** 月読 context 進捗 N/M — `lib/uranai/profile-summarizer.ts` 拡張
+3. ~~Phase 2.1.γ ipip-seed-completeness~~ ✅ 完了 (commits c04f1bb + c5ba87d)
+4. **Phase 2.1.α** BigFive audit 反映 — 16 件中 high+medium で明確分のみ data + DB 同期
+5. **Phase 2.2.1** Industriousness migration — adapter 追加のみ、textEn 完備で即着手可
+6. **Phase 2.6** 月読 context 進捗 N/M — `lib/uranai/profile-summarizer.ts` 拡張
 
 **次 session 候補**:
-- **Phase 2.1.γ** ipip-seed-completeness wedge — `/office-hours` で spec 化 (= 371 行 skip の pattern 分類 + bulk normalize、`scale_meta.official_total_items` と `scales` COUNT の整合)
-- **Phase 2.2.2** Self-Concept migration — 2.1.β 完了したので着手可 (= IPIP master 紐付け + textEn 追加)
+- **Phase 2.2.2** Self-Concept migration — 2.1.β + 2.1.γ 完了したので着手可 (= IPIP master 紐付け + textEn 追加)
 - **Phase 2.4** トップ 2 入口ハブ書き換え — UI 大改修、独立 wedge
 - **Phase 2.3** 非 IPIP 系統合 — scale-specific namespace 設計が要
+- **Phase 2.1.γ 残 Pattern E 6 件** (IPIP master 拡張 or scale tombstone) — 別 wedge、優先度低
 
 **別タスク (Phase 2 と並列で要対応)**:
 - **Production deploy**: `db:migrate:remote` が 7403 エラー → wrangler 再認証 必要、その後 migrate + seed + Pages deploy
@@ -356,3 +396,4 @@ SELECT scale_id, COUNT(*)
 - v2.1 (2026-05-16): Phase 1.9 (生年月日永続化) + Phase 2.1 (IPIP 統一 DB) 完了反映
 - v2.2 (2026-05-16): Phase 2 を sub-phase 分割 (= 2.1.α audit / 2.1.β scale_meta wedge / 2.2 を 2.2.1 + 2.2.2 へ細分化)、Production deploy を独立タスクに分離
 - v2.3 (2026-05-16): Phase 2.1.β (scale_meta 構築) 完了反映、Phase 2.1.γ (371 行 skip 修復) を次 session 候補に追加
+- v2.4 (2026-05-16): Phase 2.1.γ (ipip-seed-completeness wedge) 完了反映 — skip 371 → 205 (Non-ORAIS 172 → 6, 96% 削減)、IPIP master typo 訂正 + bulk "that" 補完 + 16 manual overrides、17 instrument 完全救出、残 Pattern E 6 件は別 wedge へ punt
