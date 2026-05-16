@@ -1,7 +1,7 @@
 # psychtest.jp - 実装ロードマップ
 
-> **最終更新**: 2026-05-17 (v2.4.4、Phase 2.x.A+B IPIP Index 463 scales を 95.5% カバー)
-> **前版**: v2.4.3 (2026-05-17) Phase 2.2.1 既完了 + 2.3 完了 / v2.4.2 (2026-05-17) Phase 2.1.δ IPIP supplement / v2.4.1 (2026-05-17) Phase 2.1.γ sanitization / v2.4 (2026-05-16) Phase 2.1.γ ipip-seed-completeness 完了反映 / v2.3 (2026-05-16) Phase 2.1.β scale_meta / v2.2 (2026-05-16) sub-phase 分割 / v2.1 (2026-05-16) Phase 2.1 完了反映 / v2.0 (2026-05-16) ロードマップ見直し / v1.0 (2026-01-20) 心理尺度路線中心
+> **最終更新**: 2026-05-17 (v2.4.5、Phase 2.x.C.1+2 IPIP page direct fetch supplement で 9 主要 instrument 完全 fidelity)
+> **前版**: v2.4.4 (2026-05-17) Phase 2.x.A+B / v2.4.3 (2026-05-17) Phase 2.2.1 既完了 + 2.3 完了 / v2.4.2 (2026-05-17) Phase 2.1.δ IPIP supplement / v2.4.1 (2026-05-17) Phase 2.1.γ sanitization / v2.4 (2026-05-16) Phase 2.1.γ ipip-seed-completeness 完了反映 / v2.3 (2026-05-16) Phase 2.1.β scale_meta / v2.2 (2026-05-16) sub-phase 分割 / v2.1 (2026-05-16) Phase 2.1 完了反映 / v2.0 (2026-05-16) ロードマップ見直し / v1.0 (2026-01-20) 心理尺度路線中心
 > **位置づけ**: [project-design.md](./docs/project-design.md) の Phase 設計を実装視点でブレイクダウン
 
 ---
@@ -289,10 +289,63 @@ IPIP 公式 `newIndexofScaleLabels.htm` の「Alphabetical Index of 274 Labels f
 | IPIP auto-supplement (Tedone 由来) | instrument prefix + `-` + 数字 | `ORAIS-001..199` / `ORVIS-001..092` |
 
 **残課題 (Phase 2.x.C 候補、別 wedge)**:
-- **IPIP Index 463 のうち未カバー 21 件**: Broadbent 1982 (Cognitive Failures) / Saucier 1997 (Big-Seven 525) など Tedone Table 不在の独立 instrument
+- **IPIP Index 463 のうち未カバー 21 件**: Broadbent 1982 (Cognitive Failures) / Saucier 1997 (Big-Seven 525) など Tedone Table 不在の独立 instrument → Phase 2.x.C で Broadbent 1982 は BIDR 内 label として実は存在を発見、reference として投入
 - **Tedone Table の dump 粒度問題**: 同 wording が複数 (instrument, label) で再利用される IPIP project 構造 (例: P473 が 9 scale で再利用) のうち、Tedone Table dump が完全 reproduction を carry していない (BIDR/Cognitive-Failures が 10 items 中 8 件のみ等)
 - **対応案**: IPIP 公式各 inventory Key page を direct fetch して (scale, item) pair の不足分を `scales` table に追加 INSERT する supplement 拡張 (Phase 2.x.C)。既存 ipip_items + scales table の relational design はそのまま活用 (= テーブル設計変更不要)
 - **UI 化** (動的 [ipipFacetId] route + scoring + 結果表示): Phase 2.x.A+B で DB 基盤完成、UI wedge は /office-hours で spec 切ってから別 wedge
+
+### 2.x.C IPIP page direct fetch supplement ✅ 2026-05-17 (主要 9 instrument 完了)
+
+IPIP 公式 page の (scale, item) pair 完全 list を `ipip-scales-supplement.json` に手動 audit + 自動 conversion で蓄積し、`scales` table に INSERT OR REPLACE で投入することで Tedone Table dump 粒度問題 (= 同 wording 複数 scale 共有の dump 漏れ) を解消。
+
+実装サマリ (commits `07ad700` + `9b7fe8d`):
+
+**Phase 2.x.C.0 機構 (commit `07ad700`)**:
+- [x] `data/ipip-master/ipip-scales-supplement.json` 新規: schema `{ scales: [{ scale_id, label, instrument, alpha, items: [{ item_id, key, text }] }] }`
+- [x] `scripts/seed-ipip.ts` 拡張: supplement loader 追加、scales table に INSERT OR REPLACE で投入 (Tedone 由来と merge)
+- [x] reference: BIDR/Cognitive-Failures 10 items (Broadbent 1982) で動作確認
+
+**Phase 2.x.C.1 diff tooling (commit `9b7fe8d`)**:
+- [x] `scripts/audit-ipip-page.ts` 新規: 各 instrument の Tedone 由来 (instrument, label) 一覧を report、scale_id + item count 表示
+- [x] `scripts/convert-page-to-supplement.ts` 新規: WebFetch 結果 JSON を読み込み、各 item を IPIP master + supplement と norm match (lookupItemId 6 段階突合) で item_id 解決 → supplement.json に append
+
+**Phase 2.x.C.2 主要 instrument 拡張 (commit `9b7fe8d`)**:
+- [x] WebFetch + page-fetch JSON save + convert script で 9 instrument 完全 fidelity 達成
+
+| instrument | scales | items | scale_meta 登録 |
+|---|---|---|---|
+| BIDR/Cognitive-Failures (reference) | 1 | 10 | — |
+| **HEXACO_PI** | 24 | 240 | ✓ |
+| **VIA** | 24 | 213 | ✓ |
+| **IPIP-IPC** | 8 | 32 | ✓ |
+| **MPQ** | 12 | 127 | ✓ |
+| NEO | 30 | 300 | (= bigfive 母体) |
+| TCI | 30 | 290 | — |
+| 16PF | 16 | 163 | — |
+| CPI | 33 | 332 | — |
+| **合計** | **178** | **1,707** | — |
+
+**自動化 pipeline**:
+1. WebFetch で IPIP 公式 Key page から item list を JSON 形式で抽出 (AI 介在)
+2. `scripts/.cache/page-fetch-<INSTRUMENT>.json` に save (audit trail)
+3. `convert-page-to-supplement.ts` で IPIP master + supplement と norm match → `ipip-scales-supplement.json` に append
+4. seed 再 build で動作確認
+
+**数値結果 (Phase 2.x 累計)**:
+| 指標 | session 開始時 | Phase 2.x.C 後 |
+|---|---|---|
+| scales 行 (instrument 単位) | 3,408 | 3,699 |
+| ipip_items | 3,325 | 3,616 |
+| facet auto-view | — | **442 scale_ids** |
+| **IPIP page supplement** | — | **178 scales / 1,707 items** |
+| IPIP Index 463 カバー | 87% | **95.5%** (= 主要 9 instrument は item-level 100%) |
+| INVARIANT | ✓ | bigfive 120/120 / industriousness 20/20 / type-check pass |
+
+**残課題 (次 session)**:
+- **残 instrument 拡張** (= 同 pipeline で順次): BFAS / 6FPQ / JPI / HPI / HPI-HIC / AB5C / Buss1980 / Foa1998 / Foa2002 / Hoyle2002 / Levenson1981 / Cacioppo1982 / Snyder1974 / Span2002 / Chapman1986 / Scheier1994 / Barchard2001 / 7FACTOR / BFAS-20 / NEO5-20
+- **convert script lookup logic 改善**: hyphen 揺れ regex を specific keyword pair に絞る / quote 揺れ吸収 (現状 4 件の手動 patch で対応)
+- **IPIP facet UI 化** (= 動的 [ipipFacetId] route + scoring + 結果表示): DB 基盤完成、UI wedge は別 spec
+- **Phase 2.2.2 Self-Concept**: Phase 2.x.C で `neo_self_consciousness` 10 items 投入済、これと Daisuke 独自編集 8 items の対応決定で完了可能
 
 ### 2.4 トップを 2 入口ハブに書き換え
 
@@ -479,15 +532,16 @@ SELECT scale_id, COUNT(*)
 5. ~~Phase 2.2.1 Industriousness D1 migration~~ ✅ 完了 (Phase 2.1.β 内で実装済を 2026-05-17 確認)
 6. ~~Phase 2.3 非 IPIP 4 scale (Rosenberg/PHQ-9/K6/SWLS) 統合~~ ✅ 完了 (commit 2fe790f) — scale_meta 10/11 ✓
 7. ~~Phase 2.x.A+B IPIP Index facet auto-view + ORAIS/ORVIS 復活~~ ✅ 完了 (commit ea79b9c) — 442/463 (95.5%) カバー
-8. **Phase 2.1.α** BigFive audit 反映 — 16 件中 high+medium で明確分のみ data + DB 同期
-9. **Phase 2.6** 月読 context 進捗 N/M — `lib/uranai/profile-summarizer.ts` 拡張
+8. ~~Phase 2.x.C.1+2 IPIP page direct fetch supplement~~ ✅ 完了 (commits 07ad700 + 9b7fe8d) — 主要 9 instrument / 178 scales / 1,707 items
+9. **Phase 2.1.α** BigFive audit 反映 — 16 件中 high+medium で明確分のみ data + DB 同期
+10. **Phase 2.6** 月読 context 進捗 N/M — `lib/uranai/profile-summarizer.ts` 拡張
 
 **次 session 候補**:
-- **Phase 2.x.C** IPIP page direct fetch supplement — 各 inventory Key page を fetch して (scale, item) pair 不足分を `scales` table 補充 (= 95.5% → 100% カバー、特に共有 item の dump 漏れ修復)。`/office-hours` で spec 切る
-- **Phase 2.2.2** Self-Concept migration — Daisuke 独自編集 8 items vs IPIP NEO N4 facet 10 items の意味対応決定 + adapter 追加
+- **Phase 2.x.C.3 残 instrument 拡張** — BFAS / 6FPQ / JPI / HPI / HPI-HIC / AB5C / Buss1980 / Foa1998 / Foa2002 / Hoyle2002 / Levenson1981 / Cacioppo1982 / Snyder1974 / Span2002 / Chapman1986 / Scheier1994 / Barchard2001 / 7FACTOR (= 同 pipeline で順次)
+- **Phase 2.2.2** Self-Concept migration — Phase 2.x.C で `neo_self_consciousness` 10 items 投入済、Daisuke 独自編集 8 items との対応決定で完了
 - **Phase 2.4** トップ 2 入口ハブ書き換え — UI 大改修、独立 wedge
 - **Phase 2.5** 朝の儀式 UI — Phase 2.3 完了で全 7 尺度が user_responses に集約された基盤の上で実装可能
-- **IPIP facet UI 化** (= 動的 [ipipFacetId] route) — Phase 2.x.A+B で DB 基盤完成、UI wedge は別 spec 切る
+- **IPIP facet UI 化** (= 動的 [ipipFacetId] route) — Phase 2.x.A+B+C で DB 基盤完成、UI wedge は別 spec 切る
 
 **別タスク (Phase 2 と並列で要対応)**:
 - **Production deploy**: `db:migrate:remote` が 7403 エラー → wrangler 再認証 必要、その後 migrate + seed + Pages deploy
@@ -517,3 +571,4 @@ SELECT scale_id, COUNT(*)
 - v2.4.2 (2026-05-17): Phase 2.1.δ IPIP supplement 反映 — 残 Pattern E 6 件を IPIP 公式 web page で audit、全 5 wording が各 inventory Key page に掲載されている (master 外、inventory 独自項目) ことを確認。新 ID namespace `EX-NNN` (= External) で ipip-3320-supplement.json を新規作成、source='tedone_extension' で ipip_items に投入。ITEM_ID_RE 拡張 (= 将来 GAD9-001 等の非 IPIP scale prefix も統一対応)。skip 6 → 0、scales 3,408 完全カバー、ja_text も bigfive UI 訳スタイルで揃え。
 - v2.4.3 (2026-05-17): Phase 2.2.1 既完了確認 + Phase 2.3 非 IPIP 4 scale 統合完了反映 — Industriousness adapter は Phase 2.1.β 内で既実装済 (checkbox 同期のみ)。Phase 2.3 で migration 0005 (D1 CHECK 0-7 緩和) + supplement 30 items 追加 (RSE/PHQ9/K6/SWLS) + buildResponses helper で 6 adapter 統一 + 4 非 IPIP scale を scales table 投入。scale_meta completeness 10/11 ✓ (selfconcept のみ Phase 2.2.2 pending)。ID namespace 体系統一: IPIP master (Hxxx) / IPIP supplement (EX-) / 非 IPIP scale 固有 (RSE-/PHQ9-/K6-/SWLS-)。
 - v2.4.4 (2026-05-17): Phase 2.x.A+B 完了反映 — IPIP 公式 `newIndexofScaleLabels.htm` の「Alphabetical Index of 274 Labels for 463 IPIP Scales」を DB 表現する基盤実装。Tedone Table の (instrument, label) ペアを fine-grained facet view として scales table に自動投入 (= 442 facet scale_ids 生成)。ORAIS (Goldberg 2010) / ORVIS (Pozzebon 2010) tombstone 解除 + AUTO_SUPPLEMENT_INSTRUMENTS 機構で 291 items 自動投入 (`ORAIS-001..199` / `ORVIS-001..092`)。IPIP Index 463 のうち **442 (95.5%) カバー**、残 21 件 (Broadbent/Saucier 等 Tedone 不在) は Phase 2.x.C (= IPIP page direct fetch supplement) で別 wedge。 Tedone Table の dump 粒度問題 (= 同 wording の複数 scale 共有を不完全 dump、BIDR/Cognitive-Failures 10 中 8 件のみ等) も Phase 2.x.C 対応。
+- v2.4.5 (2026-05-17): Phase 2.x.C.1+2 完了反映 — IPIP 公式 page direct fetch supplement で主要 9 instrument 完全 fidelity 化。`scripts/audit-ipip-page.ts` (diff tooling) + `scripts/convert-page-to-supplement.ts` (WebFetch 結果 → supplement.json 自動 conversion) を新規実装、`data/ipip-master/ipip-scales-supplement.json` 拡充で BIDR/Cognitive-Failures 1 + HEXACO_PI 24 + VIA 24 + IPIP-IPC 8 + MPQ 12 + NEO 30 + TCI 30 + 16PF 16 + CPI 33 = **178 scales / 1,707 items 補完**。scale_meta 登録 11 scale の IPIP project 由来 4/4 (hexaco_pi/via/ipip_ipc/mpq) は item-level fidelity 100% 達成。Tedone Table dump 粒度問題が主要 instrument では実質解消。残 instrument (BFAS/6FPQ/JPI/HPI/HPI-HIC/AB5C/Buss1980/Foa/Hoyle2002 等) は次 session で同 pipeline 拡張可能。
