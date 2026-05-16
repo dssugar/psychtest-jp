@@ -1,43 +1,50 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Card } from "@/components/ui/Card";
 import { DataBadge } from "@/components/viz/DataBadge";
 import { drawThreeCards, type DrawnCard } from "@/data/tarot-cards";
 import { calcNumerology, type NumerologyResult } from "@/data/numerology";
 import { calcKyusei, type KyuseiResult } from "@/data/kyusei";
+import { getOrCreateDeviceId } from "@/lib/uranai/device-id";
 
 interface DrawResult {
   cards: DrawnCard[];
   numerology: NumerologyResult;
   kyusei: KyuseiResult;
   interpretation: string;
+  resultId: string;
 }
 
 const POSITION_LABELS = ["過去", "現在", "未来"];
 const POSITION_COLORS = ["blue", "green", "pink"] as const;
 
-/**
- * "YYYY-MM-DD" → Date (local time, midnight).
- * <input type="date"> はゼロパディングされた ISO 短形式を返す前提.
- */
 function parseBirthDate(value: string): Date | null {
   const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
   if (!m) return null;
   const [, y, mo, d] = m;
   const dt = new Date(Number(y), Number(mo) - 1, Number(d));
-  if (Number.isNaN(dt.getTime())) return null;
-  return dt;
+  return Number.isNaN(dt.getTime()) ? null : dt;
 }
 
-export default function UranaiProtoPage() {
+export default function UranaiDrawPage() {
+  const [deviceId, setDeviceId] = useState<string>("");
   const [birth, setBirth] = useState("");
   const [result, setResult] = useState<DrawResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [shareCopied, setShareCopied] = useState(false);
+
+  useEffect(() => {
+    setDeviceId(getOrCreateDeviceId());
+  }, []);
 
   async function handleDraw() {
+    if (!deviceId) {
+      setError("device-id が取得できませんでした (ブラウザの localStorage を確認してください)");
+      return;
+    }
     const birthDate = parseBirthDate(birth);
     if (!birthDate) {
       setError("生年月日を入力してください");
@@ -46,16 +53,18 @@ export default function UranaiProtoPage() {
     setLoading(true);
     setError(null);
     setResult(null);
+    setShareCopied(false);
     try {
       const today = new Date();
       const cards = drawThreeCards();
       const numerology = calcNumerology(birthDate, today);
       const kyusei = calcKyusei(birthDate, today);
 
-      const res = await fetch("/uranai/interpret", {
+      const res = await fetch("/uranai/draw", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
+          deviceId,
           tarot: cards.map((c) => ({
             name_ja: c.name_ja,
             orientation: c.orientation,
@@ -70,11 +79,11 @@ export default function UranaiProtoPage() {
         const detail = await res.text().catch(() => "");
         throw new Error(`${res.status} ${detail.slice(0, 200)}`);
       }
-      const data = (await res.json()) as { interpretation?: string; error?: string };
-      if (!data.interpretation) {
+      const data = (await res.json()) as { interpretation?: string; resultId?: string; error?: string };
+      if (!data.interpretation || !data.resultId) {
         throw new Error(data.error ?? "解釈が空でした");
       }
-      setResult({ cards, numerology, kyusei, interpretation: data.interpretation });
+      setResult({ cards, numerology, kyusei, interpretation: data.interpretation, resultId: data.resultId });
     } catch (e) {
       setError(e instanceof Error ? e.message : "未知のエラー");
     } finally {
@@ -82,15 +91,26 @@ export default function UranaiProtoPage() {
     }
   }
 
-  const canDraw = !loading && parseBirthDate(birth) !== null;
+  async function handleShareCopy() {
+    if (!result) return;
+    const url = `${window.location.origin}/uranai/share/?id=${encodeURIComponent(result.resultId)}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      setShareCopied(true);
+      setTimeout(() => setShareCopied(false), 2000);
+    } catch {
+      setError("クリップボードへのコピーに失敗しました");
+    }
+  }
+
+  const canDraw = !loading && parseBirthDate(birth) !== null && !!deviceId;
 
   return (
     <main className="min-h-screen">
       <div className="container mx-auto px-4 py-12 md:py-20">
         <div className="max-w-[1200px] mx-auto">
-          {/* Header */}
           <div className="text-center mb-12 animate-slide-in-up">
-            <DataBadge color="yellow" size="lg">URANAI PROTO</DataBadge>
+            <DataBadge color="yellow" size="lg">URANAI / DRAW</DataBadge>
             <h1
               className="text-4xl md:text-5xl lg:text-7xl text-brutal-black mt-6 mb-4"
               style={{ fontFamily: "var(--font-display-ja)", fontWeight: 900 }}
@@ -102,7 +122,6 @@ export default function UranaiProtoPage() {
             </p>
           </div>
 
-          {/* Disclaimer */}
           <Card variant="yellow" padding="md" className="mb-10 max-w-[800px] mx-auto">
             <p className="text-sm font-bold text-brutal-black text-center leading-relaxed">
               ⚠️ この占いは娯楽目的です。科学的根拠はなく、医療・法律・金融などの重要な判断には使用しないでください。
@@ -110,7 +129,6 @@ export default function UranaiProtoPage() {
           </Card>
 
           <div className="max-w-[800px] mx-auto">
-            {/* Input + draw */}
             <Card variant="white" padding="lg" className="mb-8">
               <label className="block">
                 <span className="text-sm font-bold uppercase tracking-wide text-brutal-gray-800 font-mono">
@@ -127,7 +145,7 @@ export default function UranaiProtoPage() {
               </label>
               <p className="mt-4 text-sm text-brutal-gray-800 leading-relaxed">
                 生年月日から数秘術・九星気学を計算し、タロット 3 枚引きと並べて
-                AI 占い師が共通テーマをひとつの物語として読み解きます。
+                共通テーマをひとつの物語として読み解きます。
               </p>
               <div className="mt-6 text-center">
                 <button
@@ -148,7 +166,6 @@ export default function UranaiProtoPage() {
 
             {result && (
               <div className="space-y-8">
-                {/* Tarot 3 cards */}
                 <div>
                   <DataBadge color="black" size="md">TAROT</DataBadge>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
@@ -171,7 +188,6 @@ export default function UranaiProtoPage() {
                   </div>
                 </div>
 
-                {/* Numerology */}
                 <Card variant="orange" padding="lg">
                   <DataBadge color="black" size="md">NUMEROLOGY</DataBadge>
                   <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -206,7 +222,6 @@ export default function UranaiProtoPage() {
                   </div>
                 </Card>
 
-                {/* Kyusei */}
                 <Card variant="cyan" padding="lg">
                   <DataBadge color="black" size="md">KYUSEI</DataBadge>
                   <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -241,36 +256,40 @@ export default function UranaiProtoPage() {
                   </div>
                 </Card>
 
-                {/* Interpretation */}
                 <Card variant="white" padding="lg">
                   <DataBadge color="black" size="md">READING</DataBadge>
                   <p className="mt-6 text-brutal-gray-900 leading-loose whitespace-pre-wrap">
                     {result.interpretation}
                   </p>
                 </Card>
+
+                <div className="flex flex-wrap gap-3 justify-center">
+                  <button
+                    type="button"
+                    onClick={handleShareCopy}
+                    className="btn-brutal bg-brutal-black text-brutal-white px-6 py-3 text-sm"
+                  >
+                    {shareCopied ? "コピーしました ✓" : "シェア用 URL をコピー"}
+                  </button>
+                  <Link
+                    href="/uranai/chat/tsukuyomi"
+                    className="btn-brutal bg-viz-yellow text-brutal-black px-6 py-3 text-sm inline-block"
+                  >
+                    月読に話す
+                  </Link>
+                </div>
               </div>
             )}
           </div>
 
           <div className="text-center mt-16 space-y-3">
-            <div>
-              <Link
-                href="/uranai-chat"
-                className="inline-flex items-center gap-2 text-brutal-gray-800 hover:text-brutal-black font-semibold uppercase tracking-wide text-sm"
-              >
-                <span>→</span>
-                <span>専属占い師チャットモードを試す</span>
-              </Link>
-            </div>
-            <div>
-              <Link
-                href="/"
-                className="inline-flex items-center gap-2 text-brutal-gray-800 hover:text-brutal-black font-semibold uppercase tracking-wide text-sm"
-              >
-                <span>←</span>
-                <span>トップページに戻る</span>
-              </Link>
-            </div>
+            <Link
+              href="/"
+              className="inline-flex items-center gap-2 text-brutal-gray-800 hover:text-brutal-black font-semibold uppercase tracking-wide text-sm"
+            >
+              <span>←</span>
+              <span>トップページに戻る</span>
+            </Link>
           </div>
         </div>
       </div>
