@@ -5,3 +5,17 @@ pages_build_output_dir = "out"
 # Node.js互換性フラグ（OG画像生成に必要）
 # 注: Pages project では [build] セクションは未対応（build command は Dashboard 側で設定）
 compatibility_flags = ["nodejs_compat"]
+
+# === D1 binding ===
+# α wedge (uranai/月読) で初めて D1 を使用する。
+# - device_id 匿名 profile / 月読 chat 履歴 / 占い結果のシェア用 store
+# - `wrangler d1 create psychtest-alpha` で本番 DB を作って database_id を反映する
+# - migrations は `migrations/` ディレクトリ、`npm run db:migrate:local` / `:remote` で適用
+# - local 開発時は `.wrangler/state/v3/d1` に自動で local DB が作成される
+[[d1_databases]]
+binding = "DB"
+database_name = "psychtest-alpha"
+# ⚠️ PLACEHOLDER UUID. `npx wrangler d1 create psychtest-alpha` で発行された
+# real ID に必ず置換すること (本番 deploy 時 wrangler が UUID 形式を validate する).
+database_id = "368e1f58-a14e-4c83-91c4-cb428243292b"
+migrations_dir = "migrations"
