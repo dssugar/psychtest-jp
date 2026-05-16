@@ -1,7 +1,7 @@
 # psychtest.jp - 実装ロードマップ
 
-> **最終更新**: 2026-05-17 (v2.4.2、Phase 2.1.δ IPIP supplement 反映 — skip 0 達成)
-> **前版**: v2.4.1 (2026-05-17) Phase 2.1.γ sanitization / v2.4 (2026-05-16) Phase 2.1.γ ipip-seed-completeness 完了反映 / v2.3 (2026-05-16) Phase 2.1.β scale_meta / v2.2 (2026-05-16) sub-phase 分割 / v2.1 (2026-05-16) Phase 2.1 完了反映 / v2.0 (2026-05-16) ロードマップ見直し / v1.0 (2026-01-20) 心理尺度路線中心
+> **最終更新**: 2026-05-17 (v2.4.3、Phase 2.2.1 既完了確認 + Phase 2.3 非 IPIP 4 scale 統合完了)
+> **前版**: v2.4.2 (2026-05-17) Phase 2.1.δ IPIP supplement / v2.4.1 (2026-05-17) Phase 2.1.γ sanitization / v2.4 (2026-05-16) Phase 2.1.γ ipip-seed-completeness 完了反映 / v2.3 (2026-05-16) Phase 2.1.β scale_meta / v2.2 (2026-05-16) sub-phase 分割 / v2.1 (2026-05-16) Phase 2.1 完了反映 / v2.0 (2026-05-16) ロードマップ見直し / v1.0 (2026-01-20) 心理尺度路線中心
 > **位置づけ**: [project-design.md](./docs/project-design.md) の Phase 設計を実装視点でブレイクダウン
 
 ---
@@ -211,20 +211,55 @@ spec: `docs/specs/ipip-seed-completeness-2026-05.md`
 
 ### 2.2 既存 IPIP 系尺度の内部 migration (UX 維持)
 
-既存 UI / 結果表示はそのまま、内部実装だけ user_responses 書き込みに変更。Self-Concept は 2.1.β 完了が前提 (= textEn 欠如のため)。
+既存 UI / 結果表示はそのまま、内部実装だけ user_responses 書き込みに変更。
 
 - [x] **Big Five (IPIP-NEO-120)** → 完了 (Phase 2.1 内で実装、120/120 Hxxx マッピング達成)
-- [ ] **2.2.1 Industriousness (IPIP-300 C4+C5, 20 項目)** → adapter 追加のみ (textEn 完備、2.1.β 待たずに着手可)
-- [ ] **2.2.2 Self-Concept (IPIP Self-Consciousness Facet, 8 項目)** → 2.1.β で textEn 追加 + adapter
-- [ ] 各尺度ページ (`app/[testType]/page.tsx`, `app/results/[testType]/page.tsx`) の内部 fetch を D1 経由に
-- [ ] localStorage と D1 の二重書きは過渡期のみ (Phase 2 完了で localStorage 廃止)
+- [x] **2.2.1 Industriousness (IPIP-300 C4+C5, 20 項目)** ✅ 完了 (Phase 2.1.β 内で実装、`IPIP_SCALE_ADAPTERS` に登録済、20/20 Hxxx マッピング)
+- [ ] **2.2.2 Self-Concept (IPIP Self-Consciousness Facet, 8 項目)** → Daisuke 独自編集 (8 items) vs IPIP NEO N4 facet (10 items) の意味対応決定が要、別 wedge
+- [x] localStorage と D1 の二重書き機構 (= silent log + adapter pattern) 確立 (Phase 2.1 + 2.3)
+- [ ] 各尺度ページの内部 fetch を D1 経由に (= localStorage 廃止) は Phase 2 完了後判断
 
-### 2.3 非 IPIP 系尺度の user_responses 統合
+### 2.3 非 IPIP 系尺度の user_responses 統合 ✅ 2026-05-17
 
-非 IPIP 系は項目 DB に入れず、scale ごとに別 namespace で user_responses に保存:
+非 IPIP 系 (Rosenberg / PHQ-9 / K6 / SWLS) を Phase 2.1.δ で確立した supplement file 機構で IPIP 統一 DB に統合。各 scale 独自 namespace (RSE-/PHQ9-/K6-/SWLS-) で `ipip_items` に投入、`source='tedone_extension'`。
 
-- [ ] Rosenberg / PHQ-9 / K6 / SWLS の回答を user_responses に書き込み (source 区別)
-- [ ] 月読 context が「Rosenberg 完了済 / K6 未受験」を把握できるように
+実装サマリ (commit `2fe790f`):
+
+- [x] `migrations/0005_user_responses_value_range.sql`: D1 CHECK 緩和 (1-5 → 0-7)、raw value 保護
+- [x] `data/ipip-master/ipip-3320-supplement.json`: 30 items 追加 (RSE 10 + PHQ9 9 + K6 6 + SWLS 5)
+- [x] `lib/tests/types.ts`: `BaseQuestion.itemId?: string` field 追加
+- [x] `data/{rosenberg,phq9,k6,swls}-questions.ts`: 各 question に `itemId` 付与
+- [x] `lib/ipip/responses-client.ts`: `buildResponses` helper で 6 adapter 統一 (bigfive / industriousness / rosenberg / phq9 / k6 / swls)、scale 別 value validation
+- [x] `functions/ipip/responses.ts`: value validation を 0-7 に緩和
+- [x] `scripts/seed-ipip.ts`: 非 IPIP 4 scale を scales table に投入 (instrument 別 + scale_meta completeness check 更新)
+
+**scale_meta completeness (Phase 2.3 後)**:
+
+| scale | actual / official | status |
+|---|---|---|
+| bigfive | 120/120 | ✓ |
+| industriousness | 20/20 | ✓ |
+| **rosenberg** | **10/10** | ✓ (新規) |
+| **phq9** | **9/9** | ✓ (新規) |
+| **k6** | **6/6** | ✓ (新規) |
+| **swls** | **5/5** | ✓ (新規) |
+| hexaco_pi | 223/223 | ✓ |
+| via | 252/252 | ✓ |
+| ipip_ipc | 32/32 | ✓ |
+| mpq | 95/95 | ✓ |
+| selfconcept | 0/8 | Phase 2.2.2 pending |
+| **完全** | **10/11** | ✓ |
+
+**ID namespace 体系の整理 (Phase 2.1.δ + 2.3 で完成)**:
+| 種別 | format | 例 |
+|---|---|---|
+| IPIP master (3,320) | 1 文字 prefix + 数字 | `H184` / `X1234` / `T2078` |
+| IPIP supplement (project 内、master 外) | `EX-` + 数字 | `EX-001..005` |
+| 非 IPIP scale 固有 | scale 略称 + `-` + 数字 | `RSE-001..010` / `PHQ9-001..009` / `K6-001..006` / `SWLS-001..005` |
+
+**残課題**:
+- Phase 2.2.2 Self-Concept: Daisuke 独自編集との意味対応決定が要 (= 別 wedge)
+- VIRTUAL_SCALES 機構 (= IPIP-native facet 単体の自動 view 化、e.g., TCI-P3 / NEO-C4-Achievement-Striving) は将来の thick design wedge
 
 ### 2.4 トップを 2 入口ハブに書き換え
 
@@ -408,14 +443,16 @@ SELECT scale_id, COUNT(*)
 2. ~~Phase 2.1 IPIP 統一項目 DB~~ ✅ 完了 (commit c34a4ba 系)
 3. ~~Phase 2.1.γ ipip-seed-completeness~~ ✅ 完了 (commits c04f1bb + c5ba87d + 9244a94)
 4. ~~Phase 2.1.δ IPIP supplement~~ ✅ 完了 (commit ac929bf) — skip 0 / 100% coverage
-5. **Phase 2.1.α** BigFive audit 反映 — 16 件中 high+medium で明確分のみ data + DB 同期
-6. **Phase 2.2.1** Industriousness migration — adapter 追加のみ、textEn 完備で即着手可
-7. **Phase 2.6** 月読 context 進捗 N/M — `lib/uranai/profile-summarizer.ts` 拡張
+5. ~~Phase 2.2.1 Industriousness D1 migration~~ ✅ 完了 (Phase 2.1.β 内で実装済を 2026-05-17 確認)
+6. ~~Phase 2.3 非 IPIP 4 scale (Rosenberg/PHQ-9/K6/SWLS) 統合~~ ✅ 完了 (commit 2fe790f) — scale_meta 10/11 ✓
+7. **Phase 2.1.α** BigFive audit 反映 — 16 件中 high+medium で明確分のみ data + DB 同期
+8. **Phase 2.6** 月読 context 進捗 N/M — `lib/uranai/profile-summarizer.ts` 拡張
 
 **次 session 候補**:
-- **Phase 2.2.2** Self-Concept migration — 2.1.β + 2.1.γ + 2.1.δ 完了したので着手可 (= IPIP master 紐付け + textEn 追加)
+- **Phase 2.2.2** Self-Concept migration — Daisuke 独自編集 8 items vs IPIP NEO N4 facet 10 items の意味対応決定 + adapter 追加
 - **Phase 2.4** トップ 2 入口ハブ書き換え — UI 大改修、独立 wedge
-- **Phase 2.3** 非 IPIP 系統合 — scale-specific namespace 設計が要 (= 2.1.δ で確立した EX- / GAD9- 等の prefix 体系を踏襲)
+- **Phase 2.5** 朝の儀式 UI — Phase 2.3 完了で全 7 尺度が user_responses に集約された基盤の上で実装可能
+- **VIRTUAL_SCALES 機構** — IPIP-native facet の自動 view 化 (= TCI-P3 等の独立 scale 取り込み)、`/office-hours` で spec 切る
 
 **別タスク (Phase 2 と並列で要対応)**:
 - **Production deploy**: `db:migrate:remote` が 7403 エラー → wrangler 再認証 必要、その後 migrate + seed + Pages deploy
@@ -443,3 +480,4 @@ SELECT scale_id, COUNT(*)
 - v2.4 (2026-05-16): Phase 2.1.γ (ipip-seed-completeness wedge) 完了反映 — skip 371 → 205 (Non-ORAIS 172 → 6, 96% 削減)、IPIP master typo 訂正 + bulk "that" 補完 + 16 manual overrides、17 instrument 完全救出、残 Pattern E 6 件は別 wedge へ punt
 - v2.4.1 (2026-05-17): Phase 2.1.γ sanitization 反映 — ORAIS (200 件) を SCALE_TOMBSTONES に追加で skip 雑音除外 (skip 205 → 6)、scale_meta completeness check 機構追加、IPIP master 内 normalize collision 0 件 / Tedone cover 96.9% を auxiliary audit で確認、残 Pattern E 6 件は scoring key 反転考慮しても wording 意味同一性で却下
 - v2.4.2 (2026-05-17): Phase 2.1.δ IPIP supplement 反映 — 残 Pattern E 6 件を IPIP 公式 web page で audit、全 5 wording が各 inventory Key page に掲載されている (master 外、inventory 独自項目) ことを確認。新 ID namespace `EX-NNN` (= External) で ipip-3320-supplement.json を新規作成、source='tedone_extension' で ipip_items に投入。ITEM_ID_RE 拡張 (= 将来 GAD9-001 等の非 IPIP scale prefix も統一対応)。skip 6 → 0、scales 3,408 完全カバー、ja_text も bigfive UI 訳スタイルで揃え。
+- v2.4.3 (2026-05-17): Phase 2.2.1 既完了確認 + Phase 2.3 非 IPIP 4 scale 統合完了反映 — Industriousness adapter は Phase 2.1.β 内で既実装済 (checkbox 同期のみ)。Phase 2.3 で migration 0005 (D1 CHECK 0-7 緩和) + supplement 30 items 追加 (RSE/PHQ9/K6/SWLS) + buildResponses helper で 6 adapter 統一 + 4 非 IPIP scale を scales table 投入。scale_meta completeness 10/11 ✓ (selfconcept のみ Phase 2.2.2 pending)。ID namespace 体系統一: IPIP master (Hxxx) / IPIP supplement (EX-) / 非 IPIP scale 固有 (RSE-/PHQ9-/K6-/SWLS-)。
