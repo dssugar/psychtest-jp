@@ -77,19 +77,13 @@ jobs:
             EXISTING_RULES='[]'
           elif [ "$HTTP_CODE" = "200" ]; then
             EXISTING_RULES=$(jq '.result.rules // []' /tmp/entry.json)
-            DUP=$(echo "$EXISTING_RULES" | jq --arg d "$RULE_DESC" \
-              '[.[] | select(.description == $d)] | length')
-            if [ "$DUP" -gt 0 ]; then
-              echo "::notice::rule with same description already exists, no-op"
-              exit 0
-            fi
           else
             echo "::error::unexpected HTTP $HTTP_CODE from GET entrypoint"
             cat /tmp/entry.json
             exit 1
           fi
 
-          # 2. 新 rule を組み立て (PUT body 用に既存配列に append)
+          # 2. 新 rule を組み立て: phases + products を併用してあらゆる challenge を skip
           NEW_RULE=$(jq -n \
             --arg expr "(http.host eq \"$SBFM_HOST\" and len(http.request.headers[\"cf-access-client-id\"]) > 0)" \
             --arg desc "$RULE_DESC" \
@@ -99,10 +93,15 @@ jobs:
               description: $desc,
               enabled: true,
               action_parameters: {
-                phases: ["http_request_sbfm"]
+                phases: ["http_request_sbfm", "http_request_firewall_managed", "http_ratelimit"],
+                products: ["bic", "hot", "rateLimit", "securityLevel", "uaBlock", "waf", "zoneLockdown"]
               }
             }')
-          UPDATED_RULES=$(echo "$EXISTING_RULES" | jq --argjson r "$NEW_RULE" '. + [$r]')
+          # 既存 rule で同 description あれば置き換え、無ければ append
+          UPDATED_RULES=$(echo "$EXISTING_RULES" \
+            | jq --argjson r "$NEW_RULE" --arg d "$RULE_DESC" \
+              'map(if .description == $d then $r else . end)
+               | if any(.description == $d) then . else . + [$r] end')
           PUT_BODY=$(jq -n --argjson rules "$UPDATED_RULES" '{rules: $rules}')
 
           # 3. PUT entrypoint で作成 or 更新
