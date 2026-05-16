@@ -1,7 +1,7 @@
 # psychtest.jp - 実装ロードマップ
 
-> **最終更新**: 2026-05-16 (v2.4、Phase 2.1.γ ipip-seed-completeness 完了反映)
-> **前版**: v2.3 (2026-05-16) Phase 2.1.β scale_meta / v2.2 (2026-05-16) sub-phase 分割 / v2.1 (2026-05-16) Phase 2.1 完了反映 / v2.0 (2026-05-16) ロードマップ見直し / v1.0 (2026-01-20) 心理尺度路線中心
+> **最終更新**: 2026-05-17 (v2.4.1、Phase 2.1.γ sanitization 反映)
+> **前版**: v2.4 (2026-05-16) Phase 2.1.γ ipip-seed-completeness 完了反映 / v2.3 (2026-05-16) Phase 2.1.β scale_meta / v2.2 (2026-05-16) sub-phase 分割 / v2.1 (2026-05-16) Phase 2.1 完了反映 / v2.0 (2026-05-16) ロードマップ見直し / v1.0 (2026-01-20) 心理尺度路線中心
 > **位置づけ**: [project-design.md](./docs/project-design.md) の Phase 設計を実装視点でブレイクダウン
 
 ---
@@ -126,11 +126,11 @@ spec: `docs/specs/scale-meta-wedge-2026-05.md`
 - Self-Concept の textEn 追加 + IPIP master 紐付け → Phase 2.2.2 で扱う
 - 371 行 skip 修復 → Phase 2.1.γ で別 office-hours
 
-### 2.1.γ ipip-seed-completeness wedge ✅ 2026-05-16
+### 2.1.γ ipip-seed-completeness wedge ✅ 2026-05-17
 
-`scale_meta.official_total_items` と `scales` COUNT の乖離を修復し、IPIP 統一 DB の moat (= 一次キーマスタの完全性) を強化。Phase 1 (機械的修復) + Phase 2 (instrument 別手動 audit) を一気通貫で実施。
+`scale_meta.official_total_items` と `scales` COUNT の乖離を修復し、IPIP 統一 DB の moat (= 一次キーマスタの完全性) を強化。Phase 1 (機械的修復) + Phase 2 (instrument 別手動 audit) + sanitization を一気通貫で実施。
 
-実装サマリ (commits `c04f1bb` + `c5ba87d`):
+実装サマリ (commits `c04f1bb` + `c5ba87d` + `9244a94`):
 
 **Phase 1: 機械的修復 + diagnostic 整備 (commit `c04f1bb`)**
 - [x] ORVIS を scale_meta + scales 両 table から tombstone 除外 (= IPIP master 完全不在の Holland RIASEC 系、UI 化計画なし)
@@ -145,19 +145,28 @@ spec: `docs/specs/scale-meta-wedge-2026-05.md`
 - [x] tedone-overrides.json 拡充 16 manual mappings (CAT-PD 6 / AB5C 2 / 他 8 = hyphen / quote / em-dash / 単複 / Tedone typo / I prefix)
 - [x] `lookupItemId()` bulk "that" 補完 rule (`Believe X` ↔ `Believe that X` + `Do X Y` ↔ `Do X that Y` 後置構造)
 
+**Sanitization (commit `9244a94`)**
+- [x] ORAIS (200 件) を SCALE_TOMBSTONES に追加 → seed log の雑音除外
+- [x] scale_meta completeness verification step を seed 末尾に追加 (IPIP 系 / 非 IPIP 系を区別 log)
+- [x] 補助 audit 完了: IPIP master 内 normalize collision **0 件**、Tedone wording IPIP master cover **96.9%** (1,592/1,642)
+- [x] 残 Pattern E 6 件 scoring key 反転再 audit → 全て却下 (= wording 意味同一性崩壊で IPIP master 拡張対象)
+
 **数値結果**:
 | 指標 | Before | After |
 |---|---|---|
-| skip 総数 | 371 | 205 (= ORAIS 199 + 真の Pattern E 6) |
-| Non-ORAIS skip | 172 | **6** (= 96% 削減) |
+| skip 総数 | 371 | **6** (= 真の Pattern E のみ) |
+| Non-ORAIS skip | 172 | **6** (= 96.5% 削減) |
 | scales 行 | 3,331 | 3,402 (+71) |
 | scale_meta rows | 12 | 11 (ORVIS tombstone) |
-| 完全救出 instrument | — | AB5C / 6FPQ / BIS_BAS / Buss1980 / CPI / Foa1998 / Foa2002 / Goldberg1999 / HEXACO_PI / HPI-HIC / Hoyle2002 / IPIP-IPC / JPI / MPQ / Radloff1977 / VIA + 連鎖 |
+| tombstone scales | 0 | 2 (orvis + orais) |
+| Tedone cover | — | 96.9% direct hit + 残 lookupItemId 拡張で 99.6% |
+| 完全救出 instrument | — | 16 (AB5C / 6FPQ / BIS_BAS / Buss1980 / CPI / Foa1998 / Foa2002 / Goldberg1999 / HEXACO_PI / HPI-HIC / Hoyle2002 / IPIP-IPC / JPI / MPQ / Radloff1977 / VIA) + 連鎖 |
+| scale_meta completeness | — | IPIP 系 6/6 ✓ / 非 IPIP 系 5 は意図的 0 |
 | INVARIANT | bigfive 120/120 / industriousness 20/20 / normEnToId 3320 unique | 全維持 ✅ |
 
-**残 Pattern E 6 件** (= 真の IPIP master 不在 or 意味反転で却下):
-- BFAS 2 (Do not have an assertive personality / Rarely put people under pressure)
-- CAT-PD 1 (I am known for saying offensive things)
+**残 Pattern E 6 件** (= 真の IPIP master 不在 or scoring key 反転考慮しても却下):
+- BFAS 2 (Do not have an assertive personality / Rarely put people under pressure = H774 と wording 意味同一性崩壊で却下)
+- CAT-PD 1 (I am known for saying offensive things — "offensive" 自体が IPIP master 不在)
 - TCI+NEO 1 (Believe ... right or wrong = X184 と or/and 意味反転、Daisuke 前回 revert と整合)
 - 16PF 1 (Believe ... whole truth = X139 と truth/story 意味差大)
 
@@ -397,3 +406,4 @@ SELECT scale_id, COUNT(*)
 - v2.2 (2026-05-16): Phase 2 を sub-phase 分割 (= 2.1.α audit / 2.1.β scale_meta wedge / 2.2 を 2.2.1 + 2.2.2 へ細分化)、Production deploy を独立タスクに分離
 - v2.3 (2026-05-16): Phase 2.1.β (scale_meta 構築) 完了反映、Phase 2.1.γ (371 行 skip 修復) を次 session 候補に追加
 - v2.4 (2026-05-16): Phase 2.1.γ (ipip-seed-completeness wedge) 完了反映 — skip 371 → 205 (Non-ORAIS 172 → 6, 96% 削減)、IPIP master typo 訂正 + bulk "that" 補完 + 16 manual overrides、17 instrument 完全救出、残 Pattern E 6 件は別 wedge へ punt
+- v2.4.1 (2026-05-17): Phase 2.1.γ sanitization 反映 — ORAIS (200 件) を SCALE_TOMBSTONES に追加で skip 雑音除外 (skip 205 → 6)、scale_meta completeness check 機構追加、IPIP master 内 normalize collision 0 件 / Tedone cover 96.9% を auxiliary audit で確認、残 Pattern E 6 件は scoring key 反転考慮しても wording 意味同一性で却下
