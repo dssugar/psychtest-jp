@@ -39,6 +39,13 @@ npx serve out        # Preview built site locally
 # Testing
 npm run test:e2e     # Run E2E tests (Playwright)
 npm run test:e2e:ui  # E2E tests with UI mode
+
+# Prompt injection eval (uranai chat 防御の回帰テスト)
+#   前提: 別ターミナルで `npm run preview` 起動済 (wrangler pages dev + .dev.vars)
+npm run eval                              # 全 15 case を回す
+EVAL_CATEGORY=tag-closure npm run eval    # 1 category のみ
+EVAL_VERBOSE=1 npm run eval               # 全 response を表示
+# 詳細: tests/eval/README.md
 ```
 
 ### OG画像の確認方法
