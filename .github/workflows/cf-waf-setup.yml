@@ -1,0 +1,157 @@
+name: cloudflare WAF setup
+
+# CI runner (data center IP) からの vllm.psychtest.jp 接続が Bot Fight Mode で
+# 弾かれる問題への対応。手動 trigger only。
+#
+# 必要な GitHub Secret:
+#   CLOUDFLARE_API_TOKEN  Zone:Read + Zone WAF:Edit + Zone Settings:Edit
+#                         (psychtest.jp zone のみで scope 絞り推奨)
+#
+# 使い方:
+#   gh workflow run cf-waf-setup.yml -f mode=skip_rule       # default: surgical
+#   gh workflow run cf-waf-setup.yml -f mode=disable_bfm     # fallback: zone-wide BFM off
+#   gh workflow run cf-waf-setup.yml -f mode=both            # belt + suspenders
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 適用モード
+        required: true
+        default: skip_rule
+        type: choice
+        options:
+          - skip_rule
+          - disable_bfm
+          - both
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      CF_API: https://api.cloudflare.com/client/v4
+      CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      ZONE_NAME: psychtest.jp
+      SBFM_HOST: vllm.psychtest.jp
+      RULE_DESC: "Skip BFM/SBFM for vllm.psychtest.jp service-token requests (eval CI)"
+    steps:
+      - name: verify token
+        run: |
+          if [ -z "$CF_TOKEN" ]; then
+            echo "::error::CLOUDFLARE_API_TOKEN secret 未設定"
+            exit 1
+          fi
+          STATUS=$(curl -fsS "$CF_API/user/tokens/verify" \
+            -H "Authorization: Bearer $CF_TOKEN" | jq -r '.result.status')
+          echo "token status: $STATUS"
+          [ "$STATUS" = "active" ]
+
+      - name: resolve zone_id
+        run: |
+          RESP=$(curl -fsS "$CF_API/zones?name=$ZONE_NAME" \
+            -H "Authorization: Bearer $CF_TOKEN")
+          ZONE_ID=$(echo "$RESP" | jq -r '.result[0].id // empty')
+          PLAN=$(echo "$RESP" | jq -r '.result[0].plan.name // "unknown"')
+          if [ -z "$ZONE_ID" ]; then
+            echo "::error::zone_id resolution failed: $(echo "$RESP" | jq -c '.errors')"
+            exit 1
+          fi
+          # mask zone_id in logs (32 hex chars)
+          echo "::add-mask::$ZONE_ID"
+          echo "ZONE_ID=$ZONE_ID" >> $GITHUB_ENV
+          echo "plan: $PLAN"
+
+      - name: mode=skip_rule — add WAF custom rule
+        if: inputs.mode == 'skip_rule' || inputs.mode == 'both'
+        run: |
+          set -e
+          # http_request_firewall_custom entrypoint ruleset を取得
+          ENTRYPOINT=$(curl -fsS \
+            "$CF_API/zones/$ZONE_ID/rulesets/phases/http_request_firewall_custom/entrypoint" \
+            -H "Authorization: Bearer $CF_TOKEN")
+          RULESET_ID=$(echo "$ENTRYPOINT" | jq -r '.result.id // empty')
+          if [ -z "$RULESET_ID" ]; then
+            echo "::error::custom rules entrypoint ruleset not found"
+            echo "$ENTRYPOINT" | jq .
+            exit 1
+          fi
+          echo "::add-mask::$RULESET_ID"
+
+          # 同 description の既存 rule 検索 (idempotent)
+          EXISTING_RULE_ID=$(echo "$ENTRYPOINT" \
+            | jq -r --arg d "$RULE_DESC" '.result.rules[]? | select(.description == $d) | .id' \
+            | head -1)
+          if [ -n "$EXISTING_RULE_ID" ]; then
+            echo "::notice::skip rule already exists (id=$EXISTING_RULE_ID)、no-op"
+          else
+            EXPRESSION="(http.host eq \"$SBFM_HOST\" and len(http.request.headers[\"cf-access-client-id\"]) > 0)"
+            BODY=$(jq -n \
+              --arg expr "$EXPRESSION" \
+              --arg desc "$RULE_DESC" \
+              '{
+                action: "skip",
+                expression: $expr,
+                description: $desc,
+                enabled: true,
+                action_parameters: {
+                  phases: ["http_request_sbfm"],
+                  products: ["bic", "hot", "rateLimit", "securityLevel", "uaBlock", "waf", "zoneLockdown"]
+                }
+              }')
+            RESP=$(curl -fsS -X POST \
+              "$CF_API/zones/$ZONE_ID/rulesets/$RULESET_ID/rules" \
+              -H "Authorization: Bearer $CF_TOKEN" \
+              -H "Content-Type: application/json" \
+              -d "$BODY")
+            SUCCESS=$(echo "$RESP" | jq -r '.success')
+            if [ "$SUCCESS" != "true" ]; then
+              echo "::error::skip_rule add failed"
+              echo "$RESP" | jq .
+              exit 1
+            fi
+            echo "::notice::skip rule added"
+          fi
+
+      - name: mode=disable_bfm — disable Bot Fight Mode zone-wide
+        if: inputs.mode == 'disable_bfm' || inputs.mode == 'both'
+        run: |
+          set -e
+          BEFORE=$(curl -fsS "$CF_API/zones/$ZONE_ID/bot_management" \
+            -H "Authorization: Bearer $CF_TOKEN")
+          echo "before: $(echo "$BEFORE" | jq -c '.result // .errors')"
+
+          RESP=$(curl -fsS -X PUT "$CF_API/zones/$ZONE_ID/bot_management" \
+            -H "Authorization: Bearer $CF_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d '{"fight_mode": false}')
+          SUCCESS=$(echo "$RESP" | jq -r '.success')
+          if [ "$SUCCESS" != "true" ]; then
+            echo "::error::disable_bfm failed"
+            echo "$RESP" | jq .
+            exit 1
+          fi
+          AFTER_FM=$(echo "$RESP" | jq -r '.result.fight_mode')
+          echo "::notice::Bot Fight Mode now: $AFTER_FM (要 false)"
+
+      - name: summary
+        if: always()
+        run: |
+          {
+            echo "## Cloudflare WAF Setup"
+            echo ""
+            echo "- Mode: \`${{ inputs.mode }}\`"
+            echo "- Zone: \`${{ env.ZONE_NAME }}\`"
+            echo "- Target host: \`${{ env.SBFM_HOST }}\`"
+            echo "- Job: ${{ job.status }}"
+            echo ""
+            echo "### 次のステップ"
+            echo ""
+            echo "\`\`\`bash"
+            echo "# eval workflow を再実行して 緑になるか確認"
+            echo "gh run list --workflow=eval.yml --limit 1"
+            echo "gh run rerun \$(gh run list --workflow=eval.yml --limit 1 --json databaseId --jq '.[0].databaseId')"
+            echo "\`\`\`"
+            echo ""
+            echo "skip_rule で fail なら \`mode=disable_bfm\` で再実行 (free plan は SBFM phase の skip が効かない可能性)。"
+          } >> $GITHUB_STEP_SUMMARY
