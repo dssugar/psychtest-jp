@@ -38,6 +38,7 @@ const CLAUDE_TRANSLATION_JSON = resolve(ROOT, "data/ipip-master/claude-translati
 const SCALE_META_JSON = resolve(ROOT, "data/ipip-master/scale-meta.json");
 const TEDONE_OVERRIDES_JSON = resolve(ROOT, "data/ipip-master/tedone-overrides.json");
 const IPIP_MASTER_CORRECTIONS_JSON = resolve(ROOT, "data/ipip-master/ipip-master-corrections.json");
+const IPIP_SUPPLEMENT_JSON = resolve(ROOT, "data/ipip-master/ipip-3320-supplement.json");
 const SQL_OUT = resolve(ROOT, "scripts/.cache/seed-ipip.sql");
 const BIGFIVE_MAPPING_OUT = resolve(ROOT, "data/ipip-master/bigfive-id-mapping.json");
 const INDUSTRIOUSNESS_MAPPING_OUT = resolve(ROOT, "data/ipip-master/industriousness-id-mapping.json");
@@ -271,14 +272,49 @@ function build() {
     if (!r.id || !r.text) continue;
     normEnToId.set(normalizeEn(r.text), r.id);
   }
-  log.push(`normEnToId: ${normEnToId.size} unique normalized texts`);
+  log.push(`normEnToId: ${normEnToId.size} unique normalized texts (ipip-3320)`);
+
+  // Phase 2.1.δ: IPIP supplement (= IPIP project 内だが master 3,320 dump 外の inventory-specific 項目).
+  // ipip-3320-supplement.json から読み込み、ipip_items に source='tedone_extension' で投入 +
+  // normEnToId に登録して Tedone wording lookup で直接 hit させる.
+  // ID namespace = 'EX-NNN' (= External、IPIP master 外).
+  interface SupplementItem {
+    item_id: string;
+    en_text: string;
+    source_inventory?: string;
+    source_url?: string;
+    facet?: string;
+    note?: string;
+  }
+  const supplementInserts: string[] = [];
+  let supplementCount = 0;
+  try {
+    const supText = readFileSync(IPIP_SUPPLEMENT_JSON, "utf-8");
+    const supParsed = JSON.parse(supText) as { items?: SupplementItem[] };
+    for (const it of supParsed.items ?? []) {
+      if (!it.item_id || !it.en_text) continue;
+      const norm = normalizeEn(it.en_text);
+      if (normEnToId.has(norm)) {
+        log.push(`  WARN: supplement ${it.item_id} '${it.en_text}' collides with existing ${normEnToId.get(norm)}, skipping`);
+        continue;
+      }
+      normEnToId.set(norm, it.item_id);
+      supplementInserts.push(
+        `INSERT OR REPLACE INTO ipip_items (item_id, en_text, ja_text, source, created_at) VALUES (${sqlStr(it.item_id)}, ${sqlStr(it.en_text)}, NULL, 'tedone_extension', ${now});`,
+      );
+      supplementCount++;
+    }
+    log.push(`ipip-3320-supplement: ${supplementCount} items loaded (source='tedone_extension')`);
+  } catch {
+    log.push(`ipip-3320-supplement: not found (= 拡張なし)`);
+  }
 
   // Phase 2.1.γ: 手動 override mapping (Tedone 異形 wording → IPIP item_id).
   // 空 file でも parse できるよう {} を許容. LLM 生成は使わず Daisuke 手動 audit のみ.
-  // value は IPIP item_id format ([A-Z]\d+, 例: H184 / X1234 / E118) で validate して
+  // value は IPIP item_id format ([A-Z][\w-]*, 例: H184 / X1234 / EX-001) で validate して
   // placeholder ("Hxxxx" 等) や typo を silent corrupt させない.
   const tedoneOverrides: Record<string, string> = {};
-  const ITEM_ID_RE = /^[A-Z]\d+$/;
+  const ITEM_ID_RE = /^[A-Z]+(?:-?\d+)$/;
   try {
     const overrideText = readFileSync(TEDONE_OVERRIDES_JSON, "utf-8");
     const parsed = JSON.parse(overrideText) as Record<string, unknown>;
@@ -371,8 +407,14 @@ function build() {
   }
 
   // 3. ipip_items INSERT 生成
-  sql.push("-- ipip_items (3,320 IPIP master items + ja_text where available)");
+  sql.push("-- ipip_items (3,320 IPIP master items + supplement + ja_text where available)");
   // (wrangler d1 execute --file は単一 transaction で wrap するので BEGIN/COMMIT は書かない)
+  // Phase 2.1.δ: supplement items (= EX-NNN, source='tedone_extension') を先に投入.
+  // ja_text は NULL (= 翻訳は別 wedge or 手動追加).
+  if (supplementInserts.length > 0) {
+    sql.push("-- ipip-3320-supplement (= IPIP project 内、master 3,320 外、source='tedone_extension')");
+    sql.push(...supplementInserts);
+  }
   for (const r of ipipRows) {
     if (!r.id || !r.text) continue;
     const ja = jaByItemId.get(r.id) ?? null;

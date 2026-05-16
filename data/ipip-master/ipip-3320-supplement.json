@@ -1,0 +1,51 @@
+{
+  "_comment": "Phase 2.1.δ: IPIP project 内だが IPIP master 3,320 dump 外の inventory-specific 項目を ipip_items に追加投入する file. spec: docs/specs/ipip-seed-completeness-2026-05.md Goal B. これらは IPIP 公式 web page (ipip.ori.org/各 inventory Key page) には掲載されているが Hxxx ID 体系には含まれない. source='tedone_extension' で IPIP master ('ipip_3320') と DB 上区別. ID namespace = 'EX-NNN' (= External = IPIP master 外、IPIP project 内). 将来 GAD-9 / PHQ-9 等の非 IPIP scale 項目を取り込む場合は scale 略称 prefix (= GAD9-001 等) を使い、'EX-' は IPIP project 内 supplement に限定. seed-ipip.ts の loadIpip3320() の後に supplement 投入、normEnToId にも追加され Tedone wording lookup で直接 hit する.",
+
+  "items": [
+    {
+      "item_id": "EX-001",
+      "en_text": "Do not have an assertive personality.",
+      "source_inventory": "BFAS",
+      "source_url": "https://ipip.ori.org/BFASKeys.htm",
+      "facet": "Assertiveness (Extraversion)",
+      "key_in_inventory": -1,
+      "note": "BFI item の reverse-wording (IPIP 公式注釈). IPIP master Hxxx には登録なし. 2026-05-17 Daisuke audit."
+    },
+    {
+      "item_id": "EX-002",
+      "en_text": "Rarely put people under pressure.",
+      "source_inventory": "BFAS",
+      "source_url": "https://ipip.ori.org/BFASKeys.htm",
+      "facet": "Politeness (Agreeableness)",
+      "key_in_inventory": 1,
+      "note": "IPIP item H774 'Put people under pressure' の reverse-wording (IPIP 公式注釈). H774 と scoring key 反転で同 construct だが wording UX が異なるため別 item として扱う. 2026-05-17 Daisuke audit."
+    },
+    {
+      "item_id": "EX-003",
+      "en_text": "I am known for saying offensive things.",
+      "source_inventory": "CAT-PD",
+      "source_url": "https://ipip.ori.org/newCAT-PD-SFv1.1Keys.htm",
+      "facet": "Rudeness",
+      "key_in_inventory": 1,
+      "note": "CAT-PD-SF SF# 体系の独自項目. IPIP master Hxxx には登録なし ('offensive' 自体が master 内不在). 2026-05-17 Daisuke audit."
+    },
+    {
+      "item_id": "EX-004",
+      "en_text": "Believe that there is no absolute right or wrong.",
+      "source_inventory": "TCI, NEO",
+      "source_url": "https://ipip.ori.org/newTCIKey.htm, https://ipip.ori.org/newNEOKey.htm",
+      "facet": "TCI ST4 Conservatism (-) / NEO O6 Liberalism (+)",
+      "key_in_inventory": "varies",
+      "note": "IPIP master X184 'Believe that there is no absolute right AND wrong' (MPQ Conservatism で使用) と類似だが wording 揺れ (or/and) で別 item として扱う. or/and 意味反転 risk のため normalize 一律変換は不採用 (Daisuke 2026-05-16 revert と整合). 2026-05-17 Daisuke audit."
+    },
+    {
+      "item_id": "EX-005",
+      "en_text": "Believe that people seldom tell you the whole truth.",
+      "source_inventory": "16PF",
+      "source_url": "https://ipip.ori.org/new16PFKey.htm",
+      "facet": "Factor L Vigilance / Distrust",
+      "key_in_inventory": 1,
+      "note": "IPIP master X139 'Believe that people seldom tell you the whole STORY' と類似だが truth/story 意味差で別 item として扱う. X139 は Tedone Table 内で使用 0 (= 孤立 item). 2026-05-17 Daisuke audit."
+    }
+  ]
+}
