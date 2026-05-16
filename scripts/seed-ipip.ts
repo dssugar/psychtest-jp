@@ -43,6 +43,7 @@ const SCALE_META_JSON = resolve(ROOT, "data/ipip-master/scale-meta.json");
 const TEDONE_OVERRIDES_JSON = resolve(ROOT, "data/ipip-master/tedone-overrides.json");
 const IPIP_MASTER_CORRECTIONS_JSON = resolve(ROOT, "data/ipip-master/ipip-master-corrections.json");
 const IPIP_SUPPLEMENT_JSON = resolve(ROOT, "data/ipip-master/ipip-3320-supplement.json");
+const IPIP_SCALES_SUPPLEMENT_JSON = resolve(ROOT, "data/ipip-master/ipip-scales-supplement.json");
 const SQL_OUT = resolve(ROOT, "scripts/.cache/seed-ipip.sql");
 const BIGFIVE_MAPPING_OUT = resolve(ROOT, "data/ipip-master/bigfive-id-mapping.json");
 const INDUSTRIOUSNESS_MAPPING_OUT = resolve(ROOT, "data/ipip-master/industriousness-id-mapping.json");
@@ -760,6 +761,42 @@ function build() {
     }
     scaleIdCount.set(s.scaleId, count);
     log.push(`  ${s.scaleId}: ${count} items (instrument='${s.instrument}')`);
+  }
+
+  // 5.9. Phase 2.x.C: IPIP 公式 page direct fetch supplement.
+  //      Tedone Table の dump 漏れ (= 同 wording を複数 scale で共有する IPIP 構造の不完全 dump) を補完.
+  //      ipip-scales-supplement.json から (scale_id, items[]) を読み込み、scales table に
+  //      INSERT OR REPLACE で投入. 既存 facet auto-view と並列、同 pk があれば上書き、新規は追加.
+  //      Daisuke が IPIP 公式 page を audit して 1 scale ずつ追記する設計.
+  log.push("");
+  log.push("=== Phase 2.x.C: IPIP page supplement ===");
+  interface ScaleSupplementItem { item_id: string; key: number; text?: string }
+  interface ScaleSupplement { scale_id: string; label?: string; instrument?: string; alpha?: number | null; items: ScaleSupplementItem[] }
+  let scaleSupplementCount = 0;
+  let scaleSupplementItems = 0;
+  try {
+    const ssText = readFileSync(IPIP_SCALES_SUPPLEMENT_JSON, "utf-8");
+    const ssParsed = JSON.parse(ssText) as { scales?: ScaleSupplement[] };
+    for (const sc of ssParsed.scales ?? []) {
+      if (!sc.scale_id || !Array.isArray(sc.items)) continue;
+      sql.push("");
+      sql.push(`-- IPIP page supplement: ${sc.scale_id} (${sc.items.length} items)`);
+      let count = 0;
+      for (const it of sc.items) {
+        if (!it.item_id || typeof it.key !== "number") continue;
+        sql.push(
+          `INSERT OR REPLACE INTO scales (scale_id, instrument, item_id, key, label, alpha) VALUES (${sqlStr(sc.scale_id)}, ${sqlStr(sc.instrument ?? null)}, ${sqlStr(it.item_id)}, ${it.key}, ${sqlStr(sc.label ?? null)}, ${sqlNum(sc.alpha ?? null)});`,
+        );
+        count++;
+      }
+      scaleIdCount.set(sc.scale_id, Math.max(scaleIdCount.get(sc.scale_id) ?? 0, count));
+      scaleSupplementCount++;
+      scaleSupplementItems += count;
+      log.push(`  ${sc.scale_id}: ${count} items (= IPIP page audit, Tedone dump 漏れ補完)`);
+    }
+    log.push(`ipip-scales-supplement: ${scaleSupplementCount} scales / ${scaleSupplementItems} items 補完`);
+  } catch {
+    log.push(`ipip-scales-supplement: not found (= 補完なし)`);
   }
 
   // 5.7. scale_meta 投入 (Phase 2.1.β: UI 表示用 metadata、12 scale)

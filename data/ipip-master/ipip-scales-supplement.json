@@ -1,0 +1,27 @@
+{
+  "_comment": "Phase 2.x.C: IPIP 公式 page (ipip.ori.org/各 inventory Key page) から直接 fetch した (scale, item) pair の完全 list. Tedone Table の dump 漏れを補完するための supplement. scale_id は Phase 2.x.A の facet auto-view と同じ命名規則 ({instrument}_{label} slug 化). seed-ipip.ts は scales table に INSERT OR REPLACE で投入するため、Tedone 由来 row と同 pk があれば上書き、新規 pair は追加. item_id は IPIP master Hxxx or supplement (EX-/ORAIS-/ORVIS-) のいずれか. key: +1 / -1 (= IPIP 公式 page の + keyed / - keyed と一致).",
+
+  "scales": [
+    {
+      "scale_id": "bidr_cognitive_failures",
+      "label": "Cognitive Failures",
+      "instrument": "BIDR",
+      "source_url": "https://ipip.ori.org/newSingleConstructsKey.htm",
+      "reference": "Broadbent et al., 1982",
+      "alpha": 0.79,
+      "note": "Tedone dump は 10 items 中 8 件のみ carry (= P473/P433 が BIDR/Self-deception primary label として登録され、Cognitive-Failures の - keyed 共有が漏れ). 2026-05-17 Daisuke audit via WebFetch.",
+      "items": [
+        { "item_id": "H855", "key": 1, "text": "Get confused easily." },
+        { "item_id": "X141", "key": 1, "text": "Often forget things." },
+        { "item_id": "H931", "key": 1, "text": "Let my attention wander off." },
+        { "item_id": "H1409", "key": 1, "text": "Spill things." },
+        { "item_id": "H1435", "key": 1, "text": "Have difficulty keeping things in mind." },
+        { "item_id": "H901", "key": 1, "text": "Can't make up my mind." },
+        { "item_id": "P473", "key": -1, "text": "Like to take responsibility for making decisions." },
+        { "item_id": "P433", "key": -1, "text": "Always know why I do things." },
+        { "item_id": "X79", "key": -1, "text": "Remain calm under pressure." },
+        { "item_id": "H1362", "key": -1, "text": "Pay attention to details." }
+      ]
+    }
+  ]
+}
