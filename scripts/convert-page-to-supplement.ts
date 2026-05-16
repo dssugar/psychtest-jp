@@ -36,6 +36,9 @@ interface PageFetchScale {
   alpha?: number;
   plus_keyed: string[];
   minus_keyed: string[];
+  /** 各 scale 単位の instrument override (= Single Constructs page のような多 instrument 集約 page 用). 無ければ pageFetch.instrument 使用. */
+  instrument?: string;
+  reference?: string;
 }
 
 interface PageFetch {
@@ -153,7 +156,8 @@ function main() {
   const unresolved: Array<{ scale_id: string; text: string }> = [];
 
   for (const sc of pageFetch.scales) {
-    const scaleId = `${slugify(pageFetch.instrument)}_${slugify(sc.label)}`;
+    const scaleInstrument = sc.instrument ?? pageFetch.instrument;
+    const scaleId = `${slugify(scaleInstrument)}_${slugify(sc.label)}`;
     if (existingScaleIds.has(scaleId)) {
       console.log(`  SKIP: ${scaleId} already in supplement`);
       continue;
@@ -186,7 +190,7 @@ function main() {
     newEntries.push({
       scale_id: scaleId,
       label: sc.label,
-      instrument: pageFetch.instrument,
+      instrument: scaleInstrument,
       alpha: sc.alpha ?? null,
       source_url: pageFetch.source_url,
       items,

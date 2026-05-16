@@ -10134,6 +10134,1995 @@
           "text": "Don't put a lot of thought into things."
         }
       ]
+    },
+    {
+      "scale_id": "bidr_impression_management",
+      "label": "Impression-Management",
+      "instrument": "BIDR",
+      "alpha": 0.82,
+      "source_url": "https://ipip.ori.org/newSingleConstructsKey.htm",
+      "items": [
+        {
+          "item_id": "P367",
+          "key": 1,
+          "text": "Would never take things that aren't mine."
+        },
+        {
+          "item_id": "X136",
+          "key": 1,
+          "text": "Would never cheat on my taxes."
+        },
+        {
+          "item_id": "P383",
+          "key": 1,
+          "text": "Believe there is never an excuse for lying."
+        },
+        {
+          "item_id": "P454",
+          "key": 1,
+          "text": "Always admit it when I make a mistake."
+        },
+        {
+          "item_id": "P418",
+          "key": 1,
+          "text": "Rarely talk about sex."
+        },
+        {
+          "item_id": "E80",
+          "key": 1,
+          "text": "Return extra change when a cashier makes a mistake."
+        },
+        {
+          "item_id": "X150",
+          "key": 1,
+          "text": "Try to follow the rules."
+        },
+        {
+          "item_id": "X274",
+          "key": 1,
+          "text": "Easily resist temptations."
+        },
+        {
+          "item_id": "H145",
+          "key": 1,
+          "text": "Tell the truth."
+        },
+        {
+          "item_id": "X181",
+          "key": 1,
+          "text": "Rarely overindulge."
+        },
+        {
+          "item_id": "P356",
+          "key": -1,
+          "text": "Have sometimes had to tell a lie."
+        },
+        {
+          "item_id": "E111",
+          "key": -1,
+          "text": "Use swear words."
+        },
+        {
+          "item_id": "X91",
+          "key": -1,
+          "text": "Use flattery to get ahead."
+        },
+        {
+          "item_id": "P447",
+          "key": -1,
+          "text": "Am not always what I appear to be."
+        },
+        {
+          "item_id": "H1346",
+          "key": -1,
+          "text": "Break rules."
+        },
+        {
+          "item_id": "X198",
+          "key": -1,
+          "text": "Cheat to get ahead."
+        },
+        {
+          "item_id": "P481",
+          "key": -1,
+          "text": "Don't always practice what I preach."
+        },
+        {
+          "item_id": "H785",
+          "key": -1,
+          "text": "Misuse power."
+        },
+        {
+          "item_id": "H699",
+          "key": -1,
+          "text": "Get back at others."
+        },
+        {
+          "item_id": "P441",
+          "key": -1,
+          "text": "Am likely to show off if I get the chance."
+        }
+      ]
+    },
+    {
+      "scale_id": "bidr_self_deception",
+      "label": "Self-Deception",
+      "instrument": "BIDR",
+      "alpha": 0.8,
+      "source_url": "https://ipip.ori.org/newSingleConstructsKey.htm",
+      "items": [
+        {
+          "item_id": "P433",
+          "key": 1,
+          "text": "Always know why I do things."
+        },
+        {
+          "item_id": "P379",
+          "key": 1,
+          "text": "Just know that I will be a success."
+        },
+        {
+          "item_id": "H324",
+          "key": 1,
+          "text": "Know that my decisions are correct."
+        },
+        {
+          "item_id": "X129",
+          "key": 1,
+          "text": "Feel comfortable with myself."
+        },
+        {
+          "item_id": "P473",
+          "key": 1,
+          "text": "Like to take responsibility for making decisions."
+        },
+        {
+          "item_id": "P490",
+          "key": -1,
+          "text": "Am not always honest with myself."
+        },
+        {
+          "item_id": "P390",
+          "key": -1,
+          "text": "Sometimes have trouble making up my mind."
+        },
+        {
+          "item_id": "X15",
+          "key": -1,
+          "text": "Dislike myself."
+        },
+        {
+          "item_id": "P420",
+          "key": -1,
+          "text": "Worry about what people think of me."
+        },
+        {
+          "item_id": "H646",
+          "key": -1,
+          "text": "Have a low opinion of myself."
+        }
+      ]
+    },
+    {
+      "scale_id": "levenson1981_locus_of_control_internal",
+      "label": "Locus of Control, Internal",
+      "instrument": "Levenson1981",
+      "alpha": 0.71,
+      "source_url": "https://ipip.ori.org/newSingleConstructsKey.htm",
+      "items": [
+        {
+          "item_id": "P435",
+          "key": 1,
+          "text": "Believe that my success depends on ability rather than luck."
+        },
+        {
+          "item_id": "P409",
+          "key": 1,
+          "text": "Believe that events in my life are determined only by me."
+        },
+        {
+          "item_id": "P379",
+          "key": 1,
+          "text": "Just know that I will be a success."
+        },
+        {
+          "item_id": "P442",
+          "key": 1,
+          "text": "Believe that by working hard a person can achieve anything."
+        },
+        {
+          "item_id": "X129",
+          "key": 1,
+          "text": "Feel comfortable with myself."
+        },
+        {
+          "item_id": "P433",
+          "key": 1,
+          "text": "Always know why I do things."
+        },
+        {
+          "item_id": "H633",
+          "key": -1,
+          "text": "See difficulties everywhere."
+        },
+        {
+          "item_id": "P394",
+          "key": -1,
+          "text": "Believe that unfortunate events occur because of bad luck."
+        },
+        {
+          "item_id": "H973",
+          "key": -1,
+          "text": "Can't stand on my own."
+        },
+        {
+          "item_id": "X205",
+          "key": -1,
+          "text": "Feel that my life lacks direction."
+        }
+      ]
+    },
+    {
+      "scale_id": "levenson1981_locus_of_control_powerful_others",
+      "label": "Locus of Control, Powerful Others",
+      "instrument": "Levenson1981",
+      "alpha": 0.81,
+      "source_url": "https://ipip.ori.org/newSingleConstructsKey.htm",
+      "items": [
+        {
+          "item_id": "P369",
+          "key": 1,
+          "text": "Believe that the world is controlled by a few powerful people."
+        },
+        {
+          "item_id": "P357",
+          "key": 1,
+          "text": "Remember my failures more easily than my successes."
+        },
+        {
+          "item_id": "H617",
+          "key": 1,
+          "text": "Feel short-changed in life."
+        },
+        {
+          "item_id": "H633",
+          "key": 1,
+          "text": "See difficulties everywhere."
+        },
+        {
+          "item_id": "X15",
+          "key": 1,
+          "text": "Dislike myself."
+        },
+        {
+          "item_id": "X205",
+          "key": 1,
+          "text": "Feel that my life lacks direction."
+        },
+        {
+          "item_id": "X129",
+          "key": -1,
+          "text": "Feel comfortable with myself."
+        },
+        {
+          "item_id": "P379",
+          "key": -1,
+          "text": "Just know that I will be a success."
+        },
+        {
+          "item_id": "X112",
+          "key": -1,
+          "text": "Feel comfortable around people."
+        },
+        {
+          "item_id": "H1185",
+          "key": -1,
+          "text": "Know how to enjoy myself."
+        }
+      ]
+    },
+    {
+      "scale_id": "levenson1981_locus_of_control_chance",
+      "label": "Locus of Control, Chance",
+      "instrument": "Levenson1981",
+      "alpha": 0.72,
+      "source_url": "https://ipip.ori.org/newSingleConstructsKey.htm",
+      "items": [
+        {
+          "item_id": "P394",
+          "key": 1,
+          "text": "Believe that unfortunate events occur because of bad luck."
+        },
+        {
+          "item_id": "P404",
+          "key": 1,
+          "text": "Believe some people are born lucky."
+        },
+        {
+          "item_id": "P360",
+          "key": 1,
+          "text": "Believe in the power of fate."
+        },
+        {
+          "item_id": "X205",
+          "key": 1,
+          "text": "Feel that my life lacks direction."
+        },
+        {
+          "item_id": "H1166",
+          "key": 1,
+          "text": "Am resigned to my fate."
+        },
+        {
+          "item_id": "X105",
+          "key": 1,
+          "text": "Am not sure where my life is going."
+        },
+        {
+          "item_id": "P435",
+          "key": -1,
+          "text": "Believe that my success depends on ability rather than luck."
+        },
+        {
+          "item_id": "X129",
+          "key": -1,
+          "text": "Feel comfortable with myself."
+        },
+        {
+          "item_id": "P379",
+          "key": -1,
+          "text": "Just know that I will be a success."
+        },
+        {
+          "item_id": "H2009",
+          "key": -1,
+          "text": "Come up with good solutions."
+        }
+      ]
+    },
+    {
+      "scale_id": "levenson1981_locus_of_control",
+      "label": "Locus of Control",
+      "instrument": "Levenson1981",
+      "alpha": 0.86,
+      "source_url": "https://ipip.ori.org/newSingleConstructsKey.htm",
+      "items": [
+        {
+          "item_id": "X129",
+          "key": 1,
+          "text": "Feel comfortable with myself."
+        },
+        {
+          "item_id": "P435",
+          "key": 1,
+          "text": "Believe that my success depends on ability rather than luck."
+        },
+        {
+          "item_id": "P379",
+          "key": 1,
+          "text": "Just know that I will be a success."
+        },
+        {
+          "item_id": "H2009",
+          "key": 1,
+          "text": "Come up with good solutions."
+        },
+        {
+          "item_id": "H33",
+          "key": 1,
+          "text": "Love life."
+        },
+        {
+          "item_id": "H41",
+          "key": 1,
+          "text": "Act comfortably with others."
+        },
+        {
+          "item_id": "H1116",
+          "key": 1,
+          "text": "Feel up to any task."
+        },
+        {
+          "item_id": "P473",
+          "key": 1,
+          "text": "Like to take responsibility for making decisions."
+        },
+        {
+          "item_id": "H64",
+          "key": 1,
+          "text": "Take the initiative."
+        },
+        {
+          "item_id": "E135",
+          "key": 1,
+          "text": "Make a decision and move on."
+        },
+        {
+          "item_id": "P394",
+          "key": -1,
+          "text": "Believe that unfortunate events occur because of bad luck."
+        },
+        {
+          "item_id": "P369",
+          "key": -1,
+          "text": "Believe that the world is controlled by a few powerful people."
+        },
+        {
+          "item_id": "X205",
+          "key": -1,
+          "text": "Feel that my life lacks direction."
+        },
+        {
+          "item_id": "H633",
+          "key": -1,
+          "text": "See difficulties everywhere."
+        },
+        {
+          "item_id": "H1183",
+          "key": -1,
+          "text": "Habitually blow my chances."
+        },
+        {
+          "item_id": "P404",
+          "key": -1,
+          "text": "Believe some people are born lucky."
+        },
+        {
+          "item_id": "P359",
+          "key": -1,
+          "text": "Dislike taking responsibility for making decisions."
+        },
+        {
+          "item_id": "P388",
+          "key": -1,
+          "text": "Am less capable than most people."
+        },
+        {
+          "item_id": "X15",
+          "key": -1,
+          "text": "Dislike myself."
+        },
+        {
+          "item_id": "H954",
+          "key": -1,
+          "text": "Feel that I'm unable to deal with things."
+        }
+      ]
+    },
+    {
+      "scale_id": "levenson1981_locus_of_control_rational",
+      "label": "Locus of Control, Rational",
+      "instrument": "Levenson1981",
+      "alpha": 0.61,
+      "source_url": "https://ipip.ori.org/newSingleConstructsKey.htm",
+      "items": [
+        {
+          "item_id": "P435",
+          "key": 1,
+          "text": "Believe that my success depends on ability rather than luck."
+        },
+        {
+          "item_id": "P394",
+          "key": -1,
+          "text": "Believe that unfortunate events occur because of bad luck."
+        },
+        {
+          "item_id": "P369",
+          "key": -1,
+          "text": "Believe that the world is controlled by a few powerful people."
+        },
+        {
+          "item_id": "P404",
+          "key": -1,
+          "text": "Believe some people are born lucky."
+        },
+        {
+          "item_id": "P360",
+          "key": -1,
+          "text": "Believe in the power of fate."
+        }
+      ]
+    },
+    {
+      "scale_id": "cacioppo1982_need_for_cognition",
+      "label": "Need for Cognition",
+      "instrument": "Cacioppo1982",
+      "alpha": 0.84,
+      "source_url": "https://ipip.ori.org/newSingleConstructsKey.htm",
+      "items": [
+        {
+          "item_id": "X201",
+          "key": 1,
+          "text": "Like to solve complex problems."
+        },
+        {
+          "item_id": "H1311",
+          "key": 1,
+          "text": "Need things explained only once."
+        },
+        {
+          "item_id": "H1322",
+          "key": 1,
+          "text": "Can handle a lot of information."
+        },
+        {
+          "item_id": "X225",
+          "key": 1,
+          "text": "Love to think up new ways of doing things."
+        },
+        {
+          "item_id": "X100",
+          "key": 1,
+          "text": "Am quick to understand things."
+        },
+        {
+          "item_id": "X211",
+          "key": 1,
+          "text": "Love to read challenging material."
+        },
+        {
+          "item_id": "X176",
+          "key": -1,
+          "text": "Have difficulty understanding abstract ideas."
+        },
+        {
+          "item_id": "E171",
+          "key": -1,
+          "text": "Try to avoid complex people."
+        },
+        {
+          "item_id": "X109",
+          "key": -1,
+          "text": "Avoid difficult reading material."
+        },
+        {
+          "item_id": "X248",
+          "key": -1,
+          "text": "Avoid philosophical discussions."
+        }
+      ]
+    },
+    {
+      "scale_id": "foa1998_need_for_order_and_cleanliness",
+      "label": "Need for Order and Cleanliness",
+      "instrument": "Foa1998",
+      "alpha": 0.81,
+      "source_url": "https://ipip.ori.org/newSingleConstructsKey.htm",
+      "items": [
+        {
+          "item_id": "E11",
+          "key": 1,
+          "text": "Want everything to be \"just right.\""
+        },
+        {
+          "item_id": "X118",
+          "key": 1,
+          "text": "Like order."
+        },
+        {
+          "item_id": "H244",
+          "key": 1,
+          "text": "Like to tidy up."
+        },
+        {
+          "item_id": "X179",
+          "key": 1,
+          "text": "Follow a schedule."
+        },
+        {
+          "item_id": "H241",
+          "key": 1,
+          "text": "Want everything to add up perfectly."
+        },
+        {
+          "item_id": "H286",
+          "key": 1,
+          "text": "Continue until everything is perfect."
+        },
+        {
+          "item_id": "E100",
+          "key": -1,
+          "text": "Am not bothered by messy people."
+        },
+        {
+          "item_id": "E7",
+          "key": -1,
+          "text": "Am not bothered by disorder."
+        },
+        {
+          "item_id": "H822",
+          "key": -1,
+          "text": "Leave a mess in my room."
+        },
+        {
+          "item_id": "H823",
+          "key": -1,
+          "text": "Leave my belongings around."
+        }
+      ]
+    },
+    {
+      "scale_id": "foa1998_perfectionism",
+      "label": "Perfectionism",
+      "instrument": "Foa1998",
+      "alpha": 0.82,
+      "source_url": "https://ipip.ori.org/newSingleConstructsKey.htm",
+      "items": [
+        {
+          "item_id": "X224",
+          "key": 1,
+          "text": "Question my ability to do my work properly."
+        },
+        {
+          "item_id": "H683",
+          "key": 1,
+          "text": "Am filled with doubts about things."
+        },
+        {
+          "item_id": "H905",
+          "key": 1,
+          "text": "Am afraid that I will do the wrong thing."
+        },
+        {
+          "item_id": "X15",
+          "key": 1,
+          "text": "Dislike myself."
+        },
+        {
+          "item_id": "H896",
+          "key": 1,
+          "text": "Mess things up."
+        },
+        {
+          "item_id": "H1388",
+          "key": 1,
+          "text": "Excel in nothing at all."
+        },
+        {
+          "item_id": "X156",
+          "key": -1,
+          "text": "Seldom feel blue."
+        },
+        {
+          "item_id": "X129",
+          "key": -1,
+          "text": "Feel comfortable with myself."
+        },
+        {
+          "item_id": "X79",
+          "key": -1,
+          "text": "Remain calm under pressure."
+        },
+        {
+          "item_id": "H1285",
+          "key": -1,
+          "text": "Complete tasks successfully."
+        }
+      ]
+    },
+    {
+      "scale_id": "scheier1994_optimism",
+      "label": "Optimism",
+      "instrument": "Scheier1994",
+      "alpha": 0.86,
+      "source_url": "https://ipip.ori.org/newSingleConstructsKey.htm",
+      "items": [
+        {
+          "item_id": "P379",
+          "key": 1,
+          "text": "Just know that I will be a success."
+        },
+        {
+          "item_id": "X129",
+          "key": 1,
+          "text": "Feel comfortable with myself."
+        },
+        {
+          "item_id": "X156",
+          "key": 1,
+          "text": "Seldom feel blue."
+        },
+        {
+          "item_id": "H42",
+          "key": 1,
+          "text": "Look at the bright side of life."
+        },
+        {
+          "item_id": "H639",
+          "key": -1,
+          "text": "Have a dark outlook on the future."
+        },
+        {
+          "item_id": "X205",
+          "key": -1,
+          "text": "Feel that my life lacks direction."
+        },
+        {
+          "item_id": "X15",
+          "key": -1,
+          "text": "Dislike myself."
+        },
+        {
+          "item_id": "X74",
+          "key": -1,
+          "text": "Often feel blue."
+        },
+        {
+          "item_id": "H633",
+          "key": -1,
+          "text": "See difficulties everywhere."
+        },
+        {
+          "item_id": "X84",
+          "key": -1,
+          "text": "Am often in a bad mood."
+        }
+      ]
+    },
+    {
+      "_audit_note_buss_pri": "+ E175 'Look for hidden meanings in things' (= meaning/meanings 単複) を手動 patch",
+      "scale_id": "buss1980_private_self_consciousness",
+      "label": "Private Self-Consciousness",
+      "instrument": "Buss1980",
+      "alpha": 0.81,
+      "source_url": "https://ipip.ori.org/newSingleConstructsKey.htm",
+      "items": [
+        {
+          "item_id": "E175",
+          "key": 1,
+          "text": "Look for hidden meanings in things."
+        },
+        {
+          "item_id": "P395",
+          "key": 1,
+          "text": "Am constantly reflecting about myself."
+        },
+        {
+          "item_id": "P377",
+          "key": 1,
+          "text": "Examine my motives constantly."
+        },
+        {
+          "item_id": "E173",
+          "key": 1,
+          "text": "Try to examine myself objectively."
+        },
+        {
+          "item_id": "X114",
+          "key": 1,
+          "text": "Spend time reflecting on things."
+        },
+        {
+          "item_id": "E163",
+          "key": 1,
+          "text": "Like to get lost in thought."
+        },
+        {
+          "item_id": "P363",
+          "key": -1,
+          "text": "Don't try to figure myself out."
+        },
+        {
+          "item_id": "E77",
+          "key": -1,
+          "text": "Rarely look for a deeper meaning in things."
+        },
+        {
+          "item_id": "X135",
+          "key": -1,
+          "text": "Seldom daydream."
+        },
+        {
+          "item_id": "X175",
+          "key": -1,
+          "text": "Seldom get lost in thought."
+        }
+      ]
+    },
+    {
+      "scale_id": "buss1980_public_self_consciousness",
+      "label": "Public Self-Consciousness",
+      "instrument": "Buss1980",
+      "alpha": 0.77,
+      "source_url": "https://ipip.ori.org/newSingleConstructsKey.htm",
+      "items": [
+        {
+          "item_id": "P420",
+          "key": 1,
+          "text": "Worry about what people think of me."
+        },
+        {
+          "item_id": "P436",
+          "key": 1,
+          "text": "Want to amount to something special in others' eyes."
+        },
+        {
+          "item_id": "H612",
+          "key": 1,
+          "text": "Feel threatened easily."
+        },
+        {
+          "item_id": "H980",
+          "key": 1,
+          "text": "Need reassurance."
+        },
+        {
+          "item_id": "H974",
+          "key": 1,
+          "text": "Need the approval of others."
+        },
+        {
+          "item_id": "H991",
+          "key": 1,
+          "text": "Am easily intimidated."
+        },
+        {
+          "item_id": "P397",
+          "key": -1,
+          "text": "Am not concerned with making a good impression."
+        },
+        {
+          "item_id": "X129",
+          "key": -1,
+          "text": "Feel comfortable with myself."
+        },
+        {
+          "item_id": "X138",
+          "key": -1,
+          "text": "Am not easily bothered by things."
+        },
+        {
+          "item_id": "X242",
+          "key": -1,
+          "text": "Am not embarrassed easily."
+        },
+        {
+          "item_id": "X156",
+          "key": -1,
+          "text": "Seldom feel blue."
+        },
+        {
+          "item_id": "E150",
+          "key": -1,
+          "text": "Don't worry about things that have already happened."
+        }
+      ]
+    },
+    {
+      "scale_id": "rosenberg1965_self_esteem",
+      "label": "Self-Esteem",
+      "instrument": "Rosenberg1965",
+      "alpha": 0.84,
+      "source_url": "https://ipip.ori.org/newSingleConstructsKey.htm",
+      "items": [
+        {
+          "item_id": "X129",
+          "key": 1,
+          "text": "Feel comfortable with myself."
+        },
+        {
+          "item_id": "P379",
+          "key": 1,
+          "text": "Just know that I will be a success."
+        },
+        {
+          "item_id": "X156",
+          "key": 1,
+          "text": "Seldom feel blue."
+        },
+        {
+          "item_id": "P473",
+          "key": 1,
+          "text": "Like to take responsibility for making decisions."
+        },
+        {
+          "item_id": "H357",
+          "key": 1,
+          "text": "Know my strengths."
+        },
+        {
+          "item_id": "X15",
+          "key": -1,
+          "text": "Dislike myself."
+        },
+        {
+          "item_id": "P388",
+          "key": -1,
+          "text": "Am less capable than most people."
+        },
+        {
+          "item_id": "X205",
+          "key": -1,
+          "text": "Feel that my life lacks direction."
+        },
+        {
+          "item_id": "X224",
+          "key": -1,
+          "text": "Question my ability to do my work properly."
+        },
+        {
+          "item_id": "H954",
+          "key": -1,
+          "text": "Feel that I'm unable to deal with things."
+        }
+      ]
+    },
+    {
+      "scale_id": "snyder1974_self_monitoring",
+      "label": "Self-Monitoring",
+      "instrument": "Snyder1974",
+      "alpha": 0.82,
+      "source_url": "https://ipip.ori.org/newSingleConstructsKey.htm",
+      "items": [
+        {
+          "item_id": "P444",
+          "key": 1,
+          "text": "Would make a good actor."
+        },
+        {
+          "item_id": "P491",
+          "key": 1,
+          "text": "Put on a show to impress people."
+        },
+        {
+          "item_id": "P441",
+          "key": 1,
+          "text": "Am likely to show off if I get the chance."
+        },
+        {
+          "item_id": "H34",
+          "key": 1,
+          "text": "Am the life of the party."
+        },
+        {
+          "item_id": "P364",
+          "key": 1,
+          "text": "Am good at making impromptu speeches."
+        },
+        {
+          "item_id": "H1150",
+          "key": 1,
+          "text": "Like to attract attention."
+        },
+        {
+          "item_id": "X91",
+          "key": 1,
+          "text": "Use flattery to get ahead."
+        },
+        {
+          "item_id": "P434",
+          "key": -1,
+          "text": "Hate being the center of attention."
+        },
+        {
+          "item_id": "P485",
+          "key": -1,
+          "text": "Would not be a good comedian."
+        },
+        {
+          "item_id": "X68",
+          "key": -1,
+          "text": "Don't like to draw attention to myself."
+        }
+      ]
+    },
+    {
+      "scale_id": "span2002_adhd",
+      "label": "ADHD",
+      "instrument": "Span2002",
+      "alpha": 0.78,
+      "source_url": "https://ipip.ori.org/newSingleConstructsKey.htm",
+      "items": [
+        {
+          "item_id": "R2",
+          "key": 1,
+          "text": "Forget things."
+        },
+        {
+          "item_id": "R10",
+          "key": 1,
+          "text": "Begin to answer before the other person finishes the question."
+        },
+        {
+          "item_id": "R12",
+          "key": 1,
+          "text": "Don't finish the things that I start."
+        },
+        {
+          "item_id": "R15",
+          "key": 1,
+          "text": "Am often fidgety."
+        },
+        {
+          "item_id": "R23",
+          "key": 1,
+          "text": "Have difficulty keeping my attention on a task."
+        },
+        {
+          "item_id": "R40",
+          "key": 1,
+          "text": "Have been told I'm not listening when others are speaking to me."
+        },
+        {
+          "item_id": "R41",
+          "key": 1,
+          "text": "Don't enjoy doing quiet leisure activities."
+        },
+        {
+          "item_id": "R54",
+          "key": 1,
+          "text": "Feel restless a lot of the time."
+        },
+        {
+          "item_id": "R65",
+          "key": 1,
+          "text": "Find it difficult to organize tasks and activities."
+        },
+        {
+          "item_id": "R66",
+          "key": 1,
+          "text": "Don't pay enough attention when others are speaking to me."
+        },
+        {
+          "item_id": "R67",
+          "key": 1,
+          "text": "Find it difficult to sit still for long periods of time."
+        },
+        {
+          "item_id": "R75",
+          "key": 1,
+          "text": "Make careless mistakes."
+        }
+      ]
+    },
+    {
+      "scale_id": "radloff1977_depression",
+      "label": "Depression",
+      "instrument": "Radloff1977",
+      "alpha": 0.93,
+      "source_url": "https://ipip.ori.org/newSingleConstructsKey.htm",
+      "_audit_note": "+ N04 (= 'with my family or friends' vs 'with family or friends', 単語追加) を手動 patch",
+      "items": [
+        {
+          "item_id": "N01",
+          "key": 1,
+          "text": "Was bothered by things that usually don't bother me."
+        },
+        {
+          "item_id": "N04",
+          "key": 1,
+          "text": "Felt that I could not shake off the blues, even with my family or friends."
+        },
+        {
+          "item_id": "N02",
+          "key": 1,
+          "text": "Had a poor appetite."
+        },
+        {
+          "item_id": "N03",
+          "key": 1,
+          "text": "Did not feel like eating, even though I should have been hungry."
+        },
+        {
+          "item_id": "N06",
+          "key": 1,
+          "text": "Was down in the dumps."
+        },
+        {
+          "item_id": "N07",
+          "key": 1,
+          "text": "Had trouble keeping my mind on what I was doing."
+        },
+        {
+          "item_id": "N08",
+          "key": 1,
+          "text": "Felt depressed."
+        },
+        {
+          "item_id": "N09",
+          "key": 1,
+          "text": "Felt that everything I did was an effort."
+        },
+        {
+          "item_id": "N11",
+          "key": 1,
+          "text": "Thought my life had been a failure."
+        },
+        {
+          "item_id": "N12",
+          "key": 1,
+          "text": "Thought about killing myself."
+        },
+        {
+          "item_id": "N13",
+          "key": 1,
+          "text": "Had restless sleep."
+        },
+        {
+          "item_id": "N16",
+          "key": 1,
+          "text": "Felt lonely."
+        },
+        {
+          "item_id": "N18",
+          "key": 1,
+          "text": "Had crying spells."
+        },
+        {
+          "item_id": "N19",
+          "key": 1,
+          "text": "Felt sad."
+        },
+        {
+          "item_id": "N20",
+          "key": 1,
+          "text": "Could not get going."
+        },
+        {
+          "item_id": "N21",
+          "key": 1,
+          "text": "Felt fearful."
+        },
+        {
+          "item_id": "N22",
+          "key": 1,
+          "text": "Felt that people disliked me."
+        },
+        {
+          "item_id": "N23",
+          "key": 1,
+          "text": "Had thoughts about death."
+        },
+        {
+          "item_id": "N24",
+          "key": 1,
+          "text": "Talked less than usual."
+        },
+        {
+          "item_id": "N10",
+          "key": -1,
+          "text": "Felt hopeful about the future."
+        },
+        {
+          "item_id": "N14",
+          "key": -1,
+          "text": "Felt happy."
+        },
+        {
+          "item_id": "N17",
+          "key": -1,
+          "text": "Enjoyed life."
+        }
+      ]
+    },
+    {
+      "scale_id": "goldberg1999_dissociation_full_scale",
+      "label": "Dissociation Full Scale",
+      "instrument": "Goldberg1999",
+      "alpha": 0.9,
+      "source_url": "https://ipip.ori.org/newSingleConstructsKey.htm",
+      "items": [
+        {
+          "item_id": "B1",
+          "key": 1,
+          "text": "Drove or rode somewhere without remembering later what happened during all or part of the trip."
+        },
+        {
+          "item_id": "B6",
+          "key": 1,
+          "text": "Was approached by someone I didn't know who called me by another name or who insisted that he or she had met me before."
+        },
+        {
+          "item_id": "B2",
+          "key": 1,
+          "text": "Was listening to someone talk and suddenly realized I did not hear part or all of what was said."
+        },
+        {
+          "item_id": "B3",
+          "key": 1,
+          "text": "Found myself in a place and had no idea how I had gotten there."
+        },
+        {
+          "item_id": "B4",
+          "key": 1,
+          "text": "Found myself dressed in clothes I didn't remember putting on."
+        },
+        {
+          "item_id": "B5",
+          "key": 1,
+          "text": "Found new things among my belongings that I didn't remember buying."
+        },
+        {
+          "item_id": "B7",
+          "key": 1,
+          "text": "Had the experience of feeling as though I was standing next to myself, or watching myself as if I was looking at a different person."
+        },
+        {
+          "item_id": "B8",
+          "key": 1,
+          "text": "Was told that I sometimes do not recognize a friend or family member."
+        },
+        {
+          "item_id": "B9",
+          "key": 1,
+          "text": "Found that I had no memory for some important event in my life (for example, a wedding or graduation)."
+        },
+        {
+          "item_id": "B10",
+          "key": 1,
+          "text": "Had the experience of being accused of lying when I did not think I had lied."
+        },
+        {
+          "item_id": "B11",
+          "key": 1,
+          "text": "Had the experience of looking in a mirror and not recognizing myself."
+        },
+        {
+          "item_id": "B12",
+          "key": 1,
+          "text": "Had the experience of feeling that other people, objects, and the world around me were not real."
+        },
+        {
+          "item_id": "B13",
+          "key": 1,
+          "text": "Had the experience of feeling that my body did not belong to me."
+        },
+        {
+          "item_id": "B14",
+          "key": 1,
+          "text": "Had the experience of remembering a past event so vividly that it felt like I was reliving that event."
+        },
+        {
+          "item_id": "B15",
+          "key": 1,
+          "text": "Had the experience of not being sure whether things I remember happening really did happen, or whether I just dreamed them."
+        },
+        {
+          "item_id": "B16",
+          "key": 1,
+          "text": "Had the experience of being in a familiar place but finding it strange and unfamiliar."
+        },
+        {
+          "item_id": "B17",
+          "key": 1,
+          "text": "Found that when I was watching television or a movie I became so absorbed in the story that I was unaware of other events happening around me."
+        },
+        {
+          "item_id": "B18",
+          "key": 1,
+          "text": "Found that I became so involved in a fantasy or daydream that it felt like it was really happening to me."
+        },
+        {
+          "item_id": "B19",
+          "key": 1,
+          "text": "Found that I was able to ignore pain."
+        },
+        {
+          "item_id": "B20",
+          "key": 1,
+          "text": "Find that I sometimes sit staring off into space, thinking of nothing, and am not aware of the passage of time."
+        },
+        {
+          "item_id": "B21",
+          "key": 1,
+          "text": "Talked out loud to myself."
+        },
+        {
+          "item_id": "B22",
+          "key": 1,
+          "text": "Find that in one situation I act so differently from when I'm in another situation that I feel almost as if I were two different people."
+        },
+        {
+          "item_id": "B23",
+          "key": 1,
+          "text": "Find that in certain situations I am able to do things with amazing ease and spontaneity that would usually be difficult for me."
+        },
+        {
+          "item_id": "B24",
+          "key": 1,
+          "text": "Found that I could not remember whether I had done something or had just thought about doing that thing."
+        },
+        {
+          "item_id": "B25",
+          "key": 1,
+          "text": "Found evidence that I had done things that I did not remember doing."
+        },
+        {
+          "item_id": "B26",
+          "key": 1,
+          "text": "Found writings, drawings, or notes among my belongings that I must have done but cannot remember doing."
+        },
+        {
+          "item_id": "B27",
+          "key": 1,
+          "text": "Found that I heard voices inside my head that told me to do things or commented on things that I was doing."
+        },
+        {
+          "item_id": "B28",
+          "key": 1,
+          "text": "Felt as though I was looking at the world through a fog so that people and objects appeared far away or unclear."
+        },
+        {
+          "item_id": "B29",
+          "key": 1,
+          "text": "Felt like I was dreaming when I was awake."
+        },
+        {
+          "item_id": "B30",
+          "key": 1,
+          "text": "Felt like I was disconnected from my body."
+        },
+        {
+          "item_id": "B31",
+          "key": 1,
+          "text": "Felt that I could not move my hands or feet."
+        }
+      ]
+    },
+    {
+      "scale_id": "goldberg1999_dissociation_short",
+      "label": "Dissociation Short",
+      "instrument": "Goldberg1999",
+      "alpha": 0.89,
+      "source_url": "https://ipip.ori.org/newSingleConstructsKey.htm",
+      "items": [
+        {
+          "item_id": "B7",
+          "key": 1,
+          "text": "Had the experience of feeling as though I was standing next to myself, or watching myself as if I was looking at a different person."
+        },
+        {
+          "item_id": "B11",
+          "key": 1,
+          "text": "Had the experience of looking in a mirror and not recognizing myself."
+        },
+        {
+          "item_id": "B12",
+          "key": 1,
+          "text": "Had the experience of feeling that other people, objects, and the world around me were not real."
+        },
+        {
+          "item_id": "B13",
+          "key": 1,
+          "text": "Had the experience of feeling that my body did not belong to me."
+        },
+        {
+          "item_id": "B14",
+          "key": 1,
+          "text": "Had the experience of remembering a past event so vividly that it felt like I was reliving that event."
+        },
+        {
+          "item_id": "B15",
+          "key": 1,
+          "text": "Had the experience of not being sure whether things I remember happening really did happen, or whether I just dreamed them."
+        },
+        {
+          "item_id": "B16",
+          "key": 1,
+          "text": "Had the experience of being in a familiar place but finding it strange and unfamiliar."
+        },
+        {
+          "item_id": "B18",
+          "key": 1,
+          "text": "Found that I became so involved in a fantasy or daydream that it felt like it was really happening to me."
+        },
+        {
+          "item_id": "B20",
+          "key": 1,
+          "text": "Find that I sometimes sit staring off into space, thinking of nothing, and am not aware of the passage of time."
+        },
+        {
+          "item_id": "B22",
+          "key": 1,
+          "text": "Find that in one situation I act so differently from when I'm in another situation that I feel almost as if I were two different people."
+        },
+        {
+          "item_id": "B23",
+          "key": 1,
+          "text": "Find that in certain situations I am able to do things with amazing ease and spontaneity that would usually be difficult for me."
+        },
+        {
+          "item_id": "B24",
+          "key": 1,
+          "text": "Found that I could not remember whether I had done something or had just thought about doing that thing."
+        },
+        {
+          "item_id": "B25",
+          "key": 1,
+          "text": "Found evidence that I had done things that I did not remember doing."
+        },
+        {
+          "item_id": "B27",
+          "key": 1,
+          "text": "Found that I heard voices inside my head that told me to do things or commented on things that I was doing."
+        },
+        {
+          "item_id": "B28",
+          "key": 1,
+          "text": "Felt as though I was looking at the world through a fog so that people and objects appeared far away or unclear."
+        },
+        {
+          "item_id": "B29",
+          "key": 1,
+          "text": "Felt like I was dreaming when I was awake."
+        },
+        {
+          "item_id": "B30",
+          "key": 1,
+          "text": "Felt like I was disconnected from my body."
+        }
+      ]
+    },
+    {
+      "scale_id": "goldberg1999_dissociation_depersonalization",
+      "label": "Dissociation Depersonalization",
+      "instrument": "Goldberg1999",
+      "alpha": 0.88,
+      "source_url": "https://ipip.ori.org/newSingleConstructsKey.htm",
+      "items": [
+        {
+          "item_id": "B7",
+          "key": 1,
+          "text": "Had the experience of feeling as though I was standing next to myself, or watching myself as if I was looking at a different person."
+        },
+        {
+          "item_id": "B11",
+          "key": 1,
+          "text": "Had the experience of looking in a mirror and not recognizing myself."
+        },
+        {
+          "item_id": "B12",
+          "key": 1,
+          "text": "Had the experience of feeling that other people, objects, and the world around me were not real."
+        },
+        {
+          "item_id": "B13",
+          "key": 1,
+          "text": "Had the experience of feeling that my body did not belong to me."
+        },
+        {
+          "item_id": "B27",
+          "key": 1,
+          "text": "Found that I heard voices inside my head that told me to do things or commented on things that I was doing."
+        },
+        {
+          "item_id": "B28",
+          "key": 1,
+          "text": "Felt as though I was looking at the world through a fog so that people and objects appeared far away or unclear."
+        },
+        {
+          "item_id": "B29",
+          "key": 1,
+          "text": "Felt like I was dreaming when I was awake."
+        },
+        {
+          "item_id": "B30",
+          "key": 1,
+          "text": "Felt like I was disconnected from my body."
+        }
+      ]
+    },
+    {
+      "scale_id": "goldberg1999_dissociation_absorption",
+      "label": "Dissociation Absorption",
+      "instrument": "Goldberg1999",
+      "alpha": 0.75,
+      "source_url": "https://ipip.ori.org/newSingleConstructsKey.htm",
+      "items": [
+        {
+          "item_id": "B14",
+          "key": 1,
+          "text": "Had the experience of remembering a past event so vividly that it felt like I was reliving that event."
+        },
+        {
+          "item_id": "B17",
+          "key": 1,
+          "text": "Found that when I was watching television or a movie I became so absorbed in the story that I was unaware of other events happening around me."
+        },
+        {
+          "item_id": "B18",
+          "key": 1,
+          "text": "Found that I became so involved in a fantasy or daydream that it felt like it was really happening to me."
+        },
+        {
+          "item_id": "B19",
+          "key": 1,
+          "text": "Found that I was able to ignore pain."
+        },
+        {
+          "item_id": "B20",
+          "key": 1,
+          "text": "Find that I sometimes sit staring off into space, thinking of nothing, and am not aware of the passage of time."
+        },
+        {
+          "item_id": "B21",
+          "key": 1,
+          "text": "Talked out loud to myself."
+        },
+        {
+          "item_id": "B23",
+          "key": 1,
+          "text": "Find that in certain situations I am able to do things with amazing ease and spontaneity that would usually be difficult for me."
+        },
+        {
+          "item_id": "B24",
+          "key": 1,
+          "text": "Found that I could not remember whether I had done something or had just thought about doing that thing."
+        }
+      ]
+    },
+    {
+      "scale_id": "goldberg1999_dissociation_amnesia",
+      "label": "Dissociation Amnesia",
+      "instrument": "Goldberg1999",
+      "alpha": 0.69,
+      "source_url": "https://ipip.ori.org/newSingleConstructsKey.htm",
+      "items": [
+        {
+          "item_id": "B5",
+          "key": 1,
+          "text": "Found new things among my belongings that I didn't remember buying."
+        },
+        {
+          "item_id": "B8",
+          "key": 1,
+          "text": "Was told that I sometimes do not recognize a friend or family member."
+        },
+        {
+          "item_id": "B9",
+          "key": 1,
+          "text": "Found that I had no memory for some important event in my life (for example, a wedding or graduation)."
+        },
+        {
+          "item_id": "B25",
+          "key": 1,
+          "text": "Found evidence that I had done things that I did not remember doing."
+        },
+        {
+          "item_id": "B26",
+          "key": 1,
+          "text": "Found writings, drawings, or notes among my belongings that I must have done but cannot remember doing."
+        }
+      ]
+    },
+    {
+      "scale_id": "chapman1986_hypomanic_exhibitionism",
+      "label": "Hypomanic Exhibitionism",
+      "instrument": "Chapman1986",
+      "alpha": 0.81,
+      "source_url": "https://ipip.ori.org/newSingleConstructsKey.htm",
+      "items": [
+        {
+          "item_id": "R78",
+          "key": 1,
+          "text": "Can play many roles convincingly."
+        },
+        {
+          "item_id": "R60",
+          "key": 1,
+          "text": "Think I would make a good actor."
+        },
+        {
+          "item_id": "R63",
+          "key": 1,
+          "text": "Have an uncommon ability to persuade or inspire others."
+        },
+        {
+          "item_id": "R26",
+          "key": 1,
+          "text": "Would make a good night-club comedian."
+        },
+        {
+          "item_id": "R57",
+          "key": 1,
+          "text": "Could be a success in many fields."
+        },
+        {
+          "item_id": "R58",
+          "key": 1,
+          "text": "Have persuaded others to do something really adventurous or crazy."
+        },
+        {
+          "item_id": "R76",
+          "key": 1,
+          "text": "Am so good at controlling others that it sometimes scares me."
+        },
+        {
+          "item_id": "R9",
+          "key": 1,
+          "text": "Would enjoy campaigning for political office."
+        },
+        {
+          "item_id": "R18",
+          "key": 1,
+          "text": "Am often so assertive or sociable that I surprise myself."
+        },
+        {
+          "item_id": "R30",
+          "key": -1,
+          "text": "Would be nervous playing the clown in front of other people."
+        },
+        {
+          "item_id": "R17",
+          "key": -1,
+          "text": "Prefer to let others be the center of attention."
+        },
+        {
+          "item_id": "R6",
+          "key": -1,
+          "text": "Like to be thought of as a normal kind of person."
+        }
+      ]
+    },
+    {
+      "scale_id": "chapman1986_hypomanic_mood_intensity",
+      "label": "Hypomanic Mood Intensity",
+      "instrument": "Chapman1986",
+      "alpha": 0.77,
+      "source_url": "https://ipip.ori.org/newSingleConstructsKey.htm",
+      "items": [
+        {
+          "item_id": "R8",
+          "key": 1,
+          "text": "Get into moods where I feel very speeded up and irritable."
+        },
+        {
+          "item_id": "R36",
+          "key": 1,
+          "text": "Tend to feel happy and irritable at the same time."
+        },
+        {
+          "item_id": "R1",
+          "key": 1,
+          "text": "Am a person whose moods go up and down easily."
+        },
+        {
+          "item_id": "R21",
+          "key": 1,
+          "text": "Find that my thoughts are racing."
+        },
+        {
+          "item_id": "R73",
+          "key": 1,
+          "text": "Am often so restless that it is impossible for me to sit still."
+        },
+        {
+          "item_id": "R29",
+          "key": 1,
+          "text": "Feel emotions with extreme intensity."
+        },
+        {
+          "item_id": "R35",
+          "key": 1,
+          "text": "Am considered to be kind of eccentric."
+        },
+        {
+          "item_id": "R43",
+          "key": 1,
+          "text": "Get so happy or energetic that I am almost giddy."
+        },
+        {
+          "item_id": "R27",
+          "key": -1,
+          "text": "Think that my moods don't change more than most people's do."
+        },
+        {
+          "item_id": "R25",
+          "key": -1,
+          "text": "Am usually in an average sort of mood, not too high and not too low."
+        },
+        {
+          "item_id": "R62",
+          "key": -1,
+          "text": "Understand the reasons when I feel very excited or happy."
+        },
+        {
+          "item_id": "R51",
+          "key": -1,
+          "text": "Can slow myself down when I want to."
+        }
+      ]
+    },
+    {
+      "scale_id": "foa2002_obsessive_compulsive_symptoms",
+      "label": "Obsessive-Compulsive Symptoms",
+      "instrument": "Foa2002",
+      "alpha": 0.87,
+      "source_url": "https://ipip.ori.org/newSingleConstructsKey.htm",
+      "items": [
+        {
+          "item_id": "R7",
+          "key": 1,
+          "text": "Repeatedly check doors, windows, and drawers."
+        },
+        {
+          "item_id": "R19",
+          "key": 1,
+          "text": "Feel that there are good and bad numbers."
+        },
+        {
+          "item_id": "R24",
+          "key": 1,
+          "text": "Get upset if others change the way that I have arranged things."
+        },
+        {
+          "item_id": "R31",
+          "key": 1,
+          "text": "Get upset if objects are not arranged properly."
+        },
+        {
+          "item_id": "R34",
+          "key": 1,
+          "text": "Feel that I have to repeat certain numbers."
+        },
+        {
+          "item_id": "R37",
+          "key": 1,
+          "text": "Get upset by unpleasant thoughts that come into my mind."
+        },
+        {
+          "item_id": "R45",
+          "key": 1,
+          "text": "Have difficulty getting rid of nasty thoughts."
+        },
+        {
+          "item_id": "R46",
+          "key": 1,
+          "text": "Find it difficult to touch an object that has been touched by others."
+        },
+        {
+          "item_id": "R47",
+          "key": 1,
+          "text": "Wash my hands more often than is necessary."
+        },
+        {
+          "item_id": "R48",
+          "key": 1,
+          "text": "Need things to be arranged in a particular order."
+        },
+        {
+          "item_id": "R59",
+          "key": 1,
+          "text": "Sometimes have to clean myself simply because I feel contaminated."
+        },
+        {
+          "item_id": "R79",
+          "key": 1,
+          "text": "Check on things more often than necessary."
+        }
+      ]
+    },
+    {
+      "scale_id": "ipip_rational_physical_attractiveness",
+      "label": "Physical Attractiveness",
+      "instrument": "IPIP-Rational",
+      "alpha": 0.87,
+      "source_url": "https://ipip.ori.org/newSingleConstructsKey.htm",
+      "items": [
+        {
+          "item_id": "P425",
+          "key": 1,
+          "text": "Am considered attractive by others."
+        },
+        {
+          "item_id": "P347",
+          "key": 1,
+          "text": "Attract attention from the opposite sex."
+        },
+        {
+          "item_id": "P358",
+          "key": 1,
+          "text": "Have a pleasing physique."
+        },
+        {
+          "item_id": "P386",
+          "key": 1,
+          "text": "Like to look at my body."
+        },
+        {
+          "item_id": "P396",
+          "key": 1,
+          "text": "Like to look at myself in the mirror."
+        },
+        {
+          "item_id": "P474",
+          "key": 1,
+          "text": "Like to show off my body."
+        },
+        {
+          "item_id": "P471",
+          "key": -1,
+          "text": "Don't consider myself attractive."
+        },
+        {
+          "item_id": "P349",
+          "key": -1,
+          "text": "Dislike looking at myself in the mirror."
+        },
+        {
+          "item_id": "P414",
+          "key": -1,
+          "text": "Dislike looking at my body."
+        }
+      ]
+    },
+    {
+      "scale_id": "hoyle2002_sensation_seeking_dangerous",
+      "label": "Sensation-Seeking Dangerous",
+      "instrument": "Hoyle2002",
+      "alpha": 0.86,
+      "source_url": "https://ipip.ori.org/newSingleConstructsKey.htm",
+      "items": [
+        {
+          "item_id": "R69",
+          "key": 1,
+          "text": "Love dangerous situations."
+        },
+        {
+          "item_id": "R53",
+          "key": 1,
+          "text": "Like to do frightening things."
+        },
+        {
+          "item_id": "R16",
+          "key": 1,
+          "text": "Might actually enjoy being caught in an earthquake or tornado."
+        },
+        {
+          "item_id": "R77",
+          "key": 1,
+          "text": "Would like to try bungee jumping."
+        },
+        {
+          "item_id": "R13",
+          "key": 1,
+          "text": "Might enjoy the thrill of being lost at sea."
+        },
+        {
+          "item_id": "R32",
+          "key": 1,
+          "text": "Might enjoy a free fall from an airplane."
+        },
+        {
+          "item_id": "Q115",
+          "key": 1,
+          "text": "Would enjoy being out on a sailboat during a storm."
+        },
+        {
+          "item_id": "R3",
+          "key": 1,
+          "text": "Prefer fear to boredom."
+        },
+        {
+          "item_id": "R52",
+          "key": -1,
+          "text": "Would fear walking in a high-crime part of a city."
+        },
+        {
+          "item_id": "X250",
+          "key": -1,
+          "text": "Would never go hang-gliding or bungee-jumping."
+        }
+      ]
+    },
+    {
+      "_audit_note_hoyle_imp": "+ D51 'Am unpredictable--people never know what I am going to say.' (= em-dash vs comma) を手動 patch",
+      "scale_id": "hoyle2002_sensation_seeking_impulsive",
+      "label": "Sensation-Seeking Impulsive",
+      "instrument": "Hoyle2002",
+      "alpha": 0.84,
+      "source_url": "https://ipip.ori.org/newSingleConstructsKey.htm",
+      "items": [
+        {
+          "item_id": "D51",
+          "key": 1,
+          "text": "Am unpredictable--people never know what I am going to say."
+        },
+        {
+          "item_id": "H870",
+          "key": 1,
+          "text": "Do crazy things."
+        },
+        {
+          "item_id": "H871",
+          "key": 1,
+          "text": "Act wild and crazy."
+        },
+        {
+          "item_id": "H893",
+          "key": 1,
+          "text": "Do unexpected things."
+        },
+        {
+          "item_id": "E122",
+          "key": 1,
+          "text": "Like to act on a whim."
+        },
+        {
+          "item_id": "E15",
+          "key": 1,
+          "text": "Am easily talked into doing silly things."
+        },
+        {
+          "item_id": "X238",
+          "key": 1,
+          "text": "Enjoy wild flights of fantasy."
+        },
+        {
+          "item_id": "R58",
+          "key": 1,
+          "text": "Have persuaded others to do something really adventurous or crazy."
+        },
+        {
+          "item_id": "H446",
+          "key": 1,
+          "text": "Seek adventure."
+        },
+        {
+          "item_id": "H864",
+          "key": 1,
+          "text": "Take risks."
+        }
+      ]
+    },
+    {
+      "scale_id": "hoyle2002_sensation_seeking_calculated",
+      "label": "Sensation-Seeking Calculated",
+      "instrument": "Hoyle2002",
+      "alpha": 0.78,
+      "source_url": "https://ipip.ori.org/newSingleConstructsKey.htm",
+      "items": [
+        {
+          "item_id": "Q126",
+          "key": 1,
+          "text": "Face danger confidently."
+        },
+        {
+          "item_id": "Q95",
+          "key": 1,
+          "text": "Am willing to take risks."
+        },
+        {
+          "item_id": "Q31",
+          "key": 1,
+          "text": "Would be good at rescuing people from a burning building."
+        },
+        {
+          "item_id": "R71",
+          "key": 1,
+          "text": "Would love to explore strange places."
+        },
+        {
+          "item_id": "Q61",
+          "key": 1,
+          "text": "Am open to new experiences."
+        },
+        {
+          "item_id": "R44",
+          "key": -1,
+          "text": "Am a physical coward."
+        },
+        {
+          "item_id": "Q136",
+          "key": -1,
+          "text": "Would never go riding down a stretch of rapids in a canoe."
+        },
+        {
+          "item_id": "R39",
+          "key": -1,
+          "text": "Try to stay inside when the weather is bad."
+        },
+        {
+          "item_id": "R38",
+          "key": -1,
+          "text": "Am afraid of heights."
+        },
+        {
+          "item_id": "R28",
+          "key": -1,
+          "text": "Am afraid of large dogs."
+        }
+      ]
     }
   ]
 }
