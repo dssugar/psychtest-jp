@@ -55,12 +55,29 @@ const SKIP_REPORT_OUT = resolve(ROOT, "scripts/.cache/seed-skip-report.json");
  * WHY 両 table: scale_meta のみ消すと UI badge は消えるが scales 側の facet mapping は残る.
  * 「scale を廃止する」という意図と整合させるため scales 側も同時に sweep する.
  *
- * 現在 tombstone 対象:
- * - orvis: IPIP master 完全不在の Holland RIASEC 系 (Phase 2.1.γ で除外)
- * - orais: IPIP master 完全不在の行動チェックリスト (= 200 件 / Tedone のみ source、UI 化計画なし)
- *   将来 daily ritual 系で再評価する場合は別 source として復活させる
+ * Phase 2.x.B (2026-05-17): orvis / orais を auto-supplement で復活 (= IPIP project 正規拡張).
+ * 現在 tombstone 対象なし.
  */
-const SCALE_TOMBSTONES = ["orvis", "orais"];
+const SCALE_TOMBSTONES: string[] = [];
+
+/**
+ * Phase 2.x.B: IPIP master Hxxx 体系外だが Tedone Table に items があり、IPIP project 正規拡張
+ * (= IPIP Index に listed) として ipip_items に auto-supplement する instrument 一覧.
+ *
+ * 各 instrument について:
+ *   - Tedone Table の wording から ID `{prefix}-NNN` を自動生成 (= 連番、wording 単位 dedup)
+ *   - ipip_items に source='tedone_extension' で投入 (ja_text=NULL、別 wedge で翻訳)
+ *   - normEnToId に登録され lookupItemId 経由で scales table に自動投入
+ *   - facet auto-view にも自動含まれる
+ *
+ * source: IPIP newIndexofScaleLabels.htm
+ *   - ORAIS = Oregon Avocational Interest Scales (Goldberg, 2010)
+ *   - ORVIS = Oregon Vocational Interest Scales (Pozzebon et al., 2010)
+ */
+const AUTO_SUPPLEMENT_INSTRUMENTS: Array<{ instrument: string; idPrefix: string }> = [
+  { instrument: "ORAIS", idPrefix: "ORAIS" },
+  { instrument: "ORVIS", idPrefix: "ORVIS" },
+];
 
 // ============================================================
 // Utilities
@@ -455,6 +472,37 @@ function build() {
   }
   log.push(`tedone dedupe: ${tedoneDuplicates} duplicate rows removed (instrument + normalized text)`);
 
+  // Phase 2.x.B: AUTO_SUPPLEMENT_INSTRUMENTS の items を ipip_items に自動投入 + normEnToId 登録.
+  // これ以降の lookupItemId で Tedone wording → 自動生成 ID に解決される (= 既存 logic 再利用).
+  // ID は (instrument 別) 連番、wording 単位 dedup (= Tedone 内重複は既に上で除去済).
+  let autoSupplementCount = 0;
+  const autoSupplementSql: string[] = [];
+  for (const conf of AUTO_SUPPLEMENT_INSTRUMENTS) {
+    const items = tedone.filter((r) => r.instrument === conf.instrument);
+    const seenNorm = new Set<string>();
+    let seq = 0;
+    for (const r of items) {
+      const norm = normalizeEn(r.text);
+      if (seenNorm.has(norm)) continue;
+      if (normEnToId.has(norm)) continue; // 既存 IPIP master / supplement に同 wording があればそちらを優先
+      seenNorm.add(norm);
+      seq++;
+      const itemId = `${conf.idPrefix}-${String(seq).padStart(3, "0")}`;
+      normEnToId.set(norm, itemId);
+      autoSupplementSql.push(
+        `INSERT OR REPLACE INTO ipip_items (item_id, en_text, ja_text, source, created_at) VALUES (${sqlStr(itemId)}, ${sqlStr(r.text)}, NULL, 'tedone_extension', ${now});`,
+      );
+      autoSupplementCount++;
+    }
+    log.push(`auto-supplement ${conf.instrument}: ${seq} items (${conf.idPrefix}-001..${String(seq).padStart(3, "0")})`);
+  }
+  if (autoSupplementSql.length > 0) {
+    sql.push("");
+    sql.push(`-- AUTO_SUPPLEMENT_INSTRUMENTS (ORAIS/ORVIS auto-generated supplement, source='tedone_extension')`);
+    sql.push(...autoSupplementSql);
+  }
+  log.push(`auto-supplement total: ${autoSupplementCount} items`);
+
   // Phase 2.1.γ: skip diagnostic collection (= instrument 別 skip 件数 + 全 wording).
   // scripts/.cache/seed-skip-report.json に書き出して Phase 2 investigation の入力に使う.
   type SkipEntry = { instrument: string; text: string; label: string | null };
@@ -505,6 +553,34 @@ function build() {
       log.push(`    ${inst}: ${items.length}`);
     }
   }
+
+  // 4.1. Phase 2.x.A: IPIP facet auto-view (= 'Alphabetical Index of 274 Labels for 463 IPIP Scales').
+  //      Tedone Table の各 (instrument, label) ペアを fine-grained scale view として scales table に追加投入.
+  //      既存の instrument 単位 scale_id ('neo' / 'tci' 等) と並列、別 scale_id ('neo_c4_achievement_striving' 等)
+  //      で投入. IPIP 公式 newIndexofScaleLabels.htm の 274 labels × 463 scales 構造を DB 上で表現する.
+  //      UI 化は別 wedge (= 動的 [ipipFacetId] route で受験可能化).
+  sql.push("");
+  sql.push("-- IPIP facet auto-view (= (instrument, label) ペア単位の fine-grained scale)");
+  let facetScalesAdded = 0;
+  const seenFacetPk = new Set<string>(); // dedup (facet_scale_id, item_id)
+  const facetScaleCount = new Map<string, number>();
+  for (const r of tedone) {
+    if (!r.instrument || !r.label) continue;
+    const baseScaleId = instrumentToScaleId(r.instrument);
+    if (tombstoneSet.has(baseScaleId)) continue;
+    const itemId = lookupItemId(r.text);
+    if (!itemId) continue; // skip 済は既に diagnostic 出力済、ここでは silent skip
+    const facetScaleId = `${baseScaleId}_${instrumentToScaleId(r.label)}`;
+    const pk = `${facetScaleId}::${itemId}`;
+    if (seenFacetPk.has(pk)) continue;
+    seenFacetPk.add(pk);
+    sql.push(
+      `INSERT OR REPLACE INTO scales (scale_id, instrument, item_id, key, label, alpha) VALUES (${sqlStr(facetScaleId)}, ${sqlStr(r.instrument)}, ${sqlStr(itemId)}, ${sqlNum(Number(r.key) || 1)}, ${sqlStr(r.label)}, ${sqlNum(typeof r.alpha === "number" ? r.alpha : null)});`,
+    );
+    facetScalesAdded++;
+    facetScaleCount.set(facetScaleId, (facetScaleCount.get(facetScaleId) ?? 0) + 1);
+  }
+  log.push(`IPIP facet auto-view: ${facetScalesAdded} rows across ${facetScaleCount.size} facet scale_ids`);
 
   // 4.5. claude 翻訳 (= ipip-translation で残った 2,202 件) で ja_text NULL を埋める.
   //     初回 seed 時に claude opus 4.7 で BigFive UI 訳スタイルに揃えて生成済.
