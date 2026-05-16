@@ -236,13 +236,29 @@ export default function TsukuyomiChatPage() {
           TSUKUYOMI / α{profile?.phq9K6Optin ? " ・mental共有中" : ""}
         </p>
       </div>
-      <Link
-        href="/uranai/settings"
-        className="text-[11px] underline transition-opacity hover:opacity-70"
-        style={{ color: theme.palette.textDim, fontFamily: theme.font.mono }}
-      >
-        設定
-      </Link>
+      <div className="flex items-center gap-4">
+        <Link
+          href="/"
+          className="text-[11px] underline transition-opacity hover:opacity-70"
+          style={{ color: theme.palette.textDim, fontFamily: theme.font.mono }}
+        >
+          ← トップ
+        </Link>
+        <Link
+          href="/uranai"
+          className="text-[11px] underline transition-opacity hover:opacity-70"
+          style={{ color: theme.palette.textDim, fontFamily: theme.font.mono }}
+        >
+          ← 占い
+        </Link>
+        <Link
+          href="/uranai/settings"
+          className="text-[11px] underline transition-opacity hover:opacity-70"
+          style={{ color: theme.palette.textDim, fontFamily: theme.font.mono }}
+        >
+          設定
+        </Link>
+      </div>
     </div>
   );
 
