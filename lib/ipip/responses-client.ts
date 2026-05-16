@@ -11,42 +11,57 @@
 
 import { bigFiveQuestions } from "@/data/bigfive-questions";
 import { industriousnessQuestions } from "@/data/industriousness-questions";
+import { rosenbergQuestions } from "@/data/rosenberg-questions";
+import { phq9Questions } from "@/data/phq9-questions";
+import { questions as k6Questions } from "@/data/k6-questions";
+import { swlsQuestions } from "@/data/swls-questions";
 import { getOrCreateDeviceId } from "@/lib/uranai/device-id";
 import type { TestType } from "@/lib/storage";
 
 /**
- * 対応 scale 一覧. 将来 Self-Concept 等を追加するときはここに 1 エントリ.
- * 各エントリは「answers[i] (raw 1-5) → { itemId, value } 配列」への変換を担う.
+ * 対応 scale 一覧. 各エントリは「answers[i] (raw value) → { itemId, value } 配列」への変換を担う.
  *
  * INVARIANT (全 adapter 共通): questions 配列順 = テスト UI 表示順 = answers index 順.
  * 各 calculateScore も同じ配列 index で対応付ける.
- * hxxx 欠落項目は silently skip (= 現状 bigfive 120/120, industriousness 20/20 完全マッチ).
+ *
+ * value range: IPIP 系 1-5、非 IPIP 系は raw 値そのまま (Phase 2.3 で D1 CHECK を 0-7 に緩和済).
+ *   Rosenberg: 1-4 / PHQ-9: 0-3 / K6: 0-4 / SWLS: 1-7
+ *
+ * item_id field:
+ *   - bigfive / industriousness: `hxxx` (= IPIP master Hxxx)
+ *   - rosenberg / phq9 / k6 / swls: `itemId` (= supplement RSE-/PHQ9-/K6-/SWLS-)
  */
+function buildResponses<Q extends { itemId?: string; hxxx?: string }>(
+  questions: readonly Q[],
+  answers: number[],
+  validValue: (v: number) => boolean,
+): Array<{ itemId: string; value: number }> {
+  if (answers.length !== questions.length) return [];
+  const out: Array<{ itemId: string; value: number }> = [];
+  for (let i = 0; i < answers.length; i++) {
+    const id = questions[i].itemId ?? questions[i].hxxx;
+    const value = answers[i];
+    if (!id || typeof value !== "number" || !validValue(value)) continue;
+    out.push({ itemId: id, value });
+  }
+  return out;
+}
+
+const valid_1_5 = (v: number) => v >= 1 && v <= 5;
+const valid_1_4 = (v: number) => v >= 1 && v <= 4;
+const valid_0_3 = (v: number) => v >= 0 && v <= 3;
+const valid_0_4 = (v: number) => v >= 0 && v <= 4;
+const valid_1_7 = (v: number) => v >= 1 && v <= 7;
+
 const IPIP_SCALE_ADAPTERS: Partial<
   Record<TestType, (answers: number[]) => Array<{ itemId: string; value: number }>>
 > = {
-  bigfive: (answers) => {
-    if (answers.length !== bigFiveQuestions.length) return [];
-    const out: Array<{ itemId: string; value: number }> = [];
-    for (let i = 0; i < answers.length; i++) {
-      const hxxx = bigFiveQuestions[i].hxxx;
-      const value = answers[i];
-      if (!hxxx || typeof value !== "number" || value < 1) continue;
-      out.push({ itemId: hxxx, value });
-    }
-    return out;
-  },
-  industriousness: (answers) => {
-    if (answers.length !== industriousnessQuestions.length) return [];
-    const out: Array<{ itemId: string; value: number }> = [];
-    for (let i = 0; i < answers.length; i++) {
-      const hxxx = industriousnessQuestions[i].hxxx;
-      const value = answers[i];
-      if (!hxxx || typeof value !== "number" || value < 1) continue;
-      out.push({ itemId: hxxx, value });
-    }
-    return out;
-  },
+  bigfive: (answers) => buildResponses(bigFiveQuestions, answers, valid_1_5),
+  industriousness: (answers) => buildResponses(industriousnessQuestions, answers, valid_1_5),
+  rosenberg: (answers) => buildResponses(rosenbergQuestions, answers, valid_1_4),
+  phq9: (answers) => buildResponses(phq9Questions, answers, valid_0_3),
+  k6: (answers) => buildResponses(k6Questions, answers, valid_0_4),
+  swls: (answers) => buildResponses(swlsQuestions, answers, valid_1_7),
 };
 
 /**

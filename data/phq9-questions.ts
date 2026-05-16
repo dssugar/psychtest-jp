@@ -52,51 +52,15 @@ import type { BaseQuestion, ScaleInfo, ScaleOption } from "@/lib/tests/types";
  */
 
 export const phq9Questions: BaseQuestion[] = [
-  {
-    id: 1,
-    text: "物事に対してほとんど興味がない、または楽しめない",
-    reverse: false,
-  },
-  {
-    id: 2,
-    text: "気分が落ち込む、憂うつになる、または絶望的な気持ちになる",
-    reverse: false,
-  },
-  {
-    id: 3,
-    text: "寝つきが悪い、途中で目が覚める、または逆に眠りすぎる",
-    reverse: false,
-  },
-  {
-    id: 4,
-    text: "疲れた感じがする、または気力がない",
-    reverse: false,
-  },
-  {
-    id: 5,
-    text: "あまり食欲がない、または食べ過ぎる",
-    reverse: false,
-  },
-  {
-    id: 6,
-    text: "自分を責める、または自分には価値がない、家族を失望させていると感じる",
-    reverse: false,
-  },
-  {
-    id: 7,
-    text: "新聞を読む、またはテレビを見ることなどに集中することが難しい",
-    reverse: false,
-  },
-  {
-    id: 8,
-    text: "他人が気づくほど動きや話し方が遅い、またはその反対にそわそわしたり落ち着かず、普段よりも動き回ることがある",
-    reverse: false,
-  },
-  {
-    id: 9,
-    text: "死んだ方がましだ、または何らかの方法で自分を傷つけようと思ったことがある",
-    reverse: false,
-  },
+  { id: 1, itemId: "PHQ9-001", text: "物事に対してほとんど興味がない、または楽しめない", reverse: false },
+  { id: 2, itemId: "PHQ9-002", text: "気分が落ち込む、憂うつになる、または絶望的な気持ちになる", reverse: false },
+  { id: 3, itemId: "PHQ9-003", text: "寝つきが悪い、途中で目が覚める、または逆に眠りすぎる", reverse: false },
+  { id: 4, itemId: "PHQ9-004", text: "疲れた感じがする、または気力がない", reverse: false },
+  { id: 5, itemId: "PHQ9-005", text: "あまり食欲がない、または食べ過ぎる", reverse: false },
+  { id: 6, itemId: "PHQ9-006", text: "自分を責める、または自分には価値がない、家族を失望させていると感じる", reverse: false },
+  { id: 7, itemId: "PHQ9-007", text: "新聞を読む、またはテレビを見ることなどに集中することが難しい", reverse: false },
+  { id: 8, itemId: "PHQ9-008", text: "他人が気づくほど動きや話し方が遅い、またはその反対にそわそわしたり落ち着かず、普段よりも動き回ることがある", reverse: false },
+  { id: 9, itemId: "PHQ9-009", text: "死んだ方がましだ、または何らかの方法で自分を傷つけようと思ったことがある", reverse: false },
 ];
 
 /**

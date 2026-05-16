@@ -1,5 +1,5 @@
 {
-  "_comment": "Phase 2.1.δ: IPIP project 内だが IPIP master 3,320 dump 外の inventory-specific 項目を ipip_items に追加投入する file. spec: docs/specs/ipip-seed-completeness-2026-05.md Goal B. これらは IPIP 公式 web page (ipip.ori.org/各 inventory Key page) には掲載されているが Hxxx ID 体系には含まれない. source='tedone_extension' で IPIP master ('ipip_3320') と DB 上区別. ID namespace = 'EX-NNN' (= External = IPIP master 外、IPIP project 内). 将来 GAD-9 / PHQ-9 等の非 IPIP scale 項目を取り込む場合は scale 略称 prefix (= GAD9-001 等) を使い、'EX-' は IPIP project 内 supplement に限定. seed-ipip.ts の loadIpip3320() の後に supplement 投入、normEnToId にも追加され Tedone wording lookup で直接 hit する. ja_text は bigfive UI 訳スタイル (= 一人称省略 / 「だ」「と思う」終止 / 簡潔) に揃える.",
+  "_comment": "Phase 2.1.δ + 2.3: ipip_items に追加投入する item file. spec: docs/specs/ipip-seed-completeness-2026-05.md Goal B. 2 種類の supplement source を扱う: (A) IPIP project 内だが master 3,320 dump 外の inventory-specific 項目 (ID prefix 'EX-NNN', source_inventory: BFAS/CAT-PD/TCI/NEO/16PF), (B) IPIP project 外の独立 scale (ID prefix 'RSE-/PHQ9-/K6-/SWLS-', source_inventory: Rosenberg1965 原著 / Kroenke 2001 / Kessler 2002 / Diener 1985). 全 item は ipip_items に source='tedone_extension' で投入され、scale 専用 adapter (responses-client.ts) で D1 user_responses 経由保存される. ja_text は各 scale の標準日本語訳に従う.",
 
   "items": [
     {
@@ -51,6 +51,259 @@
       "facet": "Factor L Vigilance / Distrust",
       "key_in_inventory": 1,
       "note": "IPIP master X139 'Believe that people seldom tell you the whole STORY' と類似だが truth/story 意味差で別 item として扱う. X139 は Tedone Table 内で使用 0 (= 孤立 item). 2026-05-17 Daisuke audit."
+    },
+
+    {
+      "item_id": "RSE-001",
+      "en_text": "I feel that I am a person of worth, at least on an equal plane with others.",
+      "ja_text": "少なくとも人並みには、価値のある人間である。",
+      "source_inventory": "Rosenberg1965",
+      "source_url": "https://psycnet.apa.org/record/1965-09578-000",
+      "facet": "Self-Esteem",
+      "key_in_inventory": 1,
+      "note": "Rosenberg, M. (1965). Society and the adolescent self-image. 日本語訳: 山本真理子・松井豊・山成由紀子 (1982)."
+    },
+    {
+      "item_id": "RSE-002",
+      "en_text": "I feel that I have a number of good qualities.",
+      "ja_text": "いろいろな良い素質をもっている。",
+      "source_inventory": "Rosenberg1965",
+      "facet": "Self-Esteem",
+      "key_in_inventory": 1
+    },
+    {
+      "item_id": "RSE-003",
+      "en_text": "All in all, I am inclined to feel that I am a failure.",
+      "ja_text": "敗北者だと思うことがある。",
+      "source_inventory": "Rosenberg1965",
+      "facet": "Self-Esteem",
+      "key_in_inventory": -1
+    },
+    {
+      "item_id": "RSE-004",
+      "en_text": "I am able to do things as well as most other people.",
+      "ja_text": "物事を人並みには、うまくやれる。",
+      "source_inventory": "Rosenberg1965",
+      "facet": "Self-Esteem",
+      "key_in_inventory": 1
+    },
+    {
+      "item_id": "RSE-005",
+      "en_text": "I feel I do not have much to be proud of.",
+      "ja_text": "自分には、自慢できるところがあまりない。",
+      "source_inventory": "Rosenberg1965",
+      "facet": "Self-Esteem",
+      "key_in_inventory": -1
+    },
+    {
+      "item_id": "RSE-006",
+      "en_text": "I take a positive attitude toward myself.",
+      "ja_text": "自分に対して肯定的である。",
+      "source_inventory": "Rosenberg1965",
+      "facet": "Self-Esteem",
+      "key_in_inventory": 1
+    },
+    {
+      "item_id": "RSE-007",
+      "en_text": "On the whole, I am satisfied with myself.",
+      "ja_text": "だいたいにおいて、自分に満足している。",
+      "source_inventory": "Rosenberg1965",
+      "facet": "Self-Esteem",
+      "key_in_inventory": 1
+    },
+    {
+      "item_id": "RSE-008",
+      "en_text": "I wish I could have more respect for myself.",
+      "ja_text": "もっと自分自身を尊敬できるようになりたい。",
+      "source_inventory": "Rosenberg1965",
+      "facet": "Self-Esteem",
+      "key_in_inventory": -1
+    },
+    {
+      "item_id": "RSE-009",
+      "en_text": "I certainly feel useless at times.",
+      "ja_text": "自分は全くだめな人間だと思うことがある。",
+      "source_inventory": "Rosenberg1965",
+      "facet": "Self-Esteem",
+      "key_in_inventory": -1
+    },
+    {
+      "item_id": "RSE-010",
+      "en_text": "At times I think I am no good at all.",
+      "ja_text": "何かにつけて、自分は役に立たない人間だと思う。",
+      "source_inventory": "Rosenberg1965",
+      "facet": "Self-Esteem",
+      "key_in_inventory": -1
+    },
+
+    {
+      "item_id": "PHQ9-001",
+      "en_text": "Little interest or pleasure in doing things",
+      "ja_text": "物事に対してほとんど興味がない、または楽しめない",
+      "source_inventory": "PHQ-9",
+      "source_url": "https://www.phqscreeners.com/select-screener",
+      "facet": "Anhedonia",
+      "key_in_inventory": 1,
+      "note": "Kroenke, K., Spitzer, R. L., & Williams, J. B. W. (2001). Pfizer-provided, free to use. Stem: 'Over the last 2 weeks, how often have you been bothered by...'. 日本語訳: Muramatsu et al. (2007/2018)."
+    },
+    {
+      "item_id": "PHQ9-002",
+      "en_text": "Feeling down, depressed, or hopeless",
+      "ja_text": "気分が落ち込む、憂うつになる、または絶望的な気持ちになる",
+      "source_inventory": "PHQ-9",
+      "facet": "Depressed mood",
+      "key_in_inventory": 1
+    },
+    {
+      "item_id": "PHQ9-003",
+      "en_text": "Trouble falling or staying asleep, or sleeping too much",
+      "ja_text": "寝つきが悪い、途中で目が覚める、または逆に眠りすぎる",
+      "source_inventory": "PHQ-9",
+      "facet": "Sleep disturbance",
+      "key_in_inventory": 1
+    },
+    {
+      "item_id": "PHQ9-004",
+      "en_text": "Feeling tired or having little energy",
+      "ja_text": "疲れた感じがする、または気力がない",
+      "source_inventory": "PHQ-9",
+      "facet": "Fatigue",
+      "key_in_inventory": 1
+    },
+    {
+      "item_id": "PHQ9-005",
+      "en_text": "Poor appetite or overeating",
+      "ja_text": "あまり食欲がない、または食べ過ぎる",
+      "source_inventory": "PHQ-9",
+      "facet": "Appetite change",
+      "key_in_inventory": 1
+    },
+    {
+      "item_id": "PHQ9-006",
+      "en_text": "Feeling bad about yourself—or that you are a failure or have let yourself or your family down",
+      "ja_text": "自分を責める、または自分には価値がない、家族を失望させていると感じる",
+      "source_inventory": "PHQ-9",
+      "facet": "Worthlessness/Guilt",
+      "key_in_inventory": 1
+    },
+    {
+      "item_id": "PHQ9-007",
+      "en_text": "Trouble concentrating on things, such as reading the newspaper or watching television",
+      "ja_text": "新聞を読む、またはテレビを見ることなどに集中することが難しい",
+      "source_inventory": "PHQ-9",
+      "facet": "Concentration",
+      "key_in_inventory": 1
+    },
+    {
+      "item_id": "PHQ9-008",
+      "en_text": "Moving or speaking so slowly that other people could have noticed. Or the opposite—being so fidgety or restless that you have been moving around a lot more than usual",
+      "ja_text": "他人が気づくほど動きや話し方が遅い、またはその反対にそわそわしたり落ち着かず、普段よりも動き回ることがある",
+      "source_inventory": "PHQ-9",
+      "facet": "Psychomotor change",
+      "key_in_inventory": 1
+    },
+    {
+      "item_id": "PHQ9-009",
+      "en_text": "Thoughts that you would be better off dead or of hurting yourself in some way",
+      "ja_text": "死んだ方がましだ、または何らかの方法で自分を傷つけようと思ったことがある",
+      "source_inventory": "PHQ-9",
+      "facet": "Suicidal ideation",
+      "key_in_inventory": 1,
+      "note": "Item 9: 2 点以上で crisis alert UI 発動 (lib/tests/phq9.ts)."
+    },
+
+    {
+      "item_id": "K6-001",
+      "en_text": "Nervous",
+      "ja_text": "神経過敏に感じましたか",
+      "source_inventory": "K6",
+      "source_url": "https://www.hcp.med.harvard.edu/ncs/k6_scales.php",
+      "facet": "Anxiety",
+      "key_in_inventory": 1,
+      "note": "Kessler, R. C., et al. (2002). Copyright © Ronald C. Kessler, attribution required. Stem: 'During the past 30 days, about how often did you feel...'. 日本語訳: 古川壽亮ら (2008)."
+    },
+    {
+      "item_id": "K6-002",
+      "en_text": "Hopeless",
+      "ja_text": "絶望的だと感じましたか",
+      "source_inventory": "K6",
+      "facet": "Depression",
+      "key_in_inventory": 1
+    },
+    {
+      "item_id": "K6-003",
+      "en_text": "Restless or fidgety",
+      "ja_text": "そわそわ、落ち着かなく感じましたか",
+      "source_inventory": "K6",
+      "facet": "Anxiety",
+      "key_in_inventory": 1
+    },
+    {
+      "item_id": "K6-004",
+      "en_text": "So depressed that nothing could cheer you up",
+      "ja_text": "気分が沈み込んで、何が起こっても気が晴れないように感じましたか",
+      "source_inventory": "K6",
+      "facet": "Depression",
+      "key_in_inventory": 1
+    },
+    {
+      "item_id": "K6-005",
+      "en_text": "That everything was an effort",
+      "ja_text": "何をするのも骨折りだと感じましたか",
+      "source_inventory": "K6",
+      "facet": "Fatigue",
+      "key_in_inventory": 1
+    },
+    {
+      "item_id": "K6-006",
+      "en_text": "Worthless",
+      "ja_text": "自分は価値のない人間だと感じましたか",
+      "source_inventory": "K6",
+      "facet": "Self-worth",
+      "key_in_inventory": 1
+    },
+
+    {
+      "item_id": "SWLS-001",
+      "en_text": "In most ways my life is close to my ideal.",
+      "ja_text": "ほとんどの点で、私の人生は私の理想に近い",
+      "source_inventory": "SWLS",
+      "source_url": "https://eddiener.com/scales/7",
+      "facet": "Life Satisfaction",
+      "key_in_inventory": 1,
+      "note": "Diener, E., Emmons, R.A., Larsen, R.J., & Griffin, S. (1985). Public Domain. 日本語訳: 角野善司 (1994) ベース."
+    },
+    {
+      "item_id": "SWLS-002",
+      "en_text": "The conditions of my life are excellent.",
+      "ja_text": "私の人生は、とても素晴らしい時間だ",
+      "source_inventory": "SWLS",
+      "facet": "Life Satisfaction",
+      "key_in_inventory": 1
+    },
+    {
+      "item_id": "SWLS-003",
+      "en_text": "I am satisfied with my life.",
+      "ja_text": "私は現在の人生に満足している",
+      "source_inventory": "SWLS",
+      "facet": "Life Satisfaction",
+      "key_in_inventory": 1
+    },
+    {
+      "item_id": "SWLS-004",
+      "en_text": "So far I have gotten the important things I want in life.",
+      "ja_text": "私はこれまで、人生で欲しかった大切なものを得ている",
+      "source_inventory": "SWLS",
+      "facet": "Life Satisfaction",
+      "key_in_inventory": 1
+    },
+    {
+      "item_id": "SWLS-005",
+      "en_text": "If I could live my life over, I would change almost nothing.",
+      "ja_text": "もし人生をやり直せるなら、ほとんど何も変わらないだろう",
+      "source_inventory": "SWLS",
+      "facet": "Life Satisfaction",
+      "key_in_inventory": 1
     }
   ]
 }

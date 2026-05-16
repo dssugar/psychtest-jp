@@ -22,42 +22,12 @@ export interface K6Question extends BaseQuestion {
 }
 
 export const questions: K6Question[] = [
-  {
-    id: 1,
-    text: "神経過敏に感じましたか",
-    reverse: false,
-    domain: "anxiety"
-  },
-  {
-    id: 2,
-    text: "絶望的だと感じましたか",
-    reverse: false,
-    domain: "depression"
-  },
-  {
-    id: 3,
-    text: "そわそわ、落ち着かなく感じましたか",
-    reverse: false,
-    domain: "anxiety"
-  },
-  {
-    id: 4,
-    text: "気分が沈み込んで、何が起こっても気が晴れないように感じましたか",
-    reverse: false,
-    domain: "depression"
-  },
-  {
-    id: 5,
-    text: "何をするのも骨折りだと感じましたか",
-    reverse: false,
-    domain: "fatigue"
-  },
-  {
-    id: 6,
-    text: "自分は価値のない人間だと感じましたか",
-    reverse: false,
-    domain: "self-worth"
-  }
+  { id: 1, itemId: "K6-001", text: "神経過敏に感じましたか", reverse: false, domain: "anxiety" },
+  { id: 2, itemId: "K6-002", text: "絶望的だと感じましたか", reverse: false, domain: "depression" },
+  { id: 3, itemId: "K6-003", text: "そわそわ、落ち着かなく感じましたか", reverse: false, domain: "anxiety" },
+  { id: 4, itemId: "K6-004", text: "気分が沈み込んで、何が起こっても気が晴れないように感じましたか", reverse: false, domain: "depression" },
+  { id: 5, itemId: "K6-005", text: "何をするのも骨折りだと感じましたか", reverse: false, domain: "fatigue" },
+  { id: 6, itemId: "K6-006", text: "自分は価値のない人間だと感じましたか", reverse: false, domain: "self-worth" },
 ];
 
 /**

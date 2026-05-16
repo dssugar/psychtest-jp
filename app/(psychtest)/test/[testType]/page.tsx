@@ -150,8 +150,9 @@ export default function DynamicTestPage() {
     // 🔥 下書きをクリア
     clearDraft(testType as TestType);
 
-    // Phase 2.1: IPIP 統一 DB への二重書き. localStorage 経路と並列、失敗は silent log.
-    // Phase 2.2 で他 scale (Industriousness / Self-Concept) を順次対象拡大.
+    // Phase 2.1 / 2.3: IPIP 統一 DB への二重書き. localStorage 経路と並列、失敗は silent log.
+    // 対応 scale: bigfive / industriousness / rosenberg / phq9 / k6 / swls.
+    // Self-Concept は Phase 2.2.2 で対応予定 (= IPIP NEO N4 facet との対応決定後).
     void submitIpipResponses(testType as TestType, answers);
 
     // 結果ページへ遷移

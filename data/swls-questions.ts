@@ -49,31 +49,11 @@ import type { BaseQuestion, ScaleInfo, ScaleOption } from "@/lib/tests/types";
  */
 
 export const swlsQuestions: BaseQuestion[] = [
-  {
-    id: 1,
-    text: "ほとんどの点で、私の人生は私の理想に近い",
-    reverse: false,
-  },
-  {
-    id: 2,
-    text: "私の人生は、とても素晴らしい時間だ",
-    reverse: false,
-  },
-  {
-    id: 3,
-    text: "私は現在の人生に満足している",
-    reverse: false,
-  },
-  {
-    id: 4,
-    text: "私はこれまで、人生で欲しかった大切なものを得ている",
-    reverse: false,
-  },
-  {
-    id: 5,
-    text: "もし人生をやり直せるなら、ほとんど何も変わらないだろう",
-    reverse: false,
-  },
+  { id: 1, itemId: "SWLS-001", text: "ほとんどの点で、私の人生は私の理想に近い", reverse: false },
+  { id: 2, itemId: "SWLS-002", text: "私の人生は、とても素晴らしい時間だ", reverse: false },
+  { id: 3, itemId: "SWLS-003", text: "私は現在の人生に満足している", reverse: false },
+  { id: 4, itemId: "SWLS-004", text: "私はこれまで、人生で欲しかった大切なものを得ている", reverse: false },
+  { id: 5, itemId: "SWLS-005", text: "もし人生をやり直せるなら、ほとんど何も変わらないだろう", reverse: false },
 ];
 
 export const scaleOptions: ScaleOption[] = [

@@ -78,6 +78,13 @@ export interface BaseQuestion {
   reverse?: boolean;
   /** 質問固有の選択肢（オプショナル、なければconfig.scaleOptionsを使用） */
   scaleOptions?: ScaleOption[];
+  /**
+   * IPIP 統一 DB の item_id (Phase 2.3 追加).
+   * - IPIP-native scale: Hxxx / Xxxx 等 (= ipip_items.source='ipip_3320')
+   * - 非 IPIP scale: RSE-001 / PHQ9-001 / K6-001 / SWLS-001 等 (= source='tedone_extension')
+   * BigFive / Industriousness は専用 `hxxx` フィールド (data/{bigfive,industriousness}-questions.ts) を継続使用.
+   */
+  itemId?: string;
 }
 
 /**

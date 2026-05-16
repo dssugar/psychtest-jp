@@ -59,7 +59,8 @@ async function handlePost(context: Parameters<PagesFunction<Env>>[0]): Promise<R
     return jsonResponse({ error: "answers (non-empty array) required" }, 400);
   }
 
-  // answers validation. itemId / value (整数 1-5) を要求. DB 側にも CHECK 制約あり (= defense in depth).
+  // answers validation. itemId / value (整数 0-7) を要求. DB 側にも CHECK 制約あり (= defense in depth).
+  // Phase 2.3: 非 IPIP scale 統合のため 0-7 に緩和 (= Rosenberg 1-4 / PHQ-9 0-3 / K6 0-4 / SWLS 1-7 を raw 保存).
   const responses: Array<{ itemId: string; value: number }> = [];
   for (let i = 0; i < body.answers.length; i++) {
     const a = body.answers[i];
@@ -69,10 +70,10 @@ async function handlePost(context: Parameters<PagesFunction<Env>>[0]): Promise<R
     if (
       typeof a.value !== "number" ||
       !Number.isInteger(a.value) ||
-      a.value < 1 ||
-      a.value > 5
+      a.value < 0 ||
+      a.value > 7
     ) {
-      return jsonResponse({ error: `answers[${i}].value must be integer 1-5` }, 400);
+      return jsonResponse({ error: `answers[${i}].value must be integer 0-7` }, 400);
     }
     responses.push({ itemId: a.itemId, value: a.value });
   }

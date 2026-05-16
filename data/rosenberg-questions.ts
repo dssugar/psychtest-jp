@@ -36,56 +36,16 @@ export const scaleOptions: ScaleOption[] = [
  * Rosenberg自尊心尺度の質問（10項目）
  */
 export const rosenbergQuestions: RosenbergQuestion[] = [
-  {
-    id: 1,
-    text: "少なくとも人並みには、価値のある人間である。",
-    reverse: false,
-  },
-  {
-    id: 2,
-    text: "いろいろな良い素質をもっている。",
-    reverse: false,
-  },
-  {
-    id: 3,
-    text: "敗北者だと思うことがある。",
-    reverse: true, // 逆転項目
-  },
-  {
-    id: 4,
-    text: "物事を人並みには、うまくやれる。",
-    reverse: false,
-  },
-  {
-    id: 5,
-    text: "自分には、自慢できるところがあまりない。",
-    reverse: true, // 逆転項目
-  },
-  {
-    id: 6,
-    text: "自分に対して肯定的である。",
-    reverse: false,
-  },
-  {
-    id: 7,
-    text: "だいたいにおいて、自分に満足している。",
-    reverse: false,
-  },
-  {
-    id: 8,
-    text: "もっと自分自身を尊敬できるようになりたい。",
-    reverse: true, // 逆転項目
-  },
-  {
-    id: 9,
-    text: "自分は全くだめな人間だと思うことがある。",
-    reverse: true, // 逆転項目
-  },
-  {
-    id: 10,
-    text: "何かにつけて、自分は役に立たない人間だと思う。",
-    reverse: true, // 逆転項目
-  },
+  { id: 1, itemId: "RSE-001", text: "少なくとも人並みには、価値のある人間である。", reverse: false },
+  { id: 2, itemId: "RSE-002", text: "いろいろな良い素質をもっている。", reverse: false },
+  { id: 3, itemId: "RSE-003", text: "敗北者だと思うことがある。", reverse: true },
+  { id: 4, itemId: "RSE-004", text: "物事を人並みには、うまくやれる。", reverse: false },
+  { id: 5, itemId: "RSE-005", text: "自分には、自慢できるところがあまりない。", reverse: true },
+  { id: 6, itemId: "RSE-006", text: "自分に対して肯定的である。", reverse: false },
+  { id: 7, itemId: "RSE-007", text: "だいたいにおいて、自分に満足している。", reverse: false },
+  { id: 8, itemId: "RSE-008", text: "もっと自分自身を尊敬できるようになりたい。", reverse: true },
+  { id: 9, itemId: "RSE-009", text: "自分は全くだめな人間だと思うことがある。", reverse: true },
+  { id: 10, itemId: "RSE-010", text: "何かにつけて、自分は役に立たない人間だと思う。", reverse: true },
 ];
 
 /**

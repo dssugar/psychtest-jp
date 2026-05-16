@@ -25,6 +25,10 @@ import { readFileSync, writeFileSync, mkdirSync } from "fs";
 import { resolve, dirname } from "path";
 import { bigFiveQuestions } from "../data/bigfive-questions";
 import { industriousnessQuestions } from "../data/industriousness-questions";
+import { rosenbergQuestions } from "../data/rosenberg-questions";
+import { phq9Questions } from "../data/phq9-questions";
+import { questions as k6Questions } from "../data/k6-questions";
+import { swlsQuestions } from "../data/swls-questions";
 
 // ============================================================
 // Paths
@@ -654,6 +658,34 @@ function build() {
   scaleIdCount.set("industriousness", industriousnessQuestions.length);
   sql.push(...industSql);
 
+  // 5.8. Phase 2.3: 非 IPIP 4 scale (Rosenberg / PHQ-9 / K6 / SWLS) を scales table に投入.
+  //      各 question の itemId field (= RSE-/PHQ9-/K6-/SWLS-) を参照、supplement で投入済の
+  //      ipip_items を FK で参照. ja_text は data file 由来で既に supplement.json に入れているので UPDATE 不要.
+  //      Self-Concept は Daisuke 独自編集 (8 items vs IPIP NEO N4 10 items) で別 wedge.
+  log.push("");
+  log.push("=== Phase 2.3: 非 IPIP scales 投入 ===");
+  const nonIpipScales: Array<{ scaleId: string; instrument: string; label: string; questions: ReadonlyArray<{ id: number; itemId?: string; reverse?: boolean }> }> = [
+    { scaleId: "rosenberg", instrument: "RSES", label: "Self-Esteem", questions: rosenbergQuestions },
+    { scaleId: "phq9", instrument: "PHQ-9", label: "Depression", questions: phq9Questions },
+    { scaleId: "k6", instrument: "K6", label: "Psychological Distress", questions: k6Questions },
+    { scaleId: "swls", instrument: "SWLS", label: "Life Satisfaction", questions: swlsQuestions },
+  ];
+  for (const s of nonIpipScales) {
+    sql.push("");
+    sql.push(`-- scales (scale_id='${s.scaleId}', source='${s.instrument}', supplement items)`);
+    let count = 0;
+    for (const q of s.questions) {
+      if (!q.itemId) continue;
+      const key = q.reverse ? -1 : 1;
+      sql.push(
+        `INSERT OR REPLACE INTO scales (scale_id, instrument, item_id, key, label, alpha) VALUES (${sqlStr(s.scaleId)}, ${sqlStr(s.instrument)}, ${sqlStr(q.itemId)}, ${key}, ${sqlStr(s.label)}, NULL);`,
+      );
+      count++;
+    }
+    scaleIdCount.set(s.scaleId, count);
+    log.push(`  ${s.scaleId}: ${count} items (instrument='${s.instrument}')`);
+  }
+
   // 5.7. scale_meta 投入 (Phase 2.1.β: UI 表示用 metadata、12 scale)
   //      spec: docs/specs/scale-meta-wedge-2026-05.md §"Narrowest Wedge" Step 3
   //      scale-meta.json は Daisuke が手動キュレーション (LLM 生成は使わない方針).
@@ -683,23 +715,23 @@ function build() {
     }
     log.push(`scale_meta: ${metaItems.length} rows (tombstones: ${SCALE_TOMBSTONES.join(", ") || "none"})`);
 
-    // Phase 2.1.γ: completeness check — scale_meta.official_total_items と scales COUNT を比較.
-    // IPIP 系 scale は完全一致が期待値. 非 IPIP 系 (rosenberg / phq9 / k6 / swls / selfconcept) は
-    // scales table に投入せず Phase 2.3 で user_responses 別 namespace 設計予定なので 0 が正常.
+    // Phase 2.1.γ + 2.3: completeness check — scale_meta.official_total_items と scales COUNT を比較.
+    // Phase 2.3 で rosenberg/phq9/k6/swls も scales 投入したので IPIP 系と同じく完全一致期待.
+    // selfconcept のみ Daisuke 独自編集 (= NEO N4 と 8/10 件数差) で別 wedge 待ち、現状 0 許容.
     log.push("");
     log.push("=== scale_meta completeness check ===");
-    const nonIpipScales = new Set(["rosenberg", "phq9", "k6", "swls", "selfconcept"]);
+    const pendingScales = new Set(["selfconcept"]);
     let mismatch = 0;
     for (const m of metaItems) {
       const actual = scaleIdCount.get(m.scale_id) ?? 0;
       const expected = m.official_total_items ?? null;
-      const isNonIpip = nonIpipScales.has(m.scale_id);
+      const isPending = pendingScales.has(m.scale_id);
       if (expected === null) {
         log.push(`  ${m.scale_id}: official=— actual=${actual} (no expected count)`);
       } else if (actual === expected) {
         log.push(`  ${m.scale_id}: ${actual}/${expected} ✓`);
-      } else if (isNonIpip && actual === 0) {
-        log.push(`  ${m.scale_id}: 0/${expected} (= 非 IPIP, Phase 2.3 で user_responses 別 namespace)`);
+      } else if (isPending && actual === 0) {
+        log.push(`  ${m.scale_id}: 0/${expected} (= Phase 2.2.2 pending, Daisuke 独自編集 vs IPIP NEO N4 の対応決定待ち)`);
       } else {
         mismatch++;
         log.push(`  ${m.scale_id}: ${actual}/${expected} ⚠ MISMATCH (diff: ${actual - expected})`);
