@@ -1,7 +1,7 @@
 # psychtest.jp - 実装ロードマップ
 
-> **最終更新**: 2026-05-17 (v2.4.5、Phase 2.x.C.1+2 IPIP page direct fetch supplement で 9 主要 instrument 完全 fidelity)
-> **前版**: v2.4.4 (2026-05-17) Phase 2.x.A+B / v2.4.3 (2026-05-17) Phase 2.2.1 既完了 + 2.3 完了 / v2.4.2 (2026-05-17) Phase 2.1.δ IPIP supplement / v2.4.1 (2026-05-17) Phase 2.1.γ sanitization / v2.4 (2026-05-16) Phase 2.1.γ ipip-seed-completeness 完了反映 / v2.3 (2026-05-16) Phase 2.1.β scale_meta / v2.2 (2026-05-16) sub-phase 分割 / v2.1 (2026-05-16) Phase 2.1 完了反映 / v2.0 (2026-05-16) ロードマップ見直し / v1.0 (2026-01-20) 心理尺度路線中心
+> **最終更新**: 2026-05-17 (v2.4.6、Phase 2.x.D + D.1 完了 — scale_hierarchy + canonical_labels 4 entity schema 確立)
+> **前版**: v2.4.5 (2026-05-17) Phase 2.x.C.1+2 / v2.4.4 Phase 2.x.A+B / v2.4.3 Phase 2.2.1 + 2.3 / v2.4.2 Phase 2.1.δ / v2.4.1 Phase 2.1.γ sanitization / v2.4 Phase 2.1.γ / v2.3 Phase 2.1.β / v2.2 sub-phase 分割 / v2.1 Phase 2.1 / v2.0 ロードマップ見直し / v1.0 心理尺度路線中心
 > **位置づけ**: [project-design.md](./docs/project-design.md) の Phase 設計を実装視点でブレイクダウン
 
 ---
@@ -77,6 +77,70 @@ KPI a (Daisuke deep usage) 達成後に着手判断。現時点では計画に�
 **ComfyUI 月読 assets 差し替えは Phase 3.4 ペルソナ複数化と合流** (= 個別キャラの assets は他キャラと一緒にまとめて生成する方が効率的)。
 
 - [x] **生年月日を profile に永続化** (UX 改善) ✅ 2026-05-16 (commit 91c210a)
+
+---
+
+## 🗂 Phase 2.x 完了 schema 全体図 (2026-05-17 現在)
+
+Phase 2.x の累積で **4 entity 構造** が確立 (= concern 分離):
+
+```
+┌──────────────────────────────────────────────────────────────────────────┐
+│  IPIP 統一項目 DB - 4 entity schema                                       │
+├──────────────────────────────────────────────────────────────────────────┤
+│                                                                           │
+│  ① ipip_items (item master)                                              │
+│     ├─ 3,616 unique items                                                 │
+│     │   ├─ 3,320 IPIP master (source='ipip_3320')                        │
+│     │   ├─ 291 ORAIS/ORVIS auto-supplement (source='tedone_extension')  │
+│     │   └─ 5 EX-NNN supplement                                            │
+│                                                                           │
+│  ② scales (scale-item junction, DAG)                                     │
+│     ├─ 3,699 (scale_id × item_id) rows                                   │
+│     ├─ 同 item が複数 scale で再利用 (= IPIP project 本質構造)            │
+│     └─ key (+1/-1) + alpha 保持                                          │
+│                                                                           │
+│  ③ scale_hierarchy (scale 階層 tree)                                     │
+│     ├─ 530 entries                                                        │
+│     │   ├─ 37 instrument (level 1)                                       │
+│     │   ├─ 488 scale (level 2)                                           │
+│     │   └─ 5 facet (level 3)                                             │
+│     ├─ instrument / scale_name / facet_name / subfacet_name              │
+│     └─ display_label_ja (NULL, Phase 2.x.E で populate)                  │
+│                                                                           │
+│  ④ canonical_labels + canonical_label_implementations                    │
+│     ├─ 276 canonical labels (= IPIP Alphabetical Index 構成概念)         │
+│     ├─ 547 (label, instrument, facet_code) implementations               │
+│     └─ scale_id resolved: 42/547 (Phase 2.x.D.2 で残 92% resolve 予定)   │
+│                                                                           │
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+### 各 entity の concern 分離
+
+| Entity | 担当 | Daisuke 用語対応 |
+|---|---|---|
+| ① `ipip_items` | item の wording master | items |
+| ② `scales` | scale-item junction (many-to-many、scoring 識別) | items が複数 scale で再利用される DAG |
+| ③ `scale_hierarchy` | scale 階層 tree (instrument → scale → facet → subfacet) | 「instrument(=scale 全体) → domain → facet → items」階層 |
+| ④ `canonical_labels` + implementations | 構成概念名 (label) の横断 navigation index | "Alphabetical Index of 274 Labels for 463 IPIP Scales" |
+
+### Phase 2.x sub-phase の完了一覧
+
+| Phase | commit | 内容 | 数値結果 |
+|---|---|---|---|
+| 2.1 | `c34a4ba 系` | IPIP 統一項目 DB (ipip_items + scales) + BigFive 二重書き | 3,320 items / 3,331 scales |
+| 2.1.β | `ea4896e` | scale_meta table (= UI 表示 metadata) | 12 scale_meta |
+| 2.1.γ | `c04f1bb`+`c5ba87d`+`9244a94` | seed-completeness wedge (機械的修復 + IPIP audit + sanitization) | skip 371 → 6 |
+| 2.1.δ | `ac929bf` | IPIP supplement (EX-NNN namespace) | skip 6 → 0 |
+| 2.2.1 | (= 2.1.β 内) | Industriousness D1 migration | 20/20 |
+| 2.3 | `2fe790f` | 非 IPIP 4 scale (RSE/PHQ9/K6/SWLS) 統合 | scale_meta 10/11 ✓ |
+| 2.x.A+B | `ea79b9c` | facet auto-view + ORAIS/ORVIS auto-supplement | 442 facet scale_ids、IPIP Index 95.5% |
+| 2.x.C.0 | `07ad700` | IPIP page direct fetch supplement 機構 (reference) | BIDR/Cognitive-Failures 10 |
+| 2.x.C.1+2 | `9b7fe8d` | diff tooling + 主要 8 instrument 完全 fidelity | 178 scales / 1,707 items |
+| 2.x.C.3 | `16ffe78` | SingleConstructs page 拡張 | 207 scales / 2,051 items |
+| 2.x.D | `623fe09` | scale_hierarchy 4 階層 tree | 530 entries |
+| 2.x.D.1 | `cfabb68` | canonical_labels (IPIP Index 横断 navigation) | 276 / 547 |
 
 ---
 
@@ -342,10 +406,68 @@ IPIP 公式 page の (scale, item) pair 完全 list を `ipip-scales-supplement.
 | INVARIANT | ✓ | bigfive 120/120 / industriousness 20/20 / type-check pass |
 
 **残課題 (次 session)**:
-- **残 instrument 拡張** (= 同 pipeline で順次): BFAS / 6FPQ / JPI / HPI / HPI-HIC / AB5C / Buss1980 / Foa1998 / Foa2002 / Hoyle2002 / Levenson1981 / Cacioppo1982 / Snyder1974 / Span2002 / Chapman1986 / Scheier1994 / Barchard2001 / 7FACTOR / BFAS-20 / NEO5-20
+- **残 instrument 拡張** (= 同 pipeline で順次): BFAS / 6FPQ / JPI / HPI / HPI-HIC / AB5C / Barchard2001 / 7FACTOR / BFAS-20 / NEO5-20
 - **convert script lookup logic 改善**: hyphen 揺れ regex を specific keyword pair に絞る / quote 揺れ吸収 (現状 4 件の手動 patch で対応)
 - **IPIP facet UI 化** (= 動的 [ipipFacetId] route + scoring + 結果表示): DB 基盤完成、UI wedge は別 spec
 - **Phase 2.2.2 Self-Concept**: Phase 2.x.C で `neo_self_consciousness` 10 items 投入済、これと Daisuke 独自編集 8 items の対応決定で完了可能
+
+### 2.x.D scale_hierarchy table (= scale 階層 tree) ✅ 2026-05-17
+
+scales table が「scale-item junction (DAG)」専門なのに対し、**scale 階層 (= 純粋親子関係 tree)** を別 table に分離。Daisuke 想定の「instrument / scale / facet / subfacet / items」5 階層に対応するための entity 設計。
+
+実装サマリ (commit `623fe09`):
+
+- [x] `migrations/0006_scale_hierarchy.sql`: scale_hierarchy table (= scale_id PK / parent_scale_id self-ref tree / level / instrument / scale_name / facet_name / subfacet_name / display_label_en / display_label_ja / alpha / source_url)
+- [x] `scripts/seed-ipip.ts` 拡張: Tedone Table label "," 区切り parse + supplement entries から階層 populate
+- [x] 530 entries 投入 (level 1: 37 instrument / level 2: 488 scale / level 3: 5 facet)
+
+**WHY tree + junction 分離**:
+- IPIP の実態は **混合構造**:
+  - Scale 階層 = tree (= 純粋親子関係、1 facet は 1 scale に属する、固定深さ 3-4)
+  - Scale-item 関係 = DAG (= 同 item が複数 scale で再利用、例: P473 が 9 scale で再利用)
+- relational DB の典型的「階層 entity + junction table」パターン
+- 階層深さ可変 tree なら adjacency list / closure table が要だが、IPIP は **固定深さ** なので multi-column flat (= scale_hierarchy の現 schema) で表現可能
+
+**用語対応 (Daisuke 想定 ↔ 私の schema)**:
+| Daisuke 用語 | scale_hierarchy column |
+|---|---|
+| instrument (= scale 全体) | `instrument` |
+| domain | `scale_name` |
+| facet (= label がつく) | `facet_name` |
+| subfacet (= 稀) | `subfacet_name` |
+| items | (= `ipip_items` JOIN via `scales`) |
+
+**残課題**:
+- NEO/HEXACO の **domain 階層** が現状 scale_name に正しく populate されていない (= Tedone label に "Neuroticism" 等 domain 情報が含まれないため)。IPIP page audit で supplement.json に明示 (= Phase 2.x.D.2 候補)
+- `display_label_ja` は全 530 entries で NULL (= Phase 2.x.E で手動 audit)
+
+### 2.x.D.1 canonical_labels table (= IPIP Alphabetical Index 構成概念横断 navigation) ✅ 2026-05-17
+
+Daisuke 質問「label とは何か?」への本質的回答 = **IPIP page の "label" は構成概念名 (canonical construct name)**。同 facet が複数 inventory で synonym 共有される構造を junction table で表現。
+
+実装サマリ (commit `cfabb68`):
+
+- [x] `data/ipip-master/ipip-canonical-labels.json` 新規: IPIP page newIndexofScaleLabels.htm を WebFetch + AI parse → 276 labels / 547 implementations の mapping JSON
+- [x] `migrations/0007_canonical_labels.sql`: canonical_labels (PK, display_label_ja, description) + canonical_label_implementations (canonical_label / instrument / facet_code / scale_id) junction table
+- [x] `scripts/seed-ipip.ts` 拡張: canonical-labels.json 読み込み + table populate + scale_id best-effort fuzzy match
+
+**WHY canonical_labels first-class 化 (≠ constructs first-class)**:
+- IPIP page の "label" は **構成概念名** で複数 inventory が synonym 共有
+- ただし **各 inventory の facet scoring は独立** (Daisuke 指摘「scoring 互換性破壊 NG」) → constructs に集約してはダメ
+- → label 自体は first-class entity 化 (= 横断 navigation 用)、scale-item scoring junction (scales table) は inventory ごと独立を維持
+- "Conformity/Dependence/Need" と "Dependence/Conformity/Need" は **同 4 facet を別 wording で list する synonym aliases** (= IPIP page の検索利便性のため重複登録、別 canonical_label として保持)
+
+**数値結果**:
+| 指標 | 値 |
+|---|---|
+| canonical_labels | 276 (= IPIP Index 274 + synonym alias 2) |
+| canonical_label_implementations | 547 |
+| scale_id resolved (auto fuzzy match) | 42 / 547 (= 8%) |
+| 未 resolve | 505 (= 命名揺れ: inventory facet_code "C4" vs Tedone label "Achievement-striving" が直接 match 不可) |
+
+**残課題**:
+- **Phase 2.x.D.2**: 各 inventory Key page (newNEOKey.htm 等) audit で facet_code → Tedone label の正確 mapping 取得 → canonical_label_implementations.scale_id 完全 populate (8% → 95%+)
+- **Phase 2.x.E**: display_label_ja populate (276 canonical labels + 530 scale_hierarchy entries、Daisuke 手動 audit)
 
 ### 2.4 トップを 2 入口ハブに書き換え
 
@@ -525,23 +647,28 @@ SELECT scale_id, COUNT(*)
 ## 🔄 次のアクション
 
 **最優先 (今すぐ着手可能)**:
-1. ~~生年月日 profile 永続化~~ ✅ 完了 (commit 91c210a)
-2. ~~Phase 2.1 IPIP 統一項目 DB~~ ✅ 完了 (commit c34a4ba 系)
-3. ~~Phase 2.1.γ ipip-seed-completeness~~ ✅ 完了 (commits c04f1bb + c5ba87d + 9244a94)
-4. ~~Phase 2.1.δ IPIP supplement~~ ✅ 完了 (commit ac929bf) — skip 0 / 100% coverage
-5. ~~Phase 2.2.1 Industriousness D1 migration~~ ✅ 完了 (Phase 2.1.β 内で実装済を 2026-05-17 確認)
-6. ~~Phase 2.3 非 IPIP 4 scale (Rosenberg/PHQ-9/K6/SWLS) 統合~~ ✅ 完了 (commit 2fe790f) — scale_meta 10/11 ✓
-7. ~~Phase 2.x.A+B IPIP Index facet auto-view + ORAIS/ORVIS 復活~~ ✅ 完了 (commit ea79b9c) — 442/463 (95.5%) カバー
-8. ~~Phase 2.x.C.1+2 IPIP page direct fetch supplement~~ ✅ 完了 (commits 07ad700 + 9b7fe8d) — 主要 9 instrument / 178 scales / 1,707 items
-9. **Phase 2.1.α** BigFive audit 反映 — 16 件中 high+medium で明確分のみ data + DB 同期
-10. **Phase 2.6** 月読 context 進捗 N/M — `lib/uranai/profile-summarizer.ts` 拡張
 
-**次 session 候補**:
-- **Phase 2.x.C.3 残 instrument 拡張** — BFAS / 6FPQ / JPI / HPI / HPI-HIC / AB5C / Buss1980 / Foa1998 / Foa2002 / Hoyle2002 / Levenson1981 / Cacioppo1982 / Snyder1974 / Span2002 / Chapman1986 / Scheier1994 / Barchard2001 / 7FACTOR (= 同 pipeline で順次)
-- **Phase 2.2.2** Self-Concept migration — Phase 2.x.C で `neo_self_consciousness` 10 items 投入済、Daisuke 独自編集 8 items との対応決定で完了
+**Phase 2.x シリーズ (= IPIP 統一 DB schema 確立) 完了済 ✅**
+1-8. (= 上記「Phase 2.x sub-phase 完了一覧」参照、Phase 2.1 〜 Phase 2.x.D.1 全 11 commit)
+
+**次の最優先 candidates**:
+9. **Phase 2.1.α** BigFive audit 反映 — 16 件中 high+medium で明確分のみ data + DB 同期 (= 軽微)
+10. **Phase 2.6** 月読 context 進捗 N/M — `lib/uranai/profile-summarizer.ts` 拡張
+11. **Phase 2.5** 朝の儀式 UI — 全 7 尺度 user_responses 集約 + scale_hierarchy + canonical_labels 基盤の上で実装
+
+**次 session 候補 (= Phase 2.x DB 基盤の補強 + UI 化)**:
+
+**A. DB 補強 (= schema 完成度向上)**
+- **Phase 2.x.D.2** canonical_label resolution: 各 inventory Key page (newNEOKey.htm 等) audit で facet_code → Tedone label mapping → `canonical_label_implementations.scale_id` 完全 populate (8% → 95%+)
+- **Phase 2.x.E** ja 翻訳 populate: 276 canonical_labels + 530 scale_hierarchy entries の `display_label_ja` を Claude draft → Daisuke 手動 audit
+- **Phase 2.x.C.3 残 instrument 拡張** — BFAS / 6FPQ / JPI / HPI / HPI-HIC / AB5C / Barchard2001 / 7FACTOR / BFAS-20 / NEO5-20 (= 同 pipeline で順次)
+- **Phase 2.x.D.1 強化** — NEO/HEXACO の domain 階層 supplement (= "Anxiety" を scale_name="Neuroticism", facet_name="Anxiety" に分解)
+
+**B. UI 化 (= DB 基盤の活用)**
+- **IPIP facet UI 化** (= 動的 [ipipFacetId] route + scoring + 結果表示) — DB 基盤 (scale_hierarchy + canonical_labels) で navigation 設計可能
+- **Phase 2.2.2** Self-Concept migration — `neo_self_consciousness` 投入済、Daisuke 独自編集 8 items の対応決定 + adapter で完了
+- **Phase 2.5** 朝の儀式 UI — 全 7 尺度 user_responses 集約基盤
 - **Phase 2.4** トップ 2 入口ハブ書き換え — UI 大改修、独立 wedge
-- **Phase 2.5** 朝の儀式 UI — Phase 2.3 完了で全 7 尺度が user_responses に集約された基盤の上で実装可能
-- **IPIP facet UI 化** (= 動的 [ipipFacetId] route) — Phase 2.x.A+B+C で DB 基盤完成、UI wedge は別 spec 切る
 
 **別タスク (Phase 2 と並列で要対応)**:
 - **Production deploy**: `db:migrate:remote` が 7403 エラー → wrangler 再認証 必要、その後 migrate + seed + Pages deploy
@@ -572,3 +699,4 @@ SELECT scale_id, COUNT(*)
 - v2.4.3 (2026-05-17): Phase 2.2.1 既完了確認 + Phase 2.3 非 IPIP 4 scale 統合完了反映 — Industriousness adapter は Phase 2.1.β 内で既実装済 (checkbox 同期のみ)。Phase 2.3 で migration 0005 (D1 CHECK 0-7 緩和) + supplement 30 items 追加 (RSE/PHQ9/K6/SWLS) + buildResponses helper で 6 adapter 統一 + 4 非 IPIP scale を scales table 投入。scale_meta completeness 10/11 ✓ (selfconcept のみ Phase 2.2.2 pending)。ID namespace 体系統一: IPIP master (Hxxx) / IPIP supplement (EX-) / 非 IPIP scale 固有 (RSE-/PHQ9-/K6-/SWLS-)。
 - v2.4.4 (2026-05-17): Phase 2.x.A+B 完了反映 — IPIP 公式 `newIndexofScaleLabels.htm` の「Alphabetical Index of 274 Labels for 463 IPIP Scales」を DB 表現する基盤実装。Tedone Table の (instrument, label) ペアを fine-grained facet view として scales table に自動投入 (= 442 facet scale_ids 生成)。ORAIS (Goldberg 2010) / ORVIS (Pozzebon 2010) tombstone 解除 + AUTO_SUPPLEMENT_INSTRUMENTS 機構で 291 items 自動投入 (`ORAIS-001..199` / `ORVIS-001..092`)。IPIP Index 463 のうち **442 (95.5%) カバー**、残 21 件 (Broadbent/Saucier 等 Tedone 不在) は Phase 2.x.C (= IPIP page direct fetch supplement) で別 wedge。 Tedone Table の dump 粒度問題 (= 同 wording の複数 scale 共有を不完全 dump、BIDR/Cognitive-Failures 10 中 8 件のみ等) も Phase 2.x.C 対応。
 - v2.4.5 (2026-05-17): Phase 2.x.C.1+2 完了反映 — IPIP 公式 page direct fetch supplement で主要 9 instrument 完全 fidelity 化。`scripts/audit-ipip-page.ts` (diff tooling) + `scripts/convert-page-to-supplement.ts` (WebFetch 結果 → supplement.json 自動 conversion) を新規実装、`data/ipip-master/ipip-scales-supplement.json` 拡充で BIDR/Cognitive-Failures 1 + HEXACO_PI 24 + VIA 24 + IPIP-IPC 8 + MPQ 12 + NEO 30 + TCI 30 + 16PF 16 + CPI 33 = **178 scales / 1,707 items 補完**。scale_meta 登録 11 scale の IPIP project 由来 4/4 (hexaco_pi/via/ipip_ipc/mpq) は item-level fidelity 100% 達成。Tedone Table dump 粒度問題が主要 instrument では実質解消。残 instrument (BFAS/6FPQ/JPI/HPI/HPI-HIC/AB5C/Buss1980/Foa/Hoyle2002 等) は次 session で同 pipeline 拡張可能。
+- v2.4.6 (2026-05-17): Phase 2.x.D + D.1 完了反映 + 全体整理 — (1) Phase 2.x.D で `scale_hierarchy` table 新設 (= 530 entries, instrument/scale/facet/subfacet 4 階層 tree, scale-item junction (= scales table) と concern 分離). (2) Phase 2.x.D.1 で `canonical_labels` + `canonical_label_implementations` 2 table 新設 (= 276 canonical labels / 547 implementations, IPIP Alphabetical Index "274 Labels for 463 IPIP Scales" を junction table で表現、Daisuke 質問「label とは?」への schema 答え). (3) 全体 schema 概観 4 entity (ipip_items / scales / scale_hierarchy / canonical_labels) + Phase 2.x sub-phase 完了一覧表を ROADMAP 冒頭に追加して整理. constructs first-class 化 (= scoring 互換性破壊 NG) と canonical_labels first-class 化 (= 横断 navigation OK) の本質的な違いを documentation 化。
