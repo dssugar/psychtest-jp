@@ -1,7 +1,7 @@
 # psychtest.jp - 実装ロードマップ
 
-> **最終更新**: 2026-05-16 (v2.1、Phase 2.1 完了反映)
-> **前版**: v2.0 (2026-05-16) ロードマップ見直し / v1.0 (2026-01-20) 心理尺度路線中心
+> **最終更新**: 2026-05-16 (v2.2、Phase 2 を sub-phase 分割 + scale_meta 整理 wedge 追加)
+> **前版**: v2.1 (2026-05-16) Phase 2.1 完了反映 / v2.0 (2026-05-16) ロードマップ見直し / v1.0 (2026-01-20) 心理尺度路線中心
 > **位置づけ**: [project-design.md](./docs/project-design.md) の Phase 設計を実装視点でブレイクダウン
 
 ---
@@ -98,13 +98,34 @@ KPI a (Daisuke deep usage) 達成後に着手判断。現時点では計画に�
 
 spec: `docs/specs/ipip-unified-db-wedge-2026-05.md`
 
+### 2.1.α BigFive 120 訳の facet audit + 修正 🔄 (今 session)
+
+Phase 2.1 直後の品質保証。Sonnet agent で 120 訳を facet 構成概念と突合 → 16 件 (high 5 / medium 8 / low 3) を検出 → high + medium で明確な誤訳のみ反映。
+
+- [x] audit agent 実行 (`/tmp/bigfive-audit-output.json`)
+- [ ] high 5 件 + medium 適用分を `data/bigfive-questions.ts` に反映
+- [ ] `npm run db:seed:local` で ipip_items.ja_text 同期
+
+### 2.1.β `scale_meta` 構築 + IPIP psychometric 整理 (新 wedge、要 office-hours)
+
+「scale として使える形」にするため、α / 採点方法 / category 等を整理。Phase 3.1 (新規 IPIP 尺度 UI 追加) の必須前提。
+
+- [ ] `/office-hours` で wedge spec 化
+- [ ] `migrations/0004_scale_meta.sql`: `scale_meta` table 新設
+  - scale_id PK / category (`multi-construct` | `single-construct`) / total_items / alpha / scoring_rule / source_url / reference / ja_label / ja_description
+- [ ] IPIP 公式 17 inventories の Key ページから psychometric data 取得 (例: `newNEOKey.htm`、`newHEXACOPIKey.htm` 等)
+- [ ] Tedone Table の alpha 値と突合 (= 既存 data の活用)
+- [ ] Multi-construct / Single-construct 区分 (= 36 instruments の分類)
+- [ ] **Self-Concept (現 `data/selfconcept-questions.ts`) の元 IPIP scale 特定 + textEn 追加** もここで対処
+- [ ] seed 拡張 (`scripts/seed-ipip.ts`)
+
 ### 2.2 既存 IPIP 系尺度の内部 migration (UX 維持)
 
-既存 UI / 結果表示はそのまま、内部実装だけ user_responses 書き込みに変更:
+既存 UI / 結果表示はそのまま、内部実装だけ user_responses 書き込みに変更。Self-Concept は 2.1.β 完了が前提 (= textEn 欠如のため)。
 
 - [x] **Big Five (IPIP-NEO-120)** → 完了 (Phase 2.1 内で実装、120/120 Hxxx マッピング達成)
-- [ ] Industriousness (IPIP-300 C4+C5, 20 項目) → adapter 追加で対応予定
-- [ ] Self-Concept (IPIP Self-Consciousness Facet, 8 項目) → adapter 追加で対応予定
+- [ ] **2.2.1 Industriousness (IPIP-300 C4+C5, 20 項目)** → adapter 追加のみ (textEn 完備、2.1.β 待たずに着手可)
+- [ ] **2.2.2 Self-Concept (IPIP Self-Consciousness Facet, 8 項目)** → 2.1.β で textEn 追加 + adapter
 - [ ] 各尺度ページ (`app/[testType]/page.tsx`, `app/results/[testType]/page.tsx`) の内部 fetch を D1 経由に
 - [ ] localStorage と D1 の二重書きは過渡期のみ (Phase 2 完了で localStorage 廃止)
 
@@ -295,9 +316,18 @@ SELECT scale_id, COUNT(*)
 **最優先 (今すぐ着手可能)**:
 1. ~~生年月日 profile 永続化~~ ✅ 完了 (commit 91c210a)
 2. ~~Phase 2.1 IPIP 統一項目 DB~~ ✅ 完了 (commit c34a4ba 系)
-3. Phase 2.2 (Industriousness + Self-Concept) — BigFive と同 pattern で adapter 追加のみ
-4. Phase 2.6 月読 context 進捗 N/M — `lib/uranai/profile-summarizer.ts` 拡張
-5. Phase 2.4 トップ 2 入口ハブ書き換え — `/office-hours` または直接実装
+3. **Phase 2.1.α** BigFive audit 反映 — 16 件中 high+medium で明確分のみ data + DB 同期
+4. **Phase 2.2.1** Industriousness migration — adapter 追加のみ、textEn 完備で即着手可
+5. **Phase 2.6** 月読 context 進捗 N/M — `lib/uranai/profile-summarizer.ts` 拡張
+
+**次 session 候補**:
+- **Phase 2.1.β** scale_meta wedge — `/office-hours` で spec 化推奨 (= α / 採点 / multi vs single 区分整理、Phase 3.1 前提)
+- **Phase 2.2.2** Self-Concept migration — 2.1.β 完了後 (= textEn 追加必要)
+- **Phase 2.4** トップ 2 入口ハブ書き換え — UI 大改修、独立 wedge
+- **Phase 2.3** 非 IPIP 系統合 — scale-specific namespace 設計が要
+
+**別タスク (Phase 2 と並列で要対応)**:
+- **Production deploy**: `db:migrate:remote` が 7403 エラー → wrangler 再認証 必要、その後 migrate + seed + Pages deploy
 
 **Phase 2 着手判断**:
 - 上記 1-3 が回り始めたら Phase 2.1 → 2.6 を順次 wedge 化
@@ -316,4 +346,5 @@ SELECT scale_id, COUNT(*)
 **変更履歴**:
 - v1.0 (2026-01-20): 心理尺度路線中心、PSS / ECR-R / BYOK Chat 計画 — 2026-05 ロードマップ見直しで陳腐化
 - v2.0 (2026-05-16): 占い + 月読 chat 統合路線、IPIP 統一 DB + 朝の儀式 + 2 入口ハブ、KPI a 単独、Phase 4-5 punt
-- v2.1 (2026-05-16): Phase 1.9 (生年月日永続化) + Phase 2.1 (IPIP 統一 DB) 完了反映、Phase 2.2 / 2.4 / 2.6 を次の着手候補に
+- v2.1 (2026-05-16): Phase 1.9 (生年月日永続化) + Phase 2.1 (IPIP 統一 DB) 完了反映
+- v2.2 (2026-05-16): Phase 2 を sub-phase 分割 (= 2.1.α audit / 2.1.β scale_meta wedge / 2.2 を 2.2.1 + 2.2.2 へ細分化)、Production deploy を独立タスクに分離
