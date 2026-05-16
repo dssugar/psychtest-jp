@@ -24,13 +24,23 @@ import { extractTopFacets, extractTopTraits, bigFiveToPercentage } from "@/lib/a
 export interface SummarizerInput {
   profile: UserProfile | null | undefined;
   phq9K6Optin: boolean;
+  /**
+   * IPIP 統一 DB user_responses の総回答数 (Phase 2.6).
+   * 朝の儀式 / 月読会話駆動 / 単発尺度 すべての合算。詩的に「日々の歩み」section へ変換。
+   * undefined なら section ごと skip (= 後方互換、Phase 2.6 以前の呼び出し用).
+   */
+  totalIpipResponses?: number;
 }
 
 /**
  * profile 全体 → 月読向け詩的サマリー. 各セクションを改行で連結.
  * profile が null / テスト未完了の section は skip.
  */
-export function summarizeProfile({ profile, phq9K6Optin }: SummarizerInput): string {
+export function summarizeProfile({
+  profile,
+  phq9K6Optin,
+  totalIpipResponses,
+}: SummarizerInput): string {
   if (!profile) {
     return "（この方は、まだ自らの輪郭を月に映していない。共に紐解いていく時です。）";
   }
@@ -70,11 +80,37 @@ export function summarizeProfile({ profile, phq9K6Optin }: SummarizerInput): str
     if (mentalHealth) parts.push(mentalHealth);
   }
 
+  // 7. IPIP 進捗 (Phase 2.6). 数値も尺度名も出さず、積層の厚みだけを詩的に表現.
+  if (typeof totalIpipResponses === "number" && totalIpipResponses > 0) {
+    const progress = summarizeIpipProgress(totalIpipResponses);
+    if (progress) parts.push(progress);
+  }
+
   if (parts.length === 0) {
     return "（この方は、まだ自らの輪郭を月に映していない。共に紐解いていく時です。）";
   }
 
   return parts.join("\n");
+}
+
+/**
+ * IPIP 統一 DB の総回答数を詩的「日々の歩み」に変換 (Phase 2.6).
+ *
+ * 数値 / 尺度名 / 朝の儀式・月読会話など source は **絶対に出さない**.
+ * 月読の役割は「あなたを知っている感」を演出することであり、計測アルゴリズムの内訳を
+ * 開示することではない。占い師ペルソナの自然性を保つため抽象化のみ。
+ *
+ * 段階分け (= 単純な閾値):
+ *   1-29  : 細やかすぎて触れない (= 空文字を返す、persona 上「ちょっとだけやった」言及は不自然)
+ *   30-199: 序章
+ *   200-499: 厚み
+ *   500+ : 深く編まれた像
+ */
+function summarizeIpipProgress(n: number): string {
+  if (n < 30) return "";
+  if (n < 200) return "【日々の歩み】少しずつ深まる像、まだ序章にいる。";
+  if (n < 500) return "【日々の歩み】幾日もの問いを重ねた厚みが滲んでいる。";
+  return "【日々の歩み】時の積層を抱えた、深く編まれた像。";
 }
 
 // ============================================================

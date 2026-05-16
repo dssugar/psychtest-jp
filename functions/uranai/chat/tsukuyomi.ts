@@ -27,6 +27,7 @@ import { wrapUserMessage, sanitizeUserContent } from "../../_lib/sanitize";
 import { checkEnv, callVLLM, jsonResponse, type VLLMEnv, type ChatMsg } from "../../_lib/vllm";
 import {
   appendTurn,
+  countUserResponses,
   getProfile,
   getRecentTurns,
   nextTurnId,
@@ -97,11 +98,16 @@ export const onRequest: PagesFunction<Env> = async (context) => {
       // corrupt JSON は無視 (profile が無い場合と同じ扱い).
     }
   }
+  // Phase 2.6: IPIP 統一 DB の総回答数を進捗 context として渡す (= 詩的「日々の歩み」section へ変換).
+  // 数値・尺度名は月読に直接渡らず、profile-summarizer 内で段階化された詩的表現に翻訳される.
+  const totalIpipResponses = await countUserResponses(db, deviceId);
+
   const profileSummary = summarizeProfile({
     profile: parsedTestResults
       ? ({ tests: parsedTestResults, metadata: { createdAt: "", updatedAt: "", version: "" } } as any)
       : null,
     phq9K6Optin,
+    totalIpipResponses,
   });
 
   // 2. system prompt 組立
