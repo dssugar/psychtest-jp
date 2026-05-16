@@ -24,6 +24,7 @@ on:
           - skip_rule
           - disable_bfm
           - both
+          - inspect
 
 jobs:
   setup:
@@ -138,6 +139,39 @@ jobs:
           fi
           AFTER_FM=$(echo "$RESP" | jq -r '.result.fight_mode')
           echo "::notice::Bot Fight Mode now: $AFTER_FM (要 false)"
+
+      - name: inspect — dump zone security state
+        if: always()
+        run: |
+          set -e
+          echo "### Plan / zone basics"
+          curl -fsS "$CF_API/zones/$ZONE_ID" -H "Authorization: Bearer $CF_TOKEN" \
+            | jq '.result | {name, plan: .plan.name, status}'
+
+          echo ""
+          echo "### Bot Management state"
+          curl -fsS "$CF_API/zones/$ZONE_ID/bot_management" \
+            -H "Authorization: Bearer $CF_TOKEN" \
+            | jq '.result // .errors'
+
+          echo ""
+          echo "### Security Level"
+          curl -fsS "$CF_API/zones/$ZONE_ID/settings/security_level" \
+            -H "Authorization: Bearer $CF_TOKEN" \
+            | jq '.result | {id, value}'
+
+          echo ""
+          echo "### Browser Integrity Check"
+          curl -fsS "$CF_API/zones/$ZONE_ID/settings/browser_check" \
+            -H "Authorization: Bearer $CF_TOKEN" \
+            | jq '.result | {id, value}'
+
+          echo ""
+          echo "### Custom WAF rules (entrypoint)"
+          curl -fsS "$CF_API/zones/$ZONE_ID/rulesets/phases/http_request_firewall_custom/entrypoint" \
+            -H "Authorization: Bearer $CF_TOKEN" \
+            | jq '.result | {id, name, rules: [.rules[]? | {description, action, expression, action_parameters, enabled}]}' \
+            || echo "(entrypoint 404 — no custom rules ruleset yet)"
 
       - name: summary
         if: always()
