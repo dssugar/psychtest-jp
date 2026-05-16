@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  月夜の塔 背景 PLACEHOLDER.
+  Daisuke が ComfyUI で生成した背景 (PNG/WebP) に差し替える.
+  差し替え後は app/uranai/chat/tsukuyomi/page.tsx の bg src を更新.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1920" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0d0d1f"/>
+      <stop offset="40%" stop-color="#1a1a2e"/>
+      <stop offset="70%" stop-color="#23234a"/>
+      <stop offset="100%" stop-color="#0d0d1f"/>
+    </linearGradient>
+    <radialGradient id="moonglow" cx="50%" cy="22%" r="40%">
+      <stop offset="0%" stop-color="#f0e9d6" stop-opacity="0.5"/>
+      <stop offset="35%" stop-color="#f0e9d6" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#f0e9d6" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1080" height="1920" fill="url(#sky)"/>
+  <rect width="1080" height="1920" fill="url(#moonglow)"/>
+
+  <!-- 月 -->
+  <circle cx="540" cy="420" r="110" fill="#f0e9d6" opacity="0.85"/>
+  <circle cx="540" cy="420" r="100" fill="#f5efd9" opacity="0.6"/>
+
+  <!-- 星 (random sprinkle) -->
+  <g fill="#f0e9d6" opacity="0.7">
+    <circle cx="120" cy="180" r="2"/>
+    <circle cx="280" cy="100" r="1.5"/>
+    <circle cx="430" cy="220" r="1"/>
+    <circle cx="780" cy="180" r="2.5"/>
+    <circle cx="900" cy="80" r="1.5"/>
+    <circle cx="980" cy="280" r="2"/>
+    <circle cx="180" cy="380" r="1"/>
+    <circle cx="850" cy="450" r="1.5"/>
+    <circle cx="60" cy="540" r="2"/>
+    <circle cx="1020" cy="600" r="1.5"/>
+    <circle cx="200" cy="660" r="1"/>
+    <circle cx="720" cy="700" r="2"/>
+  </g>
+
+  <!-- 塔のシルエット -->
+  <path d="M 460 1920
+           L 460 950
+           L 480 920
+           L 480 850
+           L 470 820
+           L 530 800
+           L 590 820
+           L 600 850
+           L 600 920
+           L 620 950
+           L 620 1920 Z"
+        fill="#0a0a14" opacity="0.92"/>
+
+  <!-- 塔の窓 (灯り) -->
+  <rect x="525" y="900" width="30" height="40" fill="#f7c45c" opacity="0.5" rx="2"/>
+  <rect x="525" y="1000" width="30" height="40" fill="#f7c45c" opacity="0.3" rx="2"/>
+  <rect x="525" y="1100" width="30" height="40" fill="#f7c45c" opacity="0.4" rx="2"/>
+
+  <!-- 地平線の霞 -->
+  <rect x="0" y="1700" width="1080" height="220" fill="#0d0d1f" opacity="0.7"/>
+
+  <text x="540" y="1880" text-anchor="middle" font-family="monospace" font-size="14"
+        fill="#f0e9d6" opacity="0.3">PLACEHOLDER — replace with ComfyUI render</text>
+</svg>

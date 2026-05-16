@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  月読 (つくよみ) default 立ち絵 PLACEHOLDER.
+  Daisuke が ComfyUI で生成した立ち絵 (PNG/WebP) に差し替える.
+  差し替え後は app/uranai/chat/tsukuyomi/page.tsx の src を更新.
+  生成 prompt 例は docs/handoff/2026-05-16-uranai-alpha-asset-prompts.md を参照.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 720" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1a1a2e" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#1a1a2e" stop-opacity="0.85"/>
+    </linearGradient>
+    <radialGradient id="moon" cx="50%" cy="20%" r="35%">
+      <stop offset="0%" stop-color="#f0e9d6" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#f0e9d6" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="480" height="720" fill="url(#bg)"/>
+  <circle cx="240" cy="160" r="60" fill="#f0e9d6" opacity="0.95"/>
+  <circle cx="240" cy="160" r="140" fill="url(#moon)"/>
+
+  <!-- 月読のシルエット (placeholder) -->
+  <path d="M 240 280
+           C 200 280 175 310 175 350
+           C 175 380 195 405 220 415
+           L 200 450
+           C 175 460 155 485 155 520
+           L 155 720
+           L 325 720
+           L 325 520
+           C 325 485 305 460 280 450
+           L 260 415
+           C 285 405 305 380 305 350
+           C 305 310 280 280 240 280 Z"
+        fill="#1a1a2e" opacity="0.85" stroke="#f0e9d6" stroke-width="2" stroke-opacity="0.4"/>
+
+  <!-- 顔の輪郭ヒント -->
+  <ellipse cx="240" cy="340" rx="40" ry="50" fill="#f0e9d6" opacity="0.15"/>
+
+  <text x="240" y="690" text-anchor="middle" font-family="serif" font-size="22"
+        fill="#f0e9d6" opacity="0.7">月読 (つくよみ)</text>
+  <text x="240" y="710" text-anchor="middle" font-family="monospace" font-size="10"
+        fill="#f0e9d6" opacity="0.4">PLACEHOLDER — replace with ComfyUI render</text>
+</svg>
