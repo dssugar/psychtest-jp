@@ -44,6 +44,7 @@ async function handleGet(context: Parameters<PagesFunction<Env>>[0]): Promise<Re
       nickname: null,
       testResults: null,
       phq9K6Optin: false,
+      birthDate: null,
       createdAt: 0,
       updatedAt: 0,
     };
@@ -64,6 +65,7 @@ async function handleGet(context: Parameters<PagesFunction<Env>>[0]): Promise<Re
     nickname: row.nickname,
     testResults,
     phq9K6Optin: !!row.phq9_k6_optin,
+    birthDate: row.birth_date,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
@@ -75,6 +77,7 @@ interface PutBody {
   nickname?: string | null;
   testResults?: unknown;
   phq9K6Optin?: boolean;
+  birthDate?: string | null;
 }
 
 async function handlePut(context: Parameters<PagesFunction<Env>>[0]): Promise<Response> {
@@ -87,10 +90,23 @@ async function handlePut(context: Parameters<PagesFunction<Env>>[0]): Promise<Re
   const deviceId = typeof body.deviceId === "string" ? body.deviceId.trim() : "";
   if (!deviceId) return jsonResponse({ error: "deviceId required" }, 400);
 
+  // birthDate の validation: 'YYYY-MM-DD' format only.
+  let birthDateParam: string | null | undefined = undefined;
+  if (body.birthDate !== undefined) {
+    if (body.birthDate === null || body.birthDate === "") {
+      birthDateParam = null;
+    } else if (typeof body.birthDate === "string" && /^\d{4}-\d{2}-\d{2}$/.test(body.birthDate)) {
+      birthDateParam = body.birthDate;
+    } else {
+      return jsonResponse({ error: "birthDate must be 'YYYY-MM-DD'" }, 400);
+    }
+  }
+
   await upsertProfile(context.env.DB, deviceId, {
     nickname: body.nickname === undefined ? undefined : body.nickname,
     testResults: body.testResults === undefined ? undefined : body.testResults,
     phq9K6Optin: body.phq9K6Optin === undefined ? undefined : !!body.phq9K6Optin,
+    birthDate: birthDateParam,
   });
 
   // 更新後の最新 state を返す.
@@ -108,6 +124,7 @@ async function handlePut(context: Parameters<PagesFunction<Env>>[0]): Promise<Re
     nickname: after?.nickname ?? null,
     testResults,
     phq9K6Optin: !!after?.phq9_k6_optin,
+    birthDate: after?.birth_date ?? null,
     createdAt: after?.created_at ?? 0,
     updatedAt: after?.updated_at ?? 0,
   };

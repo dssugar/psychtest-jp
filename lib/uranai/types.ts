@@ -83,6 +83,7 @@ export interface ProfilePayload {
   nickname: string | null;
   testResults: unknown | null; // UserProfile.tests を unknown 化 (server は中身を解釈しない)
   phq9K6Optin: boolean;
+  birthDate: string | null; // 'YYYY-MM-DD' format, null = 未設定. /uranai/draw の毎回入力を解消.
   createdAt: number;
   updatedAt: number;
 }

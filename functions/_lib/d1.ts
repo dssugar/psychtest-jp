@@ -15,6 +15,7 @@ export interface ProfileRow {
   nickname: string | null;
   test_results: string | null;
   phq9_k6_optin: number;
+  birth_date: string | null;
   created_at: number;
   updated_at: number;
 }
@@ -68,6 +69,7 @@ export async function upsertProfile(
     nickname?: string | null;
     testResults?: unknown | null;
     phq9K6Optin?: boolean;
+    birthDate?: string | null;
   },
 ): Promise<void> {
   const now = Date.now();
@@ -81,18 +83,20 @@ export async function upsertProfile(
     patch.testResults === undefined ? null : JSON.stringify(patch.testResults);
   const phq9K6OptinParam =
     patch.phq9K6Optin === undefined ? null : patch.phq9K6Optin ? 1 : 0;
+  const birthDateParam = patch.birthDate === undefined ? null : patch.birthDate;
 
   await db
     .prepare(
-      `INSERT INTO profiles (device_id, nickname, test_results, phq9_k6_optin, created_at, updated_at)
-       VALUES (?1, ?2, ?3, COALESCE(?4, 0), ?5, ?5)
+      `INSERT INTO profiles (device_id, nickname, test_results, phq9_k6_optin, birth_date, created_at, updated_at)
+       VALUES (?1, ?2, ?3, COALESCE(?4, 0), ?5, ?6, ?6)
        ON CONFLICT(device_id) DO UPDATE SET
          nickname      = COALESCE(excluded.nickname,      profiles.nickname),
          test_results  = COALESCE(excluded.test_results,  profiles.test_results),
          phq9_k6_optin = COALESCE(excluded.phq9_k6_optin, profiles.phq9_k6_optin),
+         birth_date    = COALESCE(excluded.birth_date,    profiles.birth_date),
          updated_at    = excluded.updated_at`,
     )
-    .bind(deviceId, nicknameParam, testResultsParam, phq9K6OptinParam, now)
+    .bind(deviceId, nicknameParam, testResultsParam, phq9K6OptinParam, birthDateParam, now)
     .run();
 }
 

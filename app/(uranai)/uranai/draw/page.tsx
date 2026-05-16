@@ -8,6 +8,7 @@ import { drawThreeCards, type DrawnCard } from "@/data/tarot-cards";
 import { calcNumerology, type NumerologyResult } from "@/data/numerology";
 import { calcKyusei, type KyuseiResult } from "@/data/kyusei";
 import { getOrCreateDeviceId } from "@/lib/uranai/device-id";
+import type { ProfilePayload } from "@/lib/uranai/types";
 
 interface DrawResult {
   cards: DrawnCard[];
@@ -31,13 +32,30 @@ function parseBirthDate(value: string): Date | null {
 export default function UranaiDrawPage() {
   const [deviceId, setDeviceId] = useState<string>("");
   const [birth, setBirth] = useState("");
+  const [savedBirthDate, setSavedBirthDate] = useState<string | null>(null); // profile に既に保存済か
   const [result, setResult] = useState<DrawResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [shareCopied, setShareCopied] = useState(false);
 
   useEffect(() => {
-    setDeviceId(getOrCreateDeviceId());
+    const id = getOrCreateDeviceId();
+    setDeviceId(id);
+    if (!id) return;
+    // profile に生年月日が既に保存されていれば prefill (毎回入力する UX を解消).
+    void (async () => {
+      try {
+        const res = await fetch(`/uranai/profile?deviceId=${encodeURIComponent(id)}`);
+        if (!res.ok) return; // profile fetch 失敗は無視 (= 毎回入力 fallback で動く).
+        const p = (await res.json()) as ProfilePayload;
+        if (p.birthDate) {
+          setBirth(p.birthDate);
+          setSavedBirthDate(p.birthDate);
+        }
+      } catch {
+        // network error は無視. 毎回入力で動く.
+      }
+    })();
   }, []);
 
   async function handleDraw() {
@@ -84,6 +102,17 @@ export default function UranaiDrawPage() {
         throw new Error(data.error ?? "解釈が空でした");
       }
       setResult({ cards, numerology, kyusei, interpretation: data.interpretation, resultId: data.resultId });
+
+      // 初回 or 変更時: profile に生年月日を保存して次回以降の入力を省く.
+      if (birth !== savedBirthDate) {
+        void fetch("/uranai/profile", {
+          method: "PUT",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ deviceId, birthDate: birth }),
+        }).then(() => setSavedBirthDate(birth)).catch(() => {
+          // 保存失敗は UX に致命的ではない (= 次回また入力するだけ). silent.
+        });
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : "未知のエラー");
     } finally {
@@ -133,6 +162,11 @@ export default function UranaiDrawPage() {
               <label className="block">
                 <span className="text-sm font-bold uppercase tracking-wide text-brutal-gray-800 font-mono">
                   生年月日
+                  {savedBirthDate && (
+                    <span className="ml-2 text-xs font-normal text-brutal-gray-700 normal-case">
+                      (保存済 / 変更は <Link href="/uranai/settings" className="underline">settings</Link> から)
+                    </span>
+                  )}
                 </span>
                 <input
                   type="date"
@@ -146,6 +180,7 @@ export default function UranaiDrawPage() {
               <p className="mt-4 text-sm text-brutal-gray-800 leading-relaxed">
                 生年月日から数秘術・九星気学を計算し、タロット 3 枚引きと並べて
                 共通テーマをひとつの物語として読み解きます。
+                {!savedBirthDate && "初回入力後は profile に保存され、次回からは自動入力されます。"}
               </p>
               <div className="mt-6 text-center">
                 <button

@@ -18,6 +18,7 @@ export default function UranaiSettingsPage() {
 
   const [nicknameDraft, setNicknameDraft] = useState<string>("");
   const [optinDraft, setOptinDraft] = useState<boolean>(false);
+  const [birthDateDraft, setBirthDateDraft] = useState<string>("");
 
   useEffect(() => {
     const id = getOrCreateDeviceId();
@@ -36,6 +37,7 @@ export default function UranaiSettingsPage() {
       setProfile(p);
       setNicknameDraft(p.nickname ?? "");
       setOptinDraft(p.phq9K6Optin);
+      setBirthDateDraft(p.birthDate ?? "");
     } catch (e) {
       setError(e instanceof Error ? e.message : "未知のエラー");
     } finally {
@@ -45,6 +47,12 @@ export default function UranaiSettingsPage() {
 
   async function handleSave() {
     if (!deviceId) return;
+    // birth_date format validation: YYYY-MM-DD or 空文字 (= 未設定にしたい).
+    const birthTrimmed = birthDateDraft.trim();
+    if (birthTrimmed && !/^\d{4}-\d{2}-\d{2}$/.test(birthTrimmed)) {
+      setError("生年月日は YYYY-MM-DD 形式で入力してください");
+      return;
+    }
     setSaving(true);
     setError(null);
     setNotice(null);
@@ -57,6 +65,7 @@ export default function UranaiSettingsPage() {
           deviceId,
           nickname: nicknameDraft.trim() || null,
           phq9K6Optin: optinDraft,
+          birthDate: birthTrimmed || null,
           testResults: local?.tests ?? null,
         }),
       });
@@ -176,6 +185,21 @@ export default function UranaiSettingsPage() {
                   onChange={(e) => setNicknameDraft(e.target.value)}
                   maxLength={32}
                   placeholder="未設定"
+                  className="mt-3 w-full border-4 border-brutal-black bg-brutal-white px-4 py-3 text-base font-mono focus:outline-none focus:ring-4 focus:ring-viz-yellow"
+                />
+              </Card>
+
+              <Card variant="white" padding="md">
+                <DataBadge color="black" size="sm">BIRTH DATE</DataBadge>
+                <p className="mt-2 text-xs text-brutal-gray-700">
+                  生年月日。数秘術・九星気学の計算に使われます (空欄なら /uranai/draw で都度入力)。
+                </p>
+                <input
+                  type="date"
+                  value={birthDateDraft}
+                  onChange={(e) => setBirthDateDraft(e.target.value)}
+                  max={new Date().toISOString().slice(0, 10)}
+                  min="1900-01-01"
                   className="mt-3 w-full border-4 border-brutal-black bg-brutal-white px-4 py-3 text-base font-mono focus:outline-none focus:ring-4 focus:ring-viz-yellow"
                 />
               </Card>
