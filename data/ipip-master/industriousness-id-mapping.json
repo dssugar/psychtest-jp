@@ -1,0 +1,127 @@
+{
+  "generatedAt": "2026-05-16T13:39:09.878Z",
+  "matched": 20,
+  "unmatched": 0,
+  "items": [
+    {
+      "bigfiveId": 1,
+      "facetName": "c4_achievement",
+      "textEn": "Go straight for the goal",
+      "matchedItemId": "H365"
+    },
+    {
+      "bigfiveId": 2,
+      "facetName": "c4_achievement",
+      "textEn": "Work hard",
+      "matchedItemId": "H1206"
+    },
+    {
+      "bigfiveId": 3,
+      "facetName": "c4_achievement",
+      "textEn": "Turn plans into actions",
+      "matchedItemId": "H402"
+    },
+    {
+      "bigfiveId": 4,
+      "facetName": "c4_achievement",
+      "textEn": "Plunge into tasks with all my heart",
+      "matchedItemId": "H69"
+    },
+    {
+      "bigfiveId": 5,
+      "facetName": "c4_achievement",
+      "textEn": "Do more than what's expected of me",
+      "matchedItemId": "H2014"
+    },
+    {
+      "bigfiveId": 6,
+      "facetName": "c4_achievement",
+      "textEn": "Set high standards for myself and others",
+      "matchedItemId": "E140"
+    },
+    {
+      "bigfiveId": 7,
+      "facetName": "c4_achievement",
+      "textEn": "Demand quality",
+      "matchedItemId": "H288"
+    },
+    {
+      "bigfiveId": 8,
+      "facetName": "c4_achievement",
+      "textEn": "Am not highly motivated to succeed",
+      "matchedItemId": "X110"
+    },
+    {
+      "bigfiveId": 9,
+      "facetName": "c4_achievement",
+      "textEn": "Do just enough work to get by",
+      "matchedItemId": "X115"
+    },
+    {
+      "bigfiveId": 10,
+      "facetName": "c4_achievement",
+      "textEn": "Put little time and effort into my work",
+      "matchedItemId": "X167"
+    },
+    {
+      "bigfiveId": 11,
+      "facetName": "c5_discipline",
+      "textEn": "Get chores done right away",
+      "matchedItemId": "E119"
+    },
+    {
+      "bigfiveId": 12,
+      "facetName": "c5_discipline",
+      "textEn": "Am always prepared",
+      "matchedItemId": "X87"
+    },
+    {
+      "bigfiveId": 13,
+      "facetName": "c5_discipline",
+      "textEn": "Start tasks right away",
+      "matchedItemId": "H511"
+    },
+    {
+      "bigfiveId": 14,
+      "facetName": "c5_discipline",
+      "textEn": "Get to work at once",
+      "matchedItemId": "H517"
+    },
+    {
+      "bigfiveId": 15,
+      "facetName": "c5_discipline",
+      "textEn": "Carry out my plans",
+      "matchedItemId": "H258"
+    },
+    {
+      "bigfiveId": 16,
+      "facetName": "c5_discipline",
+      "textEn": "Find it difficult to get down to work",
+      "matchedItemId": "H1171"
+    },
+    {
+      "bigfiveId": 17,
+      "facetName": "c5_discipline",
+      "textEn": "Waste my time",
+      "matchedItemId": "H1186"
+    },
+    {
+      "bigfiveId": 18,
+      "facetName": "c5_discipline",
+      "textEn": "Need a push to get started",
+      "matchedItemId": "H969"
+    },
+    {
+      "bigfiveId": 19,
+      "facetName": "c5_discipline",
+      "textEn": "Have difficulty starting tasks",
+      "matchedItemId": "H621"
+    },
+    {
+      "bigfiveId": 20,
+      "facetName": "c5_discipline",
+      "textEn": "Postpone decisions",
+      "matchedItemId": "H1180"
+    }
+  ]
+}

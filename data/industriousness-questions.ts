@@ -24,6 +24,8 @@ export interface IndustriousnessQuestion extends BaseQuestion {
   textEn: string;
   subscale: "c4_achievement" | "c5_discipline";
   subscaleLabel: string;
+  /** IPIP 公式 item ID. Phase 2.2.1 で IPIP 統一 DB に紐付け (scripts/seed-ipip.ts). */
+  hxxx?: string;
 }
 
 /**
@@ -48,6 +50,7 @@ export const industriousnessQuestions: IndustriousnessQuestion[] = [
     textEn: "Go straight for the goal",
     subscale: "c4_achievement",
     subscaleLabel: "達成動機",
+    hxxx: "H365",
     reverse: false,
   },
   {
@@ -57,6 +60,7 @@ export const industriousnessQuestions: IndustriousnessQuestion[] = [
     textEn: "Work hard",
     subscale: "c4_achievement",
     subscaleLabel: "達成動機",
+    hxxx: "H1206",
     reverse: false,
   },
   {
@@ -66,6 +70,7 @@ export const industriousnessQuestions: IndustriousnessQuestion[] = [
     textEn: "Turn plans into actions",
     subscale: "c4_achievement",
     subscaleLabel: "達成動機",
+    hxxx: "H402",
     reverse: false,
   },
   {
@@ -75,6 +80,7 @@ export const industriousnessQuestions: IndustriousnessQuestion[] = [
     textEn: "Plunge into tasks with all my heart",
     subscale: "c4_achievement",
     subscaleLabel: "達成動機",
+    hxxx: "H69",
     reverse: false,
   },
   {
@@ -84,6 +90,7 @@ export const industriousnessQuestions: IndustriousnessQuestion[] = [
     textEn: "Do more than what's expected of me",
     subscale: "c4_achievement",
     subscaleLabel: "達成動機",
+    hxxx: "H2014",
     reverse: false,
   },
   {
@@ -93,6 +100,7 @@ export const industriousnessQuestions: IndustriousnessQuestion[] = [
     textEn: "Set high standards for myself and others",
     subscale: "c4_achievement",
     subscaleLabel: "達成動機",
+    hxxx: "E140",
     reverse: false,
   },
   {
@@ -102,6 +110,7 @@ export const industriousnessQuestions: IndustriousnessQuestion[] = [
     textEn: "Demand quality",
     subscale: "c4_achievement",
     subscaleLabel: "達成動機",
+    hxxx: "H288",
     reverse: false,
   },
   {
@@ -111,6 +120,7 @@ export const industriousnessQuestions: IndustriousnessQuestion[] = [
     textEn: "Am not highly motivated to succeed",
     subscale: "c4_achievement",
     subscaleLabel: "達成動機",
+    hxxx: "X110",
     reverse: true,
   },
   {
@@ -120,6 +130,7 @@ export const industriousnessQuestions: IndustriousnessQuestion[] = [
     textEn: "Do just enough work to get by",
     subscale: "c4_achievement",
     subscaleLabel: "達成動機",
+    hxxx: "X115",
     reverse: true,
   },
   {
@@ -129,6 +140,7 @@ export const industriousnessQuestions: IndustriousnessQuestion[] = [
     textEn: "Put little time and effort into my work",
     subscale: "c4_achievement",
     subscaleLabel: "達成動機",
+    hxxx: "X167",
     reverse: true,
   },
   {
@@ -138,6 +150,7 @@ export const industriousnessQuestions: IndustriousnessQuestion[] = [
     textEn: "Get chores done right away",
     subscale: "c5_discipline",
     subscaleLabel: "自己鍛錬",
+    hxxx: "E119",
     reverse: false,
   },
   {
@@ -147,6 +160,7 @@ export const industriousnessQuestions: IndustriousnessQuestion[] = [
     textEn: "Am always prepared",
     subscale: "c5_discipline",
     subscaleLabel: "自己鍛錬",
+    hxxx: "X87",
     reverse: false,
   },
   {
@@ -156,6 +170,7 @@ export const industriousnessQuestions: IndustriousnessQuestion[] = [
     textEn: "Start tasks right away",
     subscale: "c5_discipline",
     subscaleLabel: "自己鍛錬",
+    hxxx: "H511",
     reverse: false,
   },
   {
@@ -165,6 +180,7 @@ export const industriousnessQuestions: IndustriousnessQuestion[] = [
     textEn: "Get to work at once",
     subscale: "c5_discipline",
     subscaleLabel: "自己鍛錬",
+    hxxx: "H517",
     reverse: false,
   },
   {
@@ -174,6 +190,7 @@ export const industriousnessQuestions: IndustriousnessQuestion[] = [
     textEn: "Carry out my plans",
     subscale: "c5_discipline",
     subscaleLabel: "自己鍛錬",
+    hxxx: "H258",
     reverse: false,
   },
   {
@@ -183,6 +200,7 @@ export const industriousnessQuestions: IndustriousnessQuestion[] = [
     textEn: "Find it difficult to get down to work",
     subscale: "c5_discipline",
     subscaleLabel: "自己鍛錬",
+    hxxx: "H1171",
     reverse: true,
   },
   {
@@ -192,6 +210,7 @@ export const industriousnessQuestions: IndustriousnessQuestion[] = [
     textEn: "Waste my time",
     subscale: "c5_discipline",
     subscaleLabel: "自己鍛錬",
+    hxxx: "H1186",
     reverse: true,
   },
   {
@@ -201,6 +220,7 @@ export const industriousnessQuestions: IndustriousnessQuestion[] = [
     textEn: "Need a push to get started",
     subscale: "c5_discipline",
     subscaleLabel: "自己鍛錬",
+    hxxx: "H969",
     reverse: true,
   },
   {
@@ -210,6 +230,7 @@ export const industriousnessQuestions: IndustriousnessQuestion[] = [
     textEn: "Have difficulty starting tasks",
     subscale: "c5_discipline",
     subscaleLabel: "自己鍛錬",
+    hxxx: "H621",
     reverse: true,
   },
   {
@@ -219,6 +240,7 @@ export const industriousnessQuestions: IndustriousnessQuestion[] = [
     textEn: "Postpone decisions",
     subscale: "c5_discipline",
     subscaleLabel: "自己鍛錬",
+    hxxx: "H1180",
     reverse: true,
   },
 ];

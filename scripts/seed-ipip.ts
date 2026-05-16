@@ -24,6 +24,7 @@ import * as XLSX from "xlsx";
 import { readFileSync, writeFileSync, mkdirSync } from "fs";
 import { resolve, dirname } from "path";
 import { bigFiveQuestions } from "../data/bigfive-questions";
+import { industriousnessQuestions } from "../data/industriousness-questions";
 
 // ============================================================
 // Paths
@@ -36,6 +37,7 @@ const TRANSLATION_CSV = resolve(ROOT, "data/ipip-master/ipip-translation-1941.cs
 const CLAUDE_TRANSLATION_JSON = resolve(ROOT, "data/ipip-master/claude-translation-2202.json");
 const SQL_OUT = resolve(ROOT, "scripts/.cache/seed-ipip.sql");
 const BIGFIVE_MAPPING_OUT = resolve(ROOT, "data/ipip-master/bigfive-id-mapping.json");
+const INDUSTRIOUSNESS_MAPPING_OUT = resolve(ROOT, "data/ipip-master/industriousness-id-mapping.json");
 
 // ============================================================
 // Utilities
@@ -387,6 +389,62 @@ function build() {
 
   sql.push(...bigfiveSql);
 
+  // 5.5. Industriousness 20 ↔ Hxxx mapping + scales(scale_id='industriousness')
+  //      bigfive と同 pattern. 20/20 完全マッチ確認済 (Phase 2.2.1).
+  log.push("");
+  log.push("=== Industriousness 20 ↔ Hxxx mapping ===");
+  const industMapping: BigFiveMapping = {
+    generatedAt: new Date().toISOString(),
+    matched: 0,
+    unmatched: 0,
+    items: [],
+  };
+  const industSql: string[] = [];
+  industSql.push("");
+  industSql.push("-- scales (scale_id='industriousness', 20 items from IPIP-300 C4+C5)");
+  industSql.push("-- ja_text は industriousness-questions.ts の訳で上書き.");
+  let industJaOverwritten = 0;
+  let industJaPopulated = 0;
+  for (const q of industriousnessQuestions) {
+    const textEn = q.textEn ?? "";
+    let itemId: string | null = null;
+    if (textEn) itemId = normEnToId.get(normalizeEn(textEn)) ?? null;
+
+    if (itemId) {
+      industMapping.matched++;
+      const key = q.reverse ? -1 : 1;
+      industSql.push(
+        `INSERT OR REPLACE INTO scales (scale_id, instrument, item_id, key, label, alpha) VALUES ('industriousness', 'IPIP-300', ${sqlStr(itemId)}, ${key}, ${sqlStr(q.subscale)}, NULL);`,
+      );
+      const hadJa = jaByItemId.has(itemId);
+      industSql.push(
+        `UPDATE ipip_items SET ja_text = ${sqlStr(q.text)} WHERE item_id = ${sqlStr(itemId)};`,
+      );
+      if (hadJa) industJaOverwritten++;
+      else industJaPopulated++;
+    } else {
+      industMapping.unmatched++;
+      const legacyId = `IND_${String(q.id).padStart(3, "0")}`;
+      industSql.push(
+        `INSERT OR REPLACE INTO ipip_items (item_id, en_text, ja_text, source, created_at) VALUES (${sqlStr(legacyId)}, ${sqlStr(textEn || q.text)}, ${sqlStr(q.text)}, 'legacy_industriousness', ${now});`,
+      );
+      const key = q.reverse ? -1 : 1;
+      industSql.push(
+        `INSERT OR REPLACE INTO scales (scale_id, instrument, item_id, key, label, alpha) VALUES ('industriousness', 'IPIP-300', ${sqlStr(legacyId)}, ${key}, ${sqlStr(q.subscale)}, NULL);`,
+      );
+      itemId = legacyId;
+    }
+    industMapping.items.push({
+      bigfiveId: q.id,
+      facetName: q.subscale,
+      textEn,
+      matchedItemId: itemId,
+    });
+  }
+  log.push(`industriousness matched: ${industMapping.matched} / 20, unmatched (legacy fallback): ${industMapping.unmatched}`);
+  log.push(`industriousness ja_text override: ${industJaOverwritten} overwrote, ${industJaPopulated} populated NULL`);
+  sql.push(...industSql);
+
   // 6. SQL ファイル + mapping JSON を出力
   mkdirSync(dirname(SQL_OUT), { recursive: true });
   writeFileSync(SQL_OUT, sql.join("\n") + "\n", "utf-8");
@@ -394,6 +452,8 @@ function build() {
 
   writeFileSync(BIGFIVE_MAPPING_OUT, JSON.stringify(mapping, null, 2) + "\n", "utf-8");
   log.push(`bigfive mapping: ${BIGFIVE_MAPPING_OUT}`);
+  writeFileSync(INDUSTRIOUSNESS_MAPPING_OUT, JSON.stringify(industMapping, null, 2) + "\n", "utf-8");
+  log.push(`industriousness mapping: ${INDUSTRIOUSNESS_MAPPING_OUT}`);
 
   // 7. summary log
   console.log(log.join("\n"));

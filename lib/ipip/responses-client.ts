@@ -10,24 +10,37 @@
  */
 
 import { bigFiveQuestions } from "@/data/bigfive-questions";
+import { industriousnessQuestions } from "@/data/industriousness-questions";
 import { getOrCreateDeviceId } from "@/lib/uranai/device-id";
 import type { TestType } from "@/lib/storage";
 
 /**
- * 対応 scale 一覧. 将来 Industriousness 等を追加するときはここに 1 エントリ.
+ * 対応 scale 一覧. 将来 Self-Concept 等を追加するときはここに 1 エントリ.
  * 各エントリは「answers[i] (raw 1-5) → { itemId, value } 配列」への変換を担う.
+ *
+ * INVARIANT (全 adapter 共通): questions 配列順 = テスト UI 表示順 = answers index 順.
+ * 各 calculateScore も同じ配列 index で対応付ける.
+ * hxxx 欠落項目は silently skip (= 現状 bigfive 120/120, industriousness 20/20 完全マッチ).
  */
 const IPIP_SCALE_ADAPTERS: Partial<
   Record<TestType, (answers: number[]) => Array<{ itemId: string; value: number }>>
 > = {
-  // INVARIANT: bigFiveQuestions の配列順 = テスト UI の表示順 = answers 配列の index 順.
-  // calculateBigFiveScore も同じ配列 index で対応付けるので、ここでも index 突合.
-  // hxxx 欠落の項目は silently skip (= 現状 120/120 マッチ済、Phase 2.2 で他 scale 追加時も同方針).
   bigfive: (answers) => {
     if (answers.length !== bigFiveQuestions.length) return [];
     const out: Array<{ itemId: string; value: number }> = [];
     for (let i = 0; i < answers.length; i++) {
       const hxxx = bigFiveQuestions[i].hxxx;
+      const value = answers[i];
+      if (!hxxx || typeof value !== "number" || value < 1) continue;
+      out.push({ itemId: hxxx, value });
+    }
+    return out;
+  },
+  industriousness: (answers) => {
+    if (answers.length !== industriousnessQuestions.length) return [];
+    const out: Array<{ itemId: string; value: number }> = [];
+    for (let i = 0; i < answers.length; i++) {
+      const hxxx = industriousnessQuestions[i].hxxx;
       const value = answers[i];
       if (!hxxx || typeof value !== "number" || value < 1) continue;
       out.push({ itemId: hxxx, value });
