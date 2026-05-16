@@ -14,8 +14,8 @@
     "test:e2e:headed": "playwright test --headed",
     "preview": "npm run build && wrangler pages dev out --compatibility-flag=nodejs_compat --port=8788",
     "preview:functions": "wrangler pages dev out --compatibility-flag=nodejs_compat --port=8788",
-    "eval": "node tests/eval/run.mjs",
-    "eval:quick": "node tests/eval/run.mjs"
+    "eval": "node tests/eval/full.mjs",
+    "eval:raw": "node tests/eval/run.mjs"
   },
   "keywords": [],
   "author": "",

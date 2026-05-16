@@ -41,10 +41,14 @@ npm run test:e2e     # Run E2E tests (Playwright)
 npm run test:e2e:ui  # E2E tests with UI mode
 
 # Prompt injection eval (uranai chat 防御の回帰テスト)
-#   前提: 別ターミナルで `npm run preview` 起動済 (wrangler pages dev + .dev.vars)
-npm run eval                              # 全 15 case を回す
+#   前提: .dev.vars に vLLM secrets 設定済 (.dev.vars.example 参照)
+#   1 コマンドで preview spawn → health 待機 → eval → 後片付けまで自動化
+npm run eval                              # 全 15 case を回す (orchestrator 経由)
 EVAL_CATEGORY=tag-closure npm run eval    # 1 category のみ
 EVAL_VERBOSE=1 npm run eval               # 全 response を表示
+EVAL_FULL_VERBOSE=1 npm run eval          # wrangler build log も流す
+npm run eval:raw                          # preview を別 terminal で起動済の時 (orchestrator skip)
+# CI: .github/workflows/eval.yml が master push 時に自動実行 (GitHub Secrets 3 件要設定)
 # 詳細: tests/eval/README.md
 ```
 

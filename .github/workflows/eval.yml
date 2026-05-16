@@ -1,0 +1,85 @@
+name: prompt-injection eval
+
+# 防御コード (functions/uranai/) or eval 自体 (tests/eval/) の変更時に
+# 自動で baseline を取り、リグレッションを検出する。
+
+# 必要な GitHub Secrets (Settings → Secrets and variables → Actions):
+#   VLLM_API_KEY              vLLM 起動時の --api-key
+#   CF_ACCESS_CLIENT_ID       vllm.psychtest.jp Access service token id
+#   CF_ACCESS_CLIENT_SECRET   同 secret
+# vllm.psychtest.jp の Access app には既に service token policy 設定済 (production と同一)。
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - "functions/uranai/**"
+      - "tests/eval/**"
+      - "package.json"
+      - ".github/workflows/eval.yml"
+  pull_request:
+    paths:
+      - "functions/uranai/**"
+      - "tests/eval/**"
+  workflow_dispatch: # 手動再 run 用
+
+# 同じ branch で重複実行を抑制 (古い run はキャンセル)
+concurrency:
+  group: eval-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: install deps
+        run: npm ci
+
+      - name: install playwright browsers (skip, not needed for eval)
+        run: echo "skipped"
+
+      - name: write .dev.vars
+        env:
+          VLLM_API_KEY: ${{ secrets.VLLM_API_KEY }}
+          CF_ACCESS_CLIENT_ID: ${{ secrets.CF_ACCESS_CLIENT_ID }}
+          CF_ACCESS_CLIENT_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
+        run: |
+          if [ -z "$VLLM_API_KEY" ] || [ -z "$CF_ACCESS_CLIENT_ID" ] || [ -z "$CF_ACCESS_CLIENT_SECRET" ]; then
+            echo "::error::GitHub Secrets が未設定です。VLLM_API_KEY / CF_ACCESS_CLIENT_ID / CF_ACCESS_CLIENT_SECRET を Settings → Secrets で設定してください。"
+            exit 1
+          fi
+          {
+            echo "LLM_BASE_URL=https://vllm.psychtest.jp/v1"
+            echo "LLM_MODEL=nvidia/Gemma-4-26B-A4B-NVFP4"
+            echo "VLLM_API_KEY=$VLLM_API_KEY"
+            echo "CF_ACCESS_CLIENT_ID=$CF_ACCESS_CLIENT_ID"
+            echo "CF_ACCESS_CLIENT_SECRET=$CF_ACCESS_CLIENT_SECRET"
+          } > .dev.vars
+
+      - name: run eval (boots preview + executes 15 cases)
+        id: eval
+        run: |
+          set -o pipefail
+          npm run eval 2>&1 | tee /tmp/eval.log
+
+      - name: post result to GitHub Step Summary
+        if: always()
+        run: |
+          {
+            echo "## Prompt Injection Eval"
+            echo ""
+            echo "Commit: \`${{ github.sha }}\`"
+            echo ""
+            echo '```'
+            # ANSI color codes を除去してから summary に貼る
+            sed -E 's/\x1b\[[0-9;]*m//g' /tmp/eval.log | tail -60
+            echo '```'
+          } >> $GITHUB_STEP_SUMMARY

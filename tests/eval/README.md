@@ -4,20 +4,34 @@
 
 ## TL;DR
 
+`.dev.vars` を `.dev.vars.example` から作って 3 secret を埋めれば、あとは 1 コマンド:
+
 ```bash
-# 1. 別 terminal で wrangler pages dev を起動
-npm run preview
+npm run eval                     # preview spawn → health 待機 → eval → 後片付け、全自動
+```
 
-# 2. eval を回す
-npm run eval
+サブセット / advanced:
 
-# サブセット
+```bash
 EVAL_CATEGORY=tag-closure npm run eval
-EVAL_VERBOSE=1 npm run eval        # 全 response を表示
-EVAL_TARGET=https://psychtest.jp/uranai/chat npm run eval   # 別環境 (要 Access cookie or service token)
+EVAL_VERBOSE=1 npm run eval
+EVAL_FULL_VERBOSE=1 npm run eval     # wrangler の build log も流す
+npm run eval:raw                     # preview を別 terminal で先に起動済の時、orchestrator を skip
 ```
 
 Exit code 0 = 全 PASS or WARN のみ / 1 = FAIL or ERR あり (CI / pre-push hook 用)。
+
+### CI
+
+`.github/workflows/eval.yml` が master push と PR (functions/uranai/** or tests/eval/** を含む変更) で自動実行。結果は GitHub Step Summary に貼られる。
+
+**1 回限りの設定**: GitHub Secrets に 3 件登録:
+
+```bash
+gh secret set VLLM_API_KEY            # vLLM の --api-key
+gh secret set CF_ACCESS_CLIENT_ID     # vllm.psychtest.jp Access service token id
+gh secret set CF_ACCESS_CLIENT_SECRET # 同 secret
+```
 
 ## ファイル構成
 
