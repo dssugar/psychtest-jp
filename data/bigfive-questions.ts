@@ -168,7 +168,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
   },
   {
     id: 12,
-    text: "世話を焼きがちだ",
+    text: "率先して主導権を握るほうだ",
     textEn: "Take charge",
     dimension: "extraversion",
     domain: "E",
@@ -179,7 +179,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
   },
   {
     id: 13,
-    text: "感情的なほうだ",
+    text: "感情を深く・強く感じるほうだ",
     textEn: "Experience my emotions intensely",
     dimension: "openness",
     domain: "O",
@@ -245,7 +245,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
   },
   {
     id: 19,
-    text: "健闘することが大好きだ",
+    text: "言い争いは大歓迎だ",
     textEn: "Love a good fight",
     dimension: "agreeableness",
     domain: "A",
@@ -421,7 +421,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
   },
   {
     id: 35,
-    text: "得意なことを仕事にしている",
+    text: "やることは何でもうまくこなせるほうだ",
     textEn: "Excel in what I do",
     dimension: "conscientiousness",
     domain: "C",
@@ -509,7 +509,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
   },
   {
     id: 43,
-    text: "他人に同情しがちだ",
+    text: "他人の気持ちを自分のことのように感じるほうだ",
     textEn: "Feel others' emotions",
     dimension: "openness",
     domain: "O",
@@ -553,7 +553,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
   },
   {
     id: 47,
-    text: "いつも働き詰めだ",
+    text: "いつも活発に動き回っているほうだ",
     textEn: "Am always on the go",
     dimension: "extraversion",
     domain: "E",
@@ -872,7 +872,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
   },
   {
     id: 76,
-    text: "友達といるだけで安らげる",
+    text: "友達といるときだけリラックスできる",
     textEn: "Only feel comfortable with friends",
     dimension: "neuroticism",
     domain: "N",
@@ -1202,7 +1202,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
   },
   {
     id: 106,
-    text: "困難な社会情勢に悩まされないほうだ",
+    text: "難しい社会的場面でも動じないほうだ",
     textEn: "Am not bothered by difficult social situations",
     dimension: "neuroticism",
     domain: "N",
@@ -1246,7 +1246,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
   },
   {
     id: 110,
-    text: "仕事に時間や労力を割きたくない",
+    text: "仕事にはなるべく時間も労力もかけないほうだ",
     textEn: "Put little time and effort into my work",
     dimension: "conscientiousness",
     domain: "C",
