@@ -47,10 +47,15 @@ const SKIP_REPORT_OUT = resolve(ROOT, "scripts/.cache/seed-skip-report.json");
  * Phase 2.1.γ: scale 廃止用 tombstone — seed のたびに scale_meta + scales 両 table から DELETE する scale_id 一覧.
  * scale-meta.json 側を編集しただけでは過去に投入された row が残り続けるので明示的 DELETE を投入する (冪等、row 不在 no-op).
  *
- * WHY 両 table: scale_meta のみ消すと UI badge は消えるが scales 側の facet mapping は残る (= 92 行).
+ * WHY 両 table: scale_meta のみ消すと UI badge は消えるが scales 側の facet mapping は残る.
  * 「scale を廃止する」という意図と整合させるため scales 側も同時に sweep する.
+ *
+ * 現在 tombstone 対象:
+ * - orvis: IPIP master 完全不在の Holland RIASEC 系 (Phase 2.1.γ で除外)
+ * - orais: IPIP master 完全不在の行動チェックリスト (= 200 件 / Tedone のみ source、UI 化計画なし)
+ *   将来 daily ritual 系で再評価する場合は別 source として復活させる
  */
-const SCALE_TOMBSTONES = ["orvis"];
+const SCALE_TOMBSTONES = ["orvis", "orais"];
 
 // ============================================================
 // Utilities
@@ -409,6 +414,8 @@ function build() {
   let scalesSkipped = 0;
   const seenPk = new Set<string>(); // dedup (scale_id, item_id)
   const tombstoneSet = new Set(SCALE_TOMBSTONES);
+  // Phase 2.1.γ: scale_meta completeness check 用、scale_id 別 row 数を集計
+  const scaleIdCount = new Map<string, number>();
   sql.push("");
   sql.push("-- scales (36 instruments × IPIP items mapping)");
   // Phase 2.1.γ: tombstone sweep — 過去 seed で投入された廃止 scale 行を消す (= scale_meta と同期).
@@ -435,6 +442,7 @@ function build() {
       `INSERT OR REPLACE INTO scales (scale_id, instrument, item_id, key, label, alpha) VALUES (${sqlStr(scaleId)}, ${sqlStr(r.instrument)}, ${sqlStr(itemId)}, ${sqlNum(Number(r.key) || 1)}, ${sqlStr(r.label ?? null)}, ${sqlNum(typeof r.alpha === "number" ? r.alpha : null)});`,
     );
     scalesAdded++;
+    scaleIdCount.set(scaleId, (scaleIdCount.get(scaleId) ?? 0) + 1);
   }
   // (COMMIT も wrangler 側で実行されるので不要)
   log.push(`scales: ${scalesAdded} added, ${scalesSkipped} skipped (en_text unresolved)`);
@@ -539,6 +547,7 @@ function build() {
   }
   log.push(`bigfive matched: ${mapping.matched} / 120, unmatched (legacy fallback): ${mapping.unmatched}`);
   log.push(`bigfive ja_text override: ${jaOverwritten} overwrote ipip-translation, ${jaPopulated} populated NULL`);
+  scaleIdCount.set("bigfive", bigFiveQuestions.length);
 
   sql.push(...bigfiveSql);
 
@@ -596,6 +605,7 @@ function build() {
   }
   log.push(`industriousness matched: ${industMapping.matched} / 20, unmatched (legacy fallback): ${industMapping.unmatched}`);
   log.push(`industriousness ja_text override: ${industJaOverwritten} overwrote, ${industJaPopulated} populated NULL`);
+  scaleIdCount.set("industriousness", industriousnessQuestions.length);
   sql.push(...industSql);
 
   // 5.7. scale_meta 投入 (Phase 2.1.β: UI 表示用 metadata、12 scale)
@@ -626,6 +636,31 @@ function build() {
       );
     }
     log.push(`scale_meta: ${metaItems.length} rows (tombstones: ${SCALE_TOMBSTONES.join(", ") || "none"})`);
+
+    // Phase 2.1.γ: completeness check — scale_meta.official_total_items と scales COUNT を比較.
+    // IPIP 系 scale は完全一致が期待値. 非 IPIP 系 (rosenberg / phq9 / k6 / swls / selfconcept) は
+    // scales table に投入せず Phase 2.3 で user_responses 別 namespace 設計予定なので 0 が正常.
+    log.push("");
+    log.push("=== scale_meta completeness check ===");
+    const nonIpipScales = new Set(["rosenberg", "phq9", "k6", "swls", "selfconcept"]);
+    let mismatch = 0;
+    for (const m of metaItems) {
+      const actual = scaleIdCount.get(m.scale_id) ?? 0;
+      const expected = m.official_total_items ?? null;
+      const isNonIpip = nonIpipScales.has(m.scale_id);
+      if (expected === null) {
+        log.push(`  ${m.scale_id}: official=— actual=${actual} (no expected count)`);
+      } else if (actual === expected) {
+        log.push(`  ${m.scale_id}: ${actual}/${expected} ✓`);
+      } else if (isNonIpip && actual === 0) {
+        log.push(`  ${m.scale_id}: 0/${expected} (= 非 IPIP, Phase 2.3 で user_responses 別 namespace)`);
+      } else {
+        mismatch++;
+        log.push(`  ${m.scale_id}: ${actual}/${expected} ⚠ MISMATCH (diff: ${actual - expected})`);
+      }
+    }
+    if (mismatch === 0) log.push("  → all scale_meta completeness ✓");
+    else log.push(`  → ${mismatch} scale(s) with unexpected mismatch (要 investigation)`);
   } catch (err) {
     log.push(`scale_meta: skipped (${SCALE_META_JSON} not found or invalid)`);
   }
