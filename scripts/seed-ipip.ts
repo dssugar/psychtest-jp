@@ -33,6 +33,7 @@ const ROOT = resolve(__dirname, "..");
 const IPIP_3320_XLSX = resolve(ROOT, "data/ipip-master/ipip-3320.xlsx");
 const TEDONE_XLSX = resolve(ROOT, "data/ipip-master/tedone-item-assignment.xlsx");
 const TRANSLATION_CSV = resolve(ROOT, "data/ipip-master/ipip-translation-1941.csv");
+const CLAUDE_TRANSLATION_JSON = resolve(ROOT, "data/ipip-master/claude-translation-2202.json");
 const SQL_OUT = resolve(ROOT, "scripts/.cache/seed-ipip.sql");
 const BIGFIVE_MAPPING_OUT = resolve(ROOT, "data/ipip-master/bigfive-id-mapping.json");
 
@@ -290,6 +291,33 @@ function build() {
   log.push(`scales: ${scalesAdded} added, ${scalesSkipped} skipped (en_text unresolved)`);
   if (skipExamples.length > 0) {
     log.push(`  skip examples: ${JSON.stringify(skipExamples)}`);
+  }
+
+  // 4.5. claude 翻訳 (= ipip-translation で残った 2,202 件) で ja_text NULL を埋める.
+  //     初回 seed 時に claude opus 4.7 で BigFive UI 訳スタイルに揃えて生成済.
+  //     再生成不要 (= JSON を git commit 済). 新規 item が増えた場合のみ追加翻訳要.
+  log.push("");
+  log.push("=== claude translation fill ===");
+  let claudeApplied = 0;
+  let claudeSkipped = 0;
+  try {
+    const claudeText = readFileSync(CLAUDE_TRANSLATION_JSON, "utf-8");
+    const claudeItems = JSON.parse(claudeText) as Array<{ item_id: string; ja_text: string }>;
+    sql.push("");
+    sql.push("-- claude translation fill (= 残り NULL を claude opus 4.7 翻訳で埋める)");
+    for (const it of claudeItems) {
+      if (!it.item_id || !it.ja_text) continue;
+      // ipip-translation でも bigfive override でもない項目 (= NULL 残) のみ埋める.
+      // 既に ja_text が入っていればそちらを優先 (= ipip-translation が prior、bigfive は後で再上書き).
+      sql.push(
+        `UPDATE ipip_items SET ja_text = ${sqlStr(it.ja_text)} WHERE item_id = ${sqlStr(it.item_id)} AND ja_text IS NULL;`,
+      );
+      claudeApplied++;
+    }
+    log.push(`claude translation: ${claudeApplied} UPDATE statements queued`);
+  } catch (err) {
+    claudeSkipped = 1;
+    log.push(`claude translation: skipped (${CLAUDE_TRANSLATION_JSON} not found)`);
   }
 
   // 5. BigFive 120 ↔ Hxxx mapping + scales(scale_id='bigfive') 生成
