@@ -1,7 +1,7 @@
 # psychtest.jp - 実装ロードマップ
 
-> **最終更新**: 2026-05-17 (v2.4.6、Phase 2.x.D + D.1 完了 — scale_hierarchy + canonical_labels 4 entity schema 確立)
-> **前版**: v2.4.5 (2026-05-17) Phase 2.x.C.1+2 / v2.4.4 Phase 2.x.A+B / v2.4.3 Phase 2.2.1 + 2.3 / v2.4.2 Phase 2.1.δ / v2.4.1 Phase 2.1.γ sanitization / v2.4 Phase 2.1.γ / v2.3 Phase 2.1.β / v2.2 sub-phase 分割 / v2.1 Phase 2.1 / v2.0 ロードマップ見直し / v1.0 心理尺度路線中心
+> **最終更新**: 2026-05-17 (v2.4.7、Phase 2.x.A1-final — 残 8 instrument 取り込みで IPIP project ほぼ全 facet データ完成 / 372 scales / 3,543 items)
+> **前版**: v2.4.6 Phase 2.x.D + D.1 / v2.4.5 Phase 2.x.C.1+2 / v2.4.4 Phase 2.x.A+B / v2.4.3 Phase 2.2.1 + 2.3 / v2.4.2 Phase 2.1.δ / v2.4.1 Phase 2.1.γ sanitization / v2.4 Phase 2.1.γ / v2.3 Phase 2.1.β / v2.2 sub-phase 分割 / v2.1 Phase 2.1 / v2.0 ロードマップ見直し / v1.0 心理尺度路線中心
 > **位置づけ**: [project-design.md](./docs/project-design.md) の Phase 設計を実装視点でブレイクダウン
 
 ---
@@ -96,14 +96,15 @@ Phase 2.x の累積で **4 entity 構造** が確立 (= concern 分離):
 │     │   └─ 5 EX-NNN supplement                                            │
 │                                                                           │
 │  ② scales (scale-item junction, DAG)                                     │
-│     ├─ 3,699 (scale_id × item_id) rows                                   │
+│     ├─ 3,699 (scale_id × item_id) rows from Tedone Table                 │
+│     ├─ + 372 supplement scales / 3,543 items from IPIP page audit        │
 │     ├─ 同 item が複数 scale で再利用 (= IPIP project 本質構造)            │
 │     └─ key (+1/-1) + alpha 保持                                          │
 │                                                                           │
 │  ③ scale_hierarchy (scale 階層 tree)                                     │
-│     ├─ 530 entries                                                        │
+│     ├─ 595 entries                                                        │
 │     │   ├─ 37 instrument (level 1)                                       │
-│     │   ├─ 488 scale (level 2)                                           │
+│     │   ├─ 553 scale (level 2)                                           │
 │     │   └─ 5 facet (level 3)                                             │
 │     ├─ instrument / scale_name / facet_name / subfacet_name              │
 │     └─ display_label_ja (NULL, Phase 2.x.E で populate)                  │
@@ -141,6 +142,24 @@ Phase 2.x の累積で **4 entity 構造** が確立 (= concern 分離):
 | 2.x.C.3 | `16ffe78` | SingleConstructs page 拡張 | 207 scales / 2,051 items |
 | 2.x.D | `623fe09` | scale_hierarchy 4 階層 tree | 530 entries |
 | 2.x.D.1 | `cfabb68` | canonical_labels (IPIP Index 横断 navigation) | 276 / 547 |
+| **2.x.A1-final** | `89d2054` | **残 8 instrument 一気拡張 (BFAS/6FPQ/JPI/HPI/HPI-HIC/AB5C/7FACTOR/Barchard2001)** | **372 scales / 3,543 items / scale_hierarchy 595** |
+
+### Daisuke 意向「IPIP 全 entity 取り込み」達成度 (2026-05-17)
+
+「IPIP にある item, scale, facet, labels, instrument, domain 全て取り込んで、日本語訳もそれぞれつけて、自在に心理テストを構成できるようにしましょうか」
+
+| 要素 | 達成 | 残作業 |
+|---|---|---|
+| **items** | ✅ 3,616 ipip_items | — |
+| **scale** | ✅ scales 3,699 + supplement 372 | — |
+| **facet** | ✅ scale_hierarchy 595 entries | — |
+| **labels (canonical)** | ✅ canonical_labels 276 / impl 547 | Phase 2.x.D.2: scale_id resolve 8% → 95%+ |
+| **instrument** | ✅ 37 instruments + HPI-HIC 分離 | — |
+| **domain** | ✅ BFAS scale_name で domain 保持 | NEO/HEXACO の domain 階層 supplement 補強要 |
+| **日本語訳 (B)** | ⏸ display_label_ja / supplement ja_text は NULL | Phase 2.x.E で Claude draft + Daisuke audit |
+| **自在構成 UI (C)** | ⏸ DB 基盤完成 | Phase 2.x.F で動的 [scaleId] route + scoring |
+
+→ **A (= データ取り込み) ほぼ完了**、残 B (= ja 翻訳) + C (= UI 化)。
 
 ---
 
@@ -467,7 +486,42 @@ Daisuke 質問「label とは何か?」への本質的回答 = **IPIP page の "
 
 **残課題**:
 - **Phase 2.x.D.2**: 各 inventory Key page (newNEOKey.htm 等) audit で facet_code → Tedone label の正確 mapping 取得 → canonical_label_implementations.scale_id 完全 populate (8% → 95%+)
-- **Phase 2.x.E**: display_label_ja populate (276 canonical labels + 530 scale_hierarchy entries、Daisuke 手動 audit)
+- **Phase 2.x.E**: display_label_ja populate (276 canonical labels + 595 scale_hierarchy entries、Daisuke 手動 audit)
+
+### 2.x.A1-final 残 8 instrument 一気拡張 ✅ 2026-05-17
+
+Daisuke 意向「IPIP 全 instrument データ取り込み」のため WebFetch + convert pipeline で残 8 instrument を一気投入。**IPIP project の主要 instrument のほぼ全 facet データ完成**。
+
+実装サマリ (commit `89d2054`):
+
+- [x] WebFetch 8 instrument 並列取得 + page-fetch JSON save + convert
+  - BFAS: 10 aspects (domain + aspect 2 階層、scale_name field 経由で domain 保持)
+  - 6FPQ: 24 facets
+  - JPI: 15 facets
+  - HPI: 13 main scales
+  - HPI-HIC: 44 sub-scales (HPI と分離して別 instrument 化)
+  - AB5C: 45 facets (AB5C circumplex の全 octant 組合せ)
+  - 7FACTOR: 7 factors
+  - Barchard2001: 7 Emotional Intelligence scales
+- [x] `scripts/convert-page-to-supplement.ts` 拡張: `PageFetchScale.scale_name` optional field 受入 (= scale_hierarchy.scale_name 伝播用)
+- [x] 手動 patch 5 件 (= quote/hyphen 揺れ吸収): bfas_orderliness / jpi_empathy / jpi_risk_taking / jpi_organization / hpi_hic_thrill_seeking
+
+**数値結果 (Phase 2.x.A1-final 後)**:
+| 指標 | 前 | 後 |
+|---|---|---|
+| ipip-scales-supplement | 207 scales / 2,051 items | **372 scales / 3,543 items** |
+| scale_hierarchy | 530 | **595** |
+| INVARIANT | ✓ | bigfive 120/120 / industriousness 20/20 / type-check pass |
+
+**Phase 2.x.A1-final で完了した主要 instrument 覆い**:
+- 既存 9 instrument (Phase 2.x.C で完了): BIDR / HEXACO_PI / VIA / IPIP-IPC / MPQ / NEO / TCI / 16PF / CPI
+- 既存 14 instrument (Phase 2.x.C.3 SingleConstructs で完了): BIDR/Cog-Failures + Imp-Mgmt + Self-Decep / Levenson1981 × 5 / Cacioppo1982 / Foa1998 × 2 / Scheier1994 / Buss1980 × 2 / Rosenberg1965 / Snyder1974 / Span2002 / Radloff1977 / Goldberg1999 × 5 / Chapman1986 × 2 / Foa2002 / Hoyle2002 × 3
+- 今回 8 instrument 追加 (Phase 2.x.A1-final): BFAS / 6FPQ / JPI / HPI / HPI-HIC / AB5C / 7FACTOR / Barchard2001
+
+**残課題 (= 当初分解の B / C)**:
+- B: 日本語訳 (= 595 scale_hierarchy + 276 canonical_labels + 318 supplement ja_text = ~1,189 entries)
+- C: UI 化 (= 動的 [scaleId] route + scoring + 結果表示、「自在に心理テストを構成」)
+- A 残: BFAS-20 / NEO5-20 (= short versions、別 scale_id で同 items 持たせる、軽い)
 
 ### 2.4 トップを 2 入口ハブに書き換え
 
@@ -648,26 +702,36 @@ SELECT scale_id, COUNT(*)
 
 **最優先 (今すぐ着手可能)**:
 
-**Phase 2.x シリーズ (= IPIP 統一 DB schema 確立) 完了済 ✅**
-1-8. (= 上記「Phase 2.x sub-phase 完了一覧」参照、Phase 2.1 〜 Phase 2.x.D.1 全 11 commit)
+**Phase 2.x シリーズ (= IPIP 統一 DB データ完成) 完了済 ✅**
+1-12. (= 上記「Phase 2.x sub-phase 完了一覧」参照、Phase 2.1 〜 Phase 2.x.A1-final 全 12 commit)
 
-**次の最優先 candidates**:
-9. **Phase 2.1.α** BigFive audit 反映 — 16 件中 high+medium で明確分のみ data + DB 同期 (= 軽微)
-10. **Phase 2.6** 月読 context 進捗 N/M — `lib/uranai/profile-summarizer.ts` 拡張
-11. **Phase 2.5** 朝の儀式 UI — 全 7 尺度 user_responses 集約 + scale_hierarchy + canonical_labels 基盤の上で実装
+**次の最優先 candidates (= Daisuke 意向 A 完了、B/C へ)**:
+13. **Phase 2.x.E** ja 翻訳 populate — display_label_ja (= 595 scale_hierarchy + 276 canonical_labels + 318 supplement ja_text = ~1,189 entries) を Claude draft + Daisuke audit
+14. **Phase 2.x.F** UI 化 — 動的 [scaleId] route + scoring + 結果表示 (= 「自在に心理テストを構成」)
+15. **Phase 2.1.α** BigFive audit 反映 — 16 件中 high+medium で明確分のみ data + DB 同期 (= 軽微)
+16. **Phase 2.6** 月読 context 進捗 N/M — `lib/uranai/profile-summarizer.ts` 拡張
+17. **Phase 2.5** 朝の儀式 UI — 全 7 尺度 user_responses 集約 + scale_hierarchy + canonical_labels 基盤の上で実装
 
-**次 session 候補 (= Phase 2.x DB 基盤の補強 + UI 化)**:
+**次 session 候補 (= Daisuke 意向 B/C へ移行)**:
 
-**A. DB 補強 (= schema 完成度向上)**
-- **Phase 2.x.D.2** canonical_label resolution: 各 inventory Key page (newNEOKey.htm 等) audit で facet_code → Tedone label mapping → `canonical_label_implementations.scale_id` 完全 populate (8% → 95%+)
-- **Phase 2.x.E** ja 翻訳 populate: 276 canonical_labels + 530 scale_hierarchy entries の `display_label_ja` を Claude draft → Daisuke 手動 audit
-- **Phase 2.x.C.3 残 instrument 拡張** — BFAS / 6FPQ / JPI / HPI / HPI-HIC / AB5C / Barchard2001 / 7FACTOR / BFAS-20 / NEO5-20 (= 同 pipeline で順次)
-- **Phase 2.x.D.1 強化** — NEO/HEXACO の domain 階層 supplement (= "Anxiety" を scale_name="Neuroticism", facet_name="Anxiety" に分解)
+**B. 日本語訳完備 (= 「日本語訳もそれぞれつけて」)**
+- **Phase 2.x.E.1** scale_hierarchy.display_label_ja populate: 595 entries を Claude draft → Daisuke audit
+- **Phase 2.x.E.2** canonical_labels.display_label_ja populate: 276 entries (= 構成概念名の和訳、文化的 nuance のため Daisuke 慎重 audit)
+- **Phase 2.x.E.3** supplement ja_text populate: 318 残 NULL items (= 主に ORAIS 199 + ORVIS 92 + EX 5 + 一部 master)
 
-**B. UI 化 (= DB 基盤の活用)**
-- **IPIP facet UI 化** (= 動的 [ipipFacetId] route + scoring + 結果表示) — DB 基盤 (scale_hierarchy + canonical_labels) で navigation 設計可能
-- **Phase 2.2.2** Self-Concept migration — `neo_self_consciousness` 投入済、Daisuke 独自編集 8 items の対応決定 + adapter で完了
-- **Phase 2.5** 朝の儀式 UI — 全 7 尺度 user_responses 集約基盤
+**C. UI 化 (= 「自在に心理テストを構成」)**
+- **Phase 2.x.F.1** scale 探索 UI: canonical_label 検索 / instrument 別 scale 一覧 / 階層 navigation
+- **Phase 2.x.F.2** 動的 [scaleId] 受験 UI: items 表示 + 回答 + scoring
+- **Phase 2.x.F.3** 結果表示 UI: scale 単位 percentile / radar chart 等
+- **Phase 2.x.F.4** 朝の儀式 UI: 未回答 items サンプリング (= Phase 2.5 統合)
+
+**A 残 (= 当初分解の A 余り)**
+- **Phase 2.x.D.2** canonical_label_implementations.scale_id resolve (8% → 95%+) — 各 inventory Key page audit
+- **Phase 2.x.D.1 強化** — NEO/HEXACO の domain 階層 supplement (= "Anxiety" を scale_name="Neuroticism" に分解)
+- BFAS-20 / NEO5-20 short version (= 軽い、別 scale_id で同 items 持たせる)
+
+**他 (= Phase 2.x 以外の保留)**
+- **Phase 2.2.2** Self-Concept migration — `neo_self_consciousness` 投入済、Daisuke 独自編集 8 items の対応決定 + adapter
 - **Phase 2.4** トップ 2 入口ハブ書き換え — UI 大改修、独立 wedge
 
 **別タスク (Phase 2 と並列で要対応)**:
@@ -700,3 +764,4 @@ SELECT scale_id, COUNT(*)
 - v2.4.4 (2026-05-17): Phase 2.x.A+B 完了反映 — IPIP 公式 `newIndexofScaleLabels.htm` の「Alphabetical Index of 274 Labels for 463 IPIP Scales」を DB 表現する基盤実装。Tedone Table の (instrument, label) ペアを fine-grained facet view として scales table に自動投入 (= 442 facet scale_ids 生成)。ORAIS (Goldberg 2010) / ORVIS (Pozzebon 2010) tombstone 解除 + AUTO_SUPPLEMENT_INSTRUMENTS 機構で 291 items 自動投入 (`ORAIS-001..199` / `ORVIS-001..092`)。IPIP Index 463 のうち **442 (95.5%) カバー**、残 21 件 (Broadbent/Saucier 等 Tedone 不在) は Phase 2.x.C (= IPIP page direct fetch supplement) で別 wedge。 Tedone Table の dump 粒度問題 (= 同 wording の複数 scale 共有を不完全 dump、BIDR/Cognitive-Failures 10 中 8 件のみ等) も Phase 2.x.C 対応。
 - v2.4.5 (2026-05-17): Phase 2.x.C.1+2 完了反映 — IPIP 公式 page direct fetch supplement で主要 9 instrument 完全 fidelity 化。`scripts/audit-ipip-page.ts` (diff tooling) + `scripts/convert-page-to-supplement.ts` (WebFetch 結果 → supplement.json 自動 conversion) を新規実装、`data/ipip-master/ipip-scales-supplement.json` 拡充で BIDR/Cognitive-Failures 1 + HEXACO_PI 24 + VIA 24 + IPIP-IPC 8 + MPQ 12 + NEO 30 + TCI 30 + 16PF 16 + CPI 33 = **178 scales / 1,707 items 補完**。scale_meta 登録 11 scale の IPIP project 由来 4/4 (hexaco_pi/via/ipip_ipc/mpq) は item-level fidelity 100% 達成。Tedone Table dump 粒度問題が主要 instrument では実質解消。残 instrument (BFAS/6FPQ/JPI/HPI/HPI-HIC/AB5C/Buss1980/Foa/Hoyle2002 等) は次 session で同 pipeline 拡張可能。
 - v2.4.6 (2026-05-17): Phase 2.x.D + D.1 完了反映 + 全体整理 — (1) Phase 2.x.D で `scale_hierarchy` table 新設 (= 530 entries, instrument/scale/facet/subfacet 4 階層 tree, scale-item junction (= scales table) と concern 分離). (2) Phase 2.x.D.1 で `canonical_labels` + `canonical_label_implementations` 2 table 新設 (= 276 canonical labels / 547 implementations, IPIP Alphabetical Index "274 Labels for 463 IPIP Scales" を junction table で表現、Daisuke 質問「label とは?」への schema 答え). (3) 全体 schema 概観 4 entity (ipip_items / scales / scale_hierarchy / canonical_labels) + Phase 2.x sub-phase 完了一覧表を ROADMAP 冒頭に追加して整理. constructs first-class 化 (= scoring 互換性破壊 NG) と canonical_labels first-class 化 (= 横断 navigation OK) の本質的な違いを documentation 化。
+- v2.4.7 (2026-05-17): Phase 2.x.A1-final 完了反映 — Daisuke 意向「IPIP 全 entity 取り込み」のデータ収集 phase 完了. WebFetch + convert pipeline で残 8 instrument (BFAS / 6FPQ / JPI / HPI / HPI-HIC / AB5C / 7FACTOR / Barchard2001) を一気拡張、`ipip-scales-supplement.json` を 207 → **372 scales / 3,543 items** に増. BFAS は domain (= scale_name) + aspect (= label) の 2 階層構造を保持. HPI と HPI-HIC は別 instrument として分離. 手動 patch 5 件で quote/hyphen 揺れ吸収. `scale_hierarchy` 530 → 595 entries. Daisuke 意向の A (= データ取り込み) ほぼ完了、残 B (= ja 翻訳) + C (= UI 化) は次 session 候補として整理。
