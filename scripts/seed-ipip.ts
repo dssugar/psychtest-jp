@@ -281,6 +281,7 @@ function build() {
   interface SupplementItem {
     item_id: string;
     en_text: string;
+    ja_text?: string | null;
     source_inventory?: string;
     source_url?: string;
     facet?: string;
@@ -288,6 +289,7 @@ function build() {
   }
   const supplementInserts: string[] = [];
   let supplementCount = 0;
+  let supplementWithJa = 0;
   try {
     const supText = readFileSync(IPIP_SUPPLEMENT_JSON, "utf-8");
     const supParsed = JSON.parse(supText) as { items?: SupplementItem[] };
@@ -299,12 +301,14 @@ function build() {
         continue;
       }
       normEnToId.set(norm, it.item_id);
+      const ja = it.ja_text && typeof it.ja_text === "string" ? it.ja_text : null;
+      if (ja) supplementWithJa++;
       supplementInserts.push(
-        `INSERT OR REPLACE INTO ipip_items (item_id, en_text, ja_text, source, created_at) VALUES (${sqlStr(it.item_id)}, ${sqlStr(it.en_text)}, NULL, 'tedone_extension', ${now});`,
+        `INSERT OR REPLACE INTO ipip_items (item_id, en_text, ja_text, source, created_at) VALUES (${sqlStr(it.item_id)}, ${sqlStr(it.en_text)}, ${sqlStr(ja)}, 'tedone_extension', ${now});`,
       );
       supplementCount++;
     }
-    log.push(`ipip-3320-supplement: ${supplementCount} items loaded (source='tedone_extension')`);
+    log.push(`ipip-3320-supplement: ${supplementCount} items loaded (source='tedone_extension', ${supplementWithJa} with ja_text)`);
   } catch {
     log.push(`ipip-3320-supplement: not found (= 拡張なし)`);
   }

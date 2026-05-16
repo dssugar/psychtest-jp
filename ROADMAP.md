@@ -1,7 +1,7 @@
 # psychtest.jp - 実装ロードマップ
 
-> **最終更新**: 2026-05-17 (v2.4.1、Phase 2.1.γ sanitization 反映)
-> **前版**: v2.4 (2026-05-16) Phase 2.1.γ ipip-seed-completeness 完了反映 / v2.3 (2026-05-16) Phase 2.1.β scale_meta / v2.2 (2026-05-16) sub-phase 分割 / v2.1 (2026-05-16) Phase 2.1 完了反映 / v2.0 (2026-05-16) ロードマップ見直し / v1.0 (2026-01-20) 心理尺度路線中心
+> **最終更新**: 2026-05-17 (v2.4.2、Phase 2.1.δ IPIP supplement 反映 — skip 0 達成)
+> **前版**: v2.4.1 (2026-05-17) Phase 2.1.γ sanitization / v2.4 (2026-05-16) Phase 2.1.γ ipip-seed-completeness 完了反映 / v2.3 (2026-05-16) Phase 2.1.β scale_meta / v2.2 (2026-05-16) sub-phase 分割 / v2.1 (2026-05-16) Phase 2.1 完了反映 / v2.0 (2026-05-16) ロードマップ見直し / v1.0 (2026-01-20) 心理尺度路線中心
 > **位置づけ**: [project-design.md](./docs/project-design.md) の Phase 設計を実装視点でブレイクダウン
 
 ---
@@ -170,9 +170,44 @@ spec: `docs/specs/scale-meta-wedge-2026-05.md`
 - TCI+NEO 1 (Believe ... right or wrong = X184 と or/and 意味反転、Daisuke 前回 revert と整合)
 - 16PF 1 (Believe ... whole truth = X139 と truth/story 意味差大)
 
-→ Phase 2 後半で IPIP master 拡張 (`source='tedone_extension'`) or scale tombstone を別 wedge で判断。
+→ Phase 2.1.δ で IPIP supplement (`source='tedone_extension'`) として全 5 wording 投入完了 (= skip 0 達成)。
 
 spec: `docs/specs/ipip-seed-completeness-2026-05.md`
+
+### 2.1.δ IPIP supplement (skip 6 → 0 完全カバー) ✅ 2026-05-17
+
+残 Pattern E 6 件を IPIP 公式 web page で audit した結果、全 5 wording (TCI/NEO 同 wording 共有で 5 件) が各 inventory Key page には掲載されていることが判明。ただし IPIP master Hxxx 体系の **外** (= inventory-specific 独自項目)。これらを新 ID namespace `EX-NNN` で ipip_items に追加投入し、scales table 100% カバーを達成。
+
+実装サマリ (commit `ac929bf`):
+
+- [x] `data/ipip-master/ipip-3320-supplement.json` 新規 5 items (EX-001..005)
+  - EX-001 BFAS Assertiveness (`Do not have an assertive personality`)
+  - EX-002 BFAS Politeness (`Rarely put people under pressure` = H774 reverse-wording、IPIP 公式注釈)
+  - EX-003 CAT-PD Rudeness (`I am known for saying offensive things`)
+  - EX-004 TCI/NEO Conservatism/Liberalism (`Believe that there is no absolute right or wrong`)
+  - EX-005 16PF Distrust (`Believe that people seldom tell you the whole truth`)
+- [x] `scripts/seed-ipip.ts` 拡張: supplement loader + `source='tedone_extension'` 投入 + `normEnToId` 統合
+- [x] `ITEM_ID_RE` 拡張: `/^[A-Z]\d+$/` → `/^[A-Z]+(?:-?\d+)$/`
+  (= 既存 H184 / X1234 / 新 EX-001 / 将来 GAD9-001 等を一貫対応)
+- [x] supplement 5 items の ja_text 追加 (bigfive UI 訳スタイル: 一人称省略 / 「だ」「と思う」終止)
+
+**ID namespace 設計 (将来も含む統一)**:
+| 種別 | format | 例 |
+|---|---|---|
+| IPIP master (3,320) | 1 文字 prefix + 数字 | `H184` / `X1234` / `T2078` |
+| IPIP supplement (project 内、master 外) | `EX-` + 数字 | `EX-001` |
+| 非 IPIP scale 固有 (将来想定) | scale 略称 + `-` + 数字 | `GAD9-001` / `PHQ9-001` |
+
+**数値結果 (Phase 2.1.γ + 2.1.δ 累計)**:
+| 指標 | Phase 2.1.γ 完了時 | Phase 2.1.δ 完了時 |
+|---|---|---|
+| skip 件数 | 6 | **0** ✅ |
+| scales 行 | 3,402 | 3,408 (= 100% Tedone coverage) |
+| ipip_items | 3,320 | 3,325 (+5 supplement) |
+| normEnToId unique | 3,320 | 3,325 |
+| scale_meta completeness | 全 ✓ | 全 ✓ |
+| 残 Pattern E | 6 | **0** |
+| INVARIANT | 全維持 | 全維持 ✅ |
 
 ### 2.2 既存 IPIP 系尺度の内部 migration (UX 維持)
 
@@ -371,16 +406,16 @@ SELECT scale_id, COUNT(*)
 **最優先 (今すぐ着手可能)**:
 1. ~~生年月日 profile 永続化~~ ✅ 完了 (commit 91c210a)
 2. ~~Phase 2.1 IPIP 統一項目 DB~~ ✅ 完了 (commit c34a4ba 系)
-3. ~~Phase 2.1.γ ipip-seed-completeness~~ ✅ 完了 (commits c04f1bb + c5ba87d)
-4. **Phase 2.1.α** BigFive audit 反映 — 16 件中 high+medium で明確分のみ data + DB 同期
-5. **Phase 2.2.1** Industriousness migration — adapter 追加のみ、textEn 完備で即着手可
-6. **Phase 2.6** 月読 context 進捗 N/M — `lib/uranai/profile-summarizer.ts` 拡張
+3. ~~Phase 2.1.γ ipip-seed-completeness~~ ✅ 完了 (commits c04f1bb + c5ba87d + 9244a94)
+4. ~~Phase 2.1.δ IPIP supplement~~ ✅ 完了 (commit ac929bf) — skip 0 / 100% coverage
+5. **Phase 2.1.α** BigFive audit 反映 — 16 件中 high+medium で明確分のみ data + DB 同期
+6. **Phase 2.2.1** Industriousness migration — adapter 追加のみ、textEn 完備で即着手可
+7. **Phase 2.6** 月読 context 進捗 N/M — `lib/uranai/profile-summarizer.ts` 拡張
 
 **次 session 候補**:
-- **Phase 2.2.2** Self-Concept migration — 2.1.β + 2.1.γ 完了したので着手可 (= IPIP master 紐付け + textEn 追加)
+- **Phase 2.2.2** Self-Concept migration — 2.1.β + 2.1.γ + 2.1.δ 完了したので着手可 (= IPIP master 紐付け + textEn 追加)
 - **Phase 2.4** トップ 2 入口ハブ書き換え — UI 大改修、独立 wedge
-- **Phase 2.3** 非 IPIP 系統合 — scale-specific namespace 設計が要
-- **Phase 2.1.γ 残 Pattern E 6 件** (IPIP master 拡張 or scale tombstone) — 別 wedge、優先度低
+- **Phase 2.3** 非 IPIP 系統合 — scale-specific namespace 設計が要 (= 2.1.δ で確立した EX- / GAD9- 等の prefix 体系を踏襲)
 
 **別タスク (Phase 2 と並列で要対応)**:
 - **Production deploy**: `db:migrate:remote` が 7403 エラー → wrangler 再認証 必要、その後 migrate + seed + Pages deploy
@@ -407,3 +442,4 @@ SELECT scale_id, COUNT(*)
 - v2.3 (2026-05-16): Phase 2.1.β (scale_meta 構築) 完了反映、Phase 2.1.γ (371 行 skip 修復) を次 session 候補に追加
 - v2.4 (2026-05-16): Phase 2.1.γ (ipip-seed-completeness wedge) 完了反映 — skip 371 → 205 (Non-ORAIS 172 → 6, 96% 削減)、IPIP master typo 訂正 + bulk "that" 補完 + 16 manual overrides、17 instrument 完全救出、残 Pattern E 6 件は別 wedge へ punt
 - v2.4.1 (2026-05-17): Phase 2.1.γ sanitization 反映 — ORAIS (200 件) を SCALE_TOMBSTONES に追加で skip 雑音除外 (skip 205 → 6)、scale_meta completeness check 機構追加、IPIP master 内 normalize collision 0 件 / Tedone cover 96.9% を auxiliary audit で確認、残 Pattern E 6 件は scoring key 反転考慮しても wording 意味同一性で却下
+- v2.4.2 (2026-05-17): Phase 2.1.δ IPIP supplement 反映 — 残 Pattern E 6 件を IPIP 公式 web page で audit、全 5 wording が各 inventory Key page に掲載されている (master 外、inventory 独自項目) ことを確認。新 ID namespace `EX-NNN` (= External) で ipip-3320-supplement.json を新規作成、source='tedone_extension' で ipip_items に投入。ITEM_ID_RE 拡張 (= 将来 GAD9-001 等の非 IPIP scale prefix も統一対応)。skip 6 → 0、scales 3,408 完全カバー、ja_text も bigfive UI 訳スタイルで揃え。

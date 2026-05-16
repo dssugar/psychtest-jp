@@ -1,10 +1,11 @@
 {
-  "_comment": "Phase 2.1.δ: IPIP project 内だが IPIP master 3,320 dump 外の inventory-specific 項目を ipip_items に追加投入する file. spec: docs/specs/ipip-seed-completeness-2026-05.md Goal B. これらは IPIP 公式 web page (ipip.ori.org/各 inventory Key page) には掲載されているが Hxxx ID 体系には含まれない. source='tedone_extension' で IPIP master ('ipip_3320') と DB 上区別. ID namespace = 'EX-NNN' (= External = IPIP master 外、IPIP project 内). 将来 GAD-9 / PHQ-9 等の非 IPIP scale 項目を取り込む場合は scale 略称 prefix (= GAD9-001 等) を使い、'EX-' は IPIP project 内 supplement に限定. seed-ipip.ts の loadIpip3320() の後に supplement 投入、normEnToId にも追加され Tedone wording lookup で直接 hit する.",
+  "_comment": "Phase 2.1.δ: IPIP project 内だが IPIP master 3,320 dump 外の inventory-specific 項目を ipip_items に追加投入する file. spec: docs/specs/ipip-seed-completeness-2026-05.md Goal B. これらは IPIP 公式 web page (ipip.ori.org/各 inventory Key page) には掲載されているが Hxxx ID 体系には含まれない. source='tedone_extension' で IPIP master ('ipip_3320') と DB 上区別. ID namespace = 'EX-NNN' (= External = IPIP master 外、IPIP project 内). 将来 GAD-9 / PHQ-9 等の非 IPIP scale 項目を取り込む場合は scale 略称 prefix (= GAD9-001 等) を使い、'EX-' は IPIP project 内 supplement に限定. seed-ipip.ts の loadIpip3320() の後に supplement 投入、normEnToId にも追加され Tedone wording lookup で直接 hit する. ja_text は bigfive UI 訳スタイル (= 一人称省略 / 「だ」「と思う」終止 / 簡潔) に揃える.",
 
   "items": [
     {
       "item_id": "EX-001",
       "en_text": "Do not have an assertive personality.",
+      "ja_text": "自己主張は強くないほうだ",
       "source_inventory": "BFAS",
       "source_url": "https://ipip.ori.org/BFASKeys.htm",
       "facet": "Assertiveness (Extraversion)",
@@ -14,6 +15,7 @@
     {
       "item_id": "EX-002",
       "en_text": "Rarely put people under pressure.",
+      "ja_text": "人にプレッシャーをかけることはほとんどない",
       "source_inventory": "BFAS",
       "source_url": "https://ipip.ori.org/BFASKeys.htm",
       "facet": "Politeness (Agreeableness)",
@@ -23,6 +25,7 @@
     {
       "item_id": "EX-003",
       "en_text": "I am known for saying offensive things.",
+      "ja_text": "失礼なことを言う人だと思われている",
       "source_inventory": "CAT-PD",
       "source_url": "https://ipip.ori.org/newCAT-PD-SFv1.1Keys.htm",
       "facet": "Rudeness",
@@ -32,6 +35,7 @@
     {
       "item_id": "EX-004",
       "en_text": "Believe that there is no absolute right or wrong.",
+      "ja_text": "絶対的な善悪はないと思う",
       "source_inventory": "TCI, NEO",
       "source_url": "https://ipip.ori.org/newTCIKey.htm, https://ipip.ori.org/newNEOKey.htm",
       "facet": "TCI ST4 Conservatism (-) / NEO O6 Liberalism (+)",
@@ -41,6 +45,7 @@
     {
       "item_id": "EX-005",
       "en_text": "Believe that people seldom tell you the whole truth.",
+      "ja_text": "人はめったに本当のことをすべては話さないと思う",
       "source_inventory": "16PF",
       "source_url": "https://ipip.ori.org/new16PFKey.htm",
       "facet": "Factor L Vigilance / Distrust",
