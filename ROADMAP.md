@@ -1,7 +1,7 @@
 # psychtest.jp - 実装ロードマップ
 
-> **最終更新**: 2026-05-16 (v2.2、Phase 2 を sub-phase 分割 + scale_meta 整理 wedge 追加)
-> **前版**: v2.1 (2026-05-16) Phase 2.1 完了反映 / v2.0 (2026-05-16) ロードマップ見直し / v1.0 (2026-01-20) 心理尺度路線中心
+> **最終更新**: 2026-05-16 (v2.3、Phase 2.1.β scale_meta 完了反映)
+> **前版**: v2.2 (2026-05-16) sub-phase 分割 / v2.1 (2026-05-16) Phase 2.1 完了反映 / v2.0 (2026-05-16) ロードマップ見直し / v1.0 (2026-01-20) 心理尺度路線中心
 > **位置づけ**: [project-design.md](./docs/project-design.md) の Phase 設計を実装視点でブレイクダウン
 
 ---
@@ -106,18 +106,25 @@ Phase 2.1 直後の品質保証。Sonnet agent で 120 訳を facet 構成概念
 - [ ] high 5 件 + medium 適用分を `data/bigfive-questions.ts` に反映
 - [ ] `npm run db:seed:local` で ipip_items.ja_text 同期
 
-### 2.1.β `scale_meta` 構築 + IPIP psychometric 整理 (新 wedge、要 office-hours)
+### 2.1.β `scale_meta` 構築 ✅ 2026-05-16
 
-「scale として使える形」にするため、α / 採点方法 / category 等を整理。Phase 3.1 (新規 IPIP 尺度 UI 追加) の必須前提。
+UI 表示用 scale-level metadata (ja_label / category / reference / source URL / 公式定義の項目数) を `scale_meta` table に一元化。Phase 3.1 (新規 IPIP 尺度 UI 追加) の必須前提を達成。
 
-- [ ] `/office-hours` で wedge spec 化
-- [ ] `migrations/0004_scale_meta.sql`: `scale_meta` table 新設
-  - scale_id PK / category (`multi-construct` | `single-construct`) / total_items / alpha / scoring_rule / source_url / reference / ja_label / ja_description
-- [ ] IPIP 公式 17 inventories の Key ページから psychometric data 取得 (例: `newNEOKey.htm`、`newHEXACOPIKey.htm` 等)
-- [ ] Tedone Table の alpha 値と突合 (= 既存 data の活用)
-- [ ] Multi-construct / Single-construct 区分 (= 36 instruments の分類)
-- [ ] **Self-Concept (現 `data/selfconcept-questions.ts`) の元 IPIP scale 特定 + textEn 追加** もここで対処
-- [ ] seed 拡張 (`scripts/seed-ipip.ts`)
+実装サマリ (commit `ea4896e`):
+
+- [x] `migrations/0004_scale_meta.sql`: scale_meta table 新設 (scale_id PK / category / ja_label / ja_description / source_url / reference / official_total_items)
+- [x] `data/ipip-master/scale-meta.json`: 手動キュレーション 12 row (既存 7 + Phase 3.1 候補 5)
+- [x] `scripts/seed-ipip.ts` step 5.7: INSERT OR REPLACE で seed 投入
+- [x] `functions/_lib/d1.ts`: `getScaleMeta(scaleId)` / `listScaleMeta(category?)` helper
+- [x] 完成判定 `COUNT(*) WHERE ja_label IS NOT NULL AND reference IS NOT NULL` = **12**
+
+spec: `docs/specs/scale-meta-wedge-2026-05.md`
+
+**scope 外 (= 別 wedge に切り出し)**:
+- α / scoring_rule の column 追加 → 既存 `scales` table に facet 別 α が入っているため重複 (= 必要時は集約 SQL で取得)
+- 17 inventories / 36 instruments 全件 → 本 wedge は 12 scale のみ、残りは Phase 3.x 以降
+- Self-Concept の textEn 追加 + IPIP master 紐付け → Phase 2.2.2 で扱う
+- 371 行 skip 修復 → Phase 2.1.γ で別 office-hours
 
 ### 2.2 既存 IPIP 系尺度の内部 migration (UX 維持)
 
@@ -321,8 +328,8 @@ SELECT scale_id, COUNT(*)
 5. **Phase 2.6** 月読 context 進捗 N/M — `lib/uranai/profile-summarizer.ts` 拡張
 
 **次 session 候補**:
-- **Phase 2.1.β** scale_meta wedge — `/office-hours` で spec 化推奨 (= α / 採点 / multi vs single 区分整理、Phase 3.1 前提)
-- **Phase 2.2.2** Self-Concept migration — 2.1.β 完了後 (= textEn 追加必要)
+- **Phase 2.1.γ** ipip-seed-completeness wedge — `/office-hours` で spec 化 (= 371 行 skip の pattern 分類 + bulk normalize、`scale_meta.official_total_items` と `scales` COUNT の整合)
+- **Phase 2.2.2** Self-Concept migration — 2.1.β 完了したので着手可 (= IPIP master 紐付け + textEn 追加)
 - **Phase 2.4** トップ 2 入口ハブ書き換え — UI 大改修、独立 wedge
 - **Phase 2.3** 非 IPIP 系統合 — scale-specific namespace 設計が要
 
@@ -348,3 +355,4 @@ SELECT scale_id, COUNT(*)
 - v2.0 (2026-05-16): 占い + 月読 chat 統合路線、IPIP 統一 DB + 朝の儀式 + 2 入口ハブ、KPI a 単独、Phase 4-5 punt
 - v2.1 (2026-05-16): Phase 1.9 (生年月日永続化) + Phase 2.1 (IPIP 統一 DB) 完了反映
 - v2.2 (2026-05-16): Phase 2 を sub-phase 分割 (= 2.1.α audit / 2.1.β scale_meta wedge / 2.2 を 2.2.1 + 2.2.2 へ細分化)、Production deploy を独立タスクに分離
+- v2.3 (2026-05-16): Phase 2.1.β (scale_meta 構築) 完了反映、Phase 2.1.γ (371 行 skip 修復) を次 session 候補に追加
