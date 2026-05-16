@@ -1,0 +1,7 @@
+{
+  "_comment": "Phase 2.1.γ: IPIP master (ipip-3320.xlsx) 内の typo を訂正するための差分 file. spec: docs/specs/ipip-seed-completeness-2026-05.md Open Question 2 への Daisuke 回答 = 'IPIP master 側 typo は IPIP master を直して merge'. scripts/seed-ipip.ts の loadIpip3320() が xlsx を読み込んだ後にこの map を適用する. xlsx (raw IPIP dump) は保護したいので xlsx 直接編集はしない. key = IPIP item_id, value = 訂正後の en_text. 訂正根拠は Tedone Table または IPIP 公式 Key page との突合で明らかな typo (= 単語自体が辞書に存在しない / 文法的に意味不明) に限る. 意味解釈が分かれるもの (= or/and / truth/story 等) は訂正対象外、Pattern E として扱う.",
+  "T1442": "Have a good memory for things I've done throughout the day.",
+  "B20": "Find that I sometimes sit staring off into space, thinking of nothing, and am not aware of the passage of time.",
+  "B22": "Find that in one situation I act so differently from when I'm in another situation that I feel almost as if I were two different people.",
+  "V139": "Fail to notice beauty until others comment on it."
+}

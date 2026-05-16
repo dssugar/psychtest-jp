@@ -1,3 +1,29 @@
 {
-  "_comment": "Phase 2.1.γ: Tedone Table wording → IPIP master item_id への手動 mapping. spec: docs/specs/ipip-seed-completeness-2026-05.md §Step 3. scripts/seed-ipip.ts の lookupItemId() が normalize 完全一致 / 縮約展開 / am prefix / 末尾補完で取れない異形 wording (= 主に Pattern C-E) をここで吸収する. LLM 生成は使わず Daisuke が IPIP 公式 (ipip.ori.org) を instrument ごとに手動 audit して追記する. key = Tedone Table の素の text (normalize 前). value = IPIP master の item_id ([A-Z]\\d+ 形式, 例: H184 / X1234 / E118). _ で始まる key は seed-ipip.ts 側で skip される. value が item_id 形式に合わない場合 (placeholder Hxxxx 等) は seed log に WARN を出して silent corrupt を防ぐ."
+  "_comment": "Phase 2.1.γ: Tedone Table wording → IPIP master item_id への手動 mapping. spec: docs/specs/ipip-seed-completeness-2026-05.md §Step 3. scripts/seed-ipip.ts の lookupItemId() が normalize 完全一致 / 縮約展開 / that 補完 / am prefix / 末尾補完で取れない異形 wording をここで吸収する. LLM 生成は使わず Daisuke が IPIP 公式 (ipip.ori.org) を instrument ごとに手動 audit して追記する. key = Tedone Table の素の text (normalize 前). value = IPIP master の item_id ([A-Z]\\d+ 形式, 例: H184 / X1234 / T2078). _ で始まる key は seed-ipip.ts 側で skip される. value が item_id 形式に合わない場合は seed log に WARN を出して silent corrupt を防ぐ. IPIP master 側 typo は ipip-master-corrections.json で訂正するため、ここには記載しない (= 訂正で吸収される).",
+
+  "_audit_CAT-PD": "2026-05-16 Daisuke audit via https://ipip.ori.org/newCAT-PD-SFv1.1Keys.htm. 6/9 件救出 (うち T1442 は ipip-master-corrections.json で訂正、override 不要). 残 3 件 (I am known for saying offensive things / I have intentionally done myself physical harm / Can't be bothered with others' needs) は IPIP master 不在 = Pattern E. ただし Can't be bothered は X237 'other's needs' (単数) と意味同一とみなし救出.",
+  "Feel my anxiety overwhelms me.": "T1155",
+  "I feel as if my body, or a part of it, has disappeared.": "A29",
+  "I have no will to live.": "T1643",
+  "Often space out and lose track of what's going on.": "T2078",
+  "Prefer to 'live in the moment' rather than plan things out.": "T2205",
+  "Can't be bothered with others' needs.": "X237",
+
+  "_audit_AB5C": "2026-05-16 audit. 6/6 件救出. 大半が 'that' 補完 pattern → lookupItemId の bulk rule で吸収. ここに残る override は bulk で取れない quote/hyphen 揺れ.",
+  "Don't fall for sob stories.": "X185",
+  "Want everything to be just right.": "E11",
+
+  "_audit_others_typo_quote_hyphen": "2026-05-16 audit. 残り 27 件中、IPIP master との突合で確度高 (= hyphen / quote / em-dash / 単複 / Tedone typo / 末尾欠落 / I prefix) のものを救出. IPIP master 側 typo (Goldberg1999 B20/B22, VIA V139) は ipip-master-corrections.json で訂正済 → ここに記載しない.",
+  "Would never go hang gliding or bungee jumping.": "X250",
+  "Would never make a high risk investment.": "E71",
+  "Find it difficult to touch an object that has been touched by other": "R46",
+  "Am unpredictable, people never know what I am going to say.": "D51",
+  "Feel comortable with myself.": "X129",
+  "Look for hidden meaning in things.": "E175",
+  "Feel spiritally connected to other people.": "P365",
+  "Can always say enough is enough.": "V240",
+  "I have intentionally done myself physical harm.": "A75",
+  "Enjoy being thought of as a normal mainstream person.": "D99",
+
+  "_pattern_E_remaining": "以下 5 件は IPIP master 真の不在 or 意味的に override 不適 = Pattern E. Phase 2 後半で IPIP master 拡張 (= source='tedone_extension') するか scale 自体を tombstone するか別 wedge で判断. 現状 skip 残存. (1) CAT-PD 'I am known for saying offensive things' = IPIP master 不在. (2) BFAS 'Do not have an assertive personality' = 不在. (3) BFAS 'Rarely put people under pressure' = H774 'Put people under pressure' に近いが 'Rarely' 副詞で意味反転、却下. (4) TCI/NEO 'Believe that there is no absolute right or wrong' = X184 'right and wrong' に近いが or/and 意味反転 risk で却下 (= Daisuke 前回 revert 判断と整合). (5) 16PF 'Believe that people seldom tell you the whole truth' = X139 'whole story' に近いが truth/story 意味差大で却下."
 }

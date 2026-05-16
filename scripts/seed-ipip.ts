@@ -37,6 +37,7 @@ const TRANSLATION_CSV = resolve(ROOT, "data/ipip-master/ipip-translation-1941.cs
 const CLAUDE_TRANSLATION_JSON = resolve(ROOT, "data/ipip-master/claude-translation-2202.json");
 const SCALE_META_JSON = resolve(ROOT, "data/ipip-master/scale-meta.json");
 const TEDONE_OVERRIDES_JSON = resolve(ROOT, "data/ipip-master/tedone-overrides.json");
+const IPIP_MASTER_CORRECTIONS_JSON = resolve(ROOT, "data/ipip-master/ipip-master-corrections.json");
 const SQL_OUT = resolve(ROOT, "scripts/.cache/seed-ipip.sql");
 const BIGFIVE_MAPPING_OUT = resolve(ROOT, "data/ipip-master/bigfive-id-mapping.json");
 const INDUSTRIOUSNESS_MAPPING_OUT = resolve(ROOT, "data/ipip-master/industriousness-id-mapping.json");
@@ -192,6 +193,32 @@ function loadIpip3320(): IpipMasterRow[] {
     const hFirst = ids.find((id) => id.startsWith("H")) ?? ids[0];
     r.id = hFirst;
   }
+
+  // Phase 2.1.γ: IPIP master typo 訂正 (= Daisuke audit で発見した IPIP 側 typo を patch).
+  // raw xlsx は保護 (= 再 download 可能性). corrections は json 別 file で audit trail を残す.
+  // spec Open Q2 への回答 = 「IPIP master 側 typo は IPIP master を直して merge する」.
+  try {
+    const corrText = readFileSync(IPIP_MASTER_CORRECTIONS_JSON, "utf-8");
+    const corrections = JSON.parse(corrText) as Record<string, string>;
+    let applied = 0;
+    const missing: string[] = [];
+    for (const [itemId, correctedText] of Object.entries(corrections)) {
+      if (itemId.startsWith("_")) continue;
+      if (typeof correctedText !== "string") continue;
+      const target = rows.find((r) => r.id === itemId);
+      if (!target) {
+        missing.push(itemId);
+        continue;
+      }
+      target.text = correctedText;
+      applied++;
+    }
+    if (applied > 0) console.log(`ipip-master-corrections: ${applied} typo patched`);
+    if (missing.length > 0) console.warn(`  WARN: corrections target IDs not found in master: ${missing.join(", ")}`);
+  } catch {
+    // 訂正 file 不在は許容 (= 訂正 0 件)
+  }
+
   return rows;
 }
 
@@ -265,8 +292,8 @@ function build() {
 
   /**
    * Tedone wording → IPIP master item_id 解決.
-   * 順序: ① override → ② normalize 完全一致 → ③ 縮約展開後一致
-   *      → ④ "am " prefix 補完 → ⑤ " me/you/us" 末尾補完 → ⑥ 末尾 s 削除 (単複正規化)
+   * 順序: ① override → ② normalize 完全一致 → ③ 縮約展開 → ④ "that" 補完
+   *      → ⑤ "am " prefix 補完 → ⑥ " me/you/us" 末尾補完 → ⑦ 末尾 s 削除 (単複正規化)
    * 副作用 risk が低い変形から順に試す.
    *
    * WHY NOT or↔and / 's↔is: 意味反転 ("right or wrong" ≠ "right and wrong") / 所有格誤射の risk があるため
@@ -288,6 +315,23 @@ function build() {
       .replace(/\s+/g, " ")
       .trim();
     if (normContr !== norm && normEnToId.has(normContr)) return normEnToId.get(normContr)!;
+
+    // ④ 動詞 + "that" 補完: Tedone "Believe X" ↔ IPIP "Believe that X" 系の異形吸収.
+    // 副作用 0: ② で直接一致を先に試すため、that 不要な wording は ② で確定する.
+    const thatMatch = norm.match(/^(believe|do|don't think|feel|know|suspect|think|thought|worry) (?!that\b)(.+)$/);
+    if (thatMatch) {
+      const withThat = `${thatMatch[1]} that ${thatMatch[2]}`;
+      if (normEnToId.has(withThat)) return normEnToId.get(withThat)!;
+    }
+
+    // ⑤ 動詞 + 目的語 + "that" 補完: "Do X Y" → "Do X that Y" 構造 (= 後置修飾).
+    // 例: "Do things I later regret" → "Do things that I later regret" (E24).
+    // 動詞 list は (Do|Have|Thought) に絞り false positive 抑制. ② で直接一致がある wording は先に確定.
+    const thatPostMatch = norm.match(/^(do|have|thought) ([\w']+) (?!that\b)(.+)$/);
+    if (thatPostMatch) {
+      const withThat = `${thatPostMatch[1]} ${thatPostMatch[2]} that ${thatPostMatch[3]}`;
+      if (normEnToId.has(withThat)) return normEnToId.get(withThat)!;
+    }
 
     if (!norm.startsWith("am ") && normEnToId.has("am " + norm)) return normEnToId.get("am " + norm)!;
     for (const suffix of [" me", " you", " us"]) {
