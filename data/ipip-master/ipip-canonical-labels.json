@@ -1,0 +1,1931 @@
+{
+  "labels": [
+    {
+      "canonical_label": "Achievement-striving",
+      "implementations": [
+        {"instrument": "NEO", "facet_code": "C4"},
+        {"instrument": "TCI", "facet_code": "P3"},
+        {"instrument": "MPQ", "facet_code": "AC"},
+        {"instrument": "6FPQ", "facet_code": "IT1"},
+        {"instrument": "HPI", "facet_code": "Competitive HIC"}
+      ]
+    },
+    {
+      "canonical_label": "Activity-level",
+      "implementations": [
+        {"instrument": "NEO", "facet_code": "E4"},
+        {"instrument": "JPI", "facet_code": "Enl"}
+      ]
+    },
+    {
+      "canonical_label": "Adaptability",
+      "implementations": [
+        {"instrument": "6FPQ", "facet_code": "AG3"}
+      ]
+    },
+    {
+      "canonical_label": "ADHD",
+      "implementations": [
+        {"instrument": "ADHD", "facet_code": "Span, et al., 2002"}
+      ]
+    },
+    {
+      "canonical_label": "Adventurousness",
+      "implementations": [
+        {"instrument": "NEO", "facet_code": "O4"},
+        {"instrument": "CPI", "facet_code": "Sp"},
+        {"instrument": "6FPQ", "facet_code": "OP1"},
+        {"instrument": "ORVIS", "facet_code": "Adventure"}
+      ]
+    },
+    {
+      "canonical_label": "Aesthetic Appreciation/Artistic Interests",
+      "implementations": [
+        {"instrument": "NEO", "facet_code": "O2"},
+        {"instrument": "HEX", "facet_code": "O-AesA"},
+        {"instrument": "VIA", "facet_code": "App"},
+        {"instrument": "HPI", "facet_code": "Culture HIC"},
+        {"instrument": "BFAS", "facet_code": "Openness"}
+      ]
+    },
+    {
+      "canonical_label": "Affective Lability",
+      "implementations": [
+        {"instrument": "CAT-PD", "facet_code": "Affective Lability"}
+      ]
+    },
+    {
+      "canonical_label": "Agreeableness",
+      "implementations": [
+        {"instrument": "NEO", "facet_code": "Domain"},
+        {"instrument": "Big-Five", "facet_code": "Domain"},
+        {"instrument": "Big-7", "facet_code": "525"},
+        {"instrument": "6FPQ", "facet_code": "AG"},
+        {"instrument": "BFAS", "facet_code": "Agreeableness"}
+      ]
+    },
+    {
+      "canonical_label": "Altruism",
+      "implementations": [
+        {"instrument": "NEO", "facet_code": "A3"},
+        {"instrument": "ORVIS", "facet_code": "Altruism"}
+      ]
+    },
+    {
+      "canonical_label": "Ambition/Drive",
+      "implementations": [
+        {"instrument": "BAS-Drive", "facet_code": "Carver & White, 1994"}
+      ]
+    },
+    {
+      "canonical_label": "Amiability",
+      "implementations": [
+        {"instrument": "CPI", "facet_code": "Ami"}
+      ]
+    },
+    {
+      "canonical_label": "Anger",
+      "implementations": [
+        {"instrument": "CAT-PD", "facet_code": "Anger"},
+        {"instrument": "NEO", "facet_code": "N2"},
+        {"instrument": "BFAS", "facet_code": "Volatility"}
+      ]
+    },
+    {
+      "canonical_label": "Anhedonia",
+      "implementations": [
+        {"instrument": "CAT-PD", "facet_code": "Anhedonia"}
+      ]
+    },
+    {
+      "canonical_label": "Anxiety",
+      "implementations": [
+        {"instrument": "CAT-PD", "facet_code": "Anxiousness"},
+        {"instrument": "NEO", "facet_code": "N1"},
+        {"instrument": "JPI", "facet_code": "Axy"},
+        {"instrument": "16PF", "facet_code": "O"},
+        {"instrument": "HEX", "facet_code": "E-Anxi"},
+        {"instrument": "BIS-Anxiety", "facet_code": "Carver & White, 1994"},
+        {"instrument": "BFAS", "facet_code": "Withdrawal"}
+      ]
+    },
+    {
+      "canonical_label": "Appearance-Consciousness",
+      "implementations": [
+        {"instrument": "HPI", "facet_code": "Appearance HIC"},
+        {"instrument": "ORAIS", "facet_code": "Fashion"}
+      ]
+    },
+    {
+      "canonical_label": "Artistic Interests/Aesthetic Appreciation",
+      "implementations": [
+        {"instrument": "NEO", "facet_code": "O2"},
+        {"instrument": "HEX", "facet_code": "O-AesA"},
+        {"instrument": "VIA", "facet_code": "App"},
+        {"instrument": "HPI", "facet_code": "Culture HIC"},
+        {"instrument": "BFAS", "facet_code": "Openness"}
+      ]
+    },
+    {
+      "canonical_label": "Assertiveness",
+      "implementations": [
+        {"instrument": "AB5C", "facet_code": "I+/III+"},
+        {"instrument": "NEO", "facet_code": "E3"},
+        {"instrument": "CPI", "facet_code": "Do"},
+        {"instrument": "16PF", "facet_code": "E"},
+        {"instrument": "MPQ", "facet_code": "SP"},
+        {"instrument": "BFAS", "facet_code": "Assertiveness"}
+      ]
+    },
+    {
+      "canonical_label": "Attention to Emotions",
+      "implementations": [
+        {"instrument": "Barchard", "facet_code": "2001"}
+      ]
+    },
+    {
+      "canonical_label": "Attractiveness",
+      "implementations": [
+        {"instrument": "Big-7", "facet_code": "525"}
+      ]
+    },
+    {
+      "canonical_label": "Authenticity/Integrity/Honesty",
+      "implementations": [
+        {"instrument": "VIA", "facet_code": "Int"}
+      ]
+    },
+    {
+      "canonical_label": "Behavioral Inhibition/Activation System",
+      "implementations": [
+        {"instrument": "BIS/BAS", "facet_code": "Carver & White, 1994"}
+      ]
+    },
+    {
+      "canonical_label": "Belligerence",
+      "implementations": [
+        {"instrument": "MPQ", "facet_code": "AG"}
+      ]
+    },
+    {
+      "canonical_label": "Bravery/Courage/Valor",
+      "implementations": [
+        {"instrument": "VIA", "facet_code": "Val"}
+      ]
+    },
+    {
+      "canonical_label": "Callousness",
+      "implementations": [
+        {"instrument": "CAT-PD", "facet_code": "Callousness"},
+        {"instrument": "IPIP-IPC", "facet_code": "Cold-Hearted"}
+      ]
+    },
+    {
+      "canonical_label": "Calmness",
+      "implementations": [
+        {"instrument": "AB5C", "facet_code": "IV+/II+"},
+        {"instrument": "CPI", "facet_code": "WO"},
+        {"instrument": "HPI", "facet_code": "SO"},
+        {"instrument": "6FPQ", "facet_code": "AG2"},
+        {"instrument": "HPI", "facet_code": "Calmness"},
+        {"instrument": "HPI", "facet_code": "Not Anxious HIC"},
+        {"instrument": "HPI", "facet_code": "Calmness HIC"}
+      ]
+    },
+    {
+      "canonical_label": "Capacity for Love",
+      "implementations": [
+        {"instrument": "VIA", "facet_code": "Cap"}
+      ]
+    },
+    {
+      "canonical_label": "Cautiousness",
+      "implementations": [
+        {"instrument": "AB5C", "facet_code": "III+/I-"},
+        {"instrument": "NEO", "facet_code": "C6"}
+      ]
+    },
+    {
+      "canonical_label": "Cheerfulness",
+      "implementations": [
+        {"instrument": "NEO", "facet_code": "E6"}
+      ]
+    },
+    {
+      "canonical_label": "Children, Interest in",
+      "implementations": [
+        {"instrument": "ORAIS", "facet_code": "Child-Related"}
+      ]
+    },
+    {
+      "canonical_label": "Citizenship/Teamwork",
+      "implementations": [
+        {"instrument": "VIA", "facet_code": "Cit"}
+      ]
+    },
+    {
+      "canonical_label": "Cognitive Failures",
+      "implementations": [
+        {"instrument": "Cognitive Failures", "facet_code": "Broadbent, et al., 1982"}
+      ]
+    },
+    {
+      "canonical_label": "Cognitive Problems",
+      "implementations": [
+        {"instrument": "CAT-PD", "facet_code": "CognitiveProblems"}
+      ]
+    },
+    {
+      "canonical_label": "Collecting, Interest in",
+      "implementations": [
+        {"instrument": "ORAIS", "facet_code": "Collecting"}
+      ]
+    },
+    {
+      "canonical_label": "Compassion",
+      "implementations": [
+        {"instrument": "TCI", "facet_code": "C1"},
+        {"instrument": "BFAS", "facet_code": "Compassion"}
+      ]
+    },
+    {
+      "canonical_label": "Competence",
+      "implementations": [
+        {"instrument": "AB5C", "facet_code": "V+/III+"},
+        {"instrument": "CPI", "facet_code": "Py"},
+        {"instrument": "HPI", "facet_code": "MP"},
+        {"instrument": "TCI", "facet_code": "P2"}
+      ]
+    },
+    {
+      "canonical_label": "Complexity",
+      "implementations": [
+        {"instrument": "CPI", "facet_code": "Cs"},
+        {"instrument": "16PF", "facet_code": "Q1"}
+      ]
+    },
+    {
+      "canonical_label": "Comprehension",
+      "implementations": [
+        {"instrument": "CPI", "facet_code": "Ie"},
+        {"instrument": "6FPQ", "facet_code": "OP2"}
+      ]
+    },
+    {
+      "canonical_label": "Computing, Interest in",
+      "implementations": [
+        {"instrument": "ORAIS", "facet_code": "Computing"}
+      ]
+    },
+    {
+      "canonical_label": "Conformity/Dependence/Need for approval",
+      "implementations": [
+        {"instrument": "JPI", "facet_code": "Cpr"},
+        {"instrument": "TCI", "facet_code": "RD4"},
+        {"instrument": "HEX", "facet_code": "E-Depe"},
+        {"instrument": "HPI", "facet_code": "Not Autonomous HIC"}
+      ]
+    },
+    {
+      "canonical_label": "Conscientiousness",
+      "implementations": [
+        {"instrument": "AB5C", "facet_code": "III+/III+"},
+        {"instrument": "NEO", "facet_code": "Domain"},
+        {"instrument": "Big-Five", "facet_code": "Domain"},
+        {"instrument": "Big-7", "facet_code": "525"},
+        {"instrument": "BFAS", "facet_code": "Conscientiousness"}
+      ]
+    },
+    {
+      "canonical_label": "Conservatism",
+      "implementations": [
+        {"instrument": "TCI", "facet_code": "ST4"},
+        {"instrument": "MPQ", "facet_code": "TR"},
+        {"instrument": "6FPQ", "facet_code": "ME1"}
+      ]
+    },
+    {
+      "canonical_label": "Construction/Mechanical Interests",
+      "implementations": [
+        {"instrument": "ORVIS", "facet_code": "Production"}
+      ]
+    },
+    {
+      "canonical_label": "Cool-headedness",
+      "implementations": [
+        {"instrument": "AB5C", "facet_code": "IV+/III-"},
+        {"instrument": "HPI", "facet_code": "Even-tempered HIC"}
+      ]
+    },
+    {
+      "canonical_label": "Cooperation",
+      "implementations": [
+        {"instrument": "AB5C", "facet_code": "II+/I-"},
+        {"instrument": "NEO", "facet_code": "A4"},
+        {"instrument": "HPI", "facet_code": "REL"}
+      ]
+    },
+    {
+      "canonical_label": "Courage/Bravery/Valor",
+      "implementations": [
+        {"instrument": "VIA", "facet_code": "Val"}
+      ]
+    },
+    {
+      "canonical_label": "Creativity/Originality",
+      "implementations": [
+        {"instrument": "AB5C", "facet_code": "V+/II-"},
+        {"instrument": "HPI", "facet_code": "Int"},
+        {"instrument": "HEX", "facet_code": "O-Crea"},
+        {"instrument": "VIA", "facet_code": "Ori"},
+        {"instrument": "ORVIS", "facet_code": "Creativity"},
+        {"instrument": "ORAIS", "facet_code": "Creativity"}
+      ]
+    },
+    {
+      "canonical_label": "Culture",
+      "implementations": [
+        {"instrument": "6FPQ", "facet_code": "OP3"},
+        {"instrument": "ORAIS", "facet_code": "Culture"}
+      ]
+    },
+    {
+      "canonical_label": "Curiosity",
+      "implementations": [
+        {"instrument": "VIA", "facet_code": "Cur"},
+        {"instrument": "HPI", "facet_code": "Curiosity HIC"},
+        {"instrument": "HPI", "facet_code": "Science Ability HIC"}
+      ]
+    },
+    {
+      "canonical_label": "Deliberateness",
+      "implementations": [
+        {"instrument": "6FPQ", "facet_code": "ME2"}
+      ]
+    },
+    {
+      "canonical_label": "Dependence/Conformity/Need for Approval",
+      "implementations": [
+        {"instrument": "TCI", "facet_code": "RD4"},
+        {"instrument": "HEX", "facet_code": "E-Depe"},
+        {"instrument": "JPI", "facet_code": "Cpr"},
+        {"instrument": "HPI", "facet_code": "Not Autonomous HIC"}
+      ]
+    },
+    {
+      "canonical_label": "Depression",
+      "implementations": [
+        {"instrument": "CAT-PD", "facet_code": "Depressiveness"},
+        {"instrument": "NEO", "facet_code": "N3"},
+        {"instrument": "CES-D", "facet_code": "Radloff, 1977"}
+      ]
+    },
+    {
+      "canonical_label": "Depth",
+      "implementations": [
+        {"instrument": "AB5C", "facet_code": "V+/IV-"},
+        {"instrument": "CPI", "facet_code": "Em"}
+      ]
+    },
+    {
+      "canonical_label": "Diligence",
+      "implementations": [
+        {"instrument": "HEX", "facet_code": "C-Dili"}
+      ]
+    },
+    {
+      "canonical_label": "Disorderliness",
+      "implementations": [
+        {"instrument": "CPI", "facet_code": "Fx"}
+      ]
+    },
+    {
+      "canonical_label": "Disparagement",
+      "implementations": [
+        {"instrument": "IPIP-IPC", "facet_code": "Arrogant-Calculating"}
+      ]
+    },
+    {
+      "canonical_label": "Dissociation",
+      "implementations": [
+        {"instrument": "Dissociation", "facet_code": "Goldberg, 1999"}
+      ]
+    },
+    {
+      "canonical_label": "Distrust",
+      "implementations": [
+        {"instrument": "MPQ", "facet_code": "AL"},
+        {"instrument": "16PF", "facet_code": "L"}
+      ]
+    },
+    {
+      "canonical_label": "Docility",
+      "implementations": [
+        {"instrument": "6FPQ", "facet_code": "AG1"}
+      ]
+    },
+    {
+      "canonical_label": "Dominance",
+      "implementations": [
+        {"instrument": "CAT-PD", "facet_code": "Domineering"},
+        {"instrument": "CPI", "facet_code": "Nar"},
+        {"instrument": "IPIP-IPC", "facet_code": "Assured-Dominant"}
+      ]
+    },
+    {
+      "canonical_label": "Drinking, Interest in",
+      "implementations": [
+        {"instrument": "ORAIS", "facet_code": "Drinking"}
+      ]
+    },
+    {
+      "canonical_label": "Drive/Ambition",
+      "implementations": [
+        {"instrument": "BAS-Drive", "facet_code": "Carver & White, 1994"}
+      ]
+    },
+    {
+      "canonical_label": "Dutifulness",
+      "implementations": [
+        {"instrument": "AB5C", "facet_code": "III+/II+"},
+        {"instrument": "NEO", "facet_code": "C3"},
+        {"instrument": "CPI", "facet_code": "V2"},
+        {"instrument": "16PF", "facet_code": "G"},
+        {"instrument": "HPI", "facet_code": "Pru"},
+        {"instrument": "HPI", "facet_code": "Avoids Trouble HIC"}
+      ]
+    },
+    {
+      "canonical_label": "Efficiency",
+      "implementations": [
+        {"instrument": "AB5C", "facet_code": "III+/I+"}
+      ]
+    },
+    {
+      "canonical_label": "Emotional Detachment",
+      "implementations": [
+        {"instrument": "CAT-PD", "facet_code": "Emotional Detachment"}
+      ]
+    },
+    {
+      "canonical_label": "Emotional/Social/Personal Intelligence",
+      "implementations": [
+        {"instrument": "VIA", "facet_code": "Soc"}
+      ]
+    },
+    {
+      "canonical_label": "Emotional Stability",
+      "implementations": [
+        {"instrument": "Big-Five", "facet_code": "Domain"},
+        {"instrument": "Big-7", "facet_code": "525"},
+        {"instrument": "16PF", "facet_code": "C"}
+      ]
+    },
+    {
+      "canonical_label": "Emotionality",
+      "implementations": [
+        {"instrument": "NEO", "facet_code": "O3"},
+        {"instrument": "16PF", "facet_code": "Q4"}
+      ]
+    },
+    {
+      "canonical_label": "Emotion-based Decision-making",
+      "implementations": [
+        {"instrument": "Barchard", "facet_code": "2001"}
+      ]
+    },
+    {
+      "canonical_label": "Empathy",
+      "implementations": [
+        {"instrument": "AB5C", "facet_code": "II+/V+"},
+        {"instrument": "TCI", "facet_code": "C2"},
+        {"instrument": "Barchard", "facet_code": "2001"},
+        {"instrument": "JPI", "facet_code": "Emp"},
+        {"instrument": "HPI", "facet_code": "Empathy HIC"},
+        {"instrument": "HPI", "facet_code": "Caring HIC"}
+      ]
+    },
+    {
+      "canonical_label": "Enthusiasm/Zest/Vitality",
+      "implementations": [
+        {"instrument": "VIA", "facet_code": "Zes"},
+        {"instrument": "HPI", "facet_code": "Identity HIC"},
+        {"instrument": "BFAS", "facet_code": "Enthusiasm"}
+      ]
+    },
+    {
+      "canonical_label": "Environmentalism, Interest in",
+      "implementations": [
+        {"instrument": "ORAIS", "facet_code": "Green Activities"}
+      ]
+    },
+    {
+      "canonical_label": "Equity/Fairness",
+      "implementations": [
+        {"instrument": "HEX", "facet_code": "H-Fair"},
+        {"instrument": "VIA", "facet_code": "Equ"}
+      ]
+    },
+    {
+      "canonical_label": "Excitement-seeking",
+      "implementations": [
+        {"instrument": "NEO", "facet_code": "E5"},
+        {"instrument": "BAS-Reward-Responsiveness", "facet_code": "Carver & White, 1994"}
+      ]
+    },
+    {
+      "canonical_label": "Exercise, Interest in",
+      "implementations": [
+        {"instrument": "ORAIS", "facet_code": "Exercise"}
+      ]
+    },
+    {
+      "canonical_label": "Exhibitionism",
+      "implementations": [
+        {"instrument": "6FPQ", "facet_code": "EX3"},
+        {"instrument": "CAT-PD", "facet_code": "Exhibitionism"},
+        {"instrument": "HPI", "facet_code": "Exhibitionistic HIC"}
+      ]
+    },
+    {
+      "canonical_label": "Expressiveness",
+      "implementations": [
+        {"instrument": "HEX", "facet_code": "X-Expr"}
+      ]
+    },
+    {
+      "canonical_label": "Extravagance",
+      "implementations": [
+        {"instrument": "TCI", "facet_code": "NS3"}
+      ]
+    },
+    {
+      "canonical_label": "Extraversion",
+      "implementations": [
+        {"instrument": "NEO", "facet_code": "Domain"},
+        {"instrument": "Big-Five", "facet_code": "Domain"},
+        {"instrument": "Big-7", "facet_code": "525"},
+        {"instrument": "6FPQ", "facet_code": "EX"},
+        {"instrument": "BFAS", "facet_code": "Extraversion"}
+      ]
+    },
+    {
+      "canonical_label": "Fairness/Equity",
+      "implementations": [
+        {"instrument": "HEX", "facet_code": "H-Fair"},
+        {"instrument": "VIA", "facet_code": "Equ"}
+      ]
+    },
+    {
+      "canonical_label": "Fantasy Proneness",
+      "implementations": [
+        {"instrument": "CAT-PD", "facet_code": "Fantasy Proneness"}
+      ]
+    },
+    {
+      "canonical_label": "Fearfulness",
+      "implementations": [
+        {"instrument": "HEX", "facet_code": "E-Fear"}
+      ]
+    },
+    {
+      "canonical_label": "Femininity",
+      "implementations": [
+        {"instrument": "TCI", "facet_code": "ST5"}
+      ]
+    },
+    {
+      "canonical_label": "Flexibility",
+      "implementations": [
+        {"instrument": "HEX", "facet_code": "A-Flex"}
+      ]
+    },
+    {
+      "canonical_label": "Food, Interest in",
+      "implementations": [
+        {"instrument": "ORAIS", "facet_code": "Food-Related"}
+      ]
+    },
+    {
+      "canonical_label": "Forcefulness",
+      "implementations": [
+        {"instrument": "CPI", "facet_code": "B-MS"}
+      ]
+    },
+    {
+      "canonical_label": "Forgiveness/Mercy",
+      "implementations": [
+        {"instrument": "HEX", "facet_code": "A-Forg"},
+        {"instrument": "VIA", "facet_code": "For"},
+        {"instrument": "HPI", "facet_code": "Easy to Live With HIC"},
+        {"instrument": "HPI", "facet_code": "No Hostility HIC"}
+      ]
+    },
+    {
+      "canonical_label": "Friendliness",
+      "implementations": [
+        {"instrument": "AB5C", "facet_code": "I+/II+"},
+        {"instrument": "NEO", "facet_code": "E1"},
+        {"instrument": "16PF", "facet_code": "H"},
+        {"instrument": "HPI", "facet_code": "Lik"},
+        {"instrument": "TCI", "facet_code": "RD2"},
+        {"instrument": "MPQ", "facet_code": "SC"},
+        {"instrument": "HPI", "facet_code": "Likes People HIC"}
+      ]
+    },
+    {
+      "canonical_label": "Gambling, Interest in",
+      "implementations": [
+        {"instrument": "ORAIS", "facet_code": "Gambling"}
+      ]
+    },
+    {
+      "canonical_label": "Game-Playing, Interest in",
+      "implementations": [
+        {"instrument": "ORAIS", "facet_code": "Game-Playing"},
+        {"instrument": "HPI", "facet_code": "Intellectual Games HIC"}
+      ]
+    },
+    {
+      "canonical_label": "Gardening, Interest in",
+      "implementations": [
+        {"instrument": "ORAIS", "facet_code": "Gardening"}
+      ]
+    },
+    {
+      "canonical_label": "Gentleness",
+      "implementations": [
+        {"instrument": "HEX", "facet_code": "A-Gent"}
+      ]
+    },
+    {
+      "canonical_label": "Generosity/Kindness",
+      "implementations": [
+        {"instrument": "VIA", "facet_code": "Kin"}
+      ]
+    },
+    {
+      "canonical_label": "Good Nature",
+      "implementations": [
+        {"instrument": "CPI", "facet_code": "V3"}
+      ]
+    },
+    {
+      "canonical_label": "Grandiosity",
+      "implementations": [
+        {"instrument": "CAT-PD", "facet_code": "Grandiosity"}
+      ]
+    },
+    {
+      "canonical_label": "Gratitude",
+      "implementations": [
+        {"instrument": "VIA", "facet_code": "Gra"}
+      ]
+    },
+    {
+      "canonical_label": "Greed Avoidance",
+      "implementations": [
+        {"instrument": "HEX", "facet_code": "H-Gree"}
+      ]
+    },
+    {
+      "canonical_label": "Gregariousness",
+      "implementations": [
+        {"instrument": "AB5C", "facet_code": "I+/I+"},
+        {"instrument": "NEO", "facet_code": "E2"},
+        {"instrument": "16PF", "facet_code": "F"},
+        {"instrument": "HPI", "facet_code": "SP"},
+        {"instrument": "6FPQ", "facet_code": "EX1"},
+        {"instrument": "HPI", "facet_code": "Likes Parties HIC"},
+        {"instrument": "IPIP-IPC", "facet_code": "Gregarious-Extraverted"},
+        {"instrument": "ORAIS", "facet_code": "Partying"}
+      ]
+    },
+    {
+      "canonical_label": "Happiness",
+      "implementations": [
+        {"instrument": "AB5C", "facet_code": "IV+/I+"},
+        {"instrument": "CPI", "facet_code": "MP"},
+        {"instrument": "HPI", "facet_code": "ST"},
+        {"instrument": "HPI", "facet_code": "No Depression HIC"}
+      ]
+    },
+    {
+      "canonical_label": "Harm-avoidance",
+      "implementations": [
+        {"instrument": "TCI", "facet_code": "HA2"}
+      ]
+    },
+    {
+      "canonical_label": "Health Anxiety",
+      "implementations": [
+        {"instrument": "CAT-PD", "facet_code": "Health Anxiety"}
+      ]
+    },
+    {
+      "canonical_label": "Home-Making, Interest in",
+      "implementations": [
+        {"instrument": "ORAIS", "facet_code": "Housekeeping"}
+      ]
+    },
+    {
+      "canonical_label": "Honesty/Integrity/Authenticity",
+      "implementations": [
+        {"instrument": "VIA", "facet_code": "Int"}
+      ]
+    },
+    {
+      "canonical_label": "Hope/Optimism",
+      "implementations": [
+        {"instrument": "CPI", "facet_code": "Wb"},
+        {"instrument": "TCI", "facet_code": "S2"},
+        {"instrument": "Scheier, et al.", "facet_code": "1994"},
+        {"instrument": "VIA", "facet_code": "Hop"}
+      ]
+    },
+    {
+      "canonical_label": "Hostile Aggression",
+      "implementations": [
+        {"instrument": "CAT-PD", "facet_code": "Hostile Aggression"}
+      ]
+    },
+    {
+      "canonical_label": "Humility/Modesty",
+      "implementations": [
+        {"instrument": "NEO", "facet_code": "A5"},
+        {"instrument": "HEX", "facet_code": "H-Mode"},
+        {"instrument": "VIA", "facet_code": "Mod"}
+      ]
+    },
+    {
+      "canonical_label": "Humor/Playfulness",
+      "implementations": [
+        {"instrument": "6FPQ", "facet_code": "IT3"},
+        {"instrument": "VIA", "facet_code": "Hum"},
+        {"instrument": "HPI", "facet_code": "Entertaining HIC"}
+      ]
+    },
+    {
+      "canonical_label": "Hypomanic Exhibitionism",
+      "implementations": [
+        {"instrument": "Exhibitionism", "facet_code": "Ekblad & Chapman, 1986"}
+      ]
+    },
+    {
+      "canonical_label": "Hypomanic Mood Intensity",
+      "implementations": [
+        {"instrument": "Mood Intensity/Change", "facet_code": "Eckblad & Chapman, 1986"}
+      ]
+    },
+    {
+      "canonical_label": "Imagination",
+      "implementations": [
+        {"instrument": "AB5C", "facet_code": "V+/III-"},
+        {"instrument": "NEO", "facet_code": "O1"},
+        {"instrument": "16PF", "facet_code": "M"},
+        {"instrument": "TCI", "facet_code": "ST1"},
+        {"instrument": "MPQ", "facet_code": "AB"}
+      ]
+    },
+    {
+      "canonical_label": "Immoderation",
+      "implementations": [
+        {"instrument": "NEO", "facet_code": "N5"}
+      ]
+    },
+    {
+      "canonical_label": "Imperturbability",
+      "implementations": [
+        {"instrument": "AB5C", "facet_code": "IV+/II-"}
+      ]
+    },
+    {
+      "canonical_label": "Impression-management",
+      "implementations": [
+        {"instrument": "BIDR", "facet_code": "Paulhus, 1991"}
+      ]
+    },
+    {
+      "canonical_label": "Impulse-control",
+      "implementations": [
+        {"instrument": "AB5C", "facet_code": "IV+/I-"},
+        {"instrument": "TCI", "facet_code": "S5"},
+        {"instrument": "HPI", "facet_code": "Impulse Control HIC"}
+      ]
+    },
+    {
+      "canonical_label": "Independence",
+      "implementations": [
+        {"instrument": "6FPQ", "facet_code": "IP"}
+      ]
+    },
+    {
+      "canonical_label": "Industriousness/Perseverance/Persistence",
+      "implementations": [
+        {"instrument": "TCI", "facet_code": "P4"},
+        {"instrument": "6FPQ", "facet_code": "IT"},
+        {"instrument": "VIA", "facet_code": "Ind"},
+        {"instrument": "BFAS", "facet_code": "Industriousness"}
+      ]
+    },
+    {
+      "canonical_label": "Ingenuity",
+      "implementations": [
+        {"instrument": "AB5C", "facet_code": "V+/I+"},
+        {"instrument": "JPI", "facet_code": "Inv"},
+        {"instrument": "HPI", "facet_code": "Generates Ideas HIC"}
+      ]
+    },
+    {
+      "canonical_label": "Initiative",
+      "implementations": [
+        {"instrument": "TCI", "facet_code": "P1"}
+      ]
+    },
+    {
+      "canonical_label": "Inquisitiveness",
+      "implementations": [
+        {"instrument": "HEX", "facet_code": "O-Inqu"}
+      ]
+    },
+    {
+      "canonical_label": "Insight",
+      "implementations": [
+        {"instrument": "CPI", "facet_code": "Sa"}
+      ]
+    },
+    {
+      "canonical_label": "Integrity/Honesty/Authenticity",
+      "implementations": [
+        {"instrument": "VIA", "facet_code": "Int"}
+      ]
+    },
+    {
+      "canonical_label": "Intellect",
+      "implementations": [
+        {"instrument": "AB5C", "facet_code": "V+/V+"},
+        {"instrument": "NEO", "facet_code": "O5"},
+        {"instrument": "CPI", "facet_code": "Ai"},
+        {"instrument": "Big-Five", "facet_code": "Domain"},
+        {"instrument": "Big-7", "facet_code": "525"},
+        {"instrument": "16PF", "facet_code": "B"},
+        {"instrument": "HPI", "facet_code": "Education HIC"},
+        {"instrument": "BFAS", "facet_code": "Intellect"}
+      ]
+    },
+    {
+      "canonical_label": "Intellectual Breadth",
+      "implementations": [
+        {"instrument": "JPI", "facet_code": "Bdi"}
+      ]
+    },
+    {
+      "canonical_label": "Intellectual Complexity",
+      "implementations": [
+        {"instrument": "JPI", "facet_code": "Cpx"}
+      ]
+    },
+    {
+      "canonical_label": "Intellectual Openness",
+      "implementations": [
+        {"instrument": "6FPQ", "facet_code": "OP"},
+        {"instrument": "BFAS", "facet_code": "Openness/Intellect"}
+      ]
+    },
+    {
+      "canonical_label": "Introspection/Private Self-Consciousness",
+      "implementations": [
+        {"instrument": "AB5C", "facet_code": "V+/I-"},
+        {"instrument": "HPI", "facet_code": "Self Focus HIC"},
+        {"instrument": "Private Self-Consciousness", "facet_code": "Buss, 1980"}
+      ]
+    },
+    {
+      "canonical_label": "Introversion",
+      "implementations": [
+        {"instrument": "CPI", "facet_code": "V1"},
+        {"instrument": "16PF", "facet_code": "Q2"},
+        {"instrument": "IPIP-IPC", "facet_code": "Aloof-Introverted"}
+      ]
+    },
+    {
+      "canonical_label": "Irrational Beliefs",
+      "implementations": [
+        {"instrument": "CAT-PD", "facet_code": "Unusual Beliefs"}
+      ]
+    },
+    {
+      "canonical_label": "Irresponsibility",
+      "implementations": [
+        {"instrument": "CAT-PD", "facet_code": "Irresponsibility"}
+      ]
+    },
+    {
+      "canonical_label": "Journaling, Interest in",
+      "implementations": [
+        {"instrument": "ORAIS", "facet_code": "Writing/Remembering"}
+      ]
+    },
+    {
+      "canonical_label": "Joyfulness",
+      "implementations": [
+        {"instrument": "MPQ", "facet_code": "WB"}
+      ]
+    },
+    {
+      "canonical_label": "Judgment/Open-mindedness",
+      "implementations": [
+        {"instrument": "VIA", "facet_code": "Jud"}
+      ]
+    },
+    {
+      "canonical_label": "Kindness/Generosity",
+      "implementations": [
+        {"instrument": "VIA", "facet_code": "Kin"}
+      ]
+    },
+    {
+      "canonical_label": "Language Mastery",
+      "implementations": [
+        {"instrument": "HPI", "facet_code": "Good Memory"},
+        {"instrument": "ORVIS", "facet_code": "Erudition"}
+      ]
+    },
+    {
+      "canonical_label": "Leadership",
+      "implementations": [
+        {"instrument": "AB5C", "facet_code": "I+/V+"},
+        {"instrument": "HPI", "facet_code": "Amb"},
+        {"instrument": "6FPQ", "facet_code": "EX2"},
+        {"instrument": "VIA", "facet_code": "Lea"},
+        {"instrument": "HPI", "facet_code": "Leadership HIC"},
+        {"instrument": "ORVIS", "facet_code": "Leadership HIC"}
+      ]
+    },
+    {
+      "canonical_label": "Learning, Love of",
+      "implementations": [
+        {"instrument": "VIA", "facet_code": "Lov"},
+        {"instrument": "ORAIS", "facet_code": "Understanding"}
+      ]
+    },
+    {
+      "canonical_label": "Liberalism",
+      "implementations": [
+        {"instrument": "NEO", "facet_code": "O6"},
+        {"instrument": "CPI", "facet_code": "CT"}
+      ]
+    },
+    {
+      "canonical_label": "Liveliness",
+      "implementations": [
+        {"instrument": "HEX", "facet_code": "X-Live"}
+      ]
+    },
+    {
+      "canonical_label": "Locus of Control",
+      "implementations": [
+        {"instrument": "Locus of Control", "facet_code": "Levenson, 1981"},
+        {"instrument": "Locus of Control", "facet_code": "Rational Scale"}
+      ]
+    },
+    {
+      "canonical_label": "Love, Capacity for",
+      "implementations": [
+        {"instrument": "VIA", "facet_code": "Cap"}
+      ]
+    },
+    {
+      "canonical_label": "Love of Learning",
+      "implementations": [
+        {"instrument": "VIA", "facet_code": "Lov"},
+        {"instrument": "ORAIS", "facet_code": "Understanding"}
+      ]
+    },
+    {
+      "canonical_label": "Love of Reading",
+      "implementations": [
+        {"instrument": "HPI", "facet_code": "Reading HIC"},
+        {"instrument": "ORAIS", "facet_code": "Reading"}
+      ]
+    },
+    {
+      "canonical_label": "Machiavellianism",
+      "implementations": [
+        {"instrument": "JPI", "facet_code": "Sas"}
+      ]
+    },
+    {
+      "canonical_label": "Manipulativeness",
+      "implementations": [
+        {"instrument": "CAT-PD", "facet_code": "Manipulativeness"}
+      ]
+    },
+    {
+      "canonical_label": "Mechanical/Construction Interests",
+      "implementations": [
+        {"instrument": "ORVIS", "facet_code": "Production"}
+      ]
+    },
+    {
+      "canonical_label": "Mercy/Forgiveness",
+      "implementations": [
+        {"instrument": "HEX", "facet_code": "A-Forg"},
+        {"instrument": "VIA", "facet_code": "For"},
+        {"instrument": "HPI", "facet_code": "Easy to Live With HIC"},
+        {"instrument": "HPI", "facet_code": "No Hostility HIC"}
+      ]
+    },
+    {
+      "canonical_label": "Methodicalness",
+      "implementations": [
+        {"instrument": "6FPQ", "facet_code": "ME"}
+      ]
+    },
+    {
+      "canonical_label": "Mistrust",
+      "implementations": [
+        {"instrument": "CAT-PD", "facet_code": "Mistrust"}
+      ]
+    },
+    {
+      "canonical_label": "Moderation",
+      "implementations": [
+        {"instrument": "AB5C", "facet_code": "IV+/III+"}
+      ]
+    },
+    {
+      "canonical_label": "Modesty/Humility",
+      "implementations": [
+        {"instrument": "NEO", "facet_code": "A5"},
+        {"instrument": "HEX", "facet_code": "H-Mode"},
+        {"instrument": "VIA", "facet_code": "Mod"}
+      ]
+    },
+    {
+      "canonical_label": "Money, Interest in",
+      "implementations": [
+        {"instrument": "ORAIS", "facet_code": "Financial"}
+      ]
+    },
+    {
+      "canonical_label": "Morality",
+      "implementations": [
+        {"instrument": "AB5C", "facet_code": "II+/III+"},
+        {"instrument": "NEO", "facet_code": "A2"},
+        {"instrument": "TCI", "facet_code": "C5"}
+      ]
+    },
+    {
+      "canonical_label": "Music, Interest in",
+      "implementations": [
+        {"instrument": "ORAIS", "facet_code": "Music"}
+      ]
+    },
+    {
+      "canonical_label": "Need for Approval/Conformity/Dependence",
+      "implementations": [
+        {"instrument": "HPI", "facet_code": "Not Autonomous HIC"},
+        {"instrument": "TCI", "facet_code": "RD4"},
+        {"instrument": "HEX", "facet_code": "E-Depe"},
+        {"instrument": "JPI", "facet_code": "Cpr"}
+      ]
+    },
+    {
+      "canonical_label": "Need for Cognition",
+      "implementations": [
+        {"instrument": "Need for Cognition", "facet_code": "Cacioppo & Petty, 1982"}
+      ]
+    },
+    {
+      "canonical_label": "Need for Order and Cleanliness",
+      "implementations": [
+        {"instrument": "Need for Order and Cleanliness", "facet_code": "Foa, et al., 1998"}
+      ]
+    },
+    {
+      "canonical_label": "Negative Expressivity",
+      "implementations": [
+        {"instrument": "Barchard", "facet_code": "2001"}
+      ]
+    },
+    {
+      "canonical_label": "Negative Valence",
+      "implementations": [
+        {"instrument": "Big-7", "facet_code": "525"}
+      ]
+    },
+    {
+      "canonical_label": "Neuroticism",
+      "implementations": [
+        {"instrument": "NEO", "facet_code": "Domain"},
+        {"instrument": "TCI", "facet_code": "HA1"},
+        {"instrument": "MPQ", "facet_code": "SR"},
+        {"instrument": "BFAS", "facet_code": "Neuroticism"}
+      ]
+    },
+    {
+      "canonical_label": "Non-Perseverance",
+      "implementations": [
+        {"instrument": "CAT-PD", "facet_code": "Non-Perseverance"}
+      ]
+    },
+    {
+      "canonical_label": "Non-Planfulness",
+      "implementations": [
+        {"instrument": "CAT-PD", "facet_code": "Non-Planfulness"}
+      ]
+    },
+    {
+      "canonical_label": "Norm Violation",
+      "implementations": [
+        {"instrument": "CAT-PD", "facet_code": "Norm Violation"}
+      ]
+    },
+    {
+      "canonical_label": "Nurturance",
+      "implementations": [
+        {"instrument": "AB5C", "facet_code": "II+/V-"}
+      ]
+    },
+    {
+      "canonical_label": "Obsessive-Compulsive Symptoms",
+      "implementations": [
+        {"instrument": "Obsessive-Compulsive Symptoms", "facet_code": "Foa, et al., 2002"}
+      ]
+    },
+    {
+      "canonical_label": "Open-mindedness/Judgment",
+      "implementations": [
+        {"instrument": "VIA", "facet_code": "Jud"}
+      ]
+    },
+    {
+      "canonical_label": "Openness to Experience",
+      "implementations": [
+        {"instrument": "NEO", "facet_code": "Domain"}
+      ]
+    },
+    {
+      "canonical_label": "Optimism/Hope",
+      "implementations": [
+        {"instrument": "CPI", "facet_code": "Wb"},
+        {"instrument": "TCI", "facet_code": "S2"},
+        {"instrument": "Scheier, et al.", "facet_code": "1994"},
+        {"instrument": "VIA", "facet_code": "Hop"}
+      ]
+    },
+    {
+      "canonical_label": "Orderliness",
+      "implementations": [
+        {"instrument": "AB5C", "facet_code": "III+/V-"},
+        {"instrument": "NEO", "facet_code": "C2"},
+        {"instrument": "16PF", "facet_code": "Q3"},
+        {"instrument": "6FPQ", "facet_code": "ME3"},
+        {"instrument": "HPI", "facet_code": "Not Spontaneous HIC"},
+        {"instrument": "BFAS", "facet_code": "Orderliness"}
+      ]
+    },
+    {
+      "canonical_label": "Organization",
+      "implementations": [
+        {"instrument": "AB5C", "facet_code": "III+/V+"},
+        {"instrument": "JPI", "facet_code": "Org"},
+        {"instrument": "HEX", "facet_code": "C-Orga"},
+        {"instrument": "HPI", "facet_code": "Mastery HIC"},
+        {"instrument": "ORVIS", "facet_code": "Organization"}
+      ]
+    },
+    {
+      "canonical_label": "Originality/Creativity",
+      "implementations": [
+        {"instrument": "AB5C", "facet_code": "V+/II-"},
+        {"instrument": "HPI", "facet_code": "Int"},
+        {"instrument": "HEX", "facet_code": "O-Crea"},
+        {"instrument": "VIA", "facet_code": "Ori"}
+      ]
+    },
+    {
+      "canonical_label": "Outdoor Activities, Interest in",
+      "implementations": [
+        {"instrument": "ORAIS", "facet_code": "Summer Activities"}
+      ]
+    },
+    {
+      "canonical_label": "Patience",
+      "implementations": [
+        {"instrument": "HEX", "facet_code": "A-Pati"}
+      ]
+    },
+    {
+      "canonical_label": "Peculiarity",
+      "implementations": [
+        {"instrument": "CAT-PD", "facet_code": "Peculiarity"}
+      ]
+    },
+    {
+      "canonical_label": "Perfectionism",
+      "implementations": [
+        {"instrument": "AB5C", "facet_code": "III+/IV-"},
+        {"instrument": "CAT-PD", "facet_code": "Perfectionism"},
+        {"instrument": "Perfectionism", "facet_code": "Foa, et al., 1998"},
+        {"instrument": "HEX", "facet_code": "C-Perf"}
+      ]
+    },
+    {
+      "canonical_label": "Perseverance/Industriousness/Persistence",
+      "implementations": [
+        {"instrument": "6FPQ", "facet_code": "IT"},
+        {"instrument": "TCI", "facet_code": "P4"},
+        {"instrument": "VIA", "facet_code": "Ind"},
+        {"instrument": "BFAS", "facet_code": "Industriousness"}
+      ]
+    },
+    {
+      "canonical_label": "Persistence/Industriousness/Perseverance",
+      "implementations": [
+        {"instrument": "TCI", "facet_code": "P4"},
+        {"instrument": "6FPQ", "facet_code": "IT"},
+        {"instrument": "VIA", "facet_code": "Ind"},
+        {"instrument": "BFAS", "facet_code": "Industriousness"}
+      ]
+    },
+    {
+      "canonical_label": "Personal/Social/Emotional Intelligence",
+      "implementations": [
+        {"instrument": "VIA", "facet_code": "Soc"}
+      ]
+    },
+    {
+      "canonical_label": "Perspective/Wisdom",
+      "implementations": [
+        {"instrument": "VIA", "facet_code": "Per"}
+      ]
+    },
+    {
+      "canonical_label": "Pets, Interest in",
+      "implementations": [
+        {"instrument": "ORAIS", "facet_code": "Pets"}
+      ]
+    },
+    {
+      "canonical_label": "Physical Attractiveness",
+      "implementations": [
+        {"instrument": "Physical Attractiveness", "facet_code": "Rational Scale"}
+      ]
+    },
+    {
+      "canonical_label": "Planfulness",
+      "implementations": [
+        {"instrument": "CPI", "facet_code": "Ac"},
+        {"instrument": "MPQ", "facet_code": "CO"}
+      ]
+    },
+    {
+      "canonical_label": "Playfulness/Humor",
+      "implementations": [
+        {"instrument": "6FPQ", "facet_code": "IT3"},
+        {"instrument": "VIA", "facet_code": "Hum"},
+        {"instrument": "HPI", "facet_code": "Entertaining HIC"}
+      ]
+    },
+    {
+      "canonical_label": "Pleasantness",
+      "implementations": [
+        {"instrument": "AB5C", "facet_code": "II+/IV+"},
+        {"instrument": "HPI", "facet_code": "Virtuous HIC"}
+      ]
+    },
+    {
+      "canonical_label": "Poise",
+      "implementations": [
+        {"instrument": "AB5C", "facet_code": "I+/IV+"},
+        {"instrument": "CPI", "facet_code": "Tm"}
+      ]
+    },
+    {
+      "canonical_label": "Politeness",
+      "implementations": [
+        {"instrument": "CPI", "facet_code": "D-SD"}
+      ]
+    },
+    {
+      "canonical_label": "Political Activism, Interest in",
+      "implementations": [
+        {"instrument": "ORAIS", "facet_code": "Political/Organizational"}
+      ]
+    },
+    {
+      "canonical_label": "Positive Expressivity",
+      "implementations": [
+        {"instrument": "Barchard", "facet_code": "2001"},
+        {"instrument": "BFAS", "facet_code": "Politeness"}
+      ]
+    },
+    {
+      "canonical_label": "Private Self-consciousness/Introspection",
+      "implementations": [
+        {"instrument": "Private Self-Consciousness", "facet_code": "Buss, 1980"},
+        {"instrument": "AB5C", "facet_code": "V+/I-"},
+        {"instrument": "HPI", "facet_code": "Self Focus HIC"}
+      ]
+    },
+    {
+      "canonical_label": "Problem-solving",
+      "implementations": [
+        {"instrument": "HPI", "facet_code": "Science Ability HIC"},
+        {"instrument": "HPI", "facet_code": "Math Ability HIC"}
+      ]
+    },
+    {
+      "canonical_label": "Provocativeness",
+      "implementations": [
+        {"instrument": "AB5C", "facet_code": "I+/II-"}
+      ]
+    },
+    {
+      "canonical_label": "Prudence",
+      "implementations": [
+        {"instrument": "HEX", "facet_code": "C-Prud"},
+        {"instrument": "VIA", "facet_code": "Pru"}
+      ]
+    },
+    {
+      "canonical_label": "Public Self-consciousness",
+      "implementations": [
+        {"instrument": "Public Self-Consciousness", "facet_code": "Buss, 1980"}
+      ]
+    },
+    {
+      "canonical_label": "Purposefulness",
+      "implementations": [
+        {"instrument": "AB5C", "facet_code": "III+/IV+"}
+      ]
+    },
+    {
+      "canonical_label": "Quickness",
+      "implementations": [
+        {"instrument": "AB5C", "facet_code": "V+/IV+"},
+        {"instrument": "HPI", "facet_code": "Sch"}
+      ]
+    },
+    {
+      "canonical_label": "Rationality",
+      "implementations": [
+        {"instrument": "AB5C", "facet_code": "III+/II-"}
+      ]
+    },
+    {
+      "canonical_label": "Reading, Love of",
+      "implementations": [
+        {"instrument": "HPI", "facet_code": "Reading HIC"},
+        {"instrument": "ORAIS", "facet_code": "Reading"}
+      ]
+    },
+    {
+      "canonical_label": "Rebelliousness",
+      "implementations": [
+        {"instrument": "TCI", "facet_code": "NS4"}
+      ]
+    },
+    {
+      "canonical_label": "Recklessness",
+      "implementations": [
+        {"instrument": "TCI", "facet_code": "NS2"}
+      ]
+    },
+    {
+      "canonical_label": "Reclusiveness",
+      "implementations": [
+        {"instrument": "6FPQ", "facet_code": "IP1"},
+        {"instrument": "ORAIS", "facet_code": "Being Alone"}
+      ]
+    },
+    {
+      "canonical_label": "Reflection",
+      "implementations": [
+        {"instrument": "AB5C", "facet_code": "V+/II+"}
+      ]
+    },
+    {
+      "canonical_label": "Relationship Insecurity",
+      "implementations": [
+        {"instrument": "CAT-PD", "facet_code": "Relationship Insecurity"}
+      ]
+    },
+    {
+      "canonical_label": "Religiousness/Spirituality",
+      "implementations": [
+        {"instrument": "VIA", "facet_code": "Spi"},
+        {"instrument": "ORAIS", "facet_code": "Religious/Spiritual Practices"}
+      ]
+    },
+    {
+      "canonical_label": "Reserve",
+      "implementations": [
+        {"instrument": "16PF", "facet_code": "N"}
+      ]
+    },
+    {
+      "canonical_label": "Resourcefulness",
+      "implementations": [
+        {"instrument": "TCI", "facet_code": "S3"},
+        {"instrument": "6FPQ", "facet_code": "IT2"}
+      ]
+    },
+    {
+      "canonical_label": "Responsibility",
+      "implementations": [
+        {"instrument": "CPI", "facet_code": "Re"},
+        {"instrument": "JPI", "facet_code": "Rsy"}
+      ]
+    },
+    {
+      "canonical_label": "Responsive Distress",
+      "implementations": [
+        {"instrument": "Barchard", "facet_code": "2001"}
+      ]
+    },
+    {
+      "canonical_label": "Responsive Joy",
+      "implementations": [
+        {"instrument": "Barchard", "facet_code": "2001"}
+      ]
+    },
+    {
+      "canonical_label": "Rigidity",
+      "implementations": [
+        {"instrument": "CAT-PD", "facet_code": "Rigidity"}
+      ]
+    },
+    {
+      "canonical_label": "Risk-avoidance",
+      "implementations": [
+        {"instrument": "MPQ", "facet_code": "HA"}
+      ]
+    },
+    {
+      "canonical_label": "Risk-taking/Sensation-Seeking/Thrill-Seeking",
+      "implementations": [
+        {"instrument": "CAT-PD", "facet_code": "Risk Taking"},
+        {"instrument": "JPI", "facet_code": "Rkt"},
+        {"instrument": "HPI", "facet_code": "Thrill-seeking HIC"},
+        {"instrument": "Dangerous Thrill-seeking", "facet_code": "Hoyle et al., 2002"},
+        {"instrument": "Impulsive Thrill-seeking", "facet_code": "Hoyle et al., 2002"},
+        {"instrument": "Calculated Thrill-seeking", "facet_code": "Hoyle et al., 2002"},
+        {"instrument": "BAS-Fun-seeking", "facet_code": "Carver & White, 1994"}
+      ]
+    },
+    {
+      "canonical_label": "Romance, Interest in",
+      "implementations": [
+        {"instrument": "ORAIS", "facet_code": "Romance"}
+      ]
+    },
+    {
+      "canonical_label": "Romantic Disinterest",
+      "implementations": [
+        {"instrument": "CAT-PD", "facet_code": "Romantic Disinterest"}
+      ]
+    },
+    {
+      "canonical_label": "Romanticism",
+      "implementations": [
+        {"instrument": "TCI", "facet_code": "ST2"}
+      ]
+    },
+    {
+      "canonical_label": "Rudeness",
+      "implementations": [
+        {"instrument": "CAT-PD", "facet_code": "Rudeness"}
+      ]
+    },
+    {
+      "canonical_label": "Rumination",
+      "implementations": [
+        {"instrument": "HPI", "facet_code": "Impression Management HIC"}
+      ]
+    },
+    {
+      "canonical_label": "Satisfaction",
+      "implementations": [
+        {"instrument": "TCI", "facet_code": "S1"}
+      ]
+    },
+    {
+      "canonical_label": "Science Interest",
+      "implementations": [
+        {"instrument": "ORVIS", "facet_code": "Analysis"}
+      ]
+    },
+    {
+      "canonical_label": "Security",
+      "implementations": [
+        {"instrument": "CPI", "facet_code": "Lp"},
+        {"instrument": "HPI", "facet_code": "Good Attachment HIC"}
+      ]
+    },
+    {
+      "canonical_label": "Self-acceptance",
+      "implementations": [
+        {"instrument": "TCI", "facet_code": "S4"},
+        {"instrument": "HPI", "facet_code": "No Guilt HIC"}
+      ]
+    },
+    {
+      "canonical_label": "Self-confidence",
+      "implementations": [
+        {"instrument": "HPI", "facet_code": "Self-Confidence HIC"}
+      ]
+    },
+    {
+      "canonical_label": "Self-consciousness",
+      "implementations": [
+        {"instrument": "NEO", "facet_code": "N4"}
+      ]
+    },
+    {
+      "canonical_label": "Self-control/Self-regulation",
+      "implementations": [
+        {"instrument": "CPI", "facet_code": "Sc"},
+        {"instrument": "VIA", "facet_code": "Sel"}
+      ]
+    },
+    {
+      "canonical_label": "Self-harm",
+      "implementations": [
+        {"instrument": "CAT-PD", "facet_code": "Self Harm"}
+      ]
+    },
+    {
+      "canonical_label": "Self-regulation/Self-control",
+      "implementations": [
+        {"instrument": "CPI", "facet_code": "Sc"},
+        {"instrument": "VIA", "facet_code": "Sel"}
+      ]
+    },
+    {
+      "canonical_label": "Self-deception",
+      "implementations": [
+        {"instrument": "BIDR", "facet_code": "Paulhus, 1991"}
+      ]
+    },
+    {
+      "canonical_label": "Self-discipline",
+      "implementations": [
+        {"instrument": "NEO", "facet_code": "C5"},
+        {"instrument": "CPI", "facet_code": "Leo"},
+        {"instrument": "HPI", "facet_code": "Moralistic HIC"}
+      ]
+    },
+    {
+      "canonical_label": "Self-disclosure",
+      "implementations": [
+        {"instrument": "AB5C", "facet_code": "I+/III-"},
+        {"instrument": "TCI", "facet_code": "RD3"}
+      ]
+    },
+    {
+      "canonical_label": "Self-efficacy",
+      "implementations": [
+        {"instrument": "NEO", "facet_code": "C1"},
+        {"instrument": "CPI", "facet_code": "In"},
+        {"instrument": "TCI", "facet_code": "HA4-reflected"}
+      ]
+    },
+    {
+      "canonical_label": "Self-esteem",
+      "implementations": [
+        {"instrument": "Self-Esteem", "facet_code": "Rosenberg, 1965"}
+      ]
+    },
+    {
+      "canonical_label": "Self-improvement, Interest in",
+      "implementations": [
+        {"instrument": "ORAIS", "facet_code": "Self-Improvement"}
+      ]
+    },
+    {
+      "canonical_label": "Self-monitoring",
+      "implementations": [
+        {"instrument": "Self-Monitoring", "facet_code": "Snyder, 1974"}
+      ]
+    },
+    {
+      "canonical_label": "Self-sufficiency",
+      "implementations": [
+        {"instrument": "6FPQ", "facet_code": "IP3"}
+      ]
+    },
+    {
+      "canonical_label": "Sensation-Seeking/Risk-taking/Thrill-Seeking",
+      "implementations": [
+        {"instrument": "CAT-PD", "facet_code": "Risk Taking"},
+        {"instrument": "JPI", "facet_code": "Rkt"},
+        {"instrument": "HPI", "facet_code": "Thrill-seeking HIC"},
+        {"instrument": "Dangerous Thrill-seeking", "facet_code": "Hoyle et al., 2002"},
+        {"instrument": "Impulsive Thrill-seeking", "facet_code": "Hoyle et al., 2002"},
+        {"instrument": "Calculated Thrill-seeking", "facet_code": "Hoyle et al., 2002"},
+        {"instrument": "BAS-Fun-seeking", "facet_code": "Carver & White, 1994"}
+      ]
+    },
+    {
+      "canonical_label": "Sensitivity",
+      "implementations": [
+        {"instrument": "16PF", "facet_code": "I"},
+        {"instrument": "HPI", "facet_code": "Sensitive HIC"}
+      ]
+    },
+    {
+      "canonical_label": "Sentimentality",
+      "implementations": [
+        {"instrument": "CPI", "facet_code": "Fe"},
+        {"instrument": "TCI", "facet_code": "RD1"},
+        {"instrument": "HEX", "facet_code": "E-Sent"}
+      ]
+    },
+    {
+      "canonical_label": "Shopping, Interest in",
+      "implementations": [
+        {"instrument": "ORAIS", "facet_code": "Shopping"}
+      ]
+    },
+    {
+      "canonical_label": "Sincerity",
+      "implementations": [
+        {"instrument": "HEX", "facet_code": "H-Sinc"}
+      ]
+    },
+    {
+      "canonical_label": "Sociability",
+      "implementations": [
+        {"instrument": "AB5C", "facet_code": "I+/V-"},
+        {"instrument": "CPI", "facet_code": "Sy"},
+        {"instrument": "HPI", "facet_code": "Soc"},
+        {"instrument": "JPI", "facet_code": "Soc"},
+        {"instrument": "HEX", "facet_code": "X-Soci"},
+        {"instrument": "HPI", "facet_code": "Likes Crowds HIC"}
+      ]
+    },
+    {
+      "canonical_label": "Social Boldness",
+      "implementations": [
+        {"instrument": "HEX", "facet_code": "X-SocB"}
+      ]
+    },
+    {
+      "canonical_label": "Social-confidence",
+      "implementations": [
+        {"instrument": "JPI", "facet_code": "Scf"},
+        {"instrument": "HPI", "facet_code": "No Social Anxiety HIC"}
+      ]
+    },
+    {
+      "canonical_label": "Social-discomfort",
+      "implementations": [
+        {"instrument": "TCI", "facet_code": "HA3"}
+      ]
+    },
+    {
+      "canonical_label": "Social Media, Interest in",
+      "implementations": [
+        {"instrument": "ORAIS", "facet_code": "Social-Networking"}
+      ]
+    },
+    {
+      "canonical_label": "Social/Personal/Emotional Intelligence",
+      "implementations": [
+        {"instrument": "VIA", "facet_code": "Soc"}
+      ]
+    },
+    {
+      "canonical_label": "Social Withdrawal",
+      "implementations": [
+        {"instrument": "CAT-PD", "facet_code": "Social Withdrawal"}
+      ]
+    },
+    {
+      "canonical_label": "Spirituality/Religiousness",
+      "implementations": [
+        {"instrument": "VIA", "facet_code": "Spi"},
+        {"instrument": "ORAIS", "facet_code": "Religious/Spiritual Practices"}
+      ]
+    },
+    {
+      "canonical_label": "Sports, Interest in",
+      "implementations": [
+        {"instrument": "ORAIS", "facet_code": "Sports"}
+      ]
+    },
+    {
+      "canonical_label": "Stability",
+      "implementations": [
+        {"instrument": "AB5C", "facet_code": "IV+/IV+"},
+        {"instrument": "CPI", "facet_code": "So"},
+        {"instrument": "HPI", "facet_code": "Adj"}
+      ]
+    },
+    {
+      "canonical_label": "Submissiveness",
+      "implementations": [
+        {"instrument": "CAT-PD", "facet_code": "Submissiveness"},
+        {"instrument": "IPIP-IPC", "facet_code": "Unassured-Submissive"}
+      ]
+    },
+    {
+      "canonical_label": "Sympathy",
+      "implementations": [
+        {"instrument": "AB5C", "facet_code": "II+/III-"},
+        {"instrument": "NEO", "facet_code": "A6"}
+      ]
+    },
+    {
+      "canonical_label": "Talkativeness",
+      "implementations": [
+        {"instrument": "AB5C", "facet_code": "I+/IV-"}
+      ]
+    },
+    {
+      "canonical_label": "Teamwork/Citizenship",
+      "implementations": [
+        {"instrument": "VIA", "facet_code": "Cit"}
+      ]
+    },
+    {
+      "canonical_label": "Television, Interest in Watching",
+      "implementations": [
+        {"instrument": "ORAIS", "facet_code": "TV"}
+      ]
+    },
+    {
+      "canonical_label": "Temperance",
+      "implementations": [
+        {"instrument": "CPI", "facet_code": "Gi"}
+      ]
+    },
+    {
+      "canonical_label": "Tenderness",
+      "implementations": [
+        {"instrument": "AB5C", "facet_code": "II+/IV-"}
+      ]
+    },
+    {
+      "canonical_label": "Thrill-Seeking/Risk-taking/Sensation-Seeking",
+      "implementations": [
+        {"instrument": "CAT-PD", "facet_code": "Risk Taking"},
+        {"instrument": "JPI", "facet_code": "Rkt"},
+        {"instrument": "HPI", "facet_code": "Thrill-seeking HIC"},
+        {"instrument": "Dangerous Thrill-seeking", "facet_code": "Hoyle et al., 2002"},
+        {"instrument": "Impulsive Thrill-seeking", "facet_code": "Hoyle et al., 2002"},
+        {"instrument": "Calculated Thrill-seeking", "facet_code": "Hoyle et al., 2002"},
+        {"instrument": "BAS-Fun-seeking", "facet_code": "Carver & White, 1994"}
+      ]
+    },
+    {
+      "canonical_label": "Timidity",
+      "implementations": [
+        {"instrument": "CPI", "facet_code": "B-FM"}
+      ]
+    },
+    {
+      "canonical_label": "Tolerance",
+      "implementations": [
+        {"instrument": "CPI", "facet_code": "To"},
+        {"instrument": "TCI", "facet_code": "C1"},
+        {"instrument": "JPI", "facet_code": "Tol"},
+        {"instrument": "IPIP-IPC", "facet_code": "Unassuming-Ingenuous"}
+      ]
+    },
+    {
+      "canonical_label": "Toughness",
+      "implementations": [
+        {"instrument": "AB5C", "facet_code": "IV+/V+"},
+        {"instrument": "HPI", "facet_code": "CP"},
+        {"instrument": "HPI", "facet_code": "No Somatic Complaints HIC"}
+      ]
+    },
+    {
+      "canonical_label": "Traditionalism",
+      "implementations": [
+        {"instrument": "JPI", "facet_code": "Trv"}
+      ]
+    },
+    {
+      "canonical_label": "Tranquility",
+      "implementations": [
+        {"instrument": "AB5C", "facet_code": "IV+/V-"}
+      ]
+    },
+    {
+      "canonical_label": "Travel, Interest in",
+      "implementations": [
+        {"instrument": "ORAIS", "facet_code": "Travel"}
+      ]
+    },
+    {
+      "canonical_label": "Trust",
+      "implementations": [
+        {"instrument": "NEO", "facet_code": "A1"},
+        {"instrument": "TCI", "facet_code": "C3"},
+        {"instrument": "HPI", "facet_code": "Trusting HIC"}
+      ]
+    },
+    {
+      "canonical_label": "Unconventionality",
+      "implementations": [
+        {"instrument": "HEX", "facet_code": "O-Unco"}
+      ]
+    },
+    {
+      "canonical_label": "Understanding",
+      "implementations": [
+        {"instrument": "AB5C", "facet_code": "II+/II+"}
+      ]
+    },
+    {
+      "canonical_label": "Unlikely Virtues",
+      "implementations": [
+        {"instrument": "MPQ", "facet_code": "UV"}
+      ]
+    },
+    {
+      "canonical_label": "Unpretentiousness",
+      "implementations": [
+        {"instrument": "6FPQ", "facet_code": "IP2"}
+      ]
+    },
+    {
+      "canonical_label": "Unusual Beliefs",
+      "implementations": [
+        {"instrument": "CAT-PD", "facet_code": "Unusual Beliefs"}
+      ]
+    },
+    {
+      "canonical_label": "Unusual Experiences",
+      "implementations": [
+        {"instrument": "CAT-PD", "facet_code": "Unusual Experiences"}
+      ]
+    },
+    {
+      "canonical_label": "Valor/Bravery/Courage",
+      "implementations": [
+        {"instrument": "VIA", "facet_code": "Val"}
+      ]
+    },
+    {
+      "canonical_label": "Variety-seeking",
+      "implementations": [
+        {"instrument": "TCI", "facet_code": "NS1"},
+        {"instrument": "HPI", "facet_code": "Experience-seeking HIC"}
+      ]
+    },
+    {
+      "canonical_label": "Vehicles, Interest in",
+      "implementations": [
+        {"instrument": "ORAIS", "facet_code": "Vehicles"}
+      ]
+    },
+    {
+      "canonical_label": "Vitality/Enthusiasm/Zest",
+      "implementations": [
+        {"instrument": "VIA", "facet_code": "Zes"},
+        {"instrument": "HPI", "facet_code": "Identity HIC"},
+        {"instrument": "BFAS", "facet_code": "Enthusiasm"}
+      ]
+    },
+    {
+      "canonical_label": "Vulnerability",
+      "implementations": [
+        {"instrument": "NEO", "facet_code": "N6"}
+      ]
+    },
+    {
+      "canonical_label": "Warmth",
+      "implementations": [
+        {"instrument": "AB5C", "facet_code": "II+/I+"},
+        {"instrument": "16PF", "facet_code": "A"},
+        {"instrument": "IPIP-IPC", "facet_code": "Warm-Agreeable"}
+      ]
+    },
+    {
+      "canonical_label": "Wisdom/Perspective",
+      "implementations": [
+        {"instrument": "VIA", "facet_code": "Per"}
+      ]
+    },
+    {
+      "canonical_label": "Workaholism",
+      "implementations": [
+        {"instrument": "CAT-PD", "facet_code": "Workaholism"}
+      ]
+    },
+    {
+      "canonical_label": "Zest/Vitality/Enthusiasm",
+      "implementations": [
+        {"instrument": "VIA", "facet_code": "Zes"},
+        {"instrument": "HPI", "facet_code": "Identity HIC"},
+        {"instrument": "BFAS", "facet_code": "Enthusiasm"}
+      ]
+    }
+  ]
+}

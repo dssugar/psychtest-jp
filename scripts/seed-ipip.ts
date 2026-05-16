@@ -44,6 +44,7 @@ const TEDONE_OVERRIDES_JSON = resolve(ROOT, "data/ipip-master/tedone-overrides.j
 const IPIP_MASTER_CORRECTIONS_JSON = resolve(ROOT, "data/ipip-master/ipip-master-corrections.json");
 const IPIP_SUPPLEMENT_JSON = resolve(ROOT, "data/ipip-master/ipip-3320-supplement.json");
 const IPIP_SCALES_SUPPLEMENT_JSON = resolve(ROOT, "data/ipip-master/ipip-scales-supplement.json");
+const IPIP_CANONICAL_LABELS_JSON = resolve(ROOT, "data/ipip-master/ipip-canonical-labels.json");
 const SQL_OUT = resolve(ROOT, "scripts/.cache/seed-ipip.sql");
 const BIGFIVE_MAPPING_OUT = resolve(ROOT, "data/ipip-master/bigfive-id-mapping.json");
 const INDUSTRIOUSNESS_MAPPING_OUT = resolve(ROOT, "data/ipip-master/industriousness-id-mapping.json");
@@ -979,6 +980,79 @@ function build() {
   for (const [lv, n] of [...byLevel.entries()].sort()) {
     const labelMap: Record<number, string> = { 1: "instrument", 2: "scale", 3: "facet", 4: "subfacet" };
     log.push(`  level ${lv} (${labelMap[lv] ?? "?"}): ${n}`);
+  }
+
+  // 5.9.6. Phase 2.x.D.1: IPIP canonical labels (= newIndexofScaleLabels.htm Alphabetical Index).
+  //   276 unique canonical labels (= IPIP page の構成概念名) + 547 (label, instrument, facet_code) pairs.
+  //   ipip-canonical-labels.json (= WebFetch 結果) を読み込み、canonical_labels + canonical_label_implementations 両 table に投入.
+  //   scale_id resolution は best effort (= instrument + Tedone label fuzzy match で scale_hierarchy.scale_id を逆引き).
+  //   解決不可は scale_id=NULL (= Phase 2.x.D.2 で手動 audit).
+  log.push("");
+  log.push("=== Phase 2.x.D.1: canonical labels populate ===");
+  interface CanonicalImpl { instrument: string; facet_code: string }
+  interface CanonicalLabelEntry { canonical_label: string; implementations: CanonicalImpl[] }
+  let canonicalLabelsCount = 0;
+  let canonicalImplsCount = 0;
+  let canonicalResolved = 0;
+
+  // scale_hierarchy から (instrument, facet_name) → scale_id の逆引き map
+  // canonical page facet_code (e.g., "C4") と私の facet_name (e.g., "Achievement-striving") は一致しないが、
+  // instrument 単位の scale_id 体系を活用して fuzzy match を試みる.
+  const instrumentFacetToScaleId = new Map<string, string>();
+  // Tedone label slug (= 私の scale_id suffix) で逆引き構築. e.g., "NEO::achievement-striving" → "neo_achievement_striving"
+  for (const h of hierarchyMap.values()) {
+    if (h.level < 2) continue;
+    if (h.facet_name) {
+      instrumentFacetToScaleId.set(`${h.instrument}::${h.facet_name.toLowerCase()}`, h.scale_id);
+    }
+    if (h.scale_name) {
+      instrumentFacetToScaleId.set(`${h.instrument}::${h.scale_name.toLowerCase()}`, h.scale_id);
+    }
+  }
+
+  // instrument 名 normalize (= IPIP page "HEX" → Tedone "HEXACO_PI", "Big-Five" → "BFAS" 等の異名)
+  const INSTRUMENT_ALIASES: Record<string, string> = {
+    "HEX": "HEXACO_PI",
+    "Big-Five": "BFAS",
+    "Big-7": "BFAS",
+    "BFAS-20": "BFAS-20",
+    "NEO5-20": "NEO5-20",
+  };
+
+  try {
+    const clText = readFileSync(IPIP_CANONICAL_LABELS_JSON, "utf-8");
+    const clParsed = JSON.parse(clText) as { labels?: CanonicalLabelEntry[] };
+    sql.push("");
+    sql.push("-- canonical_labels + canonical_label_implementations (Phase 2.x.D.1)");
+    sql.push("DELETE FROM canonical_label_implementations;");
+    sql.push("DELETE FROM canonical_labels;");
+
+    for (const entry of clParsed.labels ?? []) {
+      if (!entry.canonical_label) continue;
+      sql.push(
+        `INSERT INTO canonical_labels (canonical_label, display_label_ja, description, created_at) VALUES (${sqlStr(entry.canonical_label)}, NULL, NULL, ${now});`,
+      );
+      canonicalLabelsCount++;
+
+      for (const impl of entry.implementations ?? []) {
+        if (!impl.instrument || !impl.facet_code) continue;
+        // instrument alias resolve
+        const resolvedInstrument = INSTRUMENT_ALIASES[impl.instrument] ?? impl.instrument;
+        // scale_id resolution (best effort fuzzy match)
+        const lookupKey = `${resolvedInstrument}::${impl.facet_code.toLowerCase()}`;
+        const scaleId = instrumentFacetToScaleId.get(lookupKey) ?? null;
+        if (scaleId) canonicalResolved++;
+
+        sql.push(
+          `INSERT INTO canonical_label_implementations (canonical_label, instrument, facet_code, scale_id, created_at) VALUES (${sqlStr(entry.canonical_label)}, ${sqlStr(impl.instrument)}, ${sqlStr(impl.facet_code)}, ${sqlStr(scaleId)}, ${now});`,
+        );
+        canonicalImplsCount++;
+      }
+    }
+    log.push(`canonical_labels: ${canonicalLabelsCount} labels / ${canonicalImplsCount} implementations`);
+    log.push(`  scale_id resolved: ${canonicalResolved} / ${canonicalImplsCount} (= ${Math.round((canonicalResolved / canonicalImplsCount) * 100)}% , 残は命名揺れ / facet_code 直接 match 不可)`);
+  } catch (err) {
+    log.push(`canonical_labels: not found or error (${err})`);
   }
 
   // 5.7. scale_meta 投入 (Phase 2.1.β: UI 表示用 metadata、12 scale)
