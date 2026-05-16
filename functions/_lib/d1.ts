@@ -1,10 +1,10 @@
 /**
- * D1 access helpers for the α uranai wedge.
+ * D1 access helpers.
  *
- * schema: migrations/0001_init.sql
- *   - profiles            (Layer 0)
- *   - conversations       (Layer 2)
- *   - divination_results  (シェア用 store)
+ * schema:
+ *   - profiles / conversations / divination_results  (migrations/0001_init.sql)
+ *   - profiles.birth_date                            (migrations/0002_birth_date.sql)
+ *   - ipip_items / user_responses / scales           (migrations/0003_ipip_unified.sql)
  *
  * Layer 1 (短期 summary) / Layer 3 (episode) は β/γ で追加するので、ここには
  * 単純な append / select / upsert しかない. JOIN もまだ不要.
@@ -36,6 +36,14 @@ export interface DivinationRow {
   inputs: string;
   interpretation: string;
   created_at: number;
+}
+
+export interface UserResponseRow {
+  device_id: string;
+  item_id: string;
+  value: number;
+  answered_at: number;
+  source: string;
 }
 
 // ============================================================
@@ -101,7 +109,8 @@ export async function upsertProfile(
 }
 
 /**
- * 全消去 (settings の「全データ消去」用). conversations と divination_results も巻き添え.
+ * 全消去 (settings の「全データ消去」用). conversations / divination_results / user_responses も巻き添え.
+ * Phase 2.1: user_responses を追加. 漏らすと device-id 再生成後に他人の回答が残留する.
  */
 export async function deleteAllForDevice(
   db: D1Database,
@@ -110,6 +119,7 @@ export async function deleteAllForDevice(
   await db.batch([
     db.prepare("DELETE FROM conversations WHERE device_id = ?1").bind(deviceId),
     db.prepare("DELETE FROM divination_results WHERE device_id = ?1").bind(deviceId),
+    db.prepare("DELETE FROM user_responses WHERE device_id = ?1").bind(deviceId),
     db.prepare("DELETE FROM profiles WHERE device_id = ?1").bind(deviceId),
   ]);
 }
@@ -214,4 +224,63 @@ export async function getDivinationResult(
     .bind(resultId)
     .first<DivinationRow>();
   return row ?? null;
+}
+
+// ============================================================
+// user_responses (Phase 2.1 IPIP 統一項目 DB)
+// ============================================================
+
+/**
+ * 複数 IPIP 項目の回答を upsert. 1 user × 1 item は 1 回答 (= 再受験 overwrite).
+ *
+ * 全 INSERT を batch() で atomic 実行 (= 一部失敗で部分書き込みを残さない).
+ * D1 batch の statement 上限は 1,000 なので、Phase 2.1 想定 (1 scale ≤ 300 items) では十分.
+ */
+export async function upsertUserResponses(
+  db: D1Database,
+  args: {
+    deviceId: string;
+    source: string;
+    responses: Array<{ itemId: string; value: number }>;
+  },
+): Promise<void> {
+  if (args.responses.length === 0) return;
+  const now = Date.now();
+  await db.batch(
+    args.responses.map((r) =>
+      db
+        .prepare(
+          `INSERT INTO user_responses (device_id, item_id, value, answered_at, source)
+           VALUES (?1, ?2, ?3, ?4, ?5)
+           ON CONFLICT(device_id, item_id) DO UPDATE SET
+             value       = excluded.value,
+             answered_at = excluded.answered_at,
+             source      = excluded.source`,
+        )
+        .bind(args.deviceId, r.itemId, r.value, now, args.source),
+    ),
+  );
+}
+
+/**
+ * device 単位の回答件数. source 指定で scale 別の集計も可能 (例: 'scale:bigfive' で BigFive 完走件数).
+ * Phase 2.5 朝の儀式 / Phase 2.6 進捗 N/M 表示の基礎.
+ */
+export async function countUserResponses(
+  db: D1Database,
+  deviceId: string,
+  source?: string,
+): Promise<number> {
+  if (source) {
+    const row = await db
+      .prepare(`SELECT COUNT(*) AS n FROM user_responses WHERE device_id = ?1 AND source = ?2`)
+      .bind(deviceId, source)
+      .first<{ n: number }>();
+    return row?.n ?? 0;
+  }
+  const row = await db
+    .prepare(`SELECT COUNT(*) AS n FROM user_responses WHERE device_id = ?1`)
+    .bind(deviceId)
+    .first<{ n: number }>();
+  return row?.n ?? 0;
 }

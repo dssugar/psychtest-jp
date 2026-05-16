@@ -41,6 +41,9 @@ playwright/.cache/
 .wrangler/
 .dev.vars
 
+# generated seed SQL (rebuilt by `npm run db:seed:build`)
+scripts/.cache/
+
 # WSL metadata
 *:Zone.Identifier
 

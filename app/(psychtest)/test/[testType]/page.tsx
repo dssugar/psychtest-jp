@@ -6,6 +6,7 @@ import { getTestConfig } from "@/lib/tests/test-registry";
 import { saveTestResult, getDraft, saveDraft, clearDraft } from "@/lib/storage";
 import { DataBadge } from "@/components/viz/DataBadge";
 import { DraftResumeBanner } from "@/components/test/DraftResumeBanner";
+import { submitIpipResponses } from "@/lib/ipip/responses-client";
 import type { TestType, DraftTestState } from "@/lib/storage";
 import type { ScaleOption } from "@/lib/tests/types";
 
@@ -148,6 +149,10 @@ export default function DynamicTestPage() {
 
     // 🔥 下書きをクリア
     clearDraft(testType as TestType);
+
+    // Phase 2.1: IPIP 統一 DB への二重書き. localStorage 経路と並列、失敗は silent log.
+    // Phase 2.2 で他 scale (Industriousness / Self-Concept) を順次対象拡大.
+    void submitIpipResponses(testType as TestType, answers);
 
     // 結果ページへ遷移
     router.push(`/results/${testType}`);

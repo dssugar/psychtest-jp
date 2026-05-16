@@ -1,0 +1,727 @@
+{
+  "generatedAt": "2026-05-16T12:41:45.140Z",
+  "matched": 120,
+  "unmatched": 0,
+  "items": [
+    {
+      "bigfiveId": 1,
+      "facetName": "n1_anxiety",
+      "textEn": "Worry about things",
+      "matchedItemId": "H1157"
+    },
+    {
+      "bigfiveId": 2,
+      "facetName": "e1_friendliness",
+      "textEn": "Make friends easily",
+      "matchedItemId": "H29"
+    },
+    {
+      "bigfiveId": 3,
+      "facetName": "o1_imagination",
+      "textEn": "Have a vivid imagination",
+      "matchedItemId": "X14"
+    },
+    {
+      "bigfiveId": 4,
+      "facetName": "a1_trust",
+      "textEn": "Trust others",
+      "matchedItemId": "H113"
+    },
+    {
+      "bigfiveId": 5,
+      "facetName": "c1_selfEfficacy",
+      "textEn": "Complete tasks successfully",
+      "matchedItemId": "H1285"
+    },
+    {
+      "bigfiveId": 6,
+      "facetName": "n2_anger",
+      "textEn": "Get angry easily",
+      "matchedItemId": "H754"
+    },
+    {
+      "bigfiveId": 7,
+      "facetName": "e2_gregariousness",
+      "textEn": "Love large parties",
+      "matchedItemId": "H78"
+    },
+    {
+      "bigfiveId": 8,
+      "facetName": "o2_artisticInterests",
+      "textEn": "Believe in the importance of art",
+      "matchedItemId": "X123"
+    },
+    {
+      "bigfiveId": 9,
+      "facetName": "a2_morality",
+      "textEn": "Use others for my own ends",
+      "matchedItemId": "H416"
+    },
+    {
+      "bigfiveId": 10,
+      "facetName": "c2_orderliness",
+      "textEn": "Like to tidy up",
+      "matchedItemId": "H244"
+    },
+    {
+      "bigfiveId": 11,
+      "facetName": "n3_depression",
+      "textEn": "Often feel blue",
+      "matchedItemId": "X74"
+    },
+    {
+      "bigfiveId": 12,
+      "facetName": "e3_assertiveness",
+      "textEn": "Take charge",
+      "matchedItemId": "H334"
+    },
+    {
+      "bigfiveId": 13,
+      "facetName": "o3_emotionality",
+      "textEn": "Experience my emotions intensely",
+      "matchedItemId": "X92"
+    },
+    {
+      "bigfiveId": 14,
+      "facetName": "a3_altruism",
+      "textEn": "Love to help others",
+      "matchedItemId": "H1108"
+    },
+    {
+      "bigfiveId": 15,
+      "facetName": "c3_dutifulness",
+      "textEn": "Keep my promises",
+      "matchedItemId": "H149"
+    },
+    {
+      "bigfiveId": 16,
+      "facetName": "n4_selfConsciousness",
+      "textEn": "Find it difficult to approach others",
+      "matchedItemId": "H592"
+    },
+    {
+      "bigfiveId": 17,
+      "facetName": "e4_activityLevel",
+      "textEn": "Am always busy",
+      "matchedItemId": "H58"
+    },
+    {
+      "bigfiveId": 18,
+      "facetName": "o4_adventurousness",
+      "textEn": "Prefer variety to routine",
+      "matchedItemId": "X204"
+    },
+    {
+      "bigfiveId": 19,
+      "facetName": "a4_cooperation",
+      "textEn": "Love a good fight",
+      "matchedItemId": "H453"
+    },
+    {
+      "bigfiveId": 20,
+      "facetName": "c4_achievementStriving",
+      "textEn": "Work hard",
+      "matchedItemId": "H1206"
+    },
+    {
+      "bigfiveId": 21,
+      "facetName": "n5_immoderation",
+      "textEn": "Go on binges",
+      "matchedItemId": "X133"
+    },
+    {
+      "bigfiveId": 22,
+      "facetName": "e5_excitementSeeking",
+      "textEn": "Love excitement",
+      "matchedItemId": "H438"
+    },
+    {
+      "bigfiveId": 23,
+      "facetName": "o5_intellect",
+      "textEn": "Love to read challenging material",
+      "matchedItemId": "X211"
+    },
+    {
+      "bigfiveId": 24,
+      "facetName": "a5_modesty",
+      "textEn": "Believe that I am better than others",
+      "matchedItemId": "H736"
+    },
+    {
+      "bigfiveId": 25,
+      "facetName": "c5_selfDiscipline",
+      "textEn": "Am always prepared",
+      "matchedItemId": "X87"
+    },
+    {
+      "bigfiveId": 26,
+      "facetName": "n6_vulnerability",
+      "textEn": "Panic easily",
+      "matchedItemId": "H948"
+    },
+    {
+      "bigfiveId": 27,
+      "facetName": "e6_cheerfulness",
+      "textEn": "Radiate joy",
+      "matchedItemId": "H32"
+    },
+    {
+      "bigfiveId": 28,
+      "facetName": "o6_liberalism",
+      "textEn": "Tend to vote for liberal political candidates",
+      "matchedItemId": "X218"
+    },
+    {
+      "bigfiveId": 29,
+      "facetName": "a6_sympathy",
+      "textEn": "Sympathize with the homeless",
+      "matchedItemId": "X259"
+    },
+    {
+      "bigfiveId": 30,
+      "facetName": "c6_cautiousness",
+      "textEn": "Jump into things without thinking",
+      "matchedItemId": "E46"
+    },
+    {
+      "bigfiveId": 31,
+      "facetName": "n1_anxiety",
+      "textEn": "Fear for the worst",
+      "matchedItemId": "H999"
+    },
+    {
+      "bigfiveId": 32,
+      "facetName": "e1_friendliness",
+      "textEn": "Feel comfortable around people",
+      "matchedItemId": "X112"
+    },
+    {
+      "bigfiveId": 33,
+      "facetName": "o1_imagination",
+      "textEn": "Enjoy wild flights of fantasy",
+      "matchedItemId": "X238"
+    },
+    {
+      "bigfiveId": 34,
+      "facetName": "a1_trust",
+      "textEn": "Believe that others have good intentions",
+      "matchedItemId": "H549"
+    },
+    {
+      "bigfiveId": 35,
+      "facetName": "c1_selfEfficacy",
+      "textEn": "Excel in what I do",
+      "matchedItemId": "H1174"
+    },
+    {
+      "bigfiveId": 36,
+      "facetName": "n2_anger",
+      "textEn": "Get irritated easily",
+      "matchedItemId": "H761"
+    },
+    {
+      "bigfiveId": 37,
+      "facetName": "e2_gregariousness",
+      "textEn": "Talk to a lot of different people at parties",
+      "matchedItemId": "X83"
+    },
+    {
+      "bigfiveId": 38,
+      "facetName": "o2_artisticInterests",
+      "textEn": "See beauty in things that others might not notice",
+      "matchedItemId": "E105"
+    },
+    {
+      "bigfiveId": 39,
+      "facetName": "a2_morality",
+      "textEn": "Cheat to get ahead",
+      "matchedItemId": "X198"
+    },
+    {
+      "bigfiveId": 40,
+      "facetName": "c2_orderliness",
+      "textEn": "Often forget to put things back in their proper place",
+      "matchedItemId": "X82"
+    },
+    {
+      "bigfiveId": 41,
+      "facetName": "n3_depression",
+      "textEn": "Dislike myself",
+      "matchedItemId": "X15"
+    },
+    {
+      "bigfiveId": 42,
+      "facetName": "e3_assertiveness",
+      "textEn": "Try to lead others",
+      "matchedItemId": "H524"
+    },
+    {
+      "bigfiveId": 43,
+      "facetName": "o3_emotionality",
+      "textEn": "Feel others' emotions",
+      "matchedItemId": "E136"
+    },
+    {
+      "bigfiveId": 44,
+      "facetName": "a3_altruism",
+      "textEn": "Am concerned about others",
+      "matchedItemId": "H1100"
+    },
+    {
+      "bigfiveId": 45,
+      "facetName": "c3_dutifulness",
+      "textEn": "Tell the truth",
+      "matchedItemId": "H145"
+    },
+    {
+      "bigfiveId": 46,
+      "facetName": "n4_selfConsciousness",
+      "textEn": "Am afraid to draw attention to myself",
+      "matchedItemId": "H655"
+    },
+    {
+      "bigfiveId": 47,
+      "facetName": "e4_activityLevel",
+      "textEn": "Am always on the go",
+      "matchedItemId": "H54"
+    },
+    {
+      "bigfiveId": 48,
+      "facetName": "o4_adventurousness",
+      "textEn": "Prefer to stick with things that I know",
+      "matchedItemId": "X30"
+    },
+    {
+      "bigfiveId": 49,
+      "facetName": "a4_cooperation",
+      "textEn": "Yell at people",
+      "matchedItemId": "H809"
+    },
+    {
+      "bigfiveId": 50,
+      "facetName": "c4_achievementStriving",
+      "textEn": "Do more than what's expected of me",
+      "matchedItemId": "H2014"
+    },
+    {
+      "bigfiveId": 51,
+      "facetName": "n5_immoderation",
+      "textEn": "Rarely overindulge",
+      "matchedItemId": "X181"
+    },
+    {
+      "bigfiveId": 52,
+      "facetName": "e5_excitementSeeking",
+      "textEn": "Seek adventure",
+      "matchedItemId": "H446"
+    },
+    {
+      "bigfiveId": 53,
+      "facetName": "o5_intellect",
+      "textEn": "Avoid philosophical discussions",
+      "matchedItemId": "X248"
+    },
+    {
+      "bigfiveId": 54,
+      "facetName": "a5_modesty",
+      "textEn": "Think highly of myself",
+      "matchedItemId": "H2043"
+    },
+    {
+      "bigfiveId": 55,
+      "facetName": "c5_selfDiscipline",
+      "textEn": "Carry out my plans",
+      "matchedItemId": "H258"
+    },
+    {
+      "bigfiveId": 56,
+      "facetName": "n6_vulnerability",
+      "textEn": "Become overwhelmed by events",
+      "matchedItemId": "H959"
+    },
+    {
+      "bigfiveId": 57,
+      "facetName": "e6_cheerfulness",
+      "textEn": "Have a lot of fun",
+      "matchedItemId": "H1094"
+    },
+    {
+      "bigfiveId": 58,
+      "facetName": "o6_liberalism",
+      "textEn": "Believe that there is no absolute right and wrong",
+      "matchedItemId": "X184"
+    },
+    {
+      "bigfiveId": 59,
+      "facetName": "a6_sympathy",
+      "textEn": "Feel sympathy for those who are worse off than myself",
+      "matchedItemId": "E115"
+    },
+    {
+      "bigfiveId": 60,
+      "facetName": "c6_cautiousness",
+      "textEn": "Make rash decisions",
+      "matchedItemId": "H853"
+    },
+    {
+      "bigfiveId": 61,
+      "facetName": "n1_anxiety",
+      "textEn": "Am afraid of many things",
+      "matchedItemId": "H968"
+    },
+    {
+      "bigfiveId": 62,
+      "facetName": "e1_friendliness",
+      "textEn": "Avoid contacts with others",
+      "matchedItemId": "H648"
+    },
+    {
+      "bigfiveId": 63,
+      "facetName": "o1_imagination",
+      "textEn": "Love to daydream",
+      "matchedItemId": "X71"
+    },
+    {
+      "bigfiveId": 64,
+      "facetName": "a1_trust",
+      "textEn": "Trust what people say",
+      "matchedItemId": "E157"
+    },
+    {
+      "bigfiveId": 65,
+      "facetName": "c1_selfEfficacy",
+      "textEn": "Handle tasks smoothly",
+      "matchedItemId": "H1354"
+    },
+    {
+      "bigfiveId": 66,
+      "facetName": "n2_anger",
+      "textEn": "Lose my temper",
+      "matchedItemId": "H755"
+    },
+    {
+      "bigfiveId": 67,
+      "facetName": "e2_gregariousness",
+      "textEn": "Prefer to be alone",
+      "matchedItemId": "H587"
+    },
+    {
+      "bigfiveId": 68,
+      "facetName": "o2_artisticInterests",
+      "textEn": "Do not like poetry",
+      "matchedItemId": "X45"
+    },
+    {
+      "bigfiveId": 69,
+      "facetName": "a2_morality",
+      "textEn": "Take advantage of others",
+      "matchedItemId": "H427"
+    },
+    {
+      "bigfiveId": 70,
+      "facetName": "c2_orderliness",
+      "textEn": "Leave a mess in my room",
+      "matchedItemId": "H822"
+    },
+    {
+      "bigfiveId": 71,
+      "facetName": "n3_depression",
+      "textEn": "Am often down in the dumps",
+      "matchedItemId": "H640"
+    },
+    {
+      "bigfiveId": 72,
+      "facetName": "e3_assertiveness",
+      "textEn": "Take control of things",
+      "matchedItemId": "H325"
+    },
+    {
+      "bigfiveId": 73,
+      "facetName": "o3_emotionality",
+      "textEn": "Rarely notice my emotional reactions",
+      "matchedItemId": "X10"
+    },
+    {
+      "bigfiveId": 74,
+      "facetName": "a3_altruism",
+      "textEn": "Am indifferent to the feelings of others",
+      "matchedItemId": "X203"
+    },
+    {
+      "bigfiveId": 75,
+      "facetName": "c3_dutifulness",
+      "textEn": "Break rules",
+      "matchedItemId": "H1346"
+    },
+    {
+      "bigfiveId": 76,
+      "facetName": "n4_selfConsciousness",
+      "textEn": "Only feel comfortable with friends",
+      "matchedItemId": "H656"
+    },
+    {
+      "bigfiveId": 77,
+      "facetName": "e4_activityLevel",
+      "textEn": "Do a lot in my spare time",
+      "matchedItemId": "H79"
+    },
+    {
+      "bigfiveId": 78,
+      "facetName": "o4_adventurousness",
+      "textEn": "Dislike changes",
+      "matchedItemId": "H1063"
+    },
+    {
+      "bigfiveId": 79,
+      "facetName": "a4_cooperation",
+      "textEn": "Insult people",
+      "matchedItemId": "H1103"
+    },
+    {
+      "bigfiveId": 80,
+      "facetName": "c4_achievementStriving",
+      "textEn": "Do just enough work to get by",
+      "matchedItemId": "X115"
+    },
+    {
+      "bigfiveId": 81,
+      "facetName": "n5_immoderation",
+      "textEn": "Easily resist temptations",
+      "matchedItemId": "X274"
+    },
+    {
+      "bigfiveId": 82,
+      "facetName": "e5_excitementSeeking",
+      "textEn": "Enjoy being reckless",
+      "matchedItemId": "E35"
+    },
+    {
+      "bigfiveId": 83,
+      "facetName": "o5_intellect",
+      "textEn": "Have difficulty understanding abstract ideas",
+      "matchedItemId": "X176"
+    },
+    {
+      "bigfiveId": 84,
+      "facetName": "a5_modesty",
+      "textEn": "Have a high opinion of myself",
+      "matchedItemId": "H738"
+    },
+    {
+      "bigfiveId": 85,
+      "facetName": "c5_selfDiscipline",
+      "textEn": "Waste my time",
+      "matchedItemId": "H1186"
+    },
+    {
+      "bigfiveId": 86,
+      "facetName": "n6_vulnerability",
+      "textEn": "Feel that I'm unable to deal with things",
+      "matchedItemId": "H954"
+    },
+    {
+      "bigfiveId": 87,
+      "facetName": "e6_cheerfulness",
+      "textEn": "Love life",
+      "matchedItemId": "H33"
+    },
+    {
+      "bigfiveId": 88,
+      "facetName": "o6_liberalism",
+      "textEn": "Tend to vote for conservative political candidates",
+      "matchedItemId": "X126"
+    },
+    {
+      "bigfiveId": 89,
+      "facetName": "a6_sympathy",
+      "textEn": "Am not interested in other people's problems",
+      "matchedItemId": "X227"
+    },
+    {
+      "bigfiveId": 90,
+      "facetName": "c6_cautiousness",
+      "textEn": "Rush into things",
+      "matchedItemId": "H862"
+    },
+    {
+      "bigfiveId": 91,
+      "facetName": "n1_anxiety",
+      "textEn": "Get stressed out easily",
+      "matchedItemId": "X107"
+    },
+    {
+      "bigfiveId": 92,
+      "facetName": "e1_friendliness",
+      "textEn": "Keep others at a distance",
+      "matchedItemId": "H704"
+    },
+    {
+      "bigfiveId": 93,
+      "facetName": "o1_imagination",
+      "textEn": "Like to get lost in thought",
+      "matchedItemId": "E163"
+    },
+    {
+      "bigfiveId": 94,
+      "facetName": "a1_trust",
+      "textEn": "Distrust people",
+      "matchedItemId": "H1195"
+    },
+    {
+      "bigfiveId": 95,
+      "facetName": "c1_selfEfficacy",
+      "textEn": "Know how to get things done",
+      "matchedItemId": "H1333"
+    },
+    {
+      "bigfiveId": 96,
+      "facetName": "n2_anger",
+      "textEn": "Am not easily annoyed",
+      "matchedItemId": "X23"
+    },
+    {
+      "bigfiveId": 97,
+      "facetName": "e2_gregariousness",
+      "textEn": "Avoid crowds",
+      "matchedItemId": "H650"
+    },
+    {
+      "bigfiveId": 98,
+      "facetName": "o2_artisticInterests",
+      "textEn": "Do not enjoy going to art museums",
+      "matchedItemId": "X235"
+    },
+    {
+      "bigfiveId": 99,
+      "facetName": "a2_morality",
+      "textEn": "Obstruct others' plans",
+      "matchedItemId": "H494"
+    },
+    {
+      "bigfiveId": 100,
+      "facetName": "c2_orderliness",
+      "textEn": "Leave my belongings around",
+      "matchedItemId": "H823"
+    },
+    {
+      "bigfiveId": 101,
+      "facetName": "n3_depression",
+      "textEn": "Feel comfortable with myself",
+      "matchedItemId": "X129"
+    },
+    {
+      "bigfiveId": 102,
+      "facetName": "e3_assertiveness",
+      "textEn": "Wait for others to lead the way",
+      "matchedItemId": "H976"
+    },
+    {
+      "bigfiveId": 103,
+      "facetName": "o3_emotionality",
+      "textEn": "Don't understand people who get emotional",
+      "matchedItemId": "E156"
+    },
+    {
+      "bigfiveId": 104,
+      "facetName": "a3_altruism",
+      "textEn": "Take no time for others",
+      "matchedItemId": "H918"
+    },
+    {
+      "bigfiveId": 105,
+      "facetName": "c3_dutifulness",
+      "textEn": "Break my promises",
+      "matchedItemId": "H1018"
+    },
+    {
+      "bigfiveId": 106,
+      "facetName": "n4_selfConsciousness",
+      "textEn": "Am not bothered by difficult social situations",
+      "matchedItemId": "X209"
+    },
+    {
+      "bigfiveId": 107,
+      "facetName": "e4_activityLevel",
+      "textEn": "Like to take it easy",
+      "matchedItemId": "E113"
+    },
+    {
+      "bigfiveId": 108,
+      "facetName": "o4_adventurousness",
+      "textEn": "Am attached to conventional ways",
+      "matchedItemId": "H312"
+    },
+    {
+      "bigfiveId": 109,
+      "facetName": "a4_cooperation",
+      "textEn": "Get back at others",
+      "matchedItemId": "H699"
+    },
+    {
+      "bigfiveId": 110,
+      "facetName": "c4_achievementStriving",
+      "textEn": "Put little time and effort into my work",
+      "matchedItemId": "X167"
+    },
+    {
+      "bigfiveId": 111,
+      "facetName": "n5_immoderation",
+      "textEn": "Am able to control my cravings",
+      "matchedItemId": "X251"
+    },
+    {
+      "bigfiveId": 112,
+      "facetName": "e5_excitementSeeking",
+      "textEn": "Act wild and crazy",
+      "matchedItemId": "H871"
+    },
+    {
+      "bigfiveId": 113,
+      "facetName": "o5_intellect",
+      "textEn": "Am not interested in theoretical discussions",
+      "matchedItemId": "X239"
+    },
+    {
+      "bigfiveId": 114,
+      "facetName": "a5_modesty",
+      "textEn": "Boast about my virtues",
+      "matchedItemId": "H746"
+    },
+    {
+      "bigfiveId": 115,
+      "facetName": "c5_selfDiscipline",
+      "textEn": "Have difficulty starting tasks",
+      "matchedItemId": "H621"
+    },
+    {
+      "bigfiveId": 116,
+      "facetName": "n6_vulnerability",
+      "textEn": "Remain calm under pressure",
+      "matchedItemId": "X79"
+    },
+    {
+      "bigfiveId": 117,
+      "facetName": "e6_cheerfulness",
+      "textEn": "Look at the bright side of life",
+      "matchedItemId": "H42"
+    },
+    {
+      "bigfiveId": 118,
+      "facetName": "o6_liberalism",
+      "textEn": "Believe that we should be tough on crime",
+      "matchedItemId": "X157"
+    },
+    {
+      "bigfiveId": 119,
+      "facetName": "a6_sympathy",
+      "textEn": "Try not to think about the needy",
+      "matchedItemId": "E166"
+    },
+    {
+      "bigfiveId": 120,
+      "facetName": "c6_cautiousness",
+      "textEn": "Act without thinking",
+      "matchedItemId": "H846"
+    }
+  ]
+}

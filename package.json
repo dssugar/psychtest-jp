@@ -17,6 +17,9 @@
     "db:migrate:local": "wrangler d1 migrations apply psychtest-alpha --local",
     "db:migrate:remote": "wrangler d1 migrations apply psychtest-alpha --remote",
     "db:reset:local": "rm -rf .wrangler/state/v3/d1 && npm run db:migrate:local",
+    "db:seed:build": "tsx scripts/seed-ipip.ts",
+    "db:seed:local": "npm run db:seed:build && wrangler d1 execute psychtest-alpha --local --file=scripts/.cache/seed-ipip.sql",
+    "db:seed:remote": "npm run db:seed:build && wrangler d1 execute psychtest-alpha --remote --file=scripts/.cache/seed-ipip.sql",
     "eval": "node tests/eval/full.mjs",
     "eval:raw": "node tests/eval/run.mjs"
   },
@@ -47,7 +50,9 @@
     "eslint-config-next": "^16.2.6",
     "postcss": "^8.5.14",
     "tailwindcss": "^4.3.0",
+    "tsx": "^4.22.0",
     "typescript": "^6.0.3",
-    "wrangler": "^4.92.0"
+    "wrangler": "^4.92.0",
+    "xlsx": "^0.18.5"
   }
 }

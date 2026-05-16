@@ -22,6 +22,12 @@ export interface BigFiveQuestion extends BaseQuestion {
   domain: "E" | "A" | "C" | "N" | "O"; // Short form for IPIP-120
   facet: 1 | 2 | 3 | 4 | 5 | 6; // IPIP-120 facet number
   facetName?: string; // e.g., "n1_anxiety", "e1_friendliness" (for IPIP-120)
+  /**
+   * IPIP 公式 item ID (Hxxx / Xxxx / Fxxx / Txxx 等).
+   * Phase 2.1 で IPIP 統一 DB に紐付け. user_responses への保存キー.
+   * 生成元: scripts/seed-ipip.ts (data/ipip-master/bigfive-id-mapping.json).
+   */
+  hxxx?: string;
 }
 
 /**
@@ -47,6 +53,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "N",
     facet: 1,
     facetName: "n1_anxiety",
+    hxxx: "H1157",
     reverse: false,
   },
   {
@@ -57,6 +64,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "E",
     facet: 1,
     facetName: "e1_friendliness",
+    hxxx: "H29",
     reverse: false,
   },
   {
@@ -67,6 +75,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "O",
     facet: 1,
     facetName: "o1_imagination",
+    hxxx: "X14",
     reverse: false,
   },
   {
@@ -77,6 +86,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "A",
     facet: 1,
     facetName: "a1_trust",
+    hxxx: "H113",
     reverse: false,
   },
   {
@@ -87,6 +97,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "C",
     facet: 1,
     facetName: "c1_selfEfficacy",
+    hxxx: "H1285",
     reverse: false,
   },
   {
@@ -97,6 +108,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "N",
     facet: 2,
     facetName: "n2_anger",
+    hxxx: "H754",
     reverse: false,
   },
   {
@@ -107,6 +119,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "E",
     facet: 2,
     facetName: "e2_gregariousness",
+    hxxx: "H78",
     reverse: false,
   },
   {
@@ -117,6 +130,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "O",
     facet: 2,
     facetName: "o2_artisticInterests",
+    hxxx: "X123",
     reverse: false,
   },
   {
@@ -127,6 +141,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "A",
     facet: 2,
     facetName: "a2_morality",
+    hxxx: "H416",
     reverse: true,
   },
   {
@@ -137,6 +152,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "C",
     facet: 2,
     facetName: "c2_orderliness",
+    hxxx: "H244",
     reverse: false,
   },
   {
@@ -147,6 +163,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "N",
     facet: 3,
     facetName: "n3_depression",
+    hxxx: "X74",
     reverse: false,
   },
   {
@@ -157,6 +174,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "E",
     facet: 3,
     facetName: "e3_assertiveness",
+    hxxx: "H334",
     reverse: false,
   },
   {
@@ -167,6 +185,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "O",
     facet: 3,
     facetName: "o3_emotionality",
+    hxxx: "X92",
     reverse: false,
   },
   {
@@ -177,6 +196,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "A",
     facet: 3,
     facetName: "a3_altruism",
+    hxxx: "H1108",
     reverse: false,
   },
   {
@@ -187,6 +207,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "C",
     facet: 3,
     facetName: "c3_dutifulness",
+    hxxx: "H149",
     reverse: false,
   },
   {
@@ -197,6 +218,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "N",
     facet: 4,
     facetName: "n4_selfConsciousness",
+    hxxx: "H592",
     reverse: false,
   },
   {
@@ -207,6 +229,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "E",
     facet: 4,
     facetName: "e4_activityLevel",
+    hxxx: "H58",
     reverse: false,
   },
   {
@@ -217,6 +240,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "O",
     facet: 4,
     facetName: "o4_adventurousness",
+    hxxx: "X204",
     reverse: false,
   },
   {
@@ -227,6 +251,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "A",
     facet: 4,
     facetName: "a4_cooperation",
+    hxxx: "H453",
     reverse: true,
   },
   {
@@ -237,6 +262,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "C",
     facet: 4,
     facetName: "c4_achievementStriving",
+    hxxx: "H1206",
     reverse: false,
   },
   {
@@ -247,6 +273,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "N",
     facet: 5,
     facetName: "n5_immoderation",
+    hxxx: "X133",
     reverse: false,
   },
   {
@@ -257,6 +284,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "E",
     facet: 5,
     facetName: "e5_excitementSeeking",
+    hxxx: "H438",
     reverse: false,
   },
   {
@@ -267,6 +295,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "O",
     facet: 5,
     facetName: "o5_intellect",
+    hxxx: "X211",
     reverse: false,
   },
   {
@@ -277,6 +306,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "A",
     facet: 5,
     facetName: "a5_modesty",
+    hxxx: "H736",
     reverse: true,
   },
   {
@@ -287,6 +317,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "C",
     facet: 5,
     facetName: "c5_selfDiscipline",
+    hxxx: "X87",
     reverse: false,
   },
   {
@@ -297,6 +328,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "N",
     facet: 6,
     facetName: "n6_vulnerability",
+    hxxx: "H948",
     reverse: false,
   },
   {
@@ -307,6 +339,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "E",
     facet: 6,
     facetName: "e6_cheerfulness",
+    hxxx: "H32",
     reverse: false,
   },
   {
@@ -317,6 +350,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "O",
     facet: 6,
     facetName: "o6_liberalism",
+    hxxx: "X218",
     reverse: false,
   },
   {
@@ -327,6 +361,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "A",
     facet: 6,
     facetName: "a6_sympathy",
+    hxxx: "X259",
     reverse: false,
   },
   {
@@ -337,6 +372,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "C",
     facet: 6,
     facetName: "c6_cautiousness",
+    hxxx: "E46",
     reverse: true,
   },
   {
@@ -347,6 +383,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "N",
     facet: 1,
     facetName: "n1_anxiety",
+    hxxx: "H999",
     reverse: false,
   },
   {
@@ -357,6 +394,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "E",
     facet: 1,
     facetName: "e1_friendliness",
+    hxxx: "X112",
     reverse: false,
   },
   {
@@ -367,6 +405,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "O",
     facet: 1,
     facetName: "o1_imagination",
+    hxxx: "X238",
     reverse: false,
   },
   {
@@ -377,6 +416,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "A",
     facet: 1,
     facetName: "a1_trust",
+    hxxx: "H549",
     reverse: false,
   },
   {
@@ -387,6 +427,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "C",
     facet: 1,
     facetName: "c1_selfEfficacy",
+    hxxx: "H1174",
     reverse: false,
   },
   {
@@ -397,6 +438,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "N",
     facet: 2,
     facetName: "n2_anger",
+    hxxx: "H761",
     reverse: false,
   },
   {
@@ -407,6 +449,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "E",
     facet: 2,
     facetName: "e2_gregariousness",
+    hxxx: "X83",
     reverse: false,
   },
   {
@@ -417,6 +460,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "O",
     facet: 2,
     facetName: "o2_artisticInterests",
+    hxxx: "E105",
     reverse: false,
   },
   {
@@ -427,6 +471,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "A",
     facet: 2,
     facetName: "a2_morality",
+    hxxx: "X198",
     reverse: true,
   },
   {
@@ -437,6 +482,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "C",
     facet: 2,
     facetName: "c2_orderliness",
+    hxxx: "X82",
     reverse: true,
   },
   {
@@ -447,6 +493,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "N",
     facet: 3,
     facetName: "n3_depression",
+    hxxx: "X15",
     reverse: false,
   },
   {
@@ -457,6 +504,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "E",
     facet: 3,
     facetName: "e3_assertiveness",
+    hxxx: "H524",
     reverse: false,
   },
   {
@@ -467,6 +515,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "O",
     facet: 3,
     facetName: "o3_emotionality",
+    hxxx: "E136",
     reverse: false,
   },
   {
@@ -477,6 +526,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "A",
     facet: 3,
     facetName: "a3_altruism",
+    hxxx: "H1100",
     reverse: false,
   },
   {
@@ -487,6 +537,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "C",
     facet: 3,
     facetName: "c3_dutifulness",
+    hxxx: "H145",
     reverse: false,
   },
   {
@@ -497,6 +548,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "N",
     facet: 4,
     facetName: "n4_selfConsciousness",
+    hxxx: "H655",
     reverse: false,
   },
   {
@@ -507,6 +559,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "E",
     facet: 4,
     facetName: "e4_activityLevel",
+    hxxx: "H54",
     reverse: false,
   },
   {
@@ -517,6 +570,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "O",
     facet: 4,
     facetName: "o4_adventurousness",
+    hxxx: "X30",
     reverse: true,
   },
   {
@@ -527,6 +581,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "A",
     facet: 4,
     facetName: "a4_cooperation",
+    hxxx: "H809",
     reverse: true,
   },
   {
@@ -537,6 +592,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "C",
     facet: 4,
     facetName: "c4_achievementStriving",
+    hxxx: "H2014",
     reverse: false,
   },
   {
@@ -547,6 +603,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "N",
     facet: 5,
     facetName: "n5_immoderation",
+    hxxx: "X181",
     reverse: true,
   },
   {
@@ -557,6 +614,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "E",
     facet: 5,
     facetName: "e5_excitementSeeking",
+    hxxx: "H446",
     reverse: false,
   },
   {
@@ -567,6 +625,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "O",
     facet: 5,
     facetName: "o5_intellect",
+    hxxx: "X248",
     reverse: true,
   },
   {
@@ -577,6 +636,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "A",
     facet: 5,
     facetName: "a5_modesty",
+    hxxx: "H2043",
     reverse: true,
   },
   {
@@ -587,6 +647,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "C",
     facet: 5,
     facetName: "c5_selfDiscipline",
+    hxxx: "H258",
     reverse: false,
   },
   {
@@ -597,6 +658,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "N",
     facet: 6,
     facetName: "n6_vulnerability",
+    hxxx: "H959",
     reverse: false,
   },
   {
@@ -607,6 +669,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "E",
     facet: 6,
     facetName: "e6_cheerfulness",
+    hxxx: "H1094",
     reverse: false,
   },
   {
@@ -617,6 +680,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "O",
     facet: 6,
     facetName: "o6_liberalism",
+    hxxx: "X184",
     reverse: false,
   },
   {
@@ -627,6 +691,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "A",
     facet: 6,
     facetName: "a6_sympathy",
+    hxxx: "E115",
     reverse: false,
   },
   {
@@ -637,6 +702,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "C",
     facet: 6,
     facetName: "c6_cautiousness",
+    hxxx: "H853",
     reverse: true,
   },
   {
@@ -647,6 +713,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "N",
     facet: 1,
     facetName: "n1_anxiety",
+    hxxx: "H968",
     reverse: false,
   },
   {
@@ -657,6 +724,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "E",
     facet: 1,
     facetName: "e1_friendliness",
+    hxxx: "H648",
     reverse: true,
   },
   {
@@ -667,6 +735,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "O",
     facet: 1,
     facetName: "o1_imagination",
+    hxxx: "X71",
     reverse: false,
   },
   {
@@ -677,6 +746,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "A",
     facet: 1,
     facetName: "a1_trust",
+    hxxx: "E157",
     reverse: false,
   },
   {
@@ -687,6 +757,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "C",
     facet: 1,
     facetName: "c1_selfEfficacy",
+    hxxx: "H1354",
     reverse: false,
   },
   {
@@ -697,6 +768,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "N",
     facet: 2,
     facetName: "n2_anger",
+    hxxx: "H755",
     reverse: false,
   },
   {
@@ -707,6 +779,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "E",
     facet: 2,
     facetName: "e2_gregariousness",
+    hxxx: "H587",
     reverse: true,
   },
   {
@@ -717,6 +790,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "O",
     facet: 2,
     facetName: "o2_artisticInterests",
+    hxxx: "X45",
     reverse: true,
   },
   {
@@ -727,6 +801,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "A",
     facet: 2,
     facetName: "a2_morality",
+    hxxx: "H427",
     reverse: true,
   },
   {
@@ -737,6 +812,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "C",
     facet: 2,
     facetName: "c2_orderliness",
+    hxxx: "H822",
     reverse: true,
   },
   {
@@ -747,6 +823,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "N",
     facet: 3,
     facetName: "n3_depression",
+    hxxx: "H640",
     reverse: false,
   },
   {
@@ -757,6 +834,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "E",
     facet: 3,
     facetName: "e3_assertiveness",
+    hxxx: "H325",
     reverse: false,
   },
   {
@@ -767,6 +845,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "O",
     facet: 3,
     facetName: "o3_emotionality",
+    hxxx: "X10",
     reverse: true,
   },
   {
@@ -777,6 +856,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "A",
     facet: 3,
     facetName: "a3_altruism",
+    hxxx: "X203",
     reverse: true,
   },
   {
@@ -787,6 +867,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "C",
     facet: 3,
     facetName: "c3_dutifulness",
+    hxxx: "H1346",
     reverse: true,
   },
   {
@@ -797,6 +878,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "N",
     facet: 4,
     facetName: "n4_selfConsciousness",
+    hxxx: "H656",
     reverse: false,
   },
   {
@@ -807,6 +889,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "E",
     facet: 4,
     facetName: "e4_activityLevel",
+    hxxx: "H79",
     reverse: false,
   },
   {
@@ -817,6 +900,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "O",
     facet: 4,
     facetName: "o4_adventurousness",
+    hxxx: "H1063",
     reverse: true,
   },
   {
@@ -827,6 +911,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "A",
     facet: 4,
     facetName: "a4_cooperation",
+    hxxx: "H1103",
     reverse: true,
   },
   {
@@ -837,6 +922,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "C",
     facet: 4,
     facetName: "c4_achievementStriving",
+    hxxx: "X115",
     reverse: true,
   },
   {
@@ -847,6 +933,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "N",
     facet: 5,
     facetName: "n5_immoderation",
+    hxxx: "X274",
     reverse: true,
   },
   {
@@ -857,6 +944,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "E",
     facet: 5,
     facetName: "e5_excitementSeeking",
+    hxxx: "E35",
     reverse: false,
   },
   {
@@ -867,6 +955,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "O",
     facet: 5,
     facetName: "o5_intellect",
+    hxxx: "X176",
     reverse: true,
   },
   {
@@ -877,6 +966,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "A",
     facet: 5,
     facetName: "a5_modesty",
+    hxxx: "H738",
     reverse: true,
   },
   {
@@ -887,6 +977,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "C",
     facet: 5,
     facetName: "c5_selfDiscipline",
+    hxxx: "H1186",
     reverse: true,
   },
   {
@@ -897,6 +988,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "N",
     facet: 6,
     facetName: "n6_vulnerability",
+    hxxx: "H954",
     reverse: false,
   },
   {
@@ -907,6 +999,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "E",
     facet: 6,
     facetName: "e6_cheerfulness",
+    hxxx: "H33",
     reverse: false,
   },
   {
@@ -917,6 +1010,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "O",
     facet: 6,
     facetName: "o6_liberalism",
+    hxxx: "X126",
     reverse: true,
   },
   {
@@ -927,6 +1021,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "A",
     facet: 6,
     facetName: "a6_sympathy",
+    hxxx: "X227",
     reverse: true,
   },
   {
@@ -937,6 +1032,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "C",
     facet: 6,
     facetName: "c6_cautiousness",
+    hxxx: "H862",
     reverse: true,
   },
   {
@@ -947,6 +1043,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "N",
     facet: 1,
     facetName: "n1_anxiety",
+    hxxx: "X107",
     reverse: false,
   },
   {
@@ -957,6 +1054,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "E",
     facet: 1,
     facetName: "e1_friendliness",
+    hxxx: "H704",
     reverse: true,
   },
   {
@@ -967,6 +1065,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "O",
     facet: 1,
     facetName: "o1_imagination",
+    hxxx: "E163",
     reverse: false,
   },
   {
@@ -977,6 +1076,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "A",
     facet: 1,
     facetName: "a1_trust",
+    hxxx: "H1195",
     reverse: true,
   },
   {
@@ -987,6 +1087,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "C",
     facet: 1,
     facetName: "c1_selfEfficacy",
+    hxxx: "H1333",
     reverse: false,
   },
   {
@@ -997,6 +1098,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "N",
     facet: 2,
     facetName: "n2_anger",
+    hxxx: "X23",
     reverse: true,
   },
   {
@@ -1007,6 +1109,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "E",
     facet: 2,
     facetName: "e2_gregariousness",
+    hxxx: "H650",
     reverse: true,
   },
   {
@@ -1017,6 +1120,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "O",
     facet: 2,
     facetName: "o2_artisticInterests",
+    hxxx: "X235",
     reverse: true,
   },
   {
@@ -1027,6 +1131,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "A",
     facet: 2,
     facetName: "a2_morality",
+    hxxx: "H494",
     reverse: true,
   },
   {
@@ -1037,6 +1142,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "C",
     facet: 2,
     facetName: "c2_orderliness",
+    hxxx: "H823",
     reverse: true,
   },
   {
@@ -1047,6 +1153,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "N",
     facet: 3,
     facetName: "n3_depression",
+    hxxx: "X129",
     reverse: true,
   },
   {
@@ -1057,6 +1164,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "E",
     facet: 3,
     facetName: "e3_assertiveness",
+    hxxx: "H976",
     reverse: true,
   },
   {
@@ -1067,6 +1175,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "O",
     facet: 3,
     facetName: "o3_emotionality",
+    hxxx: "E156",
     reverse: true,
   },
   {
@@ -1077,6 +1186,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "A",
     facet: 3,
     facetName: "a3_altruism",
+    hxxx: "H918",
     reverse: true,
   },
   {
@@ -1087,6 +1197,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "C",
     facet: 3,
     facetName: "c3_dutifulness",
+    hxxx: "H1018",
     reverse: true,
   },
   {
@@ -1097,6 +1208,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "N",
     facet: 4,
     facetName: "n4_selfConsciousness",
+    hxxx: "X209",
     reverse: true,
   },
   {
@@ -1107,6 +1219,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "E",
     facet: 4,
     facetName: "e4_activityLevel",
+    hxxx: "E113",
     reverse: true,
   },
   {
@@ -1117,6 +1230,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "O",
     facet: 4,
     facetName: "o4_adventurousness",
+    hxxx: "H312",
     reverse: true,
   },
   {
@@ -1127,6 +1241,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "A",
     facet: 4,
     facetName: "a4_cooperation",
+    hxxx: "H699",
     reverse: true,
   },
   {
@@ -1137,6 +1252,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "C",
     facet: 4,
     facetName: "c4_achievementStriving",
+    hxxx: "X167",
     reverse: true,
   },
   {
@@ -1147,6 +1263,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "N",
     facet: 5,
     facetName: "n5_immoderation",
+    hxxx: "X251",
     reverse: true,
   },
   {
@@ -1157,6 +1274,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "E",
     facet: 5,
     facetName: "e5_excitementSeeking",
+    hxxx: "H871",
     reverse: false,
   },
   {
@@ -1167,6 +1285,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "O",
     facet: 5,
     facetName: "o5_intellect",
+    hxxx: "X239",
     reverse: true,
   },
   {
@@ -1177,6 +1296,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "A",
     facet: 5,
     facetName: "a5_modesty",
+    hxxx: "H746",
     reverse: true,
   },
   {
@@ -1187,6 +1307,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "C",
     facet: 5,
     facetName: "c5_selfDiscipline",
+    hxxx: "H621",
     reverse: true,
   },
   {
@@ -1197,6 +1318,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "N",
     facet: 6,
     facetName: "n6_vulnerability",
+    hxxx: "X79",
     reverse: true,
   },
   {
@@ -1207,6 +1329,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "E",
     facet: 6,
     facetName: "e6_cheerfulness",
+    hxxx: "H42",
     reverse: false,
   },
   {
@@ -1217,6 +1340,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "O",
     facet: 6,
     facetName: "o6_liberalism",
+    hxxx: "X157",
     reverse: true,
   },
   {
@@ -1227,6 +1351,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "A",
     facet: 6,
     facetName: "a6_sympathy",
+    hxxx: "E166",
     reverse: true,
   },
   {
@@ -1237,6 +1362,7 @@ export const bigFiveQuestions: BigFiveQuestion[] = [
     domain: "C",
     facet: 6,
     facetName: "c6_cautiousness",
+    hxxx: "H846",
     reverse: true,
   }
 ];
