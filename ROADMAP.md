@@ -1,7 +1,7 @@
 # psychtest.jp - 実装ロードマップ
 
-> **最終更新**: 2026-05-17 (v2.4.3、Phase 2.2.1 既完了確認 + Phase 2.3 非 IPIP 4 scale 統合完了)
-> **前版**: v2.4.2 (2026-05-17) Phase 2.1.δ IPIP supplement / v2.4.1 (2026-05-17) Phase 2.1.γ sanitization / v2.4 (2026-05-16) Phase 2.1.γ ipip-seed-completeness 完了反映 / v2.3 (2026-05-16) Phase 2.1.β scale_meta / v2.2 (2026-05-16) sub-phase 分割 / v2.1 (2026-05-16) Phase 2.1 完了反映 / v2.0 (2026-05-16) ロードマップ見直し / v1.0 (2026-01-20) 心理尺度路線中心
+> **最終更新**: 2026-05-17 (v2.4.4、Phase 2.x.A+B IPIP Index 463 scales を 95.5% カバー)
+> **前版**: v2.4.3 (2026-05-17) Phase 2.2.1 既完了 + 2.3 完了 / v2.4.2 (2026-05-17) Phase 2.1.δ IPIP supplement / v2.4.1 (2026-05-17) Phase 2.1.γ sanitization / v2.4 (2026-05-16) Phase 2.1.γ ipip-seed-completeness 完了反映 / v2.3 (2026-05-16) Phase 2.1.β scale_meta / v2.2 (2026-05-16) sub-phase 分割 / v2.1 (2026-05-16) Phase 2.1 完了反映 / v2.0 (2026-05-16) ロードマップ見直し / v1.0 (2026-01-20) 心理尺度路線中心
 > **位置づけ**: [project-design.md](./docs/project-design.md) の Phase 設計を実装視点でブレイクダウン
 
 ---
@@ -261,6 +261,39 @@ spec: `docs/specs/ipip-seed-completeness-2026-05.md`
 - Phase 2.2.2 Self-Concept: Daisuke 独自編集との意味対応決定が要 (= 別 wedge)
 - VIRTUAL_SCALES 機構 (= IPIP-native facet 単体の自動 view 化、e.g., TCI-P3 / NEO-C4-Achievement-Striving) は将来の thick design wedge
 
+### 2.x.A+B IPIP Index facet auto-view + ORAIS/ORVIS auto-supplement ✅ 2026-05-17
+
+IPIP 公式 `newIndexofScaleLabels.htm` の「Alphabetical Index of 274 Labels for 463 IPIP Scales」 structure を DB 上で表現する基盤実装。Tedone Table を source として fine-grained facet view を自動生成 + IPIP project 正規拡張の ORAIS/ORVIS を auto-supplement で復活。
+
+実装サマリ (commit `ea79b9c`):
+
+- [x] **Phase 2.x.A**: `scripts/seed-ipip.ts` に facet auto-view generator 追加 — Tedone Table の (instrument, label) ペアを fine-grained scale view として `scales` table に投入. scale_id 命名: `{instrument_slug}_{label_slug}` (例: `neo_achievement_striving` / `bidr_cognitive_failures`)
+- [x] **Phase 2.x.B**: `SCALE_TOMBSTONES = []` で orvis/orais の tombstone 解除. `AUTO_SUPPLEMENT_INSTRUMENTS = [ORAIS, ORVIS]` を seed-ipip.ts に追加し、Tedone Table から auto-generate ID (`ORAIS-001..199` / `ORVIS-001..092`) で ipip_items に source='tedone_extension' 投入
+- [x] 既存 lookupItemId / facet auto-view が自動再活用 (= 291 supplement items が自動的に scales + facet view に反映)
+
+**数値結果**:
+| 指標 | Before (Phase 2.3 後) | After (Phase 2.x.A+B) |
+|---|---|---|
+| scales 行 | 3,408 | **3,699** (+291) |
+| facet auto-view | — | **442 facet scale_ids** |
+| ipip_items | 3,325 | **3,616** (+291 auto-supplement) |
+| **IPIP Index 463 カバー** | 87% (401/463) | **95.5% (442/463)** |
+| INVARIANT | ✓ | bigfive 120/120 / industriousness 20/20 / type-check pass |
+
+**ID namespace 体系 (Phase 2.x で完成)**:
+| 種別 | format | 例 |
+|---|---|---|
+| IPIP master (3,320) | 1 文字 prefix + 数字 | `H184` / `X1234` / `T2078` |
+| IPIP supplement (project 内、master 外) | `EX-` + 数字 | `EX-001..005` |
+| 非 IPIP scale 固有 | scale 略称 + `-` + 数字 | `RSE-/PHQ9-/K6-/SWLS-` |
+| IPIP auto-supplement (Tedone 由来) | instrument prefix + `-` + 数字 | `ORAIS-001..199` / `ORVIS-001..092` |
+
+**残課題 (Phase 2.x.C 候補、別 wedge)**:
+- **IPIP Index 463 のうち未カバー 21 件**: Broadbent 1982 (Cognitive Failures) / Saucier 1997 (Big-Seven 525) など Tedone Table 不在の独立 instrument
+- **Tedone Table の dump 粒度問題**: 同 wording が複数 (instrument, label) で再利用される IPIP project 構造 (例: P473 が 9 scale で再利用) のうち、Tedone Table dump が完全 reproduction を carry していない (BIDR/Cognitive-Failures が 10 items 中 8 件のみ等)
+- **対応案**: IPIP 公式各 inventory Key page を direct fetch して (scale, item) pair の不足分を `scales` table に追加 INSERT する supplement 拡張 (Phase 2.x.C)。既存 ipip_items + scales table の relational design はそのまま活用 (= テーブル設計変更不要)
+- **UI 化** (動的 [ipipFacetId] route + scoring + 結果表示): Phase 2.x.A+B で DB 基盤完成、UI wedge は /office-hours で spec 切ってから別 wedge
+
 ### 2.4 トップを 2 入口ハブに書き換え
 
 - [ ] `app/page.tsx` 新規ランディング (診断 / 占い 2 入口を等格提示)
@@ -445,14 +478,16 @@ SELECT scale_id, COUNT(*)
 4. ~~Phase 2.1.δ IPIP supplement~~ ✅ 完了 (commit ac929bf) — skip 0 / 100% coverage
 5. ~~Phase 2.2.1 Industriousness D1 migration~~ ✅ 完了 (Phase 2.1.β 内で実装済を 2026-05-17 確認)
 6. ~~Phase 2.3 非 IPIP 4 scale (Rosenberg/PHQ-9/K6/SWLS) 統合~~ ✅ 完了 (commit 2fe790f) — scale_meta 10/11 ✓
-7. **Phase 2.1.α** BigFive audit 反映 — 16 件中 high+medium で明確分のみ data + DB 同期
-8. **Phase 2.6** 月読 context 進捗 N/M — `lib/uranai/profile-summarizer.ts` 拡張
+7. ~~Phase 2.x.A+B IPIP Index facet auto-view + ORAIS/ORVIS 復活~~ ✅ 完了 (commit ea79b9c) — 442/463 (95.5%) カバー
+8. **Phase 2.1.α** BigFive audit 反映 — 16 件中 high+medium で明確分のみ data + DB 同期
+9. **Phase 2.6** 月読 context 進捗 N/M — `lib/uranai/profile-summarizer.ts` 拡張
 
 **次 session 候補**:
+- **Phase 2.x.C** IPIP page direct fetch supplement — 各 inventory Key page を fetch して (scale, item) pair 不足分を `scales` table 補充 (= 95.5% → 100% カバー、特に共有 item の dump 漏れ修復)。`/office-hours` で spec 切る
 - **Phase 2.2.2** Self-Concept migration — Daisuke 独自編集 8 items vs IPIP NEO N4 facet 10 items の意味対応決定 + adapter 追加
 - **Phase 2.4** トップ 2 入口ハブ書き換え — UI 大改修、独立 wedge
 - **Phase 2.5** 朝の儀式 UI — Phase 2.3 完了で全 7 尺度が user_responses に集約された基盤の上で実装可能
-- **VIRTUAL_SCALES 機構** — IPIP-native facet の自動 view 化 (= TCI-P3 等の独立 scale 取り込み)、`/office-hours` で spec 切る
+- **IPIP facet UI 化** (= 動的 [ipipFacetId] route) — Phase 2.x.A+B で DB 基盤完成、UI wedge は別 spec 切る
 
 **別タスク (Phase 2 と並列で要対応)**:
 - **Production deploy**: `db:migrate:remote` が 7403 エラー → wrangler 再認証 必要、その後 migrate + seed + Pages deploy
@@ -481,3 +516,4 @@ SELECT scale_id, COUNT(*)
 - v2.4.1 (2026-05-17): Phase 2.1.γ sanitization 反映 — ORAIS (200 件) を SCALE_TOMBSTONES に追加で skip 雑音除外 (skip 205 → 6)、scale_meta completeness check 機構追加、IPIP master 内 normalize collision 0 件 / Tedone cover 96.9% を auxiliary audit で確認、残 Pattern E 6 件は scoring key 反転考慮しても wording 意味同一性で却下
 - v2.4.2 (2026-05-17): Phase 2.1.δ IPIP supplement 反映 — 残 Pattern E 6 件を IPIP 公式 web page で audit、全 5 wording が各 inventory Key page に掲載されている (master 外、inventory 独自項目) ことを確認。新 ID namespace `EX-NNN` (= External) で ipip-3320-supplement.json を新規作成、source='tedone_extension' で ipip_items に投入。ITEM_ID_RE 拡張 (= 将来 GAD9-001 等の非 IPIP scale prefix も統一対応)。skip 6 → 0、scales 3,408 完全カバー、ja_text も bigfive UI 訳スタイルで揃え。
 - v2.4.3 (2026-05-17): Phase 2.2.1 既完了確認 + Phase 2.3 非 IPIP 4 scale 統合完了反映 — Industriousness adapter は Phase 2.1.β 内で既実装済 (checkbox 同期のみ)。Phase 2.3 で migration 0005 (D1 CHECK 0-7 緩和) + supplement 30 items 追加 (RSE/PHQ9/K6/SWLS) + buildResponses helper で 6 adapter 統一 + 4 非 IPIP scale を scales table 投入。scale_meta completeness 10/11 ✓ (selfconcept のみ Phase 2.2.2 pending)。ID namespace 体系統一: IPIP master (Hxxx) / IPIP supplement (EX-) / 非 IPIP scale 固有 (RSE-/PHQ9-/K6-/SWLS-)。
+- v2.4.4 (2026-05-17): Phase 2.x.A+B 完了反映 — IPIP 公式 `newIndexofScaleLabels.htm` の「Alphabetical Index of 274 Labels for 463 IPIP Scales」を DB 表現する基盤実装。Tedone Table の (instrument, label) ペアを fine-grained facet view として scales table に自動投入 (= 442 facet scale_ids 生成)。ORAIS (Goldberg 2010) / ORVIS (Pozzebon 2010) tombstone 解除 + AUTO_SUPPLEMENT_INSTRUMENTS 機構で 291 items 自動投入 (`ORAIS-001..199` / `ORVIS-001..092`)。IPIP Index 463 のうち **442 (95.5%) カバー**、残 21 件 (Broadbent/Saucier 等 Tedone 不在) は Phase 2.x.C (= IPIP page direct fetch supplement) で別 wedge。 Tedone Table の dump 粒度問題 (= 同 wording の複数 scale 共有を不完全 dump、BIDR/Cognitive-Failures 10 中 8 件のみ等) も Phase 2.x.C 対応。
