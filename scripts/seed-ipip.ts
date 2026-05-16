@@ -293,6 +293,8 @@ function build() {
   }
 
   // 5. BigFive 120 ↔ Hxxx mapping + scales(scale_id='bigfive') 生成
+  //    + ja_text を BigFive 訳で上書き (= ipip-translation の直訳より bigfive-questions.ts の
+  //    意訳/UI 馴染ませ版を一次正とする方針).
   log.push("");
   log.push("=== BigFive 120 ↔ Hxxx mapping ===");
   const mapping: BigFiveMapping = {
@@ -304,8 +306,10 @@ function build() {
   const bigfiveSql: string[] = [];
   bigfiveSql.push("");
   bigfiveSql.push("-- scales (scale_id='bigfive', 120 items from BigFive IPIP-NEO-120)");
-  // (BEGIN は不要、wrangler が wrap する)
+  bigfiveSql.push("-- ja_text は bigfive-questions.ts の訳で上書き (= ipip-translation 直訳より優先).");
 
+  let jaOverwritten = 0;
+  let jaPopulated = 0; // NULL → bigfive 訳
   for (const q of bigFiveQuestions) {
     const textEn = q.textEn ?? "";
     let itemId: string | null = null;
@@ -321,6 +325,13 @@ function build() {
       bigfiveSql.push(
         `INSERT OR REPLACE INTO scales (scale_id, instrument, item_id, key, label, alpha) VALUES ('bigfive', 'IPIP-NEO-120', ${sqlStr(itemId)}, ${key}, ${sqlStr(label)}, NULL);`,
       );
+      // ja_text を bigfive 訳で上書き (UPDATE, en_text / source は触らない)
+      const hadJa = jaByItemId.has(itemId);
+      bigfiveSql.push(
+        `UPDATE ipip_items SET ja_text = ${sqlStr(q.text)} WHERE item_id = ${sqlStr(itemId)};`,
+      );
+      if (hadJa) jaOverwritten++;
+      else jaPopulated++;
     } else {
       mapping.unmatched++;
       // fallback: legacy id BF_NNN を ipip_items に追加 + scales へ
@@ -343,8 +354,8 @@ function build() {
       matchedItemId: itemId,
     });
   }
-  // (COMMIT も不要)
   log.push(`bigfive matched: ${mapping.matched} / 120, unmatched (legacy fallback): ${mapping.unmatched}`);
+  log.push(`bigfive ja_text override: ${jaOverwritten} overwrote ipip-translation, ${jaPopulated} populated NULL`);
 
   sql.push(...bigfiveSql);
 
