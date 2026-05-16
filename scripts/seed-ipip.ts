@@ -113,6 +113,13 @@ const AUTHORITATIVE_INSTRUMENTS = new Set<string>([
 const HIERARCHY_TOMBSTONES = new Set<string>([
   "bis_bas_behavioral_inhibition_activation_system", // α 列に year (1994) 漏れ. canonical_label の meta entry
   "goldberg1999_dissociation_full_scale", // 31 items 完全重複 (= goldberg1999_dissociation と同一 item 集合)
+  // canonical_label naming の Tedone alias (detect-canonical-dups.ts で検出)
+  "buss1980_introspection_private_self_consciousness", // = buss1980_private_self_consciousness (9/9↔10 items overlap)
+  "scheier1994_hope_optimism", // = scheier1994_optimism (9/9↔10 items overlap)
+  // cross-instrument contamination (Tedone が Physical Attractiveness を誤 instrument に割当)
+  // canonical "Physical Attractiveness" は Buss1980 が正規だが Buss1980 supplement 未登録のため一旦両方 drop
+  "foa2002_physical_attractiveness",
+  "ipip_rational_physical_attractiveness",
 ]);
 
 /**
@@ -1054,9 +1061,19 @@ function build() {
 
       // Phase 2.x.D.1.aug: NEO/HEXACO/TCI/6FPQ の facet → domain 補強.
       //   supplement.json に scale_name が無くても DOMAIN_BY_FACET map から推定して 3 階層化.
+      //   Phase 2.x.D.3: lookup は大文字小文字無視 (TCI "Variety-seeking" vs map "Variety-Seeking" 等の不整合吸収)
       let augmentedScaleName = sc.scale_name;
-      if (!augmentedScaleName && sc.label && DOMAIN_BY_FACET[sc.instrument]?.[sc.label]) {
-        augmentedScaleName = DOMAIN_BY_FACET[sc.instrument][sc.label];
+      if (!augmentedScaleName && sc.label) {
+        const instMap = DOMAIN_BY_FACET[sc.instrument];
+        if (instMap) {
+          const target = sc.label.toLowerCase();
+          for (const k of Object.keys(instMap)) {
+            if (k.toLowerCase() === target) {
+              augmentedScaleName = instMap[k];
+              break;
+            }
+          }
+        }
       }
 
       // Phase 2.x.D.3: HIERARCHY_TOMBSTONES の scale_id は scale_hierarchy に投入しない.
@@ -1182,24 +1199,31 @@ function build() {
     const gParsed = JSON.parse(gText) as { instruments?: Record<string, string>; terms?: Record<string, string> };
     glossary = { instruments: gParsed.instruments ?? {}, terms: gParsed.terms ?? {} };
   } catch {}
+  // ja-glossary lookup を case-insensitive にする (= "Cool-Headedness" と "Cool-headedness" を同一視).
+  // 同一 lower key で複数 entry がある場合は先勝ち.
+  const termsLowerMap = new Map<string, string>();
+  for (const [k, v] of Object.entries(glossary.terms)) {
+    const lk = k.toLowerCase();
+    if (!termsLowerMap.has(lk)) termsLowerMap.set(lk, v);
+  }
+  const lookupJa = (s: string | null): string | null => {
+    if (!s) return null;
+    return termsLowerMap.get(s.toLowerCase()) ?? null;
+  };
   const synthesizeJa = (h: HierarchyEntry): string | null => {
     if (hierarchyJaOverride[h.scale_id]) return hierarchyJaOverride[h.scale_id];
     const instJa = glossary.instruments[h.instrument];
     if (!instJa) return null;
     const parts: string[] = [instJa];
-    if (h.scale_name) {
-      parts.push(glossary.terms[h.scale_name] ?? h.scale_name);
-    }
-    if (h.facet_name) {
-      parts.push(glossary.terms[h.facet_name] ?? h.facet_name);
-    }
-    if (h.subfacet_name) {
-      parts.push(glossary.terms[h.subfacet_name] ?? h.subfacet_name);
-    }
+    if (h.scale_name) parts.push(lookupJa(h.scale_name) ?? h.scale_name);
+    if (h.facet_name) parts.push(lookupJa(h.facet_name) ?? h.facet_name);
+    if (h.subfacet_name) parts.push(lookupJa(h.subfacet_name) ?? h.subfacet_name);
     return parts.join(" / ");
   };
   let hierarchyJaCount = 0;
   let hierarchyJaPartial = 0; // glossary に term 未登録で en mix の状態
+  // 全ja完全率 check (= 一部 en 残存) も case-insensitive で
+  const isTranslated = (s: string | null) => !s || lookupJa(s) !== null;
   sql.push("");
   sql.push("-- scale_hierarchy (Phase 2.x.D: 階層 tree)");
   sql.push("DELETE FROM scale_hierarchy;");
@@ -1209,11 +1233,7 @@ function build() {
     const ja = synthesizeJa(h);
     if (ja) {
       hierarchyJaCount++;
-      // 全 component が translation 持つかチェック (= 完全 ja の率を log 用)
-      const allTranslated =
-        (!h.scale_name || glossary.terms[h.scale_name]) &&
-        (!h.facet_name || glossary.terms[h.facet_name]) &&
-        (!h.subfacet_name || glossary.terms[h.subfacet_name]);
+      const allTranslated = isTranslated(h.scale_name) && isTranslated(h.facet_name) && isTranslated(h.subfacet_name);
       if (!allTranslated) hierarchyJaPartial++;
     }
     sql.push(
