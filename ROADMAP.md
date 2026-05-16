@@ -1,481 +1,315 @@
-# スペクトル診断 - 実装ロードマップ
+# psychtest.jp - 実装ロードマップ
 
-## 📍 現在地（2026-01-20）
-
-### ✅ 完了
-- **Phase 1**: 7つの心理尺度実装完了
-  - Big Five (IPIP-NEO-120) - 性格特性5次元・30ファセット（120問）
-  - Industriousness / Grit (IPIP-300 C4+C5) - 勤勉性・やり抜く力（20問）
-  - Rosenberg Self-Esteem - 自尊心（10問）
-  - PHQ-9 - うつ病スクリーニング（9問）
-  - K6 - 心理的苦痛スクリーニング（6問）
-  - SWLS - 人生満足度尺度（5問）
-  - Self-Concept Clarity - 自己概念の明確さ（8問、IPIP代替尺度）
-- **統合ダッシュボード**: Trait-State-Outcome-Skill フレームワークに基づく統合分析
-- **デザインシステム**: ネオブルータリズム × データビジュアライゼーション
-- **レスポンシブ対応**: モバイルファースト設計完了
-- **技術基盤**: Next.js 16 App Router、Tailwind CSS v4、TypeScript
-- **E2Eテスト**: Playwright導入
-
-### 🎯 フレームワーク実装状況
-
-#### 【Trait - 特性】比較的安定した個人差
-
-| Category | 測定内容 | 使用尺度 | 状態 |
-|----------|----------|----------|------|
-| 性格特性 (Personality) | 行動パターン | Big Five (IPIP-NEO) | ✅ **完了** |
-| 勤勉性 / やり抜く力 (Industriousness / Grit) | 達成動機と自己鍛錬 | IPIP-300 C4+C5 | ✅ **完了** |
-| 愛着スタイル (Attachment) | 関係性の傾向 | ECR-R | 未実装 |
-| 価値観・強み (Values/Strengths) | 価値観と強み | VIA | 未実装 |
-
-#### 【State - 状態】現在の心理状態
-
-| Category | 測定内容 | 使用尺度 | 状態 |
-|----------|----------|----------|------|
-| 自己認識 (Self-Concept) | 自己理解の明確さ | Self-Concept Clarity Scale | ✅ **完了** |
-| メンタルヘルス (Mental Health) | 現在の症状 | PHQ-9, K6, PSS | ✅ **PHQ-9, K6完了** |
-
-#### 【Outcome - 成果】特性と状態の結果
-
-| Category | 測定内容 | 使用尺度 | 状態 |
-|----------|----------|----------|------|
-| 自尊心 (Self-Esteem) | 自己価値の評価 | Rosenberg Self-Esteem | ✅ **完了** |
-| 主観的幸福感 (Subjective Well-being) | 人生満足度 | SWLS | ✅ **完了** |
-| キャリア適合 (Career Fit) | 職業適性 | RIASEC | 未実装 |
-
-#### 【Skill - スキル】育成可能な力（Phase 3以降）
-
-| Category | 測定内容 | 使用尺度 | 状態 |
-|----------|----------|----------|------|
-| レジリエンス (Resilience) | ストレス回復力 | CD-RISC | 未実装 |
-| マインドフルネス (Mindfulness) | 今への気づき | MAAS | 未実装 |
-| 対処スタイル (Coping) | ストレス対処 | Brief COPE | 未実装 |
-
-**進捗**: 178問実装完了（Big Five 120問 + Industriousness 20問 + Rosenberg 10問 + PHQ-9 9問 + K6 6問 + SWLS 5問 + Self-Concept 8問）
+> **最終更新**: 2026-05-16 (v2.0、フルピボット)
+> **前版**: v1.0 (2026-01-20) は心理尺度路線中心、`/uranai/*` と vLLM 経路が始まる前の設計だったため陳腐化
+> **位置づけ**: [project-design.md](./docs/project-design.md) の Phase 設計を実装視点でブレイクダウン
 
 ---
 
-## 🚀 Phase 2: 診断拡充（優先度：高）
+## 📍 現在地 (2026-05-16)
 
-**目標**: メンタルヘルス診断・愛着スタイル診断の追加で、フレームワークの網羅性を向上
+### ✅ 完了済
 
-### 2.1 メンタルヘルス診断の追加
+#### Phase 0: 心理尺度路線 (〜2026-01)
+- 7 つの心理尺度 (Big Five 120 / Industriousness 20 / Rosenberg 10 / PHQ-9 9 / K6 6 / SWLS 5 / Self-Concept 8 = **計 178 問**)
+- Trait-State-Outcome-Skill フレームワークに基づく統合ダッシュボード
+- Neo-Brutalist デザインシステム × データビジュアライゼーション
+- Next.js 16 App Router + Tailwind v4 + TypeScript + Cloudflare Pages 静的エクスポート
+- E2E テスト (Playwright)
 
-#### ✅ 完了済み
-
-**K6 (Kessler Psychological Distress Scale)** ✅
-- 6問、5点リッカート尺度（0-4）
-- Tier A（国民生活基礎調査で使用）
-- 著作権フリー・非商用利用完全自由
-- うつ・不安の非特異的スクリーニング（PHQ-9と補完的）
-
-#### 次の実装候補（優先順）
-
-**1. PSS (Perceived Stress Scale)**
-- **問題数**: 10問
-- **次元**: State（メンタルヘルス）
-- **難易度**: 低
-- **実装時間**: 2-3時間
-- **特徴**:
-  - 5点リッカート尺度
-  - ストレス認知レベルを測定
-  - 逆転項目あり
+#### Phase 1: 占い + 月読 chat (2026-05)
+- **Phase 1.0**: tarot 1 流派 wedge (LLM 統合解釈の feasibility 確認)
+- **Phase 1.5**: 3 流派 wedge (tarot + 数秘術 + 九星気学) — moat §3.2 一次検証
+- **Phase 1.7 (α)**: 月読 persona + D1 永続 chat + IPIP context — moat §3.1 一次検証
+- 周辺基盤: 自宅 vLLM 経路 (Gemma 4 26B + Cloudflare Tunnel + Access service token)
+- セキュリティ: prompt injection 防御 L0+L1 ship 済、eval automation (21 case)、baseline 14 PASS / 0 FAIL
 
 ---
 
-### 2.2 愛着スタイル診断
+## 🎯 確定方針 (2026-05-16 ロードマップ見直しでの決定)
 
-**ECR-R Short Form (Attachment Style)**
-- **問題数**: 12問
-- **次元**: Trait（愛着スタイル）
-- **難易度**: 中
-- **実装時間**: 3-4時間
-- **特徴**:
-  - 2軸（不安・回避）で4タイプに分類
-  - Secure, Preoccupied, Dismissive, Fearful
-  - 7点リッカート尺度
-  - 2D散布図での可視化が効果的
+### 1. Dual-entry Positioning (並列入口)
 
----
+「心理尺度」と「占い」は **両方とも独立した入口** として等格扱い。完全な uranai moat ピボットは却下、並列路線継続。
 
-## 🧠 Phase 3: キャリア・価値観診断（優先度：中）
-
-**目標**: Outcome層・Trait層の完全カバー
-
-### 3.1 キャリア診断
-
-**RIASEC (Holland Code)**
-- **問題数**: 48問（6タイプ × 8問）
-- **次元**: Outcome（キャリア適合）
-- **特徴**:
-  - Realistic, Investigative, Artistic, Social, Enterprising, Conventional
-  - 6次元レーダーチャートで可視化
-  - 具体的な職業提案が可能
-
-### 3.2 価値観・強み診断
-
-**VIA Character Strengths**
-- **問題数**: 96問（24強み × 4問）または 120問
-- **次元**: Trait（価値観・強み）
-- **特徴**:
-  - ポジティブ心理学の主要尺度
-  - 公式サイト統合も検討
-  - **無料版あり**
-
-### 3.3 マインドフルネス診断
-
-**MAAS (Mindful Attention Awareness Scale)**
-- **問題数**: 15問
-- **次元**: Skill（マインドフルネス）
-- **特徴**:
-  - 今この瞬間への気づき
-  - 逆転項目のみ
-  - α = 0.80-0.87
-
----
-
-## 🧠 Phase 4: AI機能統合（優先度：中）
-
-**目標**: 診断結果を活用した対話型AI機能で差別化・収益化準備
-
-### 4.1 BYOK (Bring Your Own Key) Chat
-
-**目標**: ユーザーのAPIキーでLLMと対話
-
-#### 機能設計
-
-**`/chat` ページ**:
-1. **APIキー設定**
-   - Claude API Key または OpenAI API Key
-   - localStorage保存（暗号化なし、注意書き表示）
-   - キー検証機能
-
-2. **診断結果を文脈として提供**
-```typescript
-const systemPrompt = `
-あなたは心理カウンセラーです。以下のユーザーの診断結果を参照してください：
-
-- SCCS: ${sccsScore}/60 (${sccsLevel})
-- Rosenberg自尊心: ${rosenbergScore}/40
-- Big Five: 外向性${e}, 協調性${a}, 誠実性${c}, 神経症傾向${n}, 開放性${o}
-
-ユーザーの質問に、診断結果を踏まえて回答してください。
-`;
+```
+psychtest.jp/
+├─ /              = 2 入口ハブ (診断 / 占い を等格提示)
+├─ /shindan/*     = 心理尺度サイト (現トップを退避)
+└─ /uranai/*      = 月読 chat + 3 流派占い (既存)
 ```
 
-3. **ストリーミング表示**
-   - Vercel AI SDK使用
-   - タイプライター効果
+DB は device-id で統合: 月読 context が心理尺度結果を参照、心理尺度結果ページから月読への誘導。AdSense は心理尺度ページのみ配置 (占い chat 併用は AdSense ポリシー違反)。
 
-**技術スタック**:
-- Vercel AI SDK（ai パッケージ）
-- クライアントサイド実装（完全無料運用）
-- localStorage（APIキー保管）
+### 2. IPIP 統一項目 DB を基盤に (技術的基盤)
 
-**セキュリティ考慮**:
-- ⚠️ APIキーはlocalStorageに平文保存（ユーザーに注意喚起）
-- サーバーに送信しない（完全クライアント処理）
-- Chrome拡張でキーが読まれるリスクあり → 注意書き必須
+3,300 IPIP 項目を統一 DB 化し、複数尺度を view として表現:
 
-**実装タスク**:
-- [ ] /chat ページ作成
-- [ ] APIキー設定UI
-- [ ] Vercel AI SDK統合
-- [ ] システムプロンプト生成ロジック
-- [ ] 会話履歴表示
+```
+ipip_items テーブル     (= 3,300 項目の正典)
+  └─ item_id / ja_text / en_text / reverse / tags
 
-**所要時間**: 5-6時間
+user_responses テーブル (= 1 user 1 item 1 回答)
+  └─ device_id / item_id / value / answered_at / source
 
----
-
-### 4.2 エージェント機能
-
-**複数のペルソナを持つAI**
-
-#### エージェント種類
-
-**1. カウンセラーエージェント**
-- **役割**: 診断結果に基づいた心理的サポート
-- **システムプロンプト**: 共感的、傾聴、アドバイス控えめ
-- **使用場面**: 低スコアで悩んでいるユーザー
-
-**2. キャリアコーチ**
-- **役割**: Big Five + RIASEC から適職提案
-- **システムプロンプト**: 実践的、具体的なキャリアパス提示
-- **使用場面**: 就職・転職を考えているユーザー
-
-**3. セルフコーチング支援**
-- **役割**: 目標設定、習慣形成のサポート
-- **システムプロンプト**: やる気を引き出す、SMART目標設定支援
-- **使用場面**: 自己改善を目指すユーザー
-
-**4. メンタルヘルス案内**
-- **役割**: PHQ-9/GAD-7が高い場合に専門家受診を促す
-- **システムプロンプト**: 医療行為は行わない、リソース紹介のみ
-- **免責事項**: 必須
-
-**実装**:
-```typescript
-const agents = {
-  counselor: {
-    name: "カウンセラー",
-    icon: "🧑‍⚕️",
-    systemPrompt: "あなたは共感的な心理カウンセラーです...",
-  },
-  career: {
-    name: "キャリアコーチ",
-    icon: "💼",
-    systemPrompt: "あなたは実践的なキャリアアドバイザーです...",
-  },
-  // ...
-};
+scales テーブル         (= 各尺度の view 定義)
+  └─ scale_id / items[] / scoring_rule
 ```
 
-**所要時間**: 3-4時間
+→ 「単発受験 (iii)」「毎日蓄積 (i)」「占い会話駆動 (ii)」が同じ DB を共有し、相互補完。これが §3.1 継続 moat の技術基盤。
+
+### 3. KPI = Daisuke 本人の deep usage 単独
+
+期間定めず。占い chat (月読) と IPIP 蓄積が自分にとって機能するか・継続するか・「思い出してる感」と「裏打ち感」が効くかを最優先で検証。**知人 invite / public 公開 / 課金検証は KPI から明示的に外した**。
+
+### 4. Phase 4-5 (公開 + 収益化) は punt
+
+KPI a (Daisuke deep usage) 達成後に着手判断。現時点では計画にコミットしない。Access policy は当面解かない。
 
 ---
 
-### 4.3 LLMによるおすすめ診断
+## 🟡 Phase 1.9 (現在 = 地ならし、数日)
 
-**機能**: 既存の診断結果から次に受けるべき診断を提案
+α wedge 直後の小タスク群。Phase 2 着手前の準備。
 
-#### ロジック
+**Deep usage week は Phase 1.9 から削除** (= 機能が thick 化してから実施。詳細は §"Deep usage week のタイミング" 参照)。
 
-**パターン1: ルールベース（Phase 4.0）**
-```typescript
-function recommendNextTest(profile: UserProfile): TestType {
-  if (!profile.tests.rosenberg && profile.tests.sccs) {
-    return 'rosenberg'; // SCCSだけ受けたなら、Rosenbergを推奨
-  }
-  if (profile.tests.sccs?.result.level === 'low') {
-    return 'rosenberg'; // 自己概念が低いなら自尊心も測る
-  }
-  // ...
-}
+**ComfyUI 月読 assets 差し替えは Phase 3.4 ペルソナ複数化と合流** (= 個別キャラの assets は他キャラと一緒にまとめて生成する方が効率的)。
+
+- [ ] **生年月日を profile に永続化** (UX 改善)
+  - 現状 `/uranai/draw` で毎回入力する冗長性を解消
+  - `profiles.birth_date` カラム追加 → `/uranai/settings` に input → draw は「未登録なら聞く」フォールバック
+  - 推定 30 分作業
+
+---
+
+## 🟢 Phase 2 (確定路線、KPI a 直結、数週〜1-2 ヶ月)
+
+**目的**: IPIP 統一項目 DB を基盤に既存 7 尺度を内部 migration、その上で「朝の儀式」UI を新設して Daisuke の日々利用を支える環境を作る。
+
+### 2.1 IPIP 統一項目 DB スキーマ構築
+
+- [ ] D1 migration 追加 (`migrations/0002_ipip_unified.sql`)
+- [ ] `ipip_items` / `user_responses` / `scales` テーブル
+- [ ] IPIP 原典 3,300 項目データの正典化 (`data/ipip-items/*.json` or D1 seed)
+  - IPIP-NEO-300 → 300 項目
+  - IPIP-HEXACO-240 → 240 項目 (重複除く)
+  - IPIP-IPC-32, IPIP-RIASEC, IPIP Six Factor, IPIP-MPQ
+- [ ] 項目 ID の体系 (IPIP item ID 踏襲)
+- [ ] tags フィールドで scale マッピング
+
+### 2.2 既存 IPIP 系尺度の内部 migration (UX 維持)
+
+既存 UI / 結果表示はそのまま、内部実装だけ user_responses 書き込みに変更:
+
+- [ ] Big Five (IPIP-NEO-120) → ipip_items 正典化 + bigfive view
+- [ ] Industriousness (IPIP-300 C4+C5) → 同 + industriousness view
+- [ ] Self-Concept (IPIP Self-Consciousness Facet) → 同 + sccs view
+- [ ] 各尺度ページ (`app/[testType]/page.tsx`, `app/results/[testType]/page.tsx`) の内部 fetch を D1 経由に
+- [ ] localStorage と D1 の二重書きは過渡期のみ (Phase 2 完了で localStorage 廃止)
+
+### 2.3 非 IPIP 系尺度の user_responses 統合
+
+非 IPIP 系は項目 DB に入れず、scale ごとに別 namespace で user_responses に保存:
+
+- [ ] Rosenberg / PHQ-9 / K6 / SWLS の回答を user_responses に書き込み (source 区別)
+- [ ] 月読 context が「Rosenberg 完了済 / K6 未受験」を把握できるように
+
+### 2.4 トップを 2 入口ハブに書き換え
+
+- [ ] `app/page.tsx` 新規ランディング (診断 / 占い 2 入口を等格提示)
+- [ ] 現心理尺度トップの内容を `app/(shindan)/shindan/page.tsx` に退避
+- [ ] `app/[testType]/page.tsx` の path を `app/shindan/[testType]/page.tsx` に移動するかは実装時判断
+- [ ] header / nav に「診断 / 占い」リンク常時提供
+- [ ] hero / about / dashboard の position も再検討
+
+### 2.5 「朝の儀式」UI 新設
+
+- [ ] `app/(shindan)/shindan/daily/page.tsx` (or `app/uranai/checkin/`)
+- [ ] 全 IPIP 項目から未回答を 3-5 問サンプリングして提示
+- [ ] 回答後「Big Five 進捗 +1」「Industriousness 進捗 +1」等の feedback
+- [ ] 各尺度ページに「進捗 N/M (うち 30 は朝の儀式、20 は月読会話、25 は単発)」表示
+- [ ] 通知 (Access 裏で push 不可なので訪問時 prompt)
+
+### 2.6 月読 chat に「進捗 N/M」context 追加
+
+- [ ] `lib/uranai/profile-summarizer.ts` に IPIP 進捗情報を追加
+- [ ] 月読が「あなたの Big Five は 80/120 答えた段階で、外向性傾向が...」のように context を活かす (数値・検査名は直接言わず詩的に)
+- [ ] eval cases に「進捗 context 活用」評価を追加
+
+**Phase 2 完了基準**:
+- 既存 7 尺度の UX は何も変わらない (= regression 0)
+- D1 に全 IPIP 系項目 + user_responses が入っている
+- 朝の儀式 UI で毎日 IPIP 蓄積できる
+- 月読 chat が IPIP 進捗を context として参照する
+- Daisuke が「朝の儀式 → 月読」を毎日触れる状態
+
+---
+
+## 🔵 Phase 3 (Phase 2 完了後、moat thick 化、1-2 ヶ月)
+
+**目的**: 月読の「思い出してる感」を強化、新規 IPIP 尺度追加、ペルソナ複数化で「キャラを選べる」moat。
+
+### 3.1 新規 IPIP 尺度追加 (view 追加のみ)
+
+- [ ] **IPIP-HEXACO-240** (Honesty-Humility 含む 6 次元)
+- [ ] **IPIP-IPC-32** (対人円環、IPC X/Y 座標)
+- [ ] **IPIP-RIASEC** (Holland Code、職業興味)
+- [ ] **IPIP-MPQ** (Tellegen 多次元、Achievement / Stress Reaction 等)
+- [ ] 朝の儀式で既に答えてる項目があれば「N/M 既回答」で表示
+
+### 3.2 月読会話駆動 IPIP (= ii)
+
+- [ ] 文脈タグで未回答項目を chat に自然挿入する prompt 設計
+- [ ] tool 呼び出しで「未回答項目を 1 個提示 → ユーザー回答 → user_responses に記録」
+- [ ] eval cases に「会話駆動 IPIP の自然さ」評価
+
+### 3.3 月読記憶強化 (Layer 1-3)
+
+- [ ] session_summaries 自動生成 (LLM で要約、KV キャッシュ)
+- [ ] episodes 抽出 (印象的な出来事を別保存)
+- [ ] セッションサマリ二段階検索 (= 関連 session の生ターン取得)
+- [ ] `lib/uranai/profile-summarizer.ts` を session_summaries 込みに拡張
+
+### 3.4 ペルソナ複数化 (γ 軽め)
+
+- [ ] 月読 + 1-2 キャラ追加 (例: 白虎 / 椿 / 千夜 等から 1-2 種選定)
+- [ ] system prompt 切り替え機構 (`/uranai/chat/[character]` 動的ルート)
+- [ ] **月読 + 追加キャラ全員の立ち絵 / 背景 ComfyUI 生成** (= Phase 1.9 から合流)
+  - 月読の SVG placeholder もここで差し替え
+  - `docs/handoff/2026-05-16-uranai-alpha-asset-prompts.md` のプロンプトを月読用に流用
+- [ ] Big5 マッチング (Phase 3 完了時の検討、Phase 4 で開放)
+
+---
+
+## ⏸ Phase 4-5 (KPI a 達成後に着手判断 — 現時点 punt)
+
+KPI a (Daisuke deep usage) で moat の体感が確認されてから初めて着手判断する。
+
+### Phase 4: 公開準備
+- 利用規約 / プライバシーポリシー (弁護士発注、5-15 万円)
+- メンタルヘルス配慮 prompt 本格化 (「死神」→「変革」等)
+- AdSense 申請 + 動線 (心理尺度ページのみ)
+- Cookie 同意バナー
+- Access policy 解除 → public 公開
+
+### Phase 5: 収益化 + 機能拡張
+- Stripe 統合 (Standard 980 円 / Premium 2,980 円)
+- 占い拡張: 西洋占星術 + 四柱推命 + 易経 (= 5-7 流派化、moat §3.2 本検証)
+  - 西洋占星術 / 四柱推命 は出生時刻 fallback 設計が要 (重い wedge)
+  - 易経は自由質問テキスト入力 UI が要
+- デバイス越え引き継ぎ (LINE Login or HMAC)
+- コイン制 (Phase 5 後半)
+
+---
+
+## 📊 KPI & 検証
+
+### Deep usage week のタイミング (NEW)
+
+α wedge handoff `2026-05-16-uranai-alpha-wedge.md` §"Deep Usage Week" は Phase 1.7 直後の検証想定だったが、**実施は機能 thick 化を待つ** (2026-05-16 ロードマップ見直しでの Daisuke 判断)。
+
+**Why**: 現 α scope (月読 chat + 3 流派占い + IPIP context のみ) では 7 日連続使う動機が薄い。朝の儀式 (Phase 2.5) や月読記憶 (Phase 3.3) が動いて初めて「毎日触る理由」が成立する。早期に deep usage を強行しても自然な利用にならず、KPI a の検証として無効。
+
+**実施候補タイミング**:
+- **Phase 2 完了後** (= 朝の儀式 + IPIP 進捗 context が稼働): 「日々の儀式」moat が体感できるか検証
+- **Phase 3 完了後** (= 月読記憶 + ペルソナ複数化が thick): 「思い出してる感」と「キャラ選択」moat が体感できるか検証
+- どちらで判断するかは Phase 2 完了時点で再評価
+
+### Phase 1.9 / Phase 2 検証指標 (= KPI a)
+
+| 指標 | 方法 | 目標 |
+|---|---|---|
+| 月読 chat の persona consistency | LLM-as-judge (Sonnet 4.6) | ≥ 4/5 |
+| 月読 chat の context utilization | LLM-as-judge | ≥ 4/5 |
+| Daisuke 自己評価「月読は私を知ってる」 | subjective | ≥ 4/5 |
+| 累計 chat turn | D1 SQL query | 30+ |
+| 累計 session | D1 SQL query | 7+ |
+| IPIP 蓄積項目数 | user_responses COUNT | 朝の儀式 1 週で 30+ |
+| 朝の儀式継続日数 | D1 query | 7 日連続 |
+
+### Telemetry
+
+ダッシュボード UI は当面作らない。SQL query で軽量に観測:
+
+```sql
+-- 自分の sessions 数
+SELECT session_id, COUNT(*) AS turns
+  FROM conversations WHERE device_id = ?
+  GROUP BY session_id ORDER BY MIN(created_at) DESC;
+
+-- 累計 IPIP 蓄積
+SELECT scale_id, COUNT(*)
+  FROM user_responses JOIN scales USING (item_id)
+  WHERE device_id = ? GROUP BY scale_id;
 ```
-
-**パターン2: LLMベース（Phase 4.1）**
-```typescript
-const prompt = `
-ユーザーは以下の診断を完了しています：
-${completedTests.map(t => `- ${t.name}: ${t.score}`).join('\n')}
-
-未受験の診断：
-${remainingTests.map(t => `- ${t.name}: ${t.description}`).join('\n')}
-
-次に受けるべき診断を1つ推奨し、理由を説明してください。
-`;
-```
-
-**所要時間**: 2-3時間
-
----
-
-## 💰 Phase 5: 収益化（将来）
-
-### 5.1 無料版（psychtest.jp）
-- 全診断無料
-- Google AdSense
-- Amazon/Rakuten アフィリエイト（心理学書籍）
-
-### 5.2 有料版（app.psychtest.jp）
-- AI エージェント無制限利用（サブスク ¥300-500/月）
-- 診断結果の長期保存・分析
-- プレミアムエージェント（専門家監修）
-- 広告なし
-
-**ドメイン分離理由**: AdSenseポリシー違反回避（AIチャットは広告と併用不可）
-
----
-
-## 📅 Sprint計画
-
-### Sprint 1: メンタルヘルス診断拡充（2-3日）
-**目標**: PHQ-9に加えK6・PSSを実装し、メンタルヘルス診断を完成
-
-- [ ] K6実装（2-3h）
-  - [ ] 6問の質問データ作成（日本語版）
-  - [ ] スコアリングロジック（0-24点）
-  - [ ] 重症度判定結果ページ
-  - [ ] 高スコア警告システム（13点以上）
-  - [ ] 著作権表記（Copyright © Ronald C. Kessler）
-- [ ] PSS実装（2-3h）
-  - [ ] 10問の質問データ
-  - [ ] ストレススコアリング
-  - [ ] 結果ページ
-- [ ] ダッシュボード拡張（2h）
-  - [ ] メンタルヘルス指標の統合表示
-  - [ ] トレンド可視化
-
-**完了基準**:
-- メンタルヘルス3診断完了（PHQ-9, K6, PSS）
-- ダッシュボードで統合分析可能
-- K6は国民生活基礎調査と同じ尺度を使用
-
----
-
-### Sprint 2: 愛着スタイル診断（3-4日）
-**目標**: Trait層に愛着スタイル診断を追加
-
-- [ ] ECR-R短縮版実装（4-5h）
-  - [ ] 12問の質問データ（日本語版）
-  - [ ] 2軸スコアリング（不安・回避）
-  - [ ] 4タイプ分類ロジック
-  - [ ] 2D散布図での結果ページ
-- [ ] 愛着スタイル解釈コンテンツ（2h）
-  - [ ] 各タイプの説明
-  - [ ] 対人関係パターンの洞察
-- [ ] ダッシュボード拡張（2h）
-  - [ ] 愛着スタイル可視化
-
-**完了基準**:
-- ECR-R実装完了
-- 4タイプに分類可能
-- 2D散布図で自分の位置を確認可能
-
----
-
-### Sprint 3: AI機能基盤（3-4日）
-**目標**: BYOK Chat実装 → **AI機能リリース**
-
-- [ ] BYOK Chat実装（5-6h）
-  - [ ] /chat ページ
-  - [ ] Vercel AI SDK統合
-  - [ ] APIキー設定UI
-  - [ ] システムプロンプト生成
-- [ ] 複数エージェント実装（3-4h）
-  - [ ] カウンセラーエージェント
-  - [ ] キャリアコーチエージェント
-  - [ ] メンタルヘルス案内エージェント
-- [ ] おすすめ診断機能（2-3h）
-  - [ ] ルールベース推奨
-  - [ ] LLMベース推奨（オプション）
-
-**完了基準**:
-- AIと診断結果について対話可能
-- 3種類のエージェントが動作
-- 未受験診断を推奨してくれる
-- **→ AI機能リリース**
-
----
-
-### Sprint 4: キャリア・価値観診断（5-7日）
-**目標**: Outcome層・Trait層を完全カバー
-
-- [ ] RIASEC実装（6-8h）
-  - [ ] 48問の質問データ
-  - [ ] 6次元スコアリング
-  - [ ] レーダーチャート結果ページ
-  - [ ] 職業提案機能
-- [ ] MAAS実装（3-4h）
-  - [ ] 15問の質問データ
-  - [ ] スコアリングロジック
-  - [ ] マインドフルネス解釈
-- [ ] ダッシュボード完成（3h）
-  - [ ] 全診断の統合可視化
-  - [ ] フレームワーク全体像の表示
-
-**完了基準**:
-- RIASEC・MAAS実装完了
-- フレームワークの主要カテゴリをカバー
-- **→ 正式公開準備完了**
 
 ---
 
 ## 🎓 学術的根拠リファレンス
 
 ### Tier S (Gold Standard)
-- **Big Five**: 最も研究されている性格モデル、数万の研究
-- **PHQ-9**: うつスクリーニングの国際標準
-- **Rosenberg Self-Esteem**: 50,000+引用、最も使われる自尊心尺度
+- **Big Five (IPIP-NEO)**: 数万研究、Public Domain、α=0.81-0.90
+- **PHQ-9**: うつスクリーニング国際標準、Pfizer Free
+- **K6**: 国民生活基礎調査採用、α=0.89
+- **Rosenberg Self-Esteem**: 50,000+ 引用
+- **SWLS**: 人生満足度の標準尺度 (Diener et al., 1985)
 
 ### Tier A (Strong Support)
-- **K6**: 国民生活基礎調査採用、心理的苦痛スクリーニング（Kessler et al., 2002）
-- **Self-Concept Clarity (SCCS)**: α=0.86, retest r=0.79、2,000+引用
-- **ECR-R**: 愛着理論の標準尺度
-- **VIA Character Strengths**: ポジティブ心理学の主要尺度
-- **PSS**: ストレス研究で広く使用
-- **RIASEC**: Holland理論、キャリアカウンセリングの基礎
-- **SWLS**: 人生満足度の標準尺度（Diener et al., 1985）
+- **Self-Concept Clarity (SCCS)**: α=0.86, retest r=0.79、2,000+ 引用
+- **IPIP-HEXACO**: Honesty-Humility 6 次元、Phase 3 追加候補
+- **IPIP-IPC**: 対人円環、Phase 3 追加候補
+- **IPIP-RIASEC**: Holland Code、Phase 3 追加候補
 
-### Tier C (非推奨)
-- **MBTI/16Personalities**: 再テスト信頼性 r=0.50（低い）、学術的支持弱い
+### Tier C (非推奨、当サイトでは採用しない)
+- **MBTI / 16Personalities**: 再テスト r=0.50、商標
 - **動物診断系**: 科学的根拠なし
 
 ---
 
-## 📚 リソース
+## 📚 参照ドキュメント
 
-### 心理尺度データベース
-- IPIP: https://ipip.ori.org/ (Public Domain)
-- PHQ/GAD: https://www.phqscreeners.com/ (Free)
-- VIA: https://www.viacharacter.org/ (Free version available)
-
-### 技術スタック
-- Next.js 16: https://nextjs.org/
-- Vercel AI SDK: https://sdk.vercel.ai/
-- Recharts: https://recharts.org/
-- Tailwind CSS v4: https://tailwindcss.com/
-
-### 競合分析
-- 16Personalities: UXフロー参考（学術性は低い）
-- commutest.com: 日本語UI参考（信頼性チェックなしと明記）
+- **[project-design.md](./docs/project-design.md)** — プロジェクト全体設計 (v1.2 で本ロードマップと同期)
+- **[CLAUDE.md](./CLAUDE.md)** — 実装ガイド / 心理尺度詳細 / 既存 7 尺度の Tier
+- **[docs/handoff/2026-05-16-uranai-alpha-wedge.md](./docs/handoff/2026-05-16-uranai-alpha-wedge.md)** — α wedge 実装記録 + deep usage week 設計
+- **[docs/specs/](./docs/specs/)** — 各 wedge の spec (tarot / 3 流派 / chat / α)
+- **memory** — `~/.claude/projects/-home-user-psychtest-jp/memory/` 配下に positioning / IPIP 統一 DB / KPI / 公開 punt の経緯を保存
 
 ---
 
-## ✅ 定義完了（Definition of Done）
+## ✅ 定義完了 (Definition of Done)
 
-各フェーズの完了基準：
-
-**Phase 1 完了 ✅**:
-- [x] 5つの診断を受験可能（Big Five, Rosenberg, PHQ-9, SWLS, Self-Concept）
-- [x] ダッシュボードで統合分析表示
-- [x] 全データがlocalStorageに永続化
-- [x] Trait-State-Outcome フレームワークの可視化
-- [x] E2Eテスト導入
-
-**Phase 2 完了**:
-- [ ] K6/PSS実装（メンタルヘルス診断完成）
-- [ ] ECR-R実装（愛着スタイル診断）
-- [ ] 高スコア時の専門家受診案内表示
-- [ ] フレームワーク主要カテゴリの80%カバー
-
-**Phase 3 完了 → 🚀 正式公開**:
-- [ ] RIASEC実装（キャリア診断）
-- [ ] MAAS実装（マインドフルネス）
-- [ ] フレームワーク全体の可視化完成
-- [ ] 100問超の診断パッケージ完成
-
-**Phase 4 完了**:
-- [ ] BYOK Chatで診断結果を元に対話可能
-- [ ] 3種類以上のエージェントが動作
-- [ ] おすすめ診断機能が動作
-- [ ] APIキー設定がlocalStorageに保存
+| Phase | 完了基準 |
+|---|---|
+| **Phase 0** ✅ | 7 尺度 + ダッシュボード + Trait-State-Outcome 可視化 + E2E |
+| **Phase 1** ✅ | 月読 chat + 3 流派占い + D1 永続 + IPIP context + eval automation |
+| **Phase 1.9** | deep usage week 完走 + LLM-as-judge ≥ 4/5 + 生年月日永続化 + 月読 assets 本番化 |
+| **Phase 2** | IPIP 統一 DB 構築 + 既存 7 尺度 migration + トップ 2 入口化 + 朝の儀式 UI 稼働 |
+| **Phase 3** | 新規 IPIP 4 尺度 + 月読会話駆動 IPIP + session_summaries + ペルソナ 2-3 体 |
+| **Phase 4-5** | KPI a 達成後に着手判断 (現時点 punt) |
 
 ---
 
 ## 🔄 次のアクション
 
-**最優先（今すぐ開始可能）**:
-1. K6 実装（心理的苦痛スクリーニング）
-2. PSS 実装（ストレス認知尺度）
-3. ECR-R 実装（愛着スタイル診断）
+**最優先 (今すぐ着手可能)**:
+1. 生年月日 profile 永続化 (30 分作業、Phase 1.9)
+2. Phase 2.1 IPIP 統一項目 DB の spec 化 (`/office-hours` 推奨)
 
-**推奨開始順序**:
-```bash
-# 1. K6実装（国民生活基礎調査と同じ心理的苦痛スクリーニング）
-# 2. PSS実装（メンタルヘルス診断完成）
-# 3. ECR-R実装（対人関係の傾向を測定）
-# 4. AI機能（BYOK Chat）
-```
+**Phase 2 着手判断**:
+- 上記 1-3 が回り始めたら Phase 2.1 → 2.6 を順次 wedge 化
+- 各 sub-step は `/office-hours` で spec → `/feature-dev` で実装
 
-**中長期タスク**:
-- RIASEC実装（キャリア診断）
-- MAAS実装（マインドフルネス）
-- VIA Character Strengths統合
-- 収益化準備（AdSense設定、アフィリエイト）
+**Deep usage week**:
+- Phase 2 完了 or Phase 3 完了後に実施判断 (= 機能 thick 化後)
+- 現 α scope では 7 日連続使う動機が薄いため
+
+**中長期 (Phase 3 以降)**:
+- 月読 deep usage が回ったら Phase 3 着手判断
+- 公開判断は KPI a 達成後の見直しまで punt
 
 ---
 
-**最終更新**: 2026-01-20
-**次回レビュー**: Sprint 1完了後
+**変更履歴**:
+- v1.0 (2026-01-20): 心理尺度路線中心、PSS / ECR-R / BYOK Chat 計画 — 2026-05 ロードマップ見直しで陳腐化
+- v2.0 (2026-05-16): 占い + 月読 chat 統合路線、IPIP 統一 DB + 朝の儀式 + 2 入口ハブ、KPI a 単独、Phase 4-5 punt

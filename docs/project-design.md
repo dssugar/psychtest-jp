@@ -1,9 +1,24 @@
 # AI性格診断・占いプラットフォーム 設計書
 
 > **プロジェクト名**: (仮称) psychtest.jp 拡張プロジェクト
-> **初版**: 2026年5月15日 / **v1.1**: 2026年5月16日
+> **初版**: 2026年5月15日 / **v1.1**: 2026年5月16日 / **v1.2**: 2026年5月16日 (ロードマップ見直し)
 > **位置づけ**: 個人副業 / 将来的にMS法人事業候補
 > **本書の目的**: コンセプト、技術選定、段階展開、収益モデル、プライバシー方針を一望し、Claude Code 駆動開発のリファレンスとして機能させる
+
+---
+
+## v1.2 更新サマリ (2026-05-16、ロードマップ見直し)
+
+Phase 1.7 α wedge 完了直後にロードマップ全体を見直し。以下を確定:
+
+- **Positioning 確定**: 「心理尺度サイト (`/shindan/*`)」と「占い + 月読 chat (`/uranai/*`)」を**並列の独立した入口**として扱う (uranai moat フルピボットは却下)。詳細は memory `[[project-positioning-dual-entry]]`
+- **§5 ロードマップ全面書き換え**: Phase 1.5 → 1.7 まで完了、Phase 2 を「IPIP 統一項目 DB + 朝の儀式 UI」に確定、Phase 4-5 (公開 + 収益化) は KPI 達成後の見直し判断 = 現時点 punt
+- **§7 心理測定コーパスに統合 DB 計画追記**: 3,300 IPIP 項目を ipip_items / user_responses / scales(view) の 3 テーブルで統合し、単発受験 / 毎日蓄積 / 占い会話駆動の 3 mode が同じ DB を共有
+- **§13.1 URL 戦略更新**: トップを「2 入口ハブ」に書き換え、現心理尺度トップは `/shindan/` に退避
+- **§19 次のアクション全面更新**: Phase 1.9 (地ならし) → Phase 2.1-2.6 のステップを ROADMAP.md に詳述
+- **KPI 確定**: Daisuke 本人の deep usage 単独 (期間定めず)。知人 invite / public 公開 / 課金検証は明示的に non-KPI = memory `[[project-kpi-deep-usage]]`
+
+詳細な実装ステップは [ROADMAP.md](../ROADMAP.md) v2.0 を参照。
 
 ---
 
@@ -211,64 +226,72 @@ Phase 1 を wedge 化（`docs/specs/tarot-llm-wedge-2026-05.md`）し、**タロ
 
 **Phase 1 wedge の目的 (達成済)**: 「占術計算 + LLM 統合 + 結果表示」スタックが end-to-end で動くかの feasibility 確認、および LLM 出力品質 (日本語ストーリー性) の検証。
 
-### Phase 1.5 (Week 3-?): 残りの 4 流派 + 公開準備 (NEW v1.1)
+### Phase 1.5 (2026-05): 3 流派 wedge ✅ (v1.2 更新)
 
-**追加**:
-- 数秘術・九星気学・西洋占星術 (簡易)・四柱推命 (簡易) の計算ロジック実装
-- 生年月日 + 時刻 + 場所 (緯度経度) 入力フォーム
-- 質問テキスト自由入力欄
-- LLM プロンプト拡張 (5 流派の結果を統合)
-- 結果のシェア URL + OG 画像生成 (既存 `functions/og/[test].tsx` パターン流用)
-- 利用規約・プライバシーポリシー (弁護士発注)
-- AdSense 申請・組込
+**完了** (`docs/specs/divination-3systems-wedge-2026-05.md`):
+- ✅ 3 流派 (tarot + 数秘術 + 九星気学) 並列計算 + LLM 統合解釈
+- ✅ 生年月日入力 + UI
+- ✅ moat §3.2 一次検証 (= 流派統合解釈の feasibility 確認)
+
+**意図的に切った** (Phase 5 に punt):
+- 西洋占星術 + 四柱推命 (出生時刻 fallback 設計が重い)
+- 易経 (自由質問入力 UI が要)
+- 利用規約 / AdSense / Cookie 同意 (公開判断とセット)
+
+### Phase 1.7 / α (2026-05): 月読 chat + D1 永続 ✅ (NEW v1.2)
+
+**完了** (`docs/specs/uranai-alpha-wedge-2026-05.md`):
+- ✅ 月読 persona (静謐な男性占い師) + L1 prompt 防御
+- ✅ D1 永続 chat (device-id 匿名認証、conversations / profiles / divination_results)
+- ✅ IPIP context (心理尺度結果を月読の system prompt に詩的サマリで注入)
+- ✅ Settings (nickname / PHQ-9/K6 opt-in / 全消去)
+- ✅ Share URL (`/uranai/share?id=`)
+- ✅ Prompt injection eval automation (21 case)
+- ✅ moat §3.1 一次検証 (= 「思い出してる感」「裏打ち感」の feasibility 確認)
+
+### Phase 1.9 (現在 = 地ならし、数日) (NEW v1.2)
+
+- Daisuke deep usage week (7 日 / 30 turn / LLM-as-judge ≥ 4/5)
+- 生年月日を profile に永続化 (UX 改善)
+- ComfyUI で月読 立ち絵 / 背景を本番化
+
+### Phase 2 (確定路線、KPI a 直結) (REWRITTEN v1.2)
+
+**目的**: IPIP 統一項目 DB を基盤に既存 7 尺度を内部 migration、その上で「朝の儀式」UI を新設して Daisuke の日々利用を支える環境を作る。詳細ステップは ROADMAP.md §"Phase 2" 参照。
+
+- 2.1 IPIP 統一項目 DB スキーマ (ipip_items / user_responses / scales view)
+- 2.2 既存 IPIP 系 3 尺度 (Big Five / Industriousness / SCC) を内部 migration
+- 2.3 非 IPIP 系 4 尺度 (Rosenberg / PHQ-9 / K6 / SWLS) を user_responses 統合
+- 2.4 トップを 2 入口ハブに書き換え (現心理尺度トップは `/shindan/` 退避)
+- 2.5 「朝の儀式」UI 新設 (毎日 3-5 問、未回答からサンプリング)
+- 2.6 月読 chat に「進捗 N/M」context 追加
+
+**意図**: §3.1 継続 moat の技術基盤完成、Daisuke の日々利用環境構築。
+
+### Phase 3 (Phase 2 完了後、moat thick 化、1-2 ヶ月) (REWRITTEN v1.2)
+
+- 3.1 新規 IPIP 尺度追加 (HEXACO / IPC / RIASEC / MPQ = view 追加のみ)
+- 3.2 月読会話駆動 IPIP (= 文脈タグで未回答項目を chat に挿入)
+- 3.3 月読記憶強化 (session_summaries 自動生成、Layer 1-3)
+- 3.4 ペルソナ複数化 (γ 軽め、月読 + 1-2 キャラ追加)
+
+### Phase 4-5 (KPI a 達成後に着手判断 — 現時点 punt) (REWRITTEN v1.2)
+
+KPI a (Daisuke deep usage) で moat の体感が確認されてから初めて着手判断する。memory `[[project-public-release-punt]]` 参照。
+
+**Phase 4: 公開準備**
+- 利用規約 / プライバシーポリシー (弁護士発注、5-15 万円)
+- メンタルヘルス配慮 prompt 本格化 (「死神」→「変革」等)
+- AdSense 申請 + 動線 (心理尺度ページのみ — AI chat 併用はポリシー違反)
 - Cookie 同意バナー
+- Access policy 解除 → public 公開
 
-**意図**: 公開可能な MVP 化。Phase 1 wedge の知見を活かして、占術ロジック実装に集中。
-
-### Phase 2 (Week 3-6): LINE Bot + ユーザー登録
-
-**追加**:
-- LINE Bot経由ログイン (LINE user ID紐付け)
-- 日替わり占いをLINEで毎朝配信 (Cron Triggers)
-- 占い履歴の閲覧
-- ニックネーム、出生時刻、出生地登録
-- 暗号化レイヤー導入 (D1への保存時)
-
-**意図**: リテンション率検証、課金前ユーザーベース構築。
-
-### Phase 3 (Week 7-12): IPIP 性格テスト導入
-
-**追加**:
-- 毎朝のチェックイン (3-5問のIPIPセッション)
-- プロファイル可視化 (Big5レーダー、徐々に解放)
-- 30日継続でHEXACO等の詳細プロファイル開放
-- 心理測定スコアを占い解釈に統合
-- AIキャラとのチャット機能 (短期)
-
-**意図**: 差別化要素の確立、課金理由の構築。
-
-### Phase 4 (Month 4-6): 課金導入
-
-**追加**:
-- Free / Standard 980円 / Premium 2,980円 の3層
-- Stripe Customer Portal連携
-- AIチャット無制限 (Premium)
-- 月次パーソナリティレポート
-- 詳細占い (複数視点)
-
-**意図**: 収益化スタート、月次MRR確認。
-
-### Phase 5 (Month 7-12): 高度機能 & スケール
-
-**追加**:
-- 人相診断 (MediaPipe + 古典体系)
-- 相性診断 (バイラル機能)
-- 動的画像生成 (ComfyUI連携、Premium機能)
-- 占い師ペルソナ複数 (5-10キャラ)
-- コイン制 (Stripe + 単発購入)
-- 法人化検討 (MS法人)
-
-**意図**: 売上拡大、moat強化。
+**Phase 5: 収益化 + 占い拡張**
+- Stripe 統合 (Standard 980 / Premium 2,980)
+- 占い拡張: 西洋占星術 + 四柱推命 + 易経 (= 5-7 流派化、moat §3.2 本検証)
+- デバイス越え引き継ぎ (LINE Login or HMAC)
+- コイン制 (Phase 5 後半)
+- 人相診断 / 動的画像生成 / 法人化検討 (Phase 5 末期 or Phase 6)
 
 ---
 
@@ -387,6 +410,30 @@ const interpretation = await callLLM({
 - 3年以上枯渇しない項目プール
 - 日本語ネイティブ生成 (機械翻訳より自然)
 - 競合との差別化資産
+
+### 7.4.1 IPIP 統一項目 DB (NEW v1.2)
+
+3,300 IPIP 項目を統一 DB 化し、複数尺度 (Big Five / HEXACO / IPC / RIASEC / MPQ ...) を view として表現する設計。詳細は memory `[[project-ipip-unified-item-db]]` 参照。
+
+```
+ipip_items テーブル     (= 3,300 項目の正典)
+  └─ item_id / ja_text / en_text / reverse / tags
+
+user_responses テーブル (= 1 user 1 item 1 回答)
+  └─ device_id / item_id / value / answered_at / source
+
+scales テーブル         (= 各尺度の view 定義)
+  └─ scale_id / items[] / scoring_rule
+```
+
+**Why**: 同じ IPIP 項目が複数尺度で重複する。項目主体 DB にして回答を再利用することで:
+- 単発受験 (iii): scale の items[] のうち未回答だけ提示
+- 毎日蓄積 (i, 朝の儀式): 全項目から未回答をサンプリング
+- 占い会話駆動 (ii): 月読が文脈タグから未回答項目を chat に挿入
+
+の 3 mode が同じ DB を共有し、相互補完する。これが §3.1 継続 moat の技術基盤。
+
+**Phase 2** で既存 7 尺度 (Big Five / Industriousness / SCC / Rosenberg / PHQ-9 / K6 / SWLS) を順次 migration。Phase 3 で HEXACO / IPC / RIASEC / MPQ を view 追加で実装。
 
 ### 7.5 日本語化方針
 
@@ -698,21 +745,26 @@ MVP前に弁護士or行政書士に1度作成依頼 (5-15万円程度)。
 
 ## 13. ドメイン・SEO戦略
 
-### 13.1 単一ドメイン集約
+### 13.1 単一ドメイン集約 + 2 入口ハブ (UPDATED v1.2)
 
-**psychtest.jp に全機能集約**:
+**psychtest.jp に全機能集約 + トップは 2 入口ハブ**:
+
 ```
-/                  → トップ、サービス一覧
-/shindan/...       → 既存心理テスト群
-/uranai/...        → 新規占い (Phase 1)
-/uranai/tarot
-/uranai/astrology
-/uranai/result/{id}
-/chat/...          → AIチャット (Phase 3)
-/api/...           → Workers
+/                          → 2 入口ハブ (診断 / 占い 等格提示) [NEW v1.2, Phase 2.4]
+/shindan/                  → 心理尺度サイト (現トップを退避) [Phase 2.4]
+/shindan/[testType]        → 各心理尺度ページ
+/shindan/daily             → 朝の儀式 UI [Phase 2.5]
+/uranai/draw               → 3 流派 (tarot + 数秘 + 九星) one-shot [Phase 1.5 完了]
+/uranai/chat/tsukuyomi     → 月読 chat [Phase 1.7 完了]
+/uranai/chat/[character]   → 他キャラ chat [Phase 3.4]
+/uranai/share?id=          → share URL [Phase 1.7 完了]
+/uranai/settings           → 設定 [Phase 1.7 完了]
+/api/                      → Pages Functions
 ```
 
-複数ドメイン相互リンク戦略は2024年以降逆効果。Topic Authorityを単一ドメインで育てる。
+memory `[[project-positioning-dual-entry]]` / `[[project-top-dual-entry-hub]]` 参照。
+
+複数ドメイン相互リンク戦略は2024年以降逆効果。Topic Authorityを単一ドメインで育てる。AdSense は心理尺度ページのみ配置 (AI chat ページ併用はポリシー違反)。
 
 ### 13.2 E-E-A-T最大化
 
@@ -929,19 +981,23 @@ psychtest-jp/
 7. ✅ 自宅 vLLM の Cloudflare Tunnel + Access 公開経路確立
 8. ✅ Cloudflare Pages auto-build 故障 (3 ヶ月分) を `wrangler.toml` 修正で解消
 
-### 19.3 Phase 1.5 移行判断 (NEW v1.1)
+### 19.3 Phase 1.5 / 1.7 完了 (2026-05-16)
 
-9. ⏳ Phase 1.5 wedge 候補の絞り込み (office-hours で 1 候補に絞る):
-   - 候補 A: 残り 4 流派の占術計算実装 + プロンプト拡張
-   - 候補 B: 自由質問入力 + ペルソナ 1 種類で UX 検証
-   - 候補 C: 知人 1-2 人に Allow policy で invite、UX フィードバック収集
-10. ⏳ vLLM フォールバック戦略の選定 (Workers AI / OpenRouter / 諦める)
-11. ⏳ Cloudflare Pages deploy の health monitoring 仕組み導入
+9. ✅ Phase 1.5: 3 流派 wedge (tarot + 数秘 + 九星) 実装完了
+10. ✅ Phase 1.7 / α: 月読 chat + D1 永続 + IPIP context 実装完了
+11. ⏳ vLLM フォールバック戦略は Phase 4 公開判断時に再評価
 
-### 19.4 Phase 1.5 → Phase 2 移行 (将来)
+### 19.4 Phase 1.9 → Phase 2 移行 (NEW v1.2)
 
-12. ⏳ Phase 1.5 リリース → 1 ヶ月データ収集 → Phase 1.5 成功指標確認 (§16.4)
-13. ⏳ Phase 2 (LINE Bot + ユーザー登録) 着手判断
+12. ⏳ Daisuke deep usage week (7 日 / 30 turn / LLM-as-judge ≥ 4/5)
+13. ⏳ 生年月日 profile 永続化 (30 分作業)
+14. ⏳ ComfyUI で月読 立ち絵 / 背景を本番化
+15. ⏳ Phase 2.1 IPIP 統一項目 DB の spec 化 (`/office-hours` 推奨)
+16. ⏳ Phase 2.1-2.6 を順次 wedge 化して実装
+
+### 19.5 Phase 4-5 移行は KPI a 達成後に判断 (NEW v1.2)
+
+17. ⏳ Phase 4 (公開準備) / Phase 5 (収益化) は punt 状態。KPI a で moat の体感が確認されてから着手判断 = memory `[[project-public-release-punt]]`
 
 ---
 
@@ -1062,9 +1118,10 @@ Daisukeさんの周辺コンテキスト (本プロジェクトに影響する�
 
 ---
 
-**文書バージョン**: v1.1 (2026年5月16日)
+**文書バージョン**: v1.2 (2026年5月16日、ロードマップ見直し)
 **変更履歴**:
 - v1.0 (2026-05-15): 初版、5 流派一気通貫の Phase 1 MVP 計画
 - v1.1 (2026-05-16): Phase 1 を wedge 化、タロット + LLM 統合解釈 end-to-end 完了反映、Phase 1.5 分割、vLLM 経路確定、フォールバック再設計の必要性明記
+- v1.2 (2026-05-16): Phase 1.5 (3 流派) + Phase 1.7 (月読 chat α) 完了反映、ロードマップ全面見直し。Dual-entry positioning 確定、IPIP 統一項目 DB 計画追加、Phase 2 を「IPIP 統一 DB + 朝の儀式」に確定、Phase 4-5 (公開 + 収益化) を KPI a 達成後の punt 状態に。詳細は ROADMAP.md v2.0
 
-**次回更新**: Phase 1.5 完了後 (公開 MVP リリース後の 1 ヶ月計測結果も反映) → v1.2
+**次回更新**: Phase 2 完了 (IPIP 統一 DB + 朝の儀式稼働) + KPI a 達成判断時点 → v1.3
