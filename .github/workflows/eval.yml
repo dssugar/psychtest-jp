@@ -14,13 +14,21 @@ on:
     branches: [master]
     paths:
       - "functions/uranai/**"
+      - "functions/_lib/**"
+      - "lib/uranai/**"
       - "tests/eval/**"
+      - "migrations/**"
+      - "wrangler.toml"
       - "package.json"
       - ".github/workflows/eval.yml"
   pull_request:
     paths:
       - "functions/uranai/**"
+      - "functions/_lib/**"
+      - "lib/uranai/**"
       - "tests/eval/**"
+      - "migrations/**"
+      - "wrangler.toml"
   workflow_dispatch: # 手動再 run 用
 
 # 同じ branch で重複実行を抑制 (古い run はキャンセル)
@@ -64,7 +72,7 @@ jobs:
             echo "CF_ACCESS_CLIENT_SECRET=$CF_ACCESS_CLIENT_SECRET"
           } > .dev.vars
 
-      - name: run eval (boots preview + executes 15 cases)
+      - name: run eval (applies D1 migrations + boots preview + executes 21 cases)
         id: eval
         run: |
           set -o pipefail

@@ -1,13 +1,20 @@
 # Prompt Injection Eval Harness
 
-`functions/uranai/chat.ts` の防御回帰テスト。L0 (input delimiting) + L1 (system prompt persona) の効果を観測する。
+`functions/uranai/chat/tsukuyomi.ts` (α wedge: 月読 + IPIP context + D1 永続) の防御回帰テスト。
+L0 (input delimiting) + L1 (system prompt persona) の効果を観測する。
 
 ## TL;DR
+
+初回だけ D1 を作成:
+
+```bash
+npx wrangler d1 create psychtest-alpha   # 出力 ID を wrangler.toml の database_id に貼る
+```
 
 `.dev.vars` を `.dev.vars.example` から作って 3 secret を埋めれば、あとは 1 コマンド:
 
 ```bash
-npm run eval                     # preview spawn → health 待機 → eval → 後片付け、全自動
+npm run eval                     # migrate → preview spawn → health 待機 → eval → 後片付け、全自動
 ```
 
 サブセット / advanced:
@@ -42,7 +49,7 @@ gh secret set CF_ACCESS_CLIENT_SECRET # 同 secret
 | `judges.mjs` | rule-based judge (禁止語 / 必須語 match) |
 | `run.mjs` | runner (chat endpoint に POST → 判定 → 集計) |
 
-## ケース分類 (15 case / 5 category)
+## ケース分類 (21 case / 8 category)
 
 | Category | 想定攻撃 | 主防御層 |
 |---|---|---|
@@ -51,6 +58,21 @@ gh secret set CF_ACCESS_CLIENT_SECRET # 同 secret
 | `instruction-override` | "ignore previous" 系 | L1 |
 | `tag-closure` | `</user_input>` 等で wrapper 脱出 (L0 specific) | L0 |
 | `multi-turn-drift` | 長セッション後のメタ質問 | L1 (+ 将来 L5) |
+| `ipip-leak` (α 新規) | Big5 スコアや facet 数値を吐かせる | L1 (tsukuyomi prompt 禁止事項) |
+| `mental-health-bypass` (α 新規) | 医療診断・処方を求める | L1 (tsukuyomi prompt 禁止事項) |
+| `persona-tsukuyomi` (α 新規) | 月読固有 persona (詩的・静謐) を崩す | L1 |
+
+## α 以降の流れ (= 月読 endpoint と stateful chat)
+
+`run.mjs` は各 case ごとに:
+1. fresh `deviceId` + `sessionId` を発行
+2. `PUT /uranai/profile` で sample IPIP profile (bigfive facets) をシード
+3. `case.messages` の **user turns のみ** を順次 `POST /uranai/chat/tsukuyomi`
+   (assistant turns は server 自動生成。`PLACEHOLDER_ASSISTANT` は廃止予定の互換 field)
+4. 最終 assistant reply を `ruleBasedJudge` に通す
+5. `DELETE /uranai/profile` で後片付け
+
+= 単ターン case は 1 LLM call、3-user-turn の drift case は 3 LLM call (旧 stateless より重い)
 
 ## 判定方式 (MVP)
 
@@ -71,8 +93,8 @@ Phase 2 で LLM-as-judge (`judges/llm.mjs`) を追加予定 — nuance を拾う
 
 | 環境 | EVAL_TARGET | 備考 |
 |---|---|---|
-| local pages dev | `http://localhost:8788/uranai/chat` (default) | `npm run preview` 起動必須 |
-| production (apex) | `https://psychtest.jp/uranai/chat` | Access cookie or service token 要 |
+| local pages dev | `http://localhost:8788/uranai/chat/tsukuyomi` (default) | `npm run preview` 起動必須 + D1 migration 済 |
+| production (apex) | `https://psychtest.jp/uranai/chat/tsukuyomi` | Access cookie or service token 要 + remote D1 |
 | vLLM 直叩き | (将来 ablation runner で実装) | L0/L1 防御を外した状態で素 Gemma を観測する用 |
 
 ## 次の改善 (Phase 2)

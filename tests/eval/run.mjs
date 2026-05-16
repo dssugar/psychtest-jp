@@ -1,22 +1,31 @@
 #!/usr/bin/env node
 /**
- * Prompt-injection eval runner.
+ * Prompt-injection eval runner (α wedge: 月読 + IPIP context 対応).
  *
  * Usage:
  *   node tests/eval/run.mjs
  *   EVAL_CATEGORY=tag-closure node tests/eval/run.mjs
- *   EVAL_TARGET=https://example.com/uranai/chat node tests/eval/run.mjs
- *   EVAL_VERBOSE=1 node tests/eval/run.mjs   # 全 response を表示
+ *   EVAL_TARGET=https://example.com/uranai/chat/tsukuyomi node tests/eval/run.mjs
+ *   EVAL_VERBOSE=1 node tests/eval/run.mjs
  *
- * 前提: 別 terminal で `npm run preview` (wrangler pages dev) を起動済。
- *      .dev.vars に LLM_BASE_URL / VLLM_API_KEY / CF_ACCESS_CLIENT_ID/SECRET 設定済。
+ * 前提:
+ *   - 別 terminal で `npm run preview` (wrangler pages dev) を起動済.
+ *   - `.dev.vars` に LLM_BASE_URL / VLLM_API_KEY / CF_ACCESS_CLIENT_ID/SECRET 設定済.
+ *   - D1 local DB に migration 適用済 (`npm run db:migrate:local`).
+ *
+ * 旧 (Phase 1.7 stateless chat) との違い:
+ *   - chat.ts は stateful (D1 hydrate). 各 case で fresh deviceId + sessionId を発行.
+ *   - case.messages の user turns を順番に POST (assistant turns は server 自動生成).
+ *   - 各 case で profile fixture (bigfive facets) を server に PUT して context として注入.
  */
 
 import { cases } from "./cases.mjs";
-import { divinationContext } from "./fixtures.mjs";
+import { divinationContext, profileFixture } from "./fixtures.mjs";
 import { ruleBasedJudge } from "./judges.mjs";
+import { randomUUID } from "node:crypto";
 
-const TARGET = process.env.EVAL_TARGET ?? "http://localhost:8788/uranai/chat";
+const TARGET = process.env.EVAL_TARGET ?? "http://localhost:8788/uranai/chat/tsukuyomi";
+const PROFILE_TARGET = TARGET.replace(/\/uranai\/tsukuyomi\/chat$/, "/uranai/profile");
 const TIMEOUT_MS = 60_000;
 const VERBOSE = process.env.EVAL_VERBOSE === "1";
 
@@ -32,82 +41,145 @@ const COLORS = {
 const isTTY = process.stdout.isTTY;
 const c = (text, name) => (isTTY ? `${COLORS[name]}${text}${COLORS.reset}` : text);
 
+/**
+ * Fresh deviceId + sessionId で 1 case を走らせる.
+ * - profile fixture を PUT
+ * - case.messages の user turns を順番に POST、各 POST で server がアシスタント reply を生成
+ * - 最後の assistant reply を judge に渡す
+ */
 async function runCase(testCase) {
   const start = Date.now();
-  const ctrl = new AbortController();
-  const t = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
+  const deviceId = randomUUID();
+  const sessionId = randomUUID();
 
+  // 1. profile fixture を PUT (= 月読が IPIP context を持つ状態を作る)
   try {
-    const res = await fetch(TARGET, {
-      method: "POST",
+    const pres = await fetch(PROFILE_TARGET, {
+      method: "PUT",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({
-        messages: testCase.messages,
-        divinationContext,
+        deviceId,
+        testResults: profileFixture.tests,
+        phq9K6Optin: false,
       }),
-      signal: ctrl.signal,
+      signal: AbortSignal.timeout(TIMEOUT_MS),
     });
-    clearTimeout(t);
-
-    const elapsed = Date.now() - start;
-
-    if (!res.ok) {
-      const detail = await res.text();
+    if (!pres.ok) {
+      const detail = await pres.text();
       return {
         testCase,
-        elapsed,
+        elapsed: Date.now() - start,
         status: "error",
-        failedRules: [`HTTP ${res.status}: ${detail.slice(0, 200)}`],
+        failedRules: [`profile PUT HTTP ${pres.status}: ${detail.slice(0, 200)}`],
         response: null,
       };
     }
-
-    const json = await res.json();
-    const reply = (json.reply ?? "").trim();
-    if (!reply) {
-      return {
-        testCase,
-        elapsed,
-        status: "error",
-        failedRules: ["empty reply"],
-        response: null,
-      };
-    }
-
-    const judge = ruleBasedJudge(reply, testCase);
-    const status = judge.pass ? "pass" : testCase.softFail ? "warn" : "fail";
-
-    return {
-      testCase,
-      elapsed,
-      status,
-      failedRules: judge.failedRules,
-      response: reply,
-    };
   } catch (e) {
-    clearTimeout(t);
     return {
       testCase,
       elapsed: Date.now() - start,
       status: "error",
-      failedRules: [`exception: ${e instanceof Error ? e.message : String(e)}`],
+      failedRules: [`profile PUT exception: ${e instanceof Error ? e.message : String(e)}`],
       response: null,
     };
   }
+
+  // 2. user turns を順番に POST (assistant turns は無視)
+  const userTurns = testCase.messages.filter((m) => m.role === "user");
+  if (userTurns.length === 0) {
+    return {
+      testCase,
+      elapsed: Date.now() - start,
+      status: "error",
+      failedRules: ["no user turns in case.messages"],
+      response: null,
+    };
+  }
+
+  let lastReply = "";
+  for (let i = 0; i < userTurns.length; i++) {
+    const msg = userTurns[i];
+    try {
+      const res = await fetch(TARGET, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          deviceId,
+          sessionId,
+          newMessage: msg.content,
+          divinationContext,
+        }),
+        signal: AbortSignal.timeout(TIMEOUT_MS),
+      });
+      if (!res.ok) {
+        const detail = await res.text();
+        return {
+          testCase,
+          elapsed: Date.now() - start,
+          status: "error",
+          failedRules: [`chat POST[${i}] HTTP ${res.status}: ${detail.slice(0, 200)}`],
+          response: lastReply || null,
+        };
+      }
+      const json = await res.json();
+      const reply = (json.reply ?? "").trim();
+      if (!reply) {
+        return {
+          testCase,
+          elapsed: Date.now() - start,
+          status: "error",
+          failedRules: [`chat POST[${i}] empty reply`],
+          response: null,
+        };
+      }
+      lastReply = reply;
+    } catch (e) {
+      return {
+        testCase,
+        elapsed: Date.now() - start,
+        status: "error",
+        failedRules: [`chat POST[${i}] exception: ${e instanceof Error ? e.message : String(e)}`],
+        response: lastReply || null,
+      };
+    }
+  }
+
+  const elapsed = Date.now() - start;
+  const judge = ruleBasedJudge(lastReply, testCase);
+  const status = judge.pass ? "pass" : testCase.softFail ? "warn" : "fail";
+
+  // 3. eval session の D1 を後片付け (= 次回 case で profile/conversation 残骸が残らない)
+  try {
+    await fetch(`${PROFILE_TARGET}?deviceId=${encodeURIComponent(deviceId)}`, {
+      method: "DELETE",
+      signal: AbortSignal.timeout(10_000),
+    });
+  } catch {
+    // 後片付け失敗は警告せず無視 (= 次回 D1 に増えるだけ、test 結果に影響なし)
+  }
+
+  return {
+    testCase,
+    elapsed,
+    status,
+    failedRules: judge.failedRules,
+    response: lastReply,
+  };
 }
 
 async function main() {
   const filter = process.env.EVAL_CATEGORY;
   const filtered = filter ? cases.filter((tc) => tc.category === filter) : cases;
 
-  console.log(c(`\n=== Prompt Injection Eval ===`, "bold"));
-  console.log(c(`Target: ${TARGET}`, "dim"));
-  console.log(c(`Cases : ${filtered.length}${filter ? ` (category=${filter})` : ""}\n`, "dim"));
+  console.log(c(`\n=== Prompt Injection Eval (α: 月読 + IPIP) ===`, "bold"));
+  console.log(c(`Target : ${TARGET}`, "dim"));
+  console.log(c(`Profile: ${PROFILE_TARGET}`, "dim"));
+  console.log(c(`Cases  : ${filtered.length}${filter ? ` (category=${filter})` : ""}\n`, "dim"));
 
   const results = [];
   for (const tc of filtered) {
     process.stdout.write(
-      `${c(`[${tc.id}]`, "dim")} ${tc.category.padEnd(22)} `,
+      `${c(`[${tc.id}]`, "dim")} ${tc.category.padEnd(24)} `,
     );
     const r = await runCase(tc);
     results.push(r);

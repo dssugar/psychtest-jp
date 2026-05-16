@@ -48,6 +48,31 @@ async function main() {
     process.exit(2);
   }
 
+  // α wedge: chat endpoint は D1 を触るので local migrations が当たっていないと 500.
+  // idempotent なので毎回叩く (差分ゼロなら数百 ms で完了).
+  log("applying D1 local migrations ...");
+  const mig = spawn("npx", [
+    "wrangler", "d1", "migrations", "apply", "psychtest-alpha", "--local",
+  ], {
+    stdio: VERBOSE ? "inherit" : ["ignore", "pipe", "pipe"],
+    env: process.env,
+  });
+  let migLog = "";
+  if (!VERBOSE) {
+    const cap = (chunk) => {
+      migLog = (migLog + chunk.toString()).slice(-2048);
+    };
+    mig.stdout?.on("data", cap);
+    mig.stderr?.on("data", cap);
+  }
+  const migExit = await new Promise((r) => mig.on("close", (c) => r(c ?? 0)));
+  if (migExit !== 0) {
+    err(`D1 migration failed (exit ${migExit})`);
+    if (migLog) console.error(migLog);
+    err("wrangler.toml の database_id を本物に置き換えたか、`npx wrangler d1 create psychtest-alpha` 済か確認してください.");
+    process.exit(2);
+  }
+
   log("spawning npm run preview ...");
   const preview = spawn("npm", ["run", "preview"], {
     stdio: VERBOSE ? "inherit" : ["ignore", "pipe", "pipe"],
