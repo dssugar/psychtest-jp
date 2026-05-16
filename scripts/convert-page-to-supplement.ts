@@ -39,6 +39,8 @@ interface PageFetchScale {
   /** 各 scale 単位の instrument override (= Single Constructs page のような多 instrument 集約 page 用). 無ければ pageFetch.instrument 使用. */
   instrument?: string;
   reference?: string;
+  /** scale_hierarchy.scale_name 用 (= 中位 scale 名、e.g., BFAS aspect の domain "Neuroticism"). label が facet 名. */
+  scale_name?: string;
 }
 
 interface PageFetch {
@@ -56,6 +58,7 @@ interface ScaleSupplement {
   source_url?: string;
   reference?: string;
   note?: string;
+  scale_name?: string;
   items: ScaleSupplementItem[];
 }
 
@@ -193,6 +196,7 @@ function main() {
       instrument: scaleInstrument,
       alpha: sc.alpha ?? null,
       source_url: pageFetch.source_url,
+      ...(sc.scale_name ? { scale_name: sc.scale_name } : {}),
       items,
     });
   }
