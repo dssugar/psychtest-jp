@@ -107,6 +107,17 @@ const AUTHORITATIVE_INSTRUMENTS = new Set<string>([
 ]);
 
 /**
+ * 完全に hierarchy / scales 投入から除外する instrument.
+ * Tedone Table が短縮版 (e.g., NEO5-20 = 4 items per domain) で本来項目を大幅 over-include
+ * しているため、それを表示するとユーザを誤導する. proper supplement 整備後に解禁予定.
+ */
+const SKIP_INSTRUMENTS = new Set<string>([
+  "NEO5-20",     // Mini-IPIP-NEO 20 items 想定だが Tedone 100+ 件 over-include
+  "BFAS-20",     // BFAS 短縮版 20 items 想定だが Tedone 60+ 件 over-include
+  "IPIP-Rational", // 用途不明、Tedone 由来の noise
+]);
+
+/**
  * scale_hierarchy から完全削除する scale_id. Tedone Table のメタラベル (= α=1994 等の citation 漏れ)
  * や IPIP 公式に存在しない virtual scale を除外.
  */
@@ -921,6 +932,7 @@ function build() {
   const seenInstruments = new Set<string>();
   for (const r of tedone) {
     if (!r.instrument || !r.label) continue;
+    if (SKIP_INSTRUMENTS.has(r.instrument)) continue;
     const baseScaleId = instrumentToScaleId(r.instrument);
     if (tombstoneSet.has(baseScaleId)) continue;
 

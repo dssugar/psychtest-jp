@@ -91,14 +91,22 @@ export async function listInstrumentScales(
 
 /**
  * 1 scale の詳細 + parent chain.
+ *
+ * Phase 2.x.D.3: domain (level 2) で direct items 0 の場合、children を sum して item_count に.
  */
 export async function getScale(db: D1Database, scaleId: string): Promise<ScaleHierarchyRow | null> {
   const r = await db
     .prepare(
-      `SELECT h.*, (
-         SELECT COUNT(*) FROM scales s WHERE s.scale_id = h.scale_id
-       ) AS item_count
-       FROM scale_hierarchy h WHERE h.scale_id = ?1`,
+      `WITH base AS (
+         SELECT h.*, (SELECT COUNT(*) FROM scales s WHERE s.scale_id = h.scale_id) AS direct_items
+         FROM scale_hierarchy h WHERE h.scale_id = ?1
+       )
+       SELECT b.*,
+         CASE WHEN b.level = 2 AND b.direct_items = 0 THEN
+           COALESCE((SELECT COUNT(DISTINCT s.item_id) FROM scales s
+             WHERE s.scale_id IN (SELECT scale_id FROM scale_hierarchy WHERE parent_scale_id = b.scale_id)), 0)
+         ELSE b.direct_items END AS item_count
+       FROM base b`,
     )
     .bind(scaleId)
     .first<ScaleHierarchyRow>();
@@ -107,12 +115,18 @@ export async function getScale(db: D1Database, scaleId: string): Promise<ScaleHi
 
 /**
  * 1 scale の items 全件 (scales table と ipip_items を JOIN).
+ *
+ * Phase 2.x.D.3: domain (level 2) で direct items 0 の場合、children scale (= sub-facet)
+ * の items を集計して返す (= IPIP NEO convention: domain test は全 facet item を含む).
+ *   重複は item_id で dedup. key は同一 item で複数 scale 間で異なる場合があるが、
+ *   level 3 の最初の出現を採用 (= rare case、psycho_scoring 上の影響なし).
  */
 export async function listScaleItems(
   db: D1Database,
   scaleId: string,
 ): Promise<ScaleItemRow[]> {
-  const r = await db
+  // まず direct items を試す
+  const direct = await db
     .prepare(
       `SELECT s.scale_id, s.item_id, s.key, s.label, i.en_text, i.ja_text
        FROM scales s
@@ -122,7 +136,21 @@ export async function listScaleItems(
     )
     .bind(scaleId)
     .all<ScaleItemRow>();
-  return r.results ?? [];
+  if ((direct.results?.length ?? 0) > 0) return direct.results ?? [];
+
+  // direct 0 件 → domain (level 2) で children に items がある場合に集計
+  const aggregated = await db
+    .prepare(
+      `SELECT s.scale_id AS source_scale_id, ?1 AS scale_id, s.item_id, s.key, s.label, i.en_text, i.ja_text
+       FROM scales s
+       JOIN ipip_items i ON i.item_id = s.item_id
+       WHERE s.scale_id IN (SELECT scale_id FROM scale_hierarchy WHERE parent_scale_id = ?1)
+       GROUP BY s.item_id
+       ORDER BY s.item_id`,
+    )
+    .bind(scaleId)
+    .all<ScaleItemRow & { source_scale_id: string }>();
+  return aggregated.results ?? [];
 }
 
 /**
