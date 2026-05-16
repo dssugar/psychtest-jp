@@ -43,3 +43,10 @@ playwright/.cache/
 
 # WSL metadata
 *:Zone.Identifier
+
+# Claude Code session artifacts
+.claude/
+
+# Playwright MCP screenshot output (debug snapshots, not source assets)
+.playwright-mcp/
+/chat-*.png
