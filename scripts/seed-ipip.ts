@@ -799,6 +799,188 @@ function build() {
     log.push(`ipip-scales-supplement: not found (= 補完なし)`);
   }
 
+  // 5.9.5. Phase 2.x.D: scale_hierarchy populate.
+  //   全 scale_id を集計し、階層情報 (instrument / scale / facet / subfacet) を Tedone label + supplement
+  //   schema から parse → scale_hierarchy table に INSERT.
+  //   階層深さ:
+  //     level 1: instrument 単位 (scale_id = instrument slug 単独、e.g., 'neo' / 'levenson1981')
+  //     level 2: scale 単位 (scale_id = `{instrument}_{scale}`, e.g., 'levenson1981_locus_of_control' = scale 'Locus of Control')
+  //     level 3: facet 単位 (scale_id = `{instrument}_{scale}_{facet}`, e.g., 'levenson1981_locus_of_control_internal')
+  //     level 4: subfacet (= 稀)
+  //   ja 訳は Phase 2.x.E (= 別 wedge) で手動 audit populate.
+  log.push("");
+  log.push("=== Phase 2.x.D: scale_hierarchy populate ===");
+  interface HierarchyEntry {
+    scale_id: string;
+    parent_scale_id: string | null;
+    level: number;
+    instrument: string;
+    scale_name: string | null;
+    facet_name: string | null;
+    subfacet_name: string | null;
+    display_label_en: string | null;
+    alpha: number | null;
+    source_url: string | null;
+  }
+  const hierarchyMap = new Map<string, HierarchyEntry>();
+
+  // (a) Tedone Table の各 (instrument, label) ペアから階層 entries 生成.
+  //   instrument 単位 (scale_id = slugify(instrument)) → level 1
+  //   facet 単位 (scale_id = slugify(instrument)_slugify(label)) → level 2 or 3 (label 内 "," 区切りで判定)
+  const seenInstruments = new Set<string>();
+  for (const r of tedone) {
+    if (!r.instrument || !r.label) continue;
+    const baseScaleId = instrumentToScaleId(r.instrument);
+    if (tombstoneSet.has(baseScaleId)) continue;
+
+    // instrument level
+    if (!seenInstruments.has(baseScaleId)) {
+      seenInstruments.add(baseScaleId);
+      hierarchyMap.set(baseScaleId, {
+        scale_id: baseScaleId,
+        parent_scale_id: null,
+        level: 1,
+        instrument: r.instrument,
+        scale_name: null,
+        facet_name: null,
+        subfacet_name: null,
+        display_label_en: r.instrument,
+        alpha: null,
+        source_url: null,
+      });
+    }
+
+    // facet level: Tedone label を "," で split → scale_name + facet_name
+    const labelParts = r.label.split(",").map((s) => s.trim()).filter((s) => s.length > 0);
+    const scaleName = labelParts[0]; // 必ず 1 要素 (= scale 名)
+    const facetName = labelParts[1] ?? null;
+    const facetScaleId = `${baseScaleId}_${instrumentToScaleId(r.label)}`;
+
+    if (!hierarchyMap.has(facetScaleId)) {
+      let parentId = baseScaleId; // 通常 level 2 の親は instrument
+      let level = 2;
+      // facet level (= label に "," 区切り 2 要素以上、level 3)
+      if (facetName) {
+        const scaleScaleId = `${baseScaleId}_${instrumentToScaleId(scaleName)}`;
+        // 中間 scale 単位 entry を確保 (level 2)
+        if (!hierarchyMap.has(scaleScaleId)) {
+          hierarchyMap.set(scaleScaleId, {
+            scale_id: scaleScaleId,
+            parent_scale_id: baseScaleId,
+            level: 2,
+            instrument: r.instrument,
+            scale_name: scaleName,
+            facet_name: null,
+            subfacet_name: null,
+            display_label_en: `${r.instrument} / ${scaleName}`,
+            alpha: null,
+            source_url: null,
+          });
+        }
+        parentId = scaleScaleId;
+        level = 3;
+      }
+      hierarchyMap.set(facetScaleId, {
+        scale_id: facetScaleId,
+        parent_scale_id: parentId,
+        level,
+        instrument: r.instrument,
+        scale_name: scaleName,
+        facet_name: facetName,
+        subfacet_name: null,
+        display_label_en: facetName ? `${r.instrument} / ${scaleName} / ${facetName}` : `${r.instrument} / ${scaleName}`,
+        alpha: typeof r.alpha === "number" ? r.alpha : null,
+        source_url: null,
+      });
+    }
+  }
+
+  // (b) ipip-scales-supplement.json の各 entry から階層情報を上書き / 補強.
+  //   supplement の instrument + label を信頼 (= IPIP 公式 page audit 結果)
+  try {
+    const ssText = readFileSync(IPIP_SCALES_SUPPLEMENT_JSON, "utf-8");
+    const ssParsed = JSON.parse(ssText) as { scales?: Array<{ scale_id: string; instrument?: string; label?: string; alpha?: number | null; source_url?: string }> };
+    for (const sc of ssParsed.scales ?? []) {
+      if (!sc.scale_id || !sc.instrument) continue;
+      const existing = hierarchyMap.get(sc.scale_id);
+      if (existing) {
+        // alpha / source_url の補強のみ (既存 hierarchy structure は維持)
+        if (sc.alpha !== undefined && sc.alpha !== null && existing.alpha === null) existing.alpha = sc.alpha;
+        if (sc.source_url && !existing.source_url) existing.source_url = sc.source_url;
+      } else {
+        // 新規 entry: instrument + label から階層推定 (Tedone と同 logic)
+        const labelParts = (sc.label ?? "").split(",").map((s) => s.trim()).filter((s) => s.length > 0);
+        const scaleName = labelParts[0] || null;
+        const facetName = labelParts[1] ?? null;
+        const baseScaleId = instrumentToScaleId(sc.instrument);
+        // 中間 scale level を確保
+        if (scaleName && facetName) {
+          const scaleScaleId = `${baseScaleId}_${instrumentToScaleId(scaleName)}`;
+          if (!hierarchyMap.has(scaleScaleId)) {
+            hierarchyMap.set(scaleScaleId, {
+              scale_id: scaleScaleId,
+              parent_scale_id: baseScaleId,
+              level: 2,
+              instrument: sc.instrument,
+              scale_name: scaleName,
+              facet_name: null,
+              subfacet_name: null,
+              display_label_en: `${sc.instrument} / ${scaleName}`,
+              alpha: null,
+              source_url: sc.source_url ?? null,
+            });
+          }
+        }
+        // instrument level も確保 (Tedone にない instrument の場合)
+        if (!hierarchyMap.has(baseScaleId)) {
+          hierarchyMap.set(baseScaleId, {
+            scale_id: baseScaleId,
+            parent_scale_id: null,
+            level: 1,
+            instrument: sc.instrument,
+            scale_name: null,
+            facet_name: null,
+            subfacet_name: null,
+            display_label_en: sc.instrument,
+            alpha: null,
+            source_url: null,
+          });
+        }
+        const parentId = facetName ? `${baseScaleId}_${instrumentToScaleId(scaleName!)}` : baseScaleId;
+        hierarchyMap.set(sc.scale_id, {
+          scale_id: sc.scale_id,
+          parent_scale_id: parentId,
+          level: facetName ? 3 : 2,
+          instrument: sc.instrument,
+          scale_name: scaleName,
+          facet_name: facetName,
+          subfacet_name: null,
+          display_label_en: facetName ? `${sc.instrument} / ${scaleName} / ${facetName}` : `${sc.instrument} / ${scaleName}`,
+          alpha: sc.alpha ?? null,
+          source_url: sc.source_url ?? null,
+        });
+      }
+    }
+  } catch {}
+
+  // (c) SQL 投入. DELETE → INSERT で冪等性確保 (= 既存 row 全削除してから新規 INSERT).
+  sql.push("");
+  sql.push("-- scale_hierarchy (Phase 2.x.D: 階層 tree)");
+  sql.push("DELETE FROM scale_hierarchy;");
+  for (const h of hierarchyMap.values()) {
+    sql.push(
+      `INSERT INTO scale_hierarchy (scale_id, parent_scale_id, level, instrument, scale_name, facet_name, subfacet_name, display_label_en, display_label_ja, alpha, source_url, created_at) VALUES (${sqlStr(h.scale_id)}, ${sqlStr(h.parent_scale_id)}, ${h.level}, ${sqlStr(h.instrument)}, ${sqlStr(h.scale_name)}, ${sqlStr(h.facet_name)}, ${sqlStr(h.subfacet_name)}, ${sqlStr(h.display_label_en)}, NULL, ${sqlNum(h.alpha)}, ${sqlStr(h.source_url)}, ${now});`,
+    );
+  }
+  // level 別 count log
+  const byLevel = new Map<number, number>();
+  for (const h of hierarchyMap.values()) byLevel.set(h.level, (byLevel.get(h.level) ?? 0) + 1);
+  log.push(`scale_hierarchy: ${hierarchyMap.size} entries`);
+  for (const [lv, n] of [...byLevel.entries()].sort()) {
+    const labelMap: Record<number, string> = { 1: "instrument", 2: "scale", 3: "facet", 4: "subfacet" };
+    log.push(`  level ${lv} (${labelMap[lv] ?? "?"}): ${n}`);
+  }
+
   // 5.7. scale_meta 投入 (Phase 2.1.β: UI 表示用 metadata、12 scale)
   //      spec: docs/specs/scale-meta-wedge-2026-05.md §"Narrowest Wedge" Step 3
   //      scale-meta.json は Daisuke が手動キュレーション (LLM 生成は使わない方針).
