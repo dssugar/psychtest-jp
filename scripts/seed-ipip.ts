@@ -47,6 +47,7 @@ const IPIP_SCALES_SUPPLEMENT_JSON = resolve(ROOT, "data/ipip-master/ipip-scales-
 const IPIP_CANONICAL_LABELS_JSON = resolve(ROOT, "data/ipip-master/ipip-canonical-labels.json");
 const IPIP_FACET_CODES_JSON = resolve(ROOT, "data/ipip-master/ipip-facet-codes.json");
 const SCALE_HIERARCHY_JA_JSON = resolve(ROOT, "data/ipip-master/scale-hierarchy-ja.json");
+const JA_GLOSSARY_JSON = resolve(ROOT, "data/ipip-master/ja-glossary.json");
 const CANONICAL_LABELS_JA_JSON = resolve(ROOT, "data/ipip-master/canonical-labels-ja.json");
 const ITEMS_JA_SUPPLEMENT_JSON = resolve(ROOT, "data/ipip-master/items-ja-supplement.json");
 const SQL_OUT = resolve(ROOT, "scripts/.cache/seed-ipip.sql");
@@ -1109,25 +1110,59 @@ function build() {
   } catch {}
 
   // (c) SQL 投入. DELETE → INSERT で冪等性確保 (= 既存 row 全削除してから新規 INSERT).
-  //   display_label_ja は scale-hierarchy-ja.json (Phase 2.x.E.1) から populate.
-  let hierarchyJa: Record<string, string> = {};
+  //   display_label_ja は Phase 2.x.E.1 で 2 ソース合成:
+  //     1. ja-glossary.json (instruments + terms) で instrument/scale_name/facet_name を翻訳して " / " 合成
+  //     2. scale-hierarchy-ja.json (= scale_id → ja override 用) があれば優先
+  //   1 件もカバーできない場合のみ NULL.
+  let hierarchyJaOverride: Record<string, string> = {};
   try {
     const hjText = readFileSync(SCALE_HIERARCHY_JA_JSON, "utf-8");
     const hjParsed = JSON.parse(hjText) as { translations?: Record<string, string> };
-    hierarchyJa = hjParsed.translations ?? {};
+    hierarchyJaOverride = hjParsed.translations ?? {};
   } catch {}
+  let glossary: { instruments: Record<string, string>; terms: Record<string, string> } = { instruments: {}, terms: {} };
+  try {
+    const gText = readFileSync(JA_GLOSSARY_JSON, "utf-8");
+    const gParsed = JSON.parse(gText) as { instruments?: Record<string, string>; terms?: Record<string, string> };
+    glossary = { instruments: gParsed.instruments ?? {}, terms: gParsed.terms ?? {} };
+  } catch {}
+  const synthesizeJa = (h: HierarchyEntry): string | null => {
+    if (hierarchyJaOverride[h.scale_id]) return hierarchyJaOverride[h.scale_id];
+    const instJa = glossary.instruments[h.instrument];
+    if (!instJa) return null;
+    const parts: string[] = [instJa];
+    if (h.scale_name) {
+      parts.push(glossary.terms[h.scale_name] ?? h.scale_name);
+    }
+    if (h.facet_name) {
+      parts.push(glossary.terms[h.facet_name] ?? h.facet_name);
+    }
+    if (h.subfacet_name) {
+      parts.push(glossary.terms[h.subfacet_name] ?? h.subfacet_name);
+    }
+    return parts.join(" / ");
+  };
   let hierarchyJaCount = 0;
+  let hierarchyJaPartial = 0; // glossary に term 未登録で en mix の状態
   sql.push("");
   sql.push("-- scale_hierarchy (Phase 2.x.D: 階層 tree)");
   sql.push("DELETE FROM scale_hierarchy;");
   for (const h of hierarchyMap.values()) {
-    const ja = hierarchyJa[h.scale_id] ?? null;
-    if (ja) hierarchyJaCount++;
+    const ja = synthesizeJa(h);
+    if (ja) {
+      hierarchyJaCount++;
+      // 全 component が translation 持つかチェック (= 完全 ja の率を log 用)
+      const allTranslated =
+        (!h.scale_name || glossary.terms[h.scale_name]) &&
+        (!h.facet_name || glossary.terms[h.facet_name]) &&
+        (!h.subfacet_name || glossary.terms[h.subfacet_name]);
+      if (!allTranslated) hierarchyJaPartial++;
+    }
     sql.push(
       `INSERT INTO scale_hierarchy (scale_id, parent_scale_id, level, instrument, scale_name, facet_name, subfacet_name, display_label_en, display_label_ja, alpha, source_url, created_at) VALUES (${sqlStr(h.scale_id)}, ${sqlStr(h.parent_scale_id)}, ${h.level}, ${sqlStr(h.instrument)}, ${sqlStr(h.scale_name)}, ${sqlStr(h.facet_name)}, ${sqlStr(h.subfacet_name)}, ${sqlStr(h.display_label_en)}, ${sqlStr(ja)}, ${sqlNum(h.alpha)}, ${sqlStr(h.source_url)}, ${now});`,
     );
   }
-  log.push(`  display_label_ja populated: ${hierarchyJaCount} / ${hierarchyMap.size}`);
+  log.push(`  display_label_ja populated: ${hierarchyJaCount} / ${hierarchyMap.size} (${hierarchyJaPartial} は一部 en 残存 = glossary.terms 未登録)`);
   // level 別 count log
   const byLevel = new Map<number, number>();
   for (const h of hierarchyMap.values()) byLevel.set(h.level, (byLevel.get(h.level) ?? 0) + 1);
