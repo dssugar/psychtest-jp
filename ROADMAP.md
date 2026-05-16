@@ -1,7 +1,7 @@
 # psychtest.jp - 実装ロードマップ
 
-> **最終更新**: 2026-05-16 (v2.0、フルピボット)
-> **前版**: v1.0 (2026-01-20) は心理尺度路線中心、`/uranai/*` と vLLM 経路が始まる前の設計だったため陳腐化
+> **最終更新**: 2026-05-16 (v2.1、Phase 2.1 完了反映)
+> **前版**: v2.0 (2026-05-16) ロードマップ見直し / v1.0 (2026-01-20) 心理尺度路線中心
 > **位置づけ**: [project-design.md](./docs/project-design.md) の Phase 設計を実装視点でブレイクダウン
 
 ---
@@ -68,7 +68,7 @@ KPI a (Daisuke deep usage) 達成後に着手判断。現時点では計画に�
 
 ---
 
-## 🟡 Phase 1.9 (現在 = 地ならし、数日)
+## 🟡 Phase 1.9 (地ならし完了)
 
 α wedge 直後の小タスク群。Phase 2 着手前の準備。
 
@@ -76,10 +76,7 @@ KPI a (Daisuke deep usage) 達成後に着手判断。現時点では計画に�
 
 **ComfyUI 月読 assets 差し替えは Phase 3.4 ペルソナ複数化と合流** (= 個別キャラの assets は他キャラと一緒にまとめて生成する方が効率的)。
 
-- [ ] **生年月日を profile に永続化** (UX 改善)
-  - 現状 `/uranai/draw` で毎回入力する冗長性を解消
-  - `profiles.birth_date` カラム追加 → `/uranai/settings` に input → draw は「未登録なら聞く」フォールバック
-  - 推定 30 分作業
+- [x] **生年月日を profile に永続化** (UX 改善) ✅ 2026-05-16 (commit 91c210a)
 
 ---
 
@@ -87,24 +84,27 @@ KPI a (Daisuke deep usage) 達成後に着手判断。現時点では計画に�
 
 **目的**: IPIP 統一項目 DB を基盤に既存 7 尺度を内部 migration、その上で「朝の儀式」UI を新設して Daisuke の日々利用を支える環境を作る。
 
-### 2.1 IPIP 統一項目 DB スキーマ構築
+### 2.1 IPIP 統一項目 DB スキーマ構築 ✅ 2026-05-16
 
-- [ ] D1 migration 追加 (`migrations/0002_ipip_unified.sql`)
-- [ ] `ipip_items` / `user_responses` / `scales` テーブル
-- [ ] IPIP 原典 3,300 項目データの正典化 (`data/ipip-items/*.json` or D1 seed)
-  - IPIP-NEO-300 → 300 項目
-  - IPIP-HEXACO-240 → 240 項目 (重複除く)
-  - IPIP-IPC-32, IPIP-RIASEC, IPIP Six Factor, IPIP-MPQ
-- [ ] 項目 ID の体系 (IPIP item ID 踏襲)
-- [ ] tags フィールドで scale マッピング
+実装サマリ (commits `c34a4ba` / `9c61094` / `d81e3ad`):
+
+- [x] D1 migration 追加 (`migrations/0003_ipip_unified.sql`)
+- [x] `ipip_items` (3,320 行) / `user_responses` (CHECK value 1-5, PK = device_id+item_id) / `scales` (37 instruments × items) の 3 テーブル
+- [x] IPIP 原典 3,320 項目データの正典化 (= `data/ipip-master/ipip-3320.xlsx` + Tedone Item Assignment Table + ipip-translation CSV)
+- [x] 項目 ID 体系: IPIP 公式 Hxxx / Xxxx / Exxx / Fxxx 等を canonical key (= 67 行の複数 ID 行は H 始まり優先で 1 つに正規化)
+- [x] **scales テーブル**で scale マッピング (Big Five 120 / NEO 179 / HEXACO_PI 221 / Rosenberg1965 10 / VIA 248 等 36 instruments + bigfive 仮想 scale)
+- [x] 日本語訳 3,320 / 3,320 完備 (= BigFive UI 訳 120 + ipip-translation 1,093 + claude opus 4.7 翻訳 2,202)
+- [x] BigFive 完走時の D1 二重書き (`POST /ipip/responses` + `lib/ipip/responses-client.ts`)
+
+spec: `docs/specs/ipip-unified-db-wedge-2026-05.md`
 
 ### 2.2 既存 IPIP 系尺度の内部 migration (UX 維持)
 
 既存 UI / 結果表示はそのまま、内部実装だけ user_responses 書き込みに変更:
 
-- [ ] Big Five (IPIP-NEO-120) → ipip_items 正典化 + bigfive view
-- [ ] Industriousness (IPIP-300 C4+C5) → 同 + industriousness view
-- [ ] Self-Concept (IPIP Self-Consciousness Facet) → 同 + sccs view
+- [x] **Big Five (IPIP-NEO-120)** → 完了 (Phase 2.1 内で実装、120/120 Hxxx マッピング達成)
+- [ ] Industriousness (IPIP-300 C4+C5, 20 項目) → adapter 追加で対応予定
+- [ ] Self-Concept (IPIP Self-Consciousness Facet, 8 項目) → adapter 追加で対応予定
 - [ ] 各尺度ページ (`app/[testType]/page.tsx`, `app/results/[testType]/page.tsx`) の内部 fetch を D1 経由に
 - [ ] localStorage と D1 の二重書きは過渡期のみ (Phase 2 完了で localStorage 廃止)
 
@@ -293,8 +293,11 @@ SELECT scale_id, COUNT(*)
 ## 🔄 次のアクション
 
 **最優先 (今すぐ着手可能)**:
-1. 生年月日 profile 永続化 (30 分作業、Phase 1.9)
-2. Phase 2.1 IPIP 統一項目 DB の spec 化 (`/office-hours` 推奨)
+1. ~~生年月日 profile 永続化~~ ✅ 完了 (commit 91c210a)
+2. ~~Phase 2.1 IPIP 統一項目 DB~~ ✅ 完了 (commit c34a4ba 系)
+3. Phase 2.2 (Industriousness + Self-Concept) — BigFive と同 pattern で adapter 追加のみ
+4. Phase 2.6 月読 context 進捗 N/M — `lib/uranai/profile-summarizer.ts` 拡張
+5. Phase 2.4 トップ 2 入口ハブ書き換え — `/office-hours` または直接実装
 
 **Phase 2 着手判断**:
 - 上記 1-3 が回り始めたら Phase 2.1 → 2.6 を順次 wedge 化
@@ -313,3 +316,4 @@ SELECT scale_id, COUNT(*)
 **変更履歴**:
 - v1.0 (2026-01-20): 心理尺度路線中心、PSS / ECR-R / BYOK Chat 計画 — 2026-05 ロードマップ見直しで陳腐化
 - v2.0 (2026-05-16): 占い + 月読 chat 統合路線、IPIP 統一 DB + 朝の儀式 + 2 入口ハブ、KPI a 単独、Phase 4-5 punt
+- v2.1 (2026-05-16): Phase 1.9 (生年月日永続化) + Phase 2.1 (IPIP 統一 DB) 完了反映、Phase 2.2 / 2.4 / 2.6 を次の着手候補に

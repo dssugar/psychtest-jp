@@ -13,10 +13,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Framework**: Next.js 16 (App Router)
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS v4
-- **Hosting**: Cloudflare Pages (static export)
+- **Hosting**: Cloudflare Pages (static export) + Pages Functions (uranai / ipip)
 - **Domain**: psychtest.jp
-- **Data Storage**: localStorage (no backend/database in current phase)
-- **No API costs**: Fully static
+- **Data Storage**: localStorage (心理尺度 UI) + **Cloudflare D1** (`psychtest-alpha`: profiles / conversations / divination_results / ipip_items / user_responses / scales)
+- **LLM**: 自宅 vLLM (Gemma 4 26B) via Cloudflare Tunnel + Access service token
+- **No API costs**: Frontend は fully static、Functions は最小限
 
 ### Monetization Strategy
 
@@ -405,13 +406,18 @@ interface ValidationResult {
 
 ### Next Steps for Architecture
 
-**Phase 2**:
-- ECR-R追加時に2D散布図コンポーネントを実装 (`AttachmentPlot.tsx`)
-- RIASECで6次元レーダーチャートを追加
+**Phase 2 (進行中、2026-05-16~)**:
+- [x] **Phase 2.1 IPIP 統一項目 DB** (`migrations/0003_ipip_unified.sql` + `scripts/seed-ipip.ts`): 3,320 IPIP 項目 + 37 scales + 日本語訳 100% 完備、BigFive 完走時に `user_responses` 二重書き
+- [ ] Phase 2.2: 残り IPIP 系 (Industriousness / Self-Concept) の dual-write 拡張
+- [ ] Phase 2.3: 非 IPIP 系 (Rosenberg / PHQ-9 / K6 / SWLS) の `user_responses` 統合
+- [ ] Phase 2.4: トップを「診断 / 占い」2 入口ハブに書き換え
+- [ ] Phase 2.5: 朝の儀式 UI (IPIP 未回答項目を毎日提示)
+- [ ] Phase 2.6: 月読 chat に「進捗 N/M」context 追加
 
 **Phase 3**:
-- AI機能実装時にBYOK Chat設定管理を追加
-- エージェントシステムの設定ファイル化
+- ECR-R追加時に2D散布図コンポーネントを実装 (`AttachmentPlot.tsx`)
+- RIASECで6次元レーダーチャートを追加
+- 月読会話駆動 IPIP (= 文脈に応じて未回答項目を chat に挿入)
 
 ---
 
