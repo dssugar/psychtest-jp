@@ -45,6 +45,10 @@ const IPIP_MASTER_CORRECTIONS_JSON = resolve(ROOT, "data/ipip-master/ipip-master
 const IPIP_SUPPLEMENT_JSON = resolve(ROOT, "data/ipip-master/ipip-3320-supplement.json");
 const IPIP_SCALES_SUPPLEMENT_JSON = resolve(ROOT, "data/ipip-master/ipip-scales-supplement.json");
 const IPIP_CANONICAL_LABELS_JSON = resolve(ROOT, "data/ipip-master/ipip-canonical-labels.json");
+const IPIP_FACET_CODES_JSON = resolve(ROOT, "data/ipip-master/ipip-facet-codes.json");
+const SCALE_HIERARCHY_JA_JSON = resolve(ROOT, "data/ipip-master/scale-hierarchy-ja.json");
+const CANONICAL_LABELS_JA_JSON = resolve(ROOT, "data/ipip-master/canonical-labels-ja.json");
+const ITEMS_JA_SUPPLEMENT_JSON = resolve(ROOT, "data/ipip-master/items-ja-supplement.json");
 const SQL_OUT = resolve(ROOT, "scripts/.cache/seed-ipip.sql");
 const BIGFIVE_MAPPING_OUT = resolve(ROOT, "data/ipip-master/bigfive-id-mapping.json");
 const INDUSTRIOUSNESS_MAPPING_OUT = resolve(ROOT, "data/ipip-master/industriousness-id-mapping.json");
@@ -121,6 +125,18 @@ function sqlNum(v: number | null | undefined): string {
 /** Tedone instrument 名を scale_id に正規化 (lowercase + 非英数値を underscore). */
 function instrumentToScaleId(instrument: string): string {
   return instrument
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "");
+}
+
+/**
+ * canonical_label resolve 用の facet_name normalize.
+ * Phase 2.x.D.2: instrumentToScaleId と同 logic だが意味が「facet name 比較」なので名前分離.
+ * (instrument は scale_id base、facet は subkey 比較に使うため)
+ */
+function normalizeFacetKey(s: string): string {
+  return s
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "_")
     .replace(/^_+|_+$/g, "");
@@ -611,6 +627,29 @@ function build() {
     log.push(`claude translation: skipped (${CLAUDE_TRANSLATION_JSON} not found)`);
   }
 
+  // 4.6. Phase 2.x.E.3: items-ja-supplement.json (= ORAIS/ORVIS/EX 等の追加 ja 訳).
+  //   claude-translation 後に適用、ja_text 上書き (= 手動 audit 済の supplement を優先).
+  log.push("");
+  log.push("=== items ja_text supplement (Phase 2.x.E.3) ===");
+  let itemsJaApplied = 0;
+  try {
+    const ijText = readFileSync(ITEMS_JA_SUPPLEMENT_JSON, "utf-8");
+    const ijParsed = JSON.parse(ijText) as { translations?: Record<string, string> };
+    const ijMap = ijParsed.translations ?? {};
+    sql.push("");
+    sql.push("-- items ja_text supplement (Phase 2.x.E.3)");
+    for (const [itemId, jaText] of Object.entries(ijMap)) {
+      if (!itemId || !jaText) continue;
+      sql.push(
+        `UPDATE ipip_items SET ja_text = ${sqlStr(jaText)} WHERE item_id = ${sqlStr(itemId)};`,
+      );
+      itemsJaApplied++;
+    }
+    log.push(`items-ja-supplement: ${itemsJaApplied} UPDATE statements queued`);
+  } catch {
+    log.push(`items-ja-supplement: skipped (file not found, no extra ja_text)`);
+  }
+
   // 5. BigFive 120 ↔ Hxxx mapping + scales(scale_id='bigfive') 生成
   //    + ja_text を BigFive 訳で上書き (= ipip-translation の直訳より bigfive-questions.ts の
   //    意訳/UI 馴染ませ版を一次正とする方針).
@@ -896,23 +935,128 @@ function build() {
     }
   }
 
+  // Phase 2.x.D.1.aug: NEO/HEXACO/TCI の facet → domain mapping.
+  //   各 facet (= label) に対して所属 domain (= scale_name) を引くテーブル.
+  //   supplement.json で scale_name が明示されていれば優先、なければここから補完.
+  //   level 3 entry に昇格させ scale_hierarchy で正しい tree を構築.
+  const DOMAIN_BY_FACET: Record<string, Record<string, string>> = {
+    "NEO": {
+      "Anxiety": "Neuroticism", "Anger": "Neuroticism", "Depression": "Neuroticism",
+      "Self-Consciousness": "Neuroticism", "Immoderation": "Neuroticism", "Vulnerability": "Neuroticism",
+      "Friendliness": "Extraversion", "Gregariousness": "Extraversion", "Assertiveness": "Extraversion",
+      "Activity Level": "Extraversion", "Excitement-Seeking": "Extraversion", "Cheerfulness": "Extraversion",
+      "Imagination": "Openness", "Artistic Interests": "Openness", "Emotionality": "Openness",
+      "Adventurousness": "Openness", "Intellect": "Openness", "Liberalism": "Openness",
+      "Trust": "Agreeableness", "Morality": "Agreeableness", "Altruism": "Agreeableness",
+      "Cooperation": "Agreeableness", "Modesty": "Agreeableness", "Sympathy": "Agreeableness",
+      "Self-Efficacy": "Conscientiousness", "Orderliness": "Conscientiousness", "Dutifulness": "Conscientiousness",
+      "Achievement-Striving": "Conscientiousness", "Self-Discipline": "Conscientiousness", "Cautiousness": "Conscientiousness",
+    },
+    "HEXACO_PI": {
+      "Sincerity": "Honesty-Humility", "Fairness": "Honesty-Humility",
+      "Greed Avoidance": "Honesty-Humility", "Modesty": "Honesty-Humility",
+      "Fearfulness": "Emotionality", "Anxiety": "Emotionality",
+      "Dependence": "Emotionality", "Sentimentality": "Emotionality",
+      "Expressiveness": "Extraversion", "Social Boldness": "Extraversion",
+      "Sociability": "Extraversion", "Liveliness": "Extraversion",
+      "Forgiveness": "Agreeableness", "Gentleness": "Agreeableness",
+      "Flexibility": "Agreeableness", "Patience": "Agreeableness",
+      "Organization": "Conscientiousness", "Diligence": "Conscientiousness",
+      "Perfectionism": "Conscientiousness", "Prudence": "Conscientiousness",
+      "Aesthetic Appreciation": "Openness", "Inquisitiveness": "Openness",
+      "Creativity": "Openness", "Unconventionality": "Openness",
+    },
+    "TCI": {
+      "Variety-Seeking": "Novelty-Seeking", "Recklessness": "Novelty-Seeking",
+      "Extravagance": "Novelty-Seeking", "Rebelliousness": "Novelty-Seeking",
+      "Neuroticism": "Harm Avoidance", "Harm Avoidance": "Harm Avoidance",
+      "Social Discomfort": "Harm Avoidance", "Low Self-Efficacy": "Harm Avoidance",
+      "Sentimentality": "Reward Dependence", "Friendliness": "Reward Dependence",
+      "Self-Disclosure": "Reward Dependence", "Dependence": "Reward Dependence",
+      "Initiative": "Persistence", "Competence": "Persistence",
+      "Achievement-Striving": "Persistence", "Industriousness": "Persistence",
+      "Satisfaction": "Self-Directedness", "Optimism": "Self-Directedness",
+      "Resourcefulness": "Self-Directedness", "Self-Acceptance": "Self-Directedness",
+      "Impulse Control": "Self-Directedness",
+      "Tolerance": "Cooperativeness", "Empathy": "Cooperativeness",
+      "Trust": "Cooperativeness", "Compassion": "Cooperativeness", "Morality": "Cooperativeness",
+      "Imagination": "Self-Transcendence", "Romanticism": "Self-Transcendence",
+      "Spirituality": "Self-Transcendence", "Conservatism": "Self-Transcendence",
+      "Femininity": "Self-Transcendence",
+    },
+    "6FPQ": {
+      "Gregariousness": "Extraversion", "Leadership": "Extraversion", "Exhibitionism": "Extraversion",
+      "Docility": "Agreeableness", "Calmness": "Agreeableness", "Adaptability": "Agreeableness",
+      "Conservatism": "Methodicalness", "Deliberateness": "Methodicalness", "Orderliness": "Methodicalness",
+      "Reclusiveness": "Independence", "Unpretentiousness": "Independence", "Self-Sufficiency": "Independence",
+      "Adventurousness": "Intellectual Openness", "Comprehension": "Intellectual Openness", "Culture": "Intellectual Openness",
+      "Achievement-Striving": "Industriousness", "Resourcefulness": "Industriousness", "Playfulness": "Industriousness",
+    },
+    "AB5C": {},
+  };
+
   // (b) ipip-scales-supplement.json の各 entry から階層情報を上書き / 補強.
   //   supplement の instrument + label を信頼 (= IPIP 公式 page audit 結果)
   try {
     const ssText = readFileSync(IPIP_SCALES_SUPPLEMENT_JSON, "utf-8");
-    const ssParsed = JSON.parse(ssText) as { scales?: Array<{ scale_id: string; instrument?: string; label?: string; alpha?: number | null; source_url?: string }> };
+    const ssParsed = JSON.parse(ssText) as { scales?: Array<{ scale_id: string; instrument?: string; label?: string; scale_name?: string; alpha?: number | null; source_url?: string }> };
     for (const sc of ssParsed.scales ?? []) {
       if (!sc.scale_id || !sc.instrument) continue;
+
+      // Phase 2.x.D.1.aug: NEO/HEXACO/TCI/6FPQ の facet → domain 補強.
+      //   supplement.json に scale_name が無くても DOMAIN_BY_FACET map から推定して 3 階層化.
+      let augmentedScaleName = sc.scale_name;
+      if (!augmentedScaleName && sc.label && DOMAIN_BY_FACET[sc.instrument]?.[sc.label]) {
+        augmentedScaleName = DOMAIN_BY_FACET[sc.instrument][sc.label];
+      }
+
       const existing = hierarchyMap.get(sc.scale_id);
       if (existing) {
-        // alpha / source_url の補強のみ (既存 hierarchy structure は維持)
+        // alpha / source_url の補強 + domain 階層 augment.
         if (sc.alpha !== undefined && sc.alpha !== null && existing.alpha === null) existing.alpha = sc.alpha;
         if (sc.source_url && !existing.source_url) existing.source_url = sc.source_url;
+        // domain 階層 augment: DOMAIN_BY_FACET で domain 推定できて、かつ既存 scale_name が「facet と同名」(= Tedone 由来で domain 知らず) の場合、level 3 に昇格.
+        const looksLikeFlatTedone = !existing.facet_name && existing.scale_name === sc.label;
+        if (augmentedScaleName && (looksLikeFlatTedone || !existing.scale_name)) {
+          const baseScaleId = instrumentToScaleId(sc.instrument);
+          const domainScaleId = `${baseScaleId}_${instrumentToScaleId(augmentedScaleName)}`;
+          // domain (= level 2) entry を確保
+          if (!hierarchyMap.has(domainScaleId)) {
+            hierarchyMap.set(domainScaleId, {
+              scale_id: domainScaleId,
+              parent_scale_id: baseScaleId,
+              level: 2,
+              instrument: sc.instrument,
+              scale_name: augmentedScaleName,
+              facet_name: null,
+              subfacet_name: null,
+              display_label_en: `${sc.instrument} / ${augmentedScaleName}`,
+              alpha: null,
+              source_url: sc.source_url ?? null,
+            });
+          }
+          // 既存 entry を facet (level 3) に昇格 (= scale_name + facet_name + parent + level + display)
+          existing.scale_name = augmentedScaleName;
+          existing.facet_name = sc.label ?? existing.facet_name;
+          existing.parent_scale_id = domainScaleId;
+          existing.level = 3;
+          existing.display_label_en = sc.label
+            ? `${sc.instrument} / ${augmentedScaleName} / ${sc.label}`
+            : existing.display_label_en;
+        }
       } else {
-        // 新規 entry: instrument + label から階層推定 (Tedone と同 logic)
-        const labelParts = (sc.label ?? "").split(",").map((s) => s.trim()).filter((s) => s.length > 0);
-        const scaleName = labelParts[0] || null;
-        const facetName = labelParts[1] ?? null;
+        // 新規 entry: instrument + label から階層推定 (Tedone と同 logic).
+        // Phase 2.x.D.1.aug: augmentedScaleName が augment 出来た場合は scale_name として facet 単独 label と分離.
+        let scaleName: string | null;
+        let facetName: string | null;
+        if (augmentedScaleName) {
+          scaleName = augmentedScaleName;
+          facetName = sc.label ?? null;
+        } else {
+          const labelParts = (sc.label ?? "").split(",").map((s) => s.trim()).filter((s) => s.length > 0);
+          scaleName = labelParts[0] || null;
+          facetName = labelParts[1] ?? null;
+        }
         const baseScaleId = instrumentToScaleId(sc.instrument);
         // 中間 scale level を確保
         if (scaleName && facetName) {
@@ -965,14 +1109,25 @@ function build() {
   } catch {}
 
   // (c) SQL 投入. DELETE → INSERT で冪等性確保 (= 既存 row 全削除してから新規 INSERT).
+  //   display_label_ja は scale-hierarchy-ja.json (Phase 2.x.E.1) から populate.
+  let hierarchyJa: Record<string, string> = {};
+  try {
+    const hjText = readFileSync(SCALE_HIERARCHY_JA_JSON, "utf-8");
+    const hjParsed = JSON.parse(hjText) as { translations?: Record<string, string> };
+    hierarchyJa = hjParsed.translations ?? {};
+  } catch {}
+  let hierarchyJaCount = 0;
   sql.push("");
   sql.push("-- scale_hierarchy (Phase 2.x.D: 階層 tree)");
   sql.push("DELETE FROM scale_hierarchy;");
   for (const h of hierarchyMap.values()) {
+    const ja = hierarchyJa[h.scale_id] ?? null;
+    if (ja) hierarchyJaCount++;
     sql.push(
-      `INSERT INTO scale_hierarchy (scale_id, parent_scale_id, level, instrument, scale_name, facet_name, subfacet_name, display_label_en, display_label_ja, alpha, source_url, created_at) VALUES (${sqlStr(h.scale_id)}, ${sqlStr(h.parent_scale_id)}, ${h.level}, ${sqlStr(h.instrument)}, ${sqlStr(h.scale_name)}, ${sqlStr(h.facet_name)}, ${sqlStr(h.subfacet_name)}, ${sqlStr(h.display_label_en)}, NULL, ${sqlNum(h.alpha)}, ${sqlStr(h.source_url)}, ${now});`,
+      `INSERT INTO scale_hierarchy (scale_id, parent_scale_id, level, instrument, scale_name, facet_name, subfacet_name, display_label_en, display_label_ja, alpha, source_url, created_at) VALUES (${sqlStr(h.scale_id)}, ${sqlStr(h.parent_scale_id)}, ${h.level}, ${sqlStr(h.instrument)}, ${sqlStr(h.scale_name)}, ${sqlStr(h.facet_name)}, ${sqlStr(h.subfacet_name)}, ${sqlStr(h.display_label_en)}, ${sqlStr(ja)}, ${sqlNum(h.alpha)}, ${sqlStr(h.source_url)}, ${now});`,
     );
   }
+  log.push(`  display_label_ja populated: ${hierarchyJaCount} / ${hierarchyMap.size}`);
   // level 別 count log
   const byLevel = new Map<number, number>();
   for (const h of hierarchyMap.values()) byLevel.set(h.level, (byLevel.get(h.level) ?? 0) + 1);
@@ -995,33 +1150,124 @@ function build() {
   let canonicalImplsCount = 0;
   let canonicalResolved = 0;
 
-  // scale_hierarchy から (instrument, facet_name) → scale_id の逆引き map
-  // canonical page facet_code (e.g., "C4") と私の facet_name (e.g., "Achievement-striving") は一致しないが、
-  // instrument 単位の scale_id 体系を活用して fuzzy match を試みる.
-  const instrumentFacetToScaleId = new Map<string, string>();
-  // Tedone label slug (= 私の scale_id suffix) で逆引き構築. e.g., "NEO::achievement-striving" → "neo_achievement_striving"
+  // scale_hierarchy から (instrument, key) → scale_id の逆引き map.
+  // Phase 2.x.D.2: 複数 key (facet_name / scale_name / 両 slug 形式) を全て登録して
+  // fuzzy match の hit 率を最大化.
+  const instrumentKeyToScaleId = new Map<string, string>();
+  const addKey = (instrument: string, key: string, scaleId: string) => {
+    if (!key) return;
+    const k = `${instrument}::${normalizeFacetKey(key)}`;
+    if (!instrumentKeyToScaleId.has(k)) instrumentKeyToScaleId.set(k, scaleId);
+  };
   for (const h of hierarchyMap.values()) {
     if (h.level < 2) continue;
-    if (h.facet_name) {
-      instrumentFacetToScaleId.set(`${h.instrument}::${h.facet_name.toLowerCase()}`, h.scale_id);
-    }
-    if (h.scale_name) {
-      instrumentFacetToScaleId.set(`${h.instrument}::${h.scale_name.toLowerCase()}`, h.scale_id);
+    if (h.facet_name) addKey(h.instrument, h.facet_name, h.scale_id);
+    if (h.scale_name) addKey(h.instrument, h.scale_name, h.scale_id);
+    // scale_id の suffix (instrument prefix を除く部分) も登録. e.g., "neo_achievement_striving" → "achievement_striving"
+    const slug = instrumentToScaleId(h.instrument);
+    if (h.scale_id.startsWith(`${slug}_`)) {
+      const suffix = h.scale_id.slice(slug.length + 1);
+      addKey(h.instrument, suffix, h.scale_id);
     }
   }
 
-  // instrument 名 normalize (= IPIP page "HEX" → Tedone "HEXACO_PI", "Big-Five" → "BFAS" 等の異名)
+  // canonical_labels の instrument 名 → 私の scale_hierarchy.instrument 名 alias.
   const INSTRUMENT_ALIASES: Record<string, string> = {
     "HEX": "HEXACO_PI",
     "Big-Five": "BFAS",
     "Big-7": "BFAS",
-    "BFAS-20": "BFAS-20",
-    "NEO5-20": "NEO5-20",
+    "BIDR": "BIDR",
+    "BFAS-20": "BFAS",
+    "NEO5-20": "NEO",
+    "Big-Seven": "Saucier1997",
+    "BAS-Drive": "Carver1994",
+    "BAS-Fun-seeking": "Carver1994",
+    "BAS-Reward-Responsiveness": "Carver1994",
+    "BIS-Anxiety": "Carver1994",
+    "BIS/BAS": "Carver1994",
+    "BIS-BAS": "Carver1994",
+    "ADHD": "Span2002",
+    // 単一 construct instrument → 実 scale_hierarchy 上の instrument 名 (= source の "Author + 年" slug)
+    "Cognitive Failures": "BIDR", // IPIP project は Broadbent を BIDR sub-scale として実装
+    "Scheier, et al.": "Scheier1994",
+    "Mood Intensity/Change": "Chapman1986", // Eckblad & Chapman, 1986 = Chapman1986
+    "Self-Monitoring": "Snyder1974",
+    "Self-Esteem": "Rosenberg1965",
+    "Need for Cognition": "Cacioppo1982",
+    "Locus of Control": "Levenson1981",
+    "Public Self-Consciousness": "Buss1980",
+    "Private Self-Consciousness": "Buss1980",
+    "Exhibitionism": "Chapman1986", // Hypomanic Exhibitionism = Chapman1986
+    "Need for Order and Cleanliness": "Foa1998",
+    "Obsessive-Compulsive Symptoms": "Foa2002",
+    "Impulsive Thrill-seeking": "Hoyle2002",
+    "Dangerous Thrill-seeking": "Hoyle2002",
+    "Calculated Thrill-seeking": "Hoyle2002",
+    "Physical Attractiveness": "Buss1980",
+    "Perfectionism": "Hoyle2002",
+    "Dissociation": "Goldberg1999",
+    "CES-D": "Radloff1977",
+    "Barchard": "Barchard2001",
+    "CAT-PD": "CAT-PD",
+  };
+
+  // facet_code → label 翻訳表を load (Phase 2.x.D.2).
+  let facetCodes: Record<string, Array<{ code: string; label: string }>> = {};
+  try {
+    const fcText = readFileSync(IPIP_FACET_CODES_JSON, "utf-8");
+    const fcParsed = JSON.parse(fcText) as { instruments?: typeof facetCodes };
+    facetCodes = fcParsed.instruments ?? {};
+  } catch {}
+
+  // resolve 関数: 多段 strategy で scale_id を返す (null = unresolved).
+  const resolveCanonical = (instrument: string, facetCode: string): string | null => {
+    const aliasedInst = INSTRUMENT_ALIASES[instrument] ?? instrument;
+
+    // strategy 1: facet_code を facet_codes table で label に翻訳 → (instrument, label) lookup
+    const codeMap = facetCodes[instrument] ?? facetCodes[aliasedInst] ?? [];
+    const translated = codeMap.find((e) => e.code === facetCode)?.label;
+    if (translated) {
+      const hit = instrumentKeyToScaleId.get(`${aliasedInst}::${normalizeFacetKey(translated)}`);
+      if (hit) return hit;
+    }
+
+    // strategy 2: facet_code を直接 lookup (ORVIS "Adventure" / BFAS "Openness" / CAT-PD "Anger" 等)
+    {
+      const hit = instrumentKeyToScaleId.get(`${aliasedInst}::${normalizeFacetKey(facetCode)}`);
+      if (hit) return hit;
+    }
+
+    // strategy 3: HPI "Competitive HIC" 等の suffix 除去
+    if (facetCode.endsWith(" HIC")) {
+      const stripped = facetCode.slice(0, -4).trim();
+      const hit = instrumentKeyToScaleId.get(`${aliasedInst}::${normalizeFacetKey(stripped)}`);
+      if (hit) return hit;
+    }
+
+    // strategy 4: 単一 instrument scale (= instrument 自体が scale).
+    //   single-construct で facet_code が citation や "Domain" 等の場合、instrument slug 単独を返す.
+    const baseId = instrumentToScaleId(aliasedInst);
+    // hierarchyMap に level-2 で 1 entry のみある場合はそれを返す
+    const level2 = [...hierarchyMap.values()].filter((h) => h.instrument === aliasedInst && h.level === 2);
+    if (level2.length === 1) return level2[0].scale_id;
+    // level-1 (instrument 単独) を返す (= 構成概念 navigation で「この instrument 全体に該当」を意味)
+    if (hierarchyMap.has(baseId)) return baseId;
+
+    return null;
   };
 
   try {
     const clText = readFileSync(IPIP_CANONICAL_LABELS_JSON, "utf-8");
     const clParsed = JSON.parse(clText) as { labels?: CanonicalLabelEntry[] };
+
+    // Phase 2.x.E.2: canonical_labels の ja 訳 load.
+    let canonicalJa: Record<string, string> = {};
+    try {
+      const cjText = readFileSync(CANONICAL_LABELS_JA_JSON, "utf-8");
+      const cjParsed = JSON.parse(cjText) as { translations?: Record<string, string> };
+      canonicalJa = cjParsed.translations ?? {};
+    } catch {}
+
     sql.push("");
     sql.push("-- canonical_labels + canonical_label_implementations (Phase 2.x.D.1)");
     sql.push("DELETE FROM canonical_label_implementations;");
@@ -1029,18 +1275,15 @@ function build() {
 
     for (const entry of clParsed.labels ?? []) {
       if (!entry.canonical_label) continue;
+      const ja = canonicalJa[entry.canonical_label] ?? null;
       sql.push(
-        `INSERT INTO canonical_labels (canonical_label, display_label_ja, description, created_at) VALUES (${sqlStr(entry.canonical_label)}, NULL, NULL, ${now});`,
+        `INSERT INTO canonical_labels (canonical_label, display_label_ja, description, created_at) VALUES (${sqlStr(entry.canonical_label)}, ${sqlStr(ja)}, NULL, ${now});`,
       );
       canonicalLabelsCount++;
 
       for (const impl of entry.implementations ?? []) {
         if (!impl.instrument || !impl.facet_code) continue;
-        // instrument alias resolve
-        const resolvedInstrument = INSTRUMENT_ALIASES[impl.instrument] ?? impl.instrument;
-        // scale_id resolution (best effort fuzzy match)
-        const lookupKey = `${resolvedInstrument}::${impl.facet_code.toLowerCase()}`;
-        const scaleId = instrumentFacetToScaleId.get(lookupKey) ?? null;
+        const scaleId = resolveCanonical(impl.instrument, impl.facet_code);
         if (scaleId) canonicalResolved++;
 
         sql.push(
