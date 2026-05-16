@@ -4,7 +4,11 @@ import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 
-// Neo-Brutalist Typography System
+// 心理測定ラボ用 root layout (Neo-Brutalist Typography System).
+//
+// app/(psychtest)/ 配下の全 page (= home, /bigfive, /dashboard, /share, etc)
+// に適用される. (uranai)/ 配下 (= 占い世界) とは完全分離.
+
 const archivoBlack = Archivo_Black({
   weight: "400",
   subsets: ["latin"],
@@ -33,16 +37,18 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: "心理測定ラボ | 科学的フレームワークで心を多層的に理解する",
-  description: "LST理論とMcAdamsモデルに基づく4層構造（Trait・Skill・State・Outcome）で、あなたの心理を科学的に測定。学術論文で検証された信頼性の高い心理尺度を提供します。",
+  description:
+    "LST理論とMcAdamsモデルに基づく4層構造（Trait・Skill・State・Outcome）で、あなたの心理を科学的に測定。学術論文で検証された信頼性の高い心理尺度を提供します。",
 };
 
-export default function RootLayout({
+export default function PsychtestRootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="ja" className={`${archivoBlack.variable} ${notoSansJP.variable} ${inter.variable} ${jetbrainsMono.variable}`}>
+    <html
+      lang="ja"
+      className={`${archivoBlack.variable} ${notoSansJP.variable} ${inter.variable} ${jetbrainsMono.variable}`}
+    >
       <body className="antialiased">
         <Header />
         {children}

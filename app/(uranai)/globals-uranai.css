@@ -1,0 +1,120 @@
+@import "tailwindcss";
+
+/* === 月読 (Tsukuyomi) brand: 夜・月光・タロット・西洋占星術 ===
+ *
+ * Palette: deep indigo / midnight blue / ivory moonlight / pale gold accents.
+ * Typography: 詩的 serif (Noto Serif JP) 主軸 + sans/mono は補助.
+ *
+ * 心理測定ラボ (= (psychtest)/globals.css) の neo-brutal palette とは完全独立.
+ * 将来別ドメイン切り出し時にそのまま持ち運べる self-contained ファイル.
+ */
+
+@theme {
+  /* === COLORS === */
+  --color-tsuki-night-0: #0d0d1f;   /* darkest, near black */
+  --color-tsuki-night-1: #1a1a2e;   /* base background */
+  --color-tsuki-night-2: #23234a;   /* card / elevated surface */
+  --color-tsuki-night-3: #2d2d5e;   /* hover / accent */
+
+  --color-tsuki-moon: #f0e9d6;      /* ivory moonlight, primary text */
+  --color-tsuki-moon-dim: #c8c2b1;  /* secondary text */
+  --color-tsuki-gold: #f7c45c;      /* warm accent (タロット, 灯り) */
+  --color-tsuki-indigo: #5a6fd8;    /* secondary accent (星, 直感) */
+  --color-tsuki-rose: #d88faf;      /* error / mental health alert */
+
+  /* === BORDER === */
+  --border-width-tsuki: 1px;
+
+  /* === FONT FAMILIES === */
+  --font-family-tsuki-serif: var(--font-tsuki-serif);
+  --font-family-tsuki-sans: var(--font-tsuki-sans);
+  --font-family-tsuki-mono: var(--font-tsuki-mono);
+}
+
+@layer base {
+  :root {
+    --font-tsuki-serif: 'Noto Serif JP', 'Hiragino Mincho ProN', 'YuMincho', serif;
+    --font-tsuki-sans: 'Noto Sans JP', sans-serif;
+    --font-tsuki-mono: 'JetBrains Mono', monospace;
+  }
+
+  html {
+    background-color: var(--color-tsuki-night-0);
+    color: var(--color-tsuki-moon);
+  }
+
+  body {
+    background-color: var(--color-tsuki-night-1);
+    color: var(--color-tsuki-moon);
+    font-family: var(--font-tsuki-serif);
+    line-height: 1.8;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* 占い世界の page 直下 wrapper. dark palette を強制適用.
+     immersive のため html/body 外側 scrollbar も殺す (= viewport 固定). */
+  html:has(.uranai-realm),
+  .uranai-realm {
+    background-color: var(--color-tsuki-night-1);
+    color: var(--color-tsuki-moon);
+    height: 100dvh;
+    min-height: 100dvh;
+    overflow: hidden;
+  }
+
+  /* リンクは月光色、hover で gold */
+  .uranai-realm a {
+    color: var(--color-tsuki-moon);
+    text-decoration-color: var(--color-tsuki-moon-dim);
+  }
+  .uranai-realm a:hover {
+    color: var(--color-tsuki-gold);
+  }
+
+  /* form inputs (textarea/input/select) は読みやすい contrast に */
+  .uranai-realm textarea,
+  .uranai-realm input,
+  .uranai-realm select {
+    color: var(--color-tsuki-night-0);
+  }
+}
+
+/* === UTILITY HELPERS === */
+@layer utilities {
+  .text-tsuki-serif { font-family: var(--font-tsuki-serif); }
+  .text-tsuki-sans { font-family: var(--font-tsuki-sans); }
+  .text-tsuki-mono { font-family: var(--font-tsuki-mono); }
+}
+
+/* === Character layer animation === */
+/* 立ち絵にゆったりした呼吸感を出す. transform-origin が下端なので画面下半分が動きにくい. */
+@keyframes uranai-breath {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.012); }
+}
+
+.uranai-breath {
+  animation: uranai-breath 6s ease-in-out infinite;
+  transform-origin: center bottom;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .uranai-breath { animation: none; }
+}
+
+/* === Scrollbar 非表示 (= 月読 chat bubble area で immersive 優先) ===
+   scrolling は維持、visual track のみ消す. specificity 上げ用に *
+   セレクタも併用 (= 子孫含めて全 scrollbar 非表示). */
+.uranai-no-scrollbar,
+.uranai-no-scrollbar * {
+  scrollbar-width: none;       /* Firefox */
+  -ms-overflow-style: none;    /* legacy IE/Edge */
+}
+.uranai-no-scrollbar::-webkit-scrollbar,
+.uranai-no-scrollbar *::-webkit-scrollbar {
+  display: none;               /* Chrome/Safari/Edge */
+  width: 0;
+  height: 0;
+}

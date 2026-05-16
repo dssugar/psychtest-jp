@@ -32,6 +32,10 @@ export async function generateStaticParams() {
   }));
 }
 
+// generateStaticParams の値以外は 404 (= /favicon.ico /sw.js 等が
+// dynamic root [testType] にマッチして 500 になるのを防ぐ).
+export const dynamicParams = false;
+
 export default async function TestLandingPage({ params }: PageProps) {
   const { testType } = await params;
 
