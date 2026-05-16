@@ -104,9 +104,9 @@ export interface UserProfile {
  * @deprecated Use UserProfile instead
  */
 export interface UserData {
-  results: {
-    // SCCS removed - replaced with selfconcept (IPIP public domain alternative)
-  };
+  // SCCS removed - replaced with selfconcept (IPIP public domain alternative).
+  // Field 残置は loadUserData() legacy API 互換のため. β/公開時に削除.
+  results: Record<string, never>;
   userId: string | null;
 }
 
