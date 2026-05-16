@@ -123,22 +123,49 @@ jobs:
         if: inputs.mode == 'disable_bfm' || inputs.mode == 'both'
         run: |
           set -e
-          BEFORE=$(curl -fsS "$CF_API/zones/$ZONE_ID/bot_management" \
-            -H "Authorization: Bearer $CF_TOKEN")
-          echo "before: $(echo "$BEFORE" | jq -c '.result // .errors')"
+          # Free plan は /bot_management に Bot Management:Edit が必要。
+          # 代替として /settings/bot_fight_mode が Zone Settings:Edit で叩ける場合がある。
+          # 両方試して、成功した方を採用。
+          OK=""
 
-          RESP=$(curl -fsS -X PUT "$CF_API/zones/$ZONE_ID/bot_management" \
+          # 1st try: /bot_management (Pro+ または Bot Management:Edit scope あり)
+          CODE=$(curl -s -o /tmp/bm.json -w "%{http_code}" -X PUT \
+            "$CF_API/zones/$ZONE_ID/bot_management" \
             -H "Authorization: Bearer $CF_TOKEN" \
             -H "Content-Type: application/json" \
             -d '{"fight_mode": false}')
-          SUCCESS=$(echo "$RESP" | jq -r '.success')
-          if [ "$SUCCESS" != "true" ]; then
-            echo "::error::disable_bfm failed"
-            echo "$RESP" | jq .
+          if [ "$CODE" = "200" ]; then
+            echo "::notice::disabled via /bot_management endpoint"
+            jq '.result' /tmp/bm.json
+            OK=1
+          else
+            echo "::notice::/bot_management → HTTP $CODE, trying settings endpoint"
+            jq '.errors // .' /tmp/bm.json | head -10 || true
+          fi
+
+          # 2nd try: /settings/bot_fight_mode (Zone Settings:Edit で通る可能性)
+          if [ -z "$OK" ]; then
+            CODE=$(curl -s -o /tmp/bfm.json -w "%{http_code}" -X PATCH \
+              "$CF_API/zones/$ZONE_ID/settings/bot_fight_mode" \
+              -H "Authorization: Bearer $CF_TOKEN" \
+              -H "Content-Type: application/json" \
+              -d '{"value": "off"}')
+            if [ "$CODE" = "200" ]; then
+              echo "::notice::disabled via /settings/bot_fight_mode endpoint"
+              jq '.result' /tmp/bfm.json
+              OK=1
+            else
+              echo "::error::/settings/bot_fight_mode → HTTP $CODE"
+              jq '.errors // .' /tmp/bfm.json | head -10 || true
+            fi
+          fi
+
+          if [ -z "$OK" ]; then
+            echo "::error::いずれの endpoint も 403/404。Cloudflare token に以下のいずれかの scope 追加が必要:"
+            echo "  - Account → Bot Management:Edit"
+            echo "  - もしくは Zone Settings:Edit が BFM 制御を含むようにロール調整"
             exit 1
           fi
-          AFTER_FM=$(echo "$RESP" | jq -r '.result.fight_mode')
-          echo "::notice::Bot Fight Mode now: $AFTER_FM (要 false)"
 
       - name: inspect — dump zone security state
         if: always()
