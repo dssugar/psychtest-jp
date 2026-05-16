@@ -1,0 +1,110 @@
+[
+  {
+    "scale_id": "bigfive",
+    "category": "multi-construct",
+    "ja_label": "ビッグファイブ性格特性",
+    "ja_description": "5 つの主要な性格次元 (外向性・神経症傾向・開放性・協調性・誠実性) を 30 ファセットで測定。IPIP 公開版で NEO-PI-R 相当の信頼性。",
+    "source_url": "https://ipip.ori.org/newNEOKey.htm",
+    "reference": "Johnson, J. A. (2014). Measuring thirty facets of the Five Factor Model with a 120-item public domain inventory: Development of the IPIP-NEO-120. Journal of Research in Personality, 51, 78-89.",
+    "official_total_items": 120
+  },
+  {
+    "scale_id": "industriousness",
+    "category": "multi-construct",
+    "ja_label": "勤勉性 (達成努力 × 自己鍛錬)",
+    "ja_description": "ビッグファイブ「誠実性」の中核 2 ファセット (C4 達成努力 + C5 自己鍛錬) を IPIP-300 から抽出。Grit Scale との相関 r > .75。",
+    "source_url": "https://ipip.ori.org/new_ipip-300.htm",
+    "reference": "DeYoung, C. G., Quilty, L. C., & Peterson, J. B. (2007). Between facets and domains: 10 aspects of the Big Five. Journal of Personality and Social Psychology, 93(5), 880-896.",
+    "official_total_items": 20
+  },
+  {
+    "scale_id": "rosenberg",
+    "category": "single-construct",
+    "ja_label": "自尊感情 (Rosenberg)",
+    "ja_description": "自己に対する肯定的・否定的態度を測定する 10 項目尺度。1965 年以来 4 万件以上の研究で使用される自尊心測定の世界標準。",
+    "source_url": "https://ipip.ori.org/newRSEKey.htm",
+    "reference": "Rosenberg, M. (1965). Society and the adolescent self-image. Princeton, NJ: Princeton University Press.",
+    "official_total_items": 10
+  },
+  {
+    "scale_id": "phq9",
+    "category": "single-construct",
+    "ja_label": "抑うつ症状スクリーニング (PHQ-9)",
+    "ja_description": "DSM-IV に基づくうつ病 9 症状を評価する国際標準スクリーニング。0-27 点、10 点以上で専門家相談を推奨。医療診断ではない。",
+    "source_url": "https://www.phqscreeners.com/select-screener",
+    "reference": "Kroenke, K., Spitzer, R. L., & Williams, J. B. W. (2001). The PHQ-9: validity of a brief depression severity measure. Journal of General Internal Medicine, 16(9), 606-613.",
+    "official_total_items": 9
+  },
+  {
+    "scale_id": "k6",
+    "category": "single-construct",
+    "ja_label": "心理的苦痛スクリーニング (K6)",
+    "ja_description": "過去 30 日間の心理的苦痛を測定する 6 項目尺度。13 点以上で精神疾患の可能性 (特異度 96%)。日本の国民生活基礎調査でも使用。",
+    "source_url": "https://www.hcp.med.harvard.edu/ncs/k6_scales.php",
+    "reference": "Kessler, R. C., Andrews, G., Colpe, L. J., et al. (2002). Short screening scales to monitor population prevalences and trends in non-specific psychological distress. Psychological Medicine, 32(6), 959-976.",
+    "official_total_items": 6
+  },
+  {
+    "scale_id": "swls",
+    "category": "single-construct",
+    "ja_label": "人生満足度 (SWLS)",
+    "ja_description": "人生全体に対する認知的満足度を測定する 5 項目尺度。4 万件以上の研究で使用されるウェルビーイング測定の世界標準。",
+    "source_url": "https://eddiener.com/scales/7",
+    "reference": "Diener, E., Emmons, R. A., Larsen, R. J., & Griffin, S. (1985). The Satisfaction with Life Scale. Journal of Personality Assessment, 49(1), 71-75.",
+    "official_total_items": 5
+  },
+  {
+    "scale_id": "selfconcept",
+    "category": "single-construct",
+    "ja_label": "自己概念の明確さ",
+    "ja_description": "自分自身をどの程度明確に理解しているかを測定。原著 SCCS の代替として IPIP-NEO Self-Consciousness Facet (8 項目、構成概念妥当性 r > .70) を使用。",
+    "source_url": "https://ipip.ori.org/newNEOFacetsKey.htm",
+    "reference": "Campbell, J. D., Trapnell, P. D., Heine, S. J., Katz, I. M., Lavallee, L. F., & Lehman, D. R. (1996). Self-concept clarity: Measurement, personality correlates, and cultural boundaries. Journal of Personality and Social Psychology, 70(1), 141-156.",
+    "official_total_items": 8
+  },
+  {
+    "scale_id": "hexaco_pi",
+    "category": "multi-construct",
+    "ja_label": "HEXACO 性格特性",
+    "ja_description": "ビッグファイブに「正直-謙虚さ (H)」を加えた 6 次元 × 25 ファセット構造で性格を測定。Honesty-Humility 因子で道徳的振る舞いを予測。",
+    "source_url": "https://ipip.ori.org/newHEXACO_PIKey.htm",
+    "reference": "Ashton, M. C., Lee, K., & de Vries, R. E. (2014). The HEXACO Honesty-Humility, Agreeableness, and Emotionality factors: A review of research and theory. Personality and Social Psychology Review, 18(2), 139-152.",
+    "official_total_items": 223
+  },
+  {
+    "scale_id": "via",
+    "category": "multi-construct",
+    "ja_label": "キャラクター・ストレングス (VIA)",
+    "ja_description": "ポジティブ心理学の中心理論。24 の人格的強み (好奇心・誠実さ・感謝など) を 6 つの徳性 (智慧・勇気・人間性・正義・節制・超越性) に整理。",
+    "source_url": "https://ipip.ori.org/newVIAKey.htm",
+    "reference": "Peterson, C., & Seligman, M. E. P. (2004). Character strengths and virtues: A handbook and classification. Oxford University Press.",
+    "official_total_items": 252
+  },
+  {
+    "scale_id": "orvis",
+    "category": "multi-construct",
+    "ja_label": "職業興味 (ORVIS / RIASEC 系)",
+    "ja_description": "Holland の RIASEC モデル (現実的・研究的・芸術的・社会的・企業的・慣習的) を IPIP 公開版で測定するキャリア適合性尺度。",
+    "source_url": "https://ipip.ori.org/newOregonAvocationalInterestScales.htm",
+    "reference": "Pozzebon, J. A., Visser, B. A., Ashton, M. C., Lee, K., & Goldberg, L. R. (2010). Psychometric characteristics of a public-domain self-report measure of vocational interests: The Oregon Vocational Interest Scales. Journal of Personality Assessment, 92(2), 168-174.",
+    "official_total_items": 92
+  },
+  {
+    "scale_id": "ipip_ipc",
+    "category": "multi-construct",
+    "ja_label": "対人円環 (IPIP-IPC)",
+    "ja_description": "対人行動を「支配性」「親密性」2 軸の円環構造で捉える尺度。8 つの対人スタイル象限を 32 項目で測定。",
+    "source_url": "https://ipip.ori.org/newIPCKey.htm",
+    "reference": "Markey, P. M., & Markey, C. N. (2009). A brief assessment of the interpersonal circumplex: The IPIP-IPC. Assessment, 16(4), 352-361.",
+    "official_total_items": 32
+  },
+  {
+    "scale_id": "mpq",
+    "category": "multi-construct",
+    "ja_label": "多次元人格質問紙 (MPQ)",
+    "ja_description": "Tellegen の 3 高次因子 (ポジティブ感情性・ネガティブ感情性・抑制) × 11 一次尺度で性格を測定。臨床・行動遺伝研究で広く使用。",
+    "source_url": "https://ipip.ori.org/newMPQKey.htm",
+    "reference": "Tellegen, A., & Waller, N. G. (2008). Exploring personality through test construction: Development of the Multidimensional Personality Questionnaire. In G. J. Boyle, G. Matthews, & D. H. Saklofske (Eds.), The SAGE handbook of personality theory and assessment (Vol. 2, pp. 261-292).",
+    "official_total_items": 95
+  }
+]

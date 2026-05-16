@@ -35,6 +35,7 @@ const IPIP_3320_XLSX = resolve(ROOT, "data/ipip-master/ipip-3320.xlsx");
 const TEDONE_XLSX = resolve(ROOT, "data/ipip-master/tedone-item-assignment.xlsx");
 const TRANSLATION_CSV = resolve(ROOT, "data/ipip-master/ipip-translation-1941.csv");
 const CLAUDE_TRANSLATION_JSON = resolve(ROOT, "data/ipip-master/claude-translation-2202.json");
+const SCALE_META_JSON = resolve(ROOT, "data/ipip-master/scale-meta.json");
 const SQL_OUT = resolve(ROOT, "scripts/.cache/seed-ipip.sql");
 const BIGFIVE_MAPPING_OUT = resolve(ROOT, "data/ipip-master/bigfive-id-mapping.json");
 const INDUSTRIOUSNESS_MAPPING_OUT = resolve(ROOT, "data/ipip-master/industriousness-id-mapping.json");
@@ -444,6 +445,34 @@ function build() {
   log.push(`industriousness matched: ${industMapping.matched} / 20, unmatched (legacy fallback): ${industMapping.unmatched}`);
   log.push(`industriousness ja_text override: ${industJaOverwritten} overwrote, ${industJaPopulated} populated NULL`);
   sql.push(...industSql);
+
+  // 5.7. scale_meta 投入 (Phase 2.1.β: UI 表示用 metadata、12 scale)
+  //      spec: docs/specs/scale-meta-wedge-2026-05.md §"Narrowest Wedge" Step 3
+  //      scale-meta.json は Daisuke が手動キュレーション (LLM 生成は使わない方針).
+  //      scales table と scale_id を semantic に共有するが FK 制約なし.
+  log.push("");
+  log.push("=== scale_meta seed (Phase 2.1.β) ===");
+  try {
+    const metaItems = JSON.parse(readFileSync(SCALE_META_JSON, "utf-8")) as Array<{
+      scale_id: string;
+      category: "multi-construct" | "single-construct";
+      ja_label: string;
+      ja_description?: string | null;
+      source_url?: string | null;
+      reference?: string | null;
+      official_total_items?: number | null;
+    }>;
+    sql.push("");
+    sql.push("-- scale_meta (Phase 2.1.β: UI 表示 metadata、12 scale)");
+    for (const m of metaItems) {
+      sql.push(
+        `INSERT OR REPLACE INTO scale_meta (scale_id, category, ja_label, ja_description, source_url, reference, official_total_items, created_at, updated_at) VALUES (${sqlStr(m.scale_id)}, ${sqlStr(m.category)}, ${sqlStr(m.ja_label)}, ${sqlStr(m.ja_description ?? null)}, ${sqlStr(m.source_url ?? null)}, ${sqlStr(m.reference ?? null)}, ${sqlNum(m.official_total_items ?? null)}, ${now}, ${now});`,
+      );
+    }
+    log.push(`scale_meta: ${metaItems.length} rows`);
+  } catch (err) {
+    log.push(`scale_meta: skipped (${SCALE_META_JSON} not found or invalid)`);
+  }
 
   // 6. SQL ファイル + mapping JSON を出力
   mkdirSync(dirname(SQL_OUT), { recursive: true });

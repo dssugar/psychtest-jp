@@ -5,6 +5,7 @@
  *   - profiles / conversations / divination_results  (migrations/0001_init.sql)
  *   - profiles.birth_date                            (migrations/0002_birth_date.sql)
  *   - ipip_items / user_responses / scales           (migrations/0003_ipip_unified.sql)
+ *   - scale_meta                                     (migrations/0004_scale_meta.sql)
  *
  * Layer 1 (短期 summary) / Layer 3 (episode) は β/γ で追加するので、ここには
  * 単純な append / select / upsert しかない. JOIN もまだ不要.
@@ -44,6 +45,18 @@ export interface UserResponseRow {
   value: number;
   answered_at: number;
   source: string;
+}
+
+export interface ScaleMetaRow {
+  scale_id: string;
+  category: "multi-construct" | "single-construct";
+  ja_label: string;
+  ja_description: string | null;
+  source_url: string | null;
+  reference: string | null;
+  official_total_items: number | null;
+  created_at: number;
+  updated_at: number;
 }
 
 // ============================================================
@@ -283,4 +296,42 @@ export async function countUserResponses(
     .bind(deviceId)
     .first<{ n: number }>();
   return row?.n ?? 0;
+}
+
+// ============================================================
+// scale_meta (Phase 2.1.β: UI 表示用 scale-level metadata)
+// ============================================================
+
+/**
+ * 1 scale 分の metadata を取得. UI badge / 結果ページの「学術的信頼性」表示用.
+ *
+ * scales table と FK で結合しないので、scale_meta に row が無い scale は null を返す
+ * (= UI 側で fallback テキストを出す).
+ */
+export async function getScaleMeta(
+  db: D1Database,
+  scaleId: string,
+): Promise<ScaleMetaRow | null> {
+  const row = await db
+    .prepare("SELECT * FROM scale_meta WHERE scale_id = ?1")
+    .bind(scaleId)
+    .first<ScaleMetaRow>();
+  return row ?? null;
+}
+
+/**
+ * 一覧取得. category 指定で multi/single を絞り込み可能 (= 診断ハブ UI の section 分け).
+ * 並び順は scale_id 昇順で安定化 (UI 側で再 sort してよい).
+ */
+export async function listScaleMeta(
+  db: D1Database,
+  category?: "multi-construct" | "single-construct",
+): Promise<ScaleMetaRow[]> {
+  const q = category
+    ? db
+        .prepare("SELECT * FROM scale_meta WHERE category = ?1 ORDER BY scale_id")
+        .bind(category)
+    : db.prepare("SELECT * FROM scale_meta ORDER BY scale_id");
+  const r = await q.all<ScaleMetaRow>();
+  return r.results ?? [];
 }

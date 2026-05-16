@@ -38,6 +38,7 @@ npm run db:reset:local
 | `0001_init.sql` | profiles / conversations / divination_results (α wedge 初期 schema) |
 | `0002_birth_date.sql` | profiles に birth_date 列を追加 (Phase 1.9) |
 | `0003_ipip_unified.sql` | ipip_items / user_responses / scales (Phase 2.1 IPIP 統一項目 DB) |
+| `0004_scale_meta.sql` | scale_meta (Phase 2.1.β: UI 表示用 scale-level metadata) |
 
 ## CI への対応
 
