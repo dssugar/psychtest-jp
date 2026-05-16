@@ -62,6 +62,9 @@ export async function listInstruments(db: D1Database): Promise<ScaleHierarchyRow
 
 /**
  * 1 instrument 配下の scale 階層 (level 2-4) を tree 順で取得.
+ *
+ * Phase 2.x.D.3: domain (level 2) で scales table に直接 row が無い場合、
+ * children の items を集計して表示 (= IPIP page 通り「BFAS / Agreeableness = 20 items」).
  */
 export async function listInstrumentScales(
   db: D1Database,
@@ -69,12 +72,17 @@ export async function listInstrumentScales(
 ): Promise<ScaleHierarchyRow[]> {
   const r = await db
     .prepare(
-      `SELECT h.*, (
-         SELECT COUNT(*) FROM scales s WHERE s.scale_id = h.scale_id
-       ) AS item_count
-       FROM scale_hierarchy h
-       WHERE h.instrument = ?1 AND h.level >= 2
-       ORDER BY h.level, h.scale_name, h.facet_name`,
+      `WITH base AS (
+         SELECT h.*, (SELECT COUNT(*) FROM scales s WHERE s.scale_id = h.scale_id) AS direct_items
+         FROM scale_hierarchy h
+         WHERE h.instrument = ?1 AND h.level >= 2
+       )
+       SELECT b.*,
+         CASE WHEN b.level = 2 AND b.direct_items = 0 THEN
+           COALESCE((SELECT SUM(c.direct_items) FROM base c WHERE c.parent_scale_id = b.scale_id), 0)
+         ELSE b.direct_items END AS item_count
+       FROM base b
+       ORDER BY b.level, b.scale_name, b.facet_name`,
     )
     .bind(instrument)
     .all<ScaleHierarchyRow>();

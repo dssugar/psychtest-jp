@@ -86,6 +86,45 @@ const AUTO_SUPPLEMENT_INSTRUMENTS: Array<{ instrument: string; idPrefix: string 
   { instrument: "ORVIS", idPrefix: "ORVIS" },
 ];
 
+/**
+ * IPIP 公式 Key page で完全 fidelity な supplement.json を持つ instrument.
+ * これらは scale_hierarchy 生成時に Tedone Table 経由の追加 (= canonical_label 別名タグや
+ * cross-instrument 汚染) を SKIP する. supplement が唯一の真実源.
+ *
+ * 効果:
+ *   - 「Industriousness/Perseverance/Persistence」「Humor/Playfulness」等の
+ *     Tedone canonical_label noise が hierarchy から消える (scales table には残る)
+ *   - α/items 数が IPIP 公式と完全一致
+ *   - cross-instrument 汚染 (例: BFAS 配下の Positive Expressivity) 消失
+ *
+ * 非 authoritative (= 残: Span2002 / Cacioppo1982 / Buss1980 / 等 single-construct)
+ * は従来通り Tedone derive を許容.
+ */
+const AUTHORITATIVE_INSTRUMENTS = new Set<string>([
+  "NEO", "HEXACO_PI", "BFAS", "6FPQ", "JPI", "HPI", "HPI-HIC",
+  "AB5C", "7FACTOR", "Barchard2001", "VIA", "IPIP-IPC", "MPQ",
+  "TCI", "16PF", "CPI",
+]);
+
+/**
+ * scale_hierarchy から完全削除する scale_id. Tedone Table のメタラベル (= α=1994 等の citation 漏れ)
+ * や IPIP 公式に存在しない virtual scale を除外.
+ */
+const HIERARCHY_TOMBSTONES = new Set<string>([
+  "bis_bas_behavioral_inhibition_activation_system", // α 列に year (1994) 漏れ. canonical_label の meta entry
+  "goldberg1999_dissociation_full_scale", // 31 items 完全重複 (= goldberg1999_dissociation と同一 item 集合)
+]);
+
+/**
+ * Tedone Table の alpha 列が citation 年や行番号で汚染されている場合に sanitize.
+ * Cronbach's α は実用上 0.0-1.0 (まれに 1.x の outlier も). 範囲外は NULL 扱い.
+ */
+function sanitizeAlpha(raw: unknown): number | null {
+  if (typeof raw !== "number" || !Number.isFinite(raw)) return null;
+  if (raw < 0 || raw > 1.5) return null;
+  return raw;
+}
+
 // ============================================================
 // Utilities
 // ============================================================
@@ -868,6 +907,10 @@ function build() {
   // (a) Tedone Table の各 (instrument, label) ペアから階層 entries 生成.
   //   instrument 単位 (scale_id = slugify(instrument)) → level 1
   //   facet 単位 (scale_id = slugify(instrument)_slugify(label)) → level 2 or 3 (label 内 "," 区切りで判定)
+  //
+  //   Phase 2.x.D.3: AUTHORITATIVE_INSTRUMENTS は IPIP page supplement が唯一の真実源なので、
+  //   Tedone Table 由来の facet-level (level 2/3) 追加を skip. (= canonical_label noise 排除)
+  //   instrument-level (level 1) は supplement に無い場合に備えて常に確保.
   const seenInstruments = new Set<string>();
   for (const r of tedone) {
     if (!r.instrument || !r.label) continue;
@@ -891,11 +934,16 @@ function build() {
       });
     }
 
+    // AUTHORITATIVE_INSTRUMENTS では facet level (= Tedone 由来) を追加しない (= supplement が唯一の真実源).
+    if (AUTHORITATIVE_INSTRUMENTS.has(r.instrument)) continue;
+
     // facet level: Tedone label を "," で split → scale_name + facet_name
     const labelParts = r.label.split(",").map((s) => s.trim()).filter((s) => s.length > 0);
     const scaleName = labelParts[0]; // 必ず 1 要素 (= scale 名)
     const facetName = labelParts[1] ?? null;
     const facetScaleId = `${baseScaleId}_${instrumentToScaleId(r.label)}`;
+
+    if (HIERARCHY_TOMBSTONES.has(facetScaleId)) continue;
 
     if (!hierarchyMap.has(facetScaleId)) {
       let parentId = baseScaleId; // 通常 level 2 の親は instrument
@@ -930,7 +978,7 @@ function build() {
         facet_name: facetName,
         subfacet_name: null,
         display_label_en: facetName ? `${r.instrument} / ${scaleName} / ${facetName}` : `${r.instrument} / ${scaleName}`,
-        alpha: typeof r.alpha === "number" ? r.alpha : null,
+        alpha: sanitizeAlpha(r.alpha),
         source_url: null,
       });
     }
@@ -1011,13 +1059,21 @@ function build() {
         augmentedScaleName = DOMAIN_BY_FACET[sc.instrument][sc.label];
       }
 
+      // Phase 2.x.D.3: HIERARCHY_TOMBSTONES の scale_id は scale_hierarchy に投入しない.
+      if (HIERARCHY_TOMBSTONES.has(sc.scale_id)) continue;
       const existing = hierarchyMap.get(sc.scale_id);
       if (existing) {
         // alpha / source_url の補強 + domain 階層 augment.
-        if (sc.alpha !== undefined && sc.alpha !== null && existing.alpha === null) existing.alpha = sc.alpha;
+        const sanitizedSupplementAlpha = sanitizeAlpha(sc.alpha);
+        if (sanitizedSupplementAlpha !== null && existing.alpha === null) existing.alpha = sanitizedSupplementAlpha;
         if (sc.source_url && !existing.source_url) existing.source_url = sc.source_url;
         // domain 階層 augment: DOMAIN_BY_FACET で domain 推定できて、かつ既存 scale_name が「facet と同名」(= Tedone 由来で domain 知らず) の場合、level 3 に昇格.
-        const looksLikeFlatTedone = !existing.facet_name && existing.scale_name === sc.label;
+        // Phase 2.x.D.3: 大文字小文字違い (例: Tedone "Achievement-striving" vs supplement "Achievement-Striving") も同一視するため lowercase 比較.
+        const looksLikeFlatTedone =
+          !existing.facet_name &&
+          existing.scale_name != null &&
+          sc.label != null &&
+          existing.scale_name.toLowerCase() === sc.label.toLowerCase();
         if (augmentedScaleName && (looksLikeFlatTedone || !existing.scale_name)) {
           const baseScaleId = instrumentToScaleId(sc.instrument);
           const domainScaleId = `${baseScaleId}_${instrumentToScaleId(augmentedScaleName)}`;
@@ -1102,7 +1158,7 @@ function build() {
           facet_name: facetName,
           subfacet_name: null,
           display_label_en: facetName ? `${sc.instrument} / ${scaleName} / ${facetName}` : `${sc.instrument} / ${scaleName}`,
-          alpha: sc.alpha ?? null,
+          alpha: sanitizeAlpha(sc.alpha),
           source_url: sc.source_url ?? null,
         });
       }
@@ -1147,7 +1203,9 @@ function build() {
   sql.push("");
   sql.push("-- scale_hierarchy (Phase 2.x.D: 階層 tree)");
   sql.push("DELETE FROM scale_hierarchy;");
-  for (const h of hierarchyMap.values()) {
+  // FK constraint (parent_scale_id REFERENCES scale_hierarchy(scale_id)) を満たすため level 昇順で INSERT.
+  const sortedHierarchy = [...hierarchyMap.values()].sort((a, b) => a.level - b.level);
+  for (const h of sortedHierarchy) {
     const ja = synthesizeJa(h);
     if (ja) {
       hierarchyJaCount++;
