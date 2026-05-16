@@ -36,9 +36,20 @@ const TEDONE_XLSX = resolve(ROOT, "data/ipip-master/tedone-item-assignment.xlsx"
 const TRANSLATION_CSV = resolve(ROOT, "data/ipip-master/ipip-translation-1941.csv");
 const CLAUDE_TRANSLATION_JSON = resolve(ROOT, "data/ipip-master/claude-translation-2202.json");
 const SCALE_META_JSON = resolve(ROOT, "data/ipip-master/scale-meta.json");
+const TEDONE_OVERRIDES_JSON = resolve(ROOT, "data/ipip-master/tedone-overrides.json");
 const SQL_OUT = resolve(ROOT, "scripts/.cache/seed-ipip.sql");
 const BIGFIVE_MAPPING_OUT = resolve(ROOT, "data/ipip-master/bigfive-id-mapping.json");
 const INDUSTRIOUSNESS_MAPPING_OUT = resolve(ROOT, "data/ipip-master/industriousness-id-mapping.json");
+const SKIP_REPORT_OUT = resolve(ROOT, "scripts/.cache/seed-skip-report.json");
+
+/**
+ * Phase 2.1.γ: scale 廃止用 tombstone — seed のたびに scale_meta + scales 両 table から DELETE する scale_id 一覧.
+ * scale-meta.json 側を編集しただけでは過去に投入された row が残り続けるので明示的 DELETE を投入する (冪等、row 不在 no-op).
+ *
+ * WHY 両 table: scale_meta のみ消すと UI badge は消えるが scales 側の facet mapping は残る (= 92 行).
+ * 「scale を廃止する」という意図と整合させるため scales 側も同時に sweep する.
+ */
+const SCALE_TOMBSTONES = ["orvis"];
 
 // ============================================================
 // Utilities
@@ -50,6 +61,9 @@ const INDUSTRIOUSNESS_MAPPING_OUT = resolve(ROOT, "data/ipip-master/industriousn
  *
  * Unicode quote 変換は ipip-translation CSV に右シングル ’ (U+2019) が混じるため
  * (例: "people's problems" → IPIP master では ASCII apostrophe).
+ *
+ * INVARIANT: ipip-3320 の 3,320 項目を normalize して unique 数が 3,320 を維持すること.
+ * 衝突したら正規化が過剰. seed log の `normEnToId: 3320 unique normalized texts` で確認.
  */
 function normalizeEn(s: string): string {
   return s
@@ -60,6 +74,7 @@ function normalizeEn(s: string): string {
     .trim()
     .toLowerCase();
 }
+
 
 /** SQLite literal escape: single quote を double にする。NULL は別扱い。NUL byte は除去。 */
 function sqlStr(v: string | null | undefined): string {
@@ -226,6 +241,62 @@ function build() {
   }
   log.push(`normEnToId: ${normEnToId.size} unique normalized texts`);
 
+  // Phase 2.1.γ: 手動 override mapping (Tedone 異形 wording → IPIP item_id).
+  // 空 file でも parse できるよう {} を許容. LLM 生成は使わず Daisuke 手動 audit のみ.
+  // value は IPIP item_id format ([A-Z]\d+, 例: H184 / X1234 / E118) で validate して
+  // placeholder ("Hxxxx" 等) や typo を silent corrupt させない.
+  const tedoneOverrides: Record<string, string> = {};
+  const ITEM_ID_RE = /^[A-Z]\d+$/;
+  try {
+    const overrideText = readFileSync(TEDONE_OVERRIDES_JSON, "utf-8");
+    const parsed = JSON.parse(overrideText) as Record<string, unknown>;
+    for (const [wording, itemId] of Object.entries(parsed)) {
+      if (wording.startsWith("_")) continue; // _comment 等の meta key は skip
+      if (typeof itemId !== "string" || !ITEM_ID_RE.test(itemId)) {
+        log.push(`  WARN: tedone-overrides.json["${wording}"] = ${JSON.stringify(itemId)} is not a valid item_id, skipping`);
+        continue;
+      }
+      tedoneOverrides[normalizeEn(wording)] = itemId;
+    }
+    log.push(`tedone-overrides.json: ${Object.keys(tedoneOverrides).length} manual mappings`);
+  } catch {
+    log.push(`tedone-overrides.json: not found (= Phase 2 で追記)`);
+  }
+
+  /**
+   * Tedone wording → IPIP master item_id 解決.
+   * 順序: ① override → ② normalize 完全一致 → ③ 縮約展開後一致
+   *      → ④ "am " prefix 補完 → ⑤ " me/you/us" 末尾補完 → ⑥ 末尾 s 削除 (単複正規化)
+   * 副作用 risk が低い変形から順に試す.
+   *
+   * WHY NOT or↔and / 's↔is: 意味反転 ("right or wrong" ≠ "right and wrong") / 所有格誤射の risk があるため
+   * 一律変換しない. semantically-different wording は tedone-overrides.json で 1 件ずつ手動 audit.
+   */
+  function lookupItemId(text: string): string | null {
+    const norm = normalizeEn(text);
+    if (tedoneOverrides[norm]) return tedoneOverrides[norm];
+    if (normEnToId.has(norm)) return normEnToId.get(norm)!;
+
+    // ③ 縮約展開 (can't → cannot, n't → not, 've → have, 're → are, 'll → will, 'd → would)
+    const normContr = norm
+      .replace(/\bcan't\b/g, "cannot")
+      .replace(/n't\b/g, " not")
+      .replace(/'ve\b/g, " have")
+      .replace(/'re\b/g, " are")
+      .replace(/'ll\b/g, " will")
+      .replace(/'d\b/g, " would")
+      .replace(/\s+/g, " ")
+      .trim();
+    if (normContr !== norm && normEnToId.has(normContr)) return normEnToId.get(normContr)!;
+
+    if (!norm.startsWith("am ") && normEnToId.has("am " + norm)) return normEnToId.get("am " + norm)!;
+    for (const suffix of [" me", " you", " us"]) {
+      if (normEnToId.has(norm + suffix)) return normEnToId.get(norm + suffix)!;
+    }
+    if (norm.endsWith("s") && normEnToId.has(norm.slice(0, -1))) return normEnToId.get(norm.slice(0, -1))!;
+    return null;
+  }
+
   // 2. 翻訳 CSV → en_text 一致で ja_text 解決
   const translations = loadTranslations();
   const approved = translations.filter((t) => t.approved === "1");
@@ -263,27 +334,58 @@ function build() {
   // (COMMIT も wrangler 側で実行されるので不要)
 
   // 4. Tedone → scales INSERT 生成
-  const tedone = loadTedone();
-  log.push(`tedone-item-assignment.xlsx: ${tedone.length} rows`);
+  const tedoneRaw = loadTedone();
+  log.push(`tedone-item-assignment.xlsx: ${tedoneRaw.length} rows`);
+
+  // Phase 2.1.γ: Tedone Table 内重複行を pre-dedupe (= 同 instrument に同 wording が複数登場).
+  // 例: LEVENSON1981 "Believe some people are born lucky" × 3.
+  // 既存 seenPk は (scale_id, item_id) 単位なので item_id 未解決時に skip カウントが膨れる問題に対応.
+  // 残った 1 行のみで lookup を試みれば skip 数も diagnostic も実態を反映する.
+  const tedone: TedoneRow[] = [];
+  const seenTedoneRow = new Set<string>();
+  let tedoneDuplicates = 0;
+  for (const r of tedoneRaw) {
+    if (!r.instrument || !r.text) continue;
+    const key = `${r.instrument}::${normalizeEn(r.text)}`;
+    if (seenTedoneRow.has(key)) {
+      tedoneDuplicates++;
+      continue;
+    }
+    seenTedoneRow.add(key);
+    tedone.push(r);
+  }
+  log.push(`tedone dedupe: ${tedoneDuplicates} duplicate rows removed (instrument + normalized text)`);
+
+  // Phase 2.1.γ: skip diagnostic collection (= instrument 別 skip 件数 + 全 wording).
+  // scripts/.cache/seed-skip-report.json に書き出して Phase 2 investigation の入力に使う.
+  type SkipEntry = { instrument: string; text: string; label: string | null };
+  const skipByInstrument = new Map<string, SkipEntry[]>();
 
   let scalesAdded = 0;
   let scalesSkipped = 0;
-  const skipExamples: string[] = [];
   const seenPk = new Set<string>(); // dedup (scale_id, item_id)
+  const tombstoneSet = new Set(SCALE_TOMBSTONES);
   sql.push("");
   sql.push("-- scales (36 instruments × IPIP items mapping)");
+  // Phase 2.1.γ: tombstone sweep — 過去 seed で投入された廃止 scale 行を消す (= scale_meta と同期).
+  for (const stale of SCALE_TOMBSTONES) {
+    sql.push(`DELETE FROM scales WHERE scale_id = ${sqlStr(stale)};`);
+  }
   // (wrangler d1 execute --file は単一 transaction で wrap するので BEGIN/COMMIT は書かない)
   for (const r of tedone) {
-    if (!r.instrument || !r.text) continue;
-    const itemId = normEnToId.get(normalizeEn(r.text));
+    const scaleId = instrumentToScaleId(r.instrument);
+    // tombstone 対象 instrument は scales に投入せず skip diagnostic にも含めない (= 廃止 scale なので雑音).
+    if (tombstoneSet.has(scaleId)) continue;
+    const itemId = lookupItemId(r.text);
     if (!itemId) {
       scalesSkipped++;
-      if (skipExamples.length < 5) skipExamples.push(`${r.instrument}: ${r.text}`);
+      const arr = skipByInstrument.get(r.instrument) ?? [];
+      arr.push({ instrument: r.instrument, text: r.text, label: r.label ?? null });
+      skipByInstrument.set(r.instrument, arr);
       continue;
     }
-    const scaleId = instrumentToScaleId(r.instrument);
     const pk = `${scaleId}::${itemId}`;
-    if (seenPk.has(pk)) continue; // 重複は skip (Tedone に同 item 重複 row があるケース)
+    if (seenPk.has(pk)) continue; // 異なる wording が同 item_id に解決した場合の最終 dedup
     seenPk.add(pk);
     sql.push(
       `INSERT OR REPLACE INTO scales (scale_id, instrument, item_id, key, label, alpha) VALUES (${sqlStr(scaleId)}, ${sqlStr(r.instrument)}, ${sqlStr(itemId)}, ${sqlNum(Number(r.key) || 1)}, ${sqlStr(r.label ?? null)}, ${sqlNum(typeof r.alpha === "number" ? r.alpha : null)});`,
@@ -292,8 +394,14 @@ function build() {
   }
   // (COMMIT も wrangler 側で実行されるので不要)
   log.push(`scales: ${scalesAdded} added, ${scalesSkipped} skipped (en_text unresolved)`);
-  if (skipExamples.length > 0) {
-    log.push(`  skip examples: ${JSON.stringify(skipExamples)}`);
+
+  // instrument 別 skip summary を log (= 大きい順).
+  const sortedSkipInstruments = [...skipByInstrument.entries()].sort((a, b) => b[1].length - a[1].length);
+  if (sortedSkipInstruments.length > 0) {
+    log.push("  skip by instrument:");
+    for (const [inst, items] of sortedSkipInstruments) {
+      log.push(`    ${inst}: ${items.length}`);
+    }
   }
 
   // 4.5. claude 翻訳 (= ipip-translation で残った 2,202 件) で ja_text NULL を埋める.
@@ -463,13 +571,17 @@ function build() {
       official_total_items?: number | null;
     }>;
     sql.push("");
-    sql.push("-- scale_meta (Phase 2.1.β: UI 表示 metadata、12 scale)");
+    sql.push("-- scale_meta (Phase 2.1.β: UI 表示 metadata)");
+    // Phase 2.1.γ: scale-meta.json から除外された scale_id を明示的に削除 (= 冪等、row 不在 no-op).
+    for (const stale of SCALE_TOMBSTONES) {
+      sql.push(`DELETE FROM scale_meta WHERE scale_id = ${sqlStr(stale)};`);
+    }
     for (const m of metaItems) {
       sql.push(
         `INSERT OR REPLACE INTO scale_meta (scale_id, category, ja_label, ja_description, source_url, reference, official_total_items, created_at, updated_at) VALUES (${sqlStr(m.scale_id)}, ${sqlStr(m.category)}, ${sqlStr(m.ja_label)}, ${sqlStr(m.ja_description ?? null)}, ${sqlStr(m.source_url ?? null)}, ${sqlStr(m.reference ?? null)}, ${sqlNum(m.official_total_items ?? null)}, ${now}, ${now});`,
       );
     }
-    log.push(`scale_meta: ${metaItems.length} rows`);
+    log.push(`scale_meta: ${metaItems.length} rows (tombstones: ${SCALE_TOMBSTONES.join(", ") || "none"})`);
   } catch (err) {
     log.push(`scale_meta: skipped (${SCALE_META_JSON} not found or invalid)`);
   }
@@ -483,6 +595,21 @@ function build() {
   log.push(`bigfive mapping: ${BIGFIVE_MAPPING_OUT}`);
   writeFileSync(INDUSTRIOUSNESS_MAPPING_OUT, JSON.stringify(industMapping, null, 2) + "\n", "utf-8");
   log.push(`industriousness mapping: ${INDUSTRIOUSNESS_MAPPING_OUT}`);
+
+  // Phase 2.1.γ: skip diagnostic 書き出し (= Phase 2 instrument 別 audit の入力).
+  const skipReport = {
+    generatedAt: new Date().toISOString(),
+    totalSkipped: scalesSkipped,
+    tedoneDuplicatesRemoved: tedoneDuplicates,
+    byInstrument: Object.fromEntries(
+      sortedSkipInstruments.map(([inst, items]) => [
+        inst,
+        { count: items.length, items: items.map((e) => ({ text: e.text, label: e.label })) },
+      ]),
+    ),
+  };
+  writeFileSync(SKIP_REPORT_OUT, JSON.stringify(skipReport, null, 2) + "\n", "utf-8");
+  log.push(`skip report: ${SKIP_REPORT_OUT} (${scalesSkipped} entries across ${sortedSkipInstruments.length} instruments)`);
 
   // 7. summary log
   console.log(log.join("\n"));

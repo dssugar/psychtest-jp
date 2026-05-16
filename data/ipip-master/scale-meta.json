@@ -81,15 +81,6 @@
     "official_total_items": 252
   },
   {
-    "scale_id": "orvis",
-    "category": "multi-construct",
-    "ja_label": "職業興味 (ORVIS / RIASEC 系)",
-    "ja_description": "Holland の RIASEC モデル (現実的・研究的・芸術的・社会的・企業的・慣習的) を IPIP 公開版で測定するキャリア適合性尺度。",
-    "source_url": "https://ipip.ori.org/newOregonAvocationalInterestScales.htm",
-    "reference": "Pozzebon, J. A., Visser, B. A., Ashton, M. C., Lee, K., & Goldberg, L. R. (2010). Psychometric characteristics of a public-domain self-report measure of vocational interests: The Oregon Vocational Interest Scales. Journal of Personality Assessment, 92(2), 168-174.",
-    "official_total_items": 92
-  },
-  {
     "scale_id": "ipip_ipc",
     "category": "multi-construct",
     "ja_label": "対人円環 (IPIP-IPC)",

@@ -1,0 +1,3 @@
+{
+  "_comment": "Phase 2.1.γ: Tedone Table wording → IPIP master item_id への手動 mapping. spec: docs/specs/ipip-seed-completeness-2026-05.md §Step 3. scripts/seed-ipip.ts の lookupItemId() が normalize 完全一致 / 縮約展開 / am prefix / 末尾補完で取れない異形 wording (= 主に Pattern C-E) をここで吸収する. LLM 生成は使わず Daisuke が IPIP 公式 (ipip.ori.org) を instrument ごとに手動 audit して追記する. key = Tedone Table の素の text (normalize 前). value = IPIP master の item_id ([A-Z]\\d+ 形式, 例: H184 / X1234 / E118). _ で始まる key は seed-ipip.ts 側で skip される. value が item_id 形式に合わない場合 (placeholder Hxxxx 等) は seed log に WARN を出して silent corrupt を防ぐ."
+}
