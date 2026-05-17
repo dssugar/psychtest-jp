@@ -285,8 +285,8 @@ function IntroView({
               <MarkdownContent content={description.description_long} className="prose-sm" />
             </div>
             <details className="mt-4 group">
-              <summary className="cursor-pointer text-xs font-mono text-brutal-gray-600 hover:text-brutal-black transition-colors">
-                <span className="inline-block transition-transform group-open:rotate-90">▶</span> 学術的な詳細と出典を見る
+              <summary className="cursor-pointer text-xs font-mono text-brutal-gray-600 hover:text-brutal-black transition-colors list-none [&::-webkit-details-marker]:hidden">
+                <span className="inline-block transition-transform group-open:rotate-90 mr-1">▶</span>学術的な詳細と出典を見る
               </summary>
               <div className="mt-3 pl-4 text-xs font-mono text-brutal-gray-700 space-y-2 leading-relaxed">
                 {description.reference && (
@@ -547,9 +547,9 @@ function ResultView({
         )}
 
         {/* 項目別 breakdown */}
-        <details className="mt-6">
-          <summary className="cursor-pointer text-sm font-mono text-brutal-gray-700 hover:text-brutal-black">
-            ▼ 項目別の回答を表示
+        <details className="mt-6 group">
+          <summary className="cursor-pointer text-sm font-mono text-brutal-gray-700 hover:text-brutal-black list-none [&::-webkit-details-marker]:hidden">
+            <span className="inline-block transition-transform group-open:rotate-90 mr-1">▶</span>項目別の回答を表示
           </summary>
           <div className="mt-3 space-y-1">
             {items.map((item, i) => {
