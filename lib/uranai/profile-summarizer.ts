@@ -39,6 +39,12 @@ export interface SummarizerInput {
    * 多すぎる場合は scale 単位 limit 適用済 (= 上位 ~10 件想定).
    */
   completedScales?: ScaleBriefForLLM[];
+  /**
+   * Phase 2.x.H.1: 直近 assistant turn の created_at (epoch ms).
+   * これより新しい latest_answered_at を持つ scale は「新たに紐解いた波長」section として
+   * 強調表示される (= 対話途中に受験した scale の即時反映を月読に意識させる).
+   */
+  lastAssistantTurnAt?: number;
 }
 
 /**
@@ -53,6 +59,23 @@ export interface ScaleBriefForLLM {
   display_label_ja: string | null;
   band: "low" | "mid" | "high";
   interpretation_short: string | null;
+  /**
+   * 当該 scale の最終回答時刻 (epoch ms). 「対話途中に新たに受験」を識別するのに使う.
+   */
+  latest_answered_at?: number;
+}
+
+/**
+ * 対話中に「新しく」受験された scale を区別するための閾値.
+ * lastTurnAt より新しい latest_answered_at を持つ scale を「新規」扱いする.
+ */
+export interface SummarizerInputExt {
+  /**
+   * 直近 assistant turn の created_at (epoch ms). この時刻以降に answered_at された scale は
+   * 「対話の最中に新しく紐解いた波長」section として強調表示される.
+   * undefined / 過去ターンなし → 「新規」判定スキップ (= 全 scale を等価扱い).
+   */
+  lastTurnAt?: number;
 }
 
 /**
@@ -64,6 +87,7 @@ export function summarizeProfile({
   phq9K6Optin,
   totalIpipResponses,
   completedScales,
+  lastAssistantTurnAt,
 }: SummarizerInput): string {
   const parts: string[] = [];
 
@@ -111,10 +135,12 @@ export function summarizeProfile({
   }
 
   // 8. Phase 2.x.H: 受験済 IPIP scale の band 一覧を詩的形式で.
-  //   各 scale ~30-50 字 (= interpretation_short) を最大 10 件 inject.
-  //   token 試算: 10 × 50字 ≒ 500 字 / 200 token、月読 prompt 全体で許容範囲.
+  //   各 scale ~30-50 字 (= interpretation_short) を inject.
+  //   - 受験 scale 少数 (< 6) → mid 含めて全部
+  //   - 受験 scale 多数 (≥ 6) → extreme + domain 優先で上位 10 件
+  //   - 直近 assistant turn より後の受験は「新たに紐解いた波長」として別 section に分離.
   if (completedScales && completedScales.length > 0) {
-    const section = summarizeCompletedScales(completedScales);
+    const section = summarizeCompletedScales(completedScales, lastAssistantTurnAt);
     if (section) parts.push(section);
   }
 
@@ -130,38 +156,65 @@ export function summarizeProfile({
  *
  * 設計方針:
  * - **scale_id / instrument 名 / 数値は LLM に渡さない** (= 既存 profile-summarizer の方針踏襲)
- * - **interpretation_short のみを引用**、上位 facet を箇条書きで詩的に並べる
- * - 月読は「個別 scale 名」を口にする必要なし、内的に「この人の輪郭」を理解する材料として使う
- * - 多すぎると context 爆発 + persona drift (= 「測定結果リスト」化) するので上位 10 件に絞る
+ * - **interpretation_short のみを引用**、箇条書きで詩的に並べる
+ * - 月読は「個別 scale 名」を口にする必要なし、内的に「この人の輪郭」を理解する材料
  *
- * 選別 priority:
- *   1. domain (L2) entry を優先 (= 全体傾向)
- *   2. high / low の極端な band を優先 (= 際立つ特徴)
- *   3. mid band は section 末尾、もしくは省略 (= 標準範囲は context 価値小)
+ * 選別ロジック (Phase 2.x.H.1 改訂):
+ *   - 少数 (< 6 件) → mid 含めて全部 inject (= 受験量が少ない初期 user の context 厚み確保)
+ *   - 多数 (≥ 6 件) → extreme (high/low) + domain (L2) を優先で上位 10 件
+ *
+ * 新規受験分離 (= lastAssistantTurnAt 指定時):
+ *   - latest_answered_at > lastAssistantTurnAt の scale を「新たに紐解いた波長」section へ
+ *   - 残りは「既に紐解かれている輪郭」section へ
+ *   - 月読が「対話の最中に受験した」ことを意識して応答可能に.
  */
-function summarizeCompletedScales(scales: ScaleBriefForLLM[]): string {
-  // 順位付け: extreme (high/low) を優先、domain (level 2 ≒ scale_name に facet_name なし) を優先
-  const ranked = scales
-    .filter((s) => s.interpretation_short)
-    .map((s) => ({
-      s,
-      // extreme score 高、domain 高
-      priority:
-        (s.band === "high" || s.band === "low" ? 2 : 0) +
-        (s.facet_name === null ? 1 : 0),
-    }))
-    .sort((a, b) => b.priority - a.priority)
-    .map((x) => x.s);
+function summarizeCompletedScales(
+  scales: ScaleBriefForLLM[],
+  lastAssistantTurnAt?: number,
+): string {
+  const valid = scales.filter((s) => s.interpretation_short);
+  if (valid.length === 0) return "";
 
-  if (ranked.length === 0) return "";
+  // 新規 / 既存 を分離
+  const isFresh = (s: ScaleBriefForLLM): boolean =>
+    !!lastAssistantTurnAt && !!s.latest_answered_at && s.latest_answered_at > lastAssistantTurnAt;
+  const fresh = valid.filter(isFresh);
+  const existing = valid.filter((s) => !isFresh(s));
 
-  const top = ranked.slice(0, 10);
-  const lines: string[] = ["【測定された輪郭】"];
-  for (const s of top) {
-    // interpretation_short が「○○ 高め」のような形式なので、そのまま箇条書きに
-    lines.push(`・${s.interpretation_short}`);
+  // 既存: 多数なら priority 上位 10 件、少数なら全部 (= mid 含む)
+  const SMALL_THRESHOLD = 6;
+  const selectedExisting =
+    existing.length < SMALL_THRESHOLD
+      ? existing.slice() // mid も含めて全部
+      : existing
+          .map((s) => ({
+            s,
+            priority:
+              (s.band === "high" || s.band === "low" ? 2 : 0) +
+              (s.facet_name === null ? 1 : 0),
+          }))
+          .sort((a, b) => b.priority - a.priority)
+          .slice(0, 10)
+          .map((x) => x.s);
+
+  const sections: string[] = [];
+
+  // 新規 section (= 対話中に受験した分、強調)
+  if (fresh.length > 0) {
+    const lines = ["【今しがた紐解いた波長】"];
+    for (const s of fresh) lines.push(`・${s.interpretation_short}`);
+    sections.push(lines.join("\n"));
   }
-  return lines.join("\n");
+
+  // 既存 section
+  if (selectedExisting.length > 0) {
+    const heading = fresh.length > 0 ? "【既に紐解かれている輪郭】" : "【測定された輪郭】";
+    const lines = [heading];
+    for (const s of selectedExisting) lines.push(`・${s.interpretation_short}`);
+    sections.push(lines.join("\n"));
+  }
+
+  return sections.join("\n");
 }
 
 /**

@@ -215,6 +215,11 @@ export interface CompletedScaleRow {
   min_possible: number;
   items_answered: number;
   items_total: number;
+  /**
+   * 当該 scale で最後に回答された item の answered_at (epoch ms).
+   * 対話途中の受験を「新たに紐解いた」として識別するのに使う.
+   */
+  latest_answered_at: number;
 }
 
 export async function getCompletedScales(
@@ -237,25 +242,26 @@ export async function getCompletedScales(
        user_counts AS (
          SELECT s.scale_id,
                 COUNT(DISTINCT ur.item_id) AS answered,
-                SUM(CASE WHEN s.key >= 0 THEN ur.value ELSE 6 - ur.value END) AS raw_score
+                SUM(CASE WHEN s.key >= 0 THEN ur.value ELSE 6 - ur.value END) AS raw_score,
+                MAX(ur.answered_at) AS latest_answered_at
          FROM scales s
          JOIN user_responses ur ON ur.item_id = s.item_id AND ur.device_id = ?1
          GROUP BY s.scale_id
        ),
        completed AS (
-         SELECT u.scale_id, u.answered, u.raw_score, c.total_items
+         SELECT u.scale_id, u.answered, u.raw_score, u.latest_answered_at, c.total_items
          FROM user_counts u
          JOIN scale_counts c USING(scale_id)
          WHERE u.answered = c.total_items
        )
        SELECT comp.scale_id, comp.raw_score, comp.answered AS items_answered,
-              comp.total_items AS items_total,
+              comp.total_items AS items_total, comp.latest_answered_at,
               h.instrument, h.scale_name, h.facet_name, h.display_label_ja,
               sd.description_short, sd.threshold_low, sd.threshold_high
        FROM completed comp
        JOIN scale_hierarchy h ON h.scale_id = comp.scale_id
        LEFT JOIN scale_descriptions sd ON sd.scale_id = comp.scale_id
-       ORDER BY comp.scale_id`,
+       ORDER BY comp.latest_answered_at DESC`,
     )
     .bind(deviceId)
     .all<{
@@ -263,6 +269,7 @@ export async function getCompletedScales(
       raw_score: number;
       items_answered: number;
       items_total: number;
+      latest_answered_at: number;
       instrument: string;
       scale_name: string | null;
       facet_name: string | null;
@@ -311,6 +318,7 @@ export async function getCompletedScales(
       min_possible: minPossible,
       items_answered: row.items_answered,
       items_total: row.items_total,
+      latest_answered_at: row.latest_answered_at,
     });
   }
 

@@ -104,9 +104,19 @@ export const onRequest: PagesFunction<Env> = async (context) => {
   const totalIpipResponses = await countUserResponses(db, deviceId);
 
   // Phase 2.x.H: 受験完走 IPIP scale を band 付きで取得 → 上位 10 件を inject.
-  // PHQ-9/K6 opt-in 時のみ mental health 系を露出するため、ここでは全 scale を取得した上で
-  // summarizer 側でフィルタ (= 現状は全件渡す、将来 opt-in 連動で絞る余地).
   const completedScales = await getCompletedScales(db, deviceId, { limit: 20 });
+
+  // Phase 2.x.H: 過去 turn を先に hydrate → 直近 assistant turn の created_at を抽出.
+  //   summarizer がこの時刻を境に「対話途中で新たに受験した scale」を別 section に分離するため、
+  //   システムプロンプト組立より前に past を取得する.
+  const past = await getRecentTurns(db, {
+    deviceId,
+    sessionId,
+    limit: HYDRATE_LIMIT,
+  });
+  const lastAssistantTurnAt = past
+    .filter((t) => t.role === "assistant")
+    .reduce<number | undefined>((max, t) => (max === undefined || t.created_at > max ? t.created_at : max), undefined);
 
   const profileSummary = summarizeProfile({
     profile: parsedTestResults
@@ -115,6 +125,7 @@ export const onRequest: PagesFunction<Env> = async (context) => {
     phq9K6Optin,
     totalIpipResponses,
     completedScales,
+    lastAssistantTurnAt,
   });
 
   // 2. system prompt 組立
@@ -122,13 +133,6 @@ export const onRequest: PagesFunction<Env> = async (context) => {
     divinationContext,
     profileSummary,
     nickname,
-  });
-
-  // 3. 過去 turn を D1 から hydrate (oldest → newest 順)
-  const past = await getRecentTurns(db, {
-    deviceId,
-    sessionId,
-    limit: HYDRATE_LIMIT,
   });
 
   // 4. 今回 user turn (もしあれば) を D1 に save (LLM 呼ぶ前に永続化)
