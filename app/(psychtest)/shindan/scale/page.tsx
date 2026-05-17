@@ -18,6 +18,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Card } from "@/components/ui/Card";
 import { DataBadge } from "@/components/viz/DataBadge";
+import { MarkdownContent } from "@/components/results/MarkdownContent";
 import {
   getScaleApi,
   pickBand,
@@ -212,21 +213,51 @@ function IntroView({
   onStart: () => void;
   hasPrefill: boolean;
 }) {
+  // タイトル分割: facet (= 末端) があれば main = facet、sub = "instrument / scale_name"
+  //                facet なし → main = scale_name、sub = instrument
+  const facet = scale.facet_name ?? scale.subfacet_name;
+  const mainTitle = facet ?? scale.scale_name ?? scale.instrument;
+  const subPath = (() => {
+    const parts: string[] = [scale.instrument];
+    if (scale.scale_name && (facet || scale.scale_name !== mainTitle)) parts.push(scale.scale_name);
+    return parts.join(" / ");
+  })();
+  const mainTitleJa =
+    scale.display_label_ja?.split(" / ").pop()?.trim() ?? mainTitle;
+  const subPathJa = (() => {
+    const ja = scale.display_label_ja;
+    if (!ja) return subPath;
+    const parts = ja.split(" / ");
+    if (parts.length <= 1) return subPath;
+    return parts.slice(0, -1).join(" / ");
+  })();
+
   return (
     <>
-      <Link href="/shindan/explore/" className="inline-block mb-4 text-sm font-mono text-brutal-gray-700 hover:text-brutal-black">
-        ← 探索に戻る
+      <Link
+        href="/shindan/explore/"
+        className="group inline-flex items-center gap-1 mb-4 text-sm font-mono text-brutal-gray-700 hover:text-brutal-black transition-all"
+      >
+        <span className="transition-transform group-hover:-translate-x-0.5">←</span>
+        <span>探索に戻る</span>
       </Link>
       <Card variant="white" padding="lg">
         <DataBadge color="cyan">IPIP SCALE</DataBadge>
+
+        {/* タイトル階層: メイン (= facet名) + サブ (= path + scale_id) */}
         <h1
-          className="text-3xl md:text-5xl text-brutal-black mt-3 mb-2 tracking-wide"
+          className="text-3xl md:text-5xl text-brutal-black mt-3 mb-1 tracking-wide"
           style={{ fontFamily: "var(--font-display-ja)", fontWeight: 900 }}
         >
-          {scale.display_label_ja ?? scale.display_label_en}
+          {mainTitleJa}
+          {mainTitleJa !== mainTitle && (
+            <span className="block text-base md:text-xl text-brutal-gray-500 mt-1" style={{ fontFamily: "var(--font-mono)", fontWeight: 400 }}>
+              {mainTitle}
+            </span>
+          )}
         </h1>
-        <p className="text-sm font-mono text-brutal-gray-600 mb-4">
-          {scale.scale_id}
+        <p className="text-xs md:text-sm font-mono text-brutal-gray-500 mb-6">
+          {subPathJa} <span className="text-brutal-gray-400">·</span> <code className="text-brutal-gray-500">{scale.scale_id}</code>
         </p>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
@@ -244,45 +275,70 @@ function IntroView({
           </p>
         )}
 
-        {scale.source_url && (
-          <p className="text-xs font-mono text-brutal-gray-600 mb-4 break-all">
-            出典: <a href={scale.source_url} target="_blank" rel="noopener noreferrer" className="underline">{scale.source_url}</a>
-          </p>
-        )}
-
+        {/* この尺度について: 段落 + 余白 + 専門情報 fold */}
         {description?.description_long && (
-          <div className="border-t-brutal-thin border-brutal-black pt-4 mb-4">
-            <h2 className="text-lg text-brutal-black mb-2" style={{ fontFamily: "var(--font-display-ja)", fontWeight: 700 }}>
+          <div className="mb-6 p-5 bg-brutal-gray-50 border-l-brutal-thick border-l-viz-cyan rounded-sm">
+            <h2 className="text-lg text-brutal-black mb-3" style={{ fontFamily: "var(--font-display-ja)", fontWeight: 700 }}>
               この尺度について
             </h2>
-            <div className="text-sm text-brutal-gray-800 leading-relaxed whitespace-pre-wrap" style={{ fontFamily: "var(--font-display-ja)" }}>
-              {description.description_long}
+            <div className="text-brutal-gray-800" style={{ fontFamily: "var(--font-display-ja)" }}>
+              <MarkdownContent content={description.description_long} className="prose-sm" />
             </div>
-            {description.reference && (
-              <p className="text-xs font-mono text-brutal-gray-600 mt-3">
-                Reference: {description.reference}
-              </p>
-            )}
+            <details className="mt-4 group">
+              <summary className="cursor-pointer text-xs font-mono text-brutal-gray-600 hover:text-brutal-black transition-colors">
+                <span className="inline-block transition-transform group-open:rotate-90">▶</span> 学術的な詳細と出典を見る
+              </summary>
+              <div className="mt-3 pl-4 text-xs font-mono text-brutal-gray-700 space-y-2 leading-relaxed">
+                {description.reference && (
+                  <p>
+                    <strong className="text-brutal-gray-900">Reference:</strong> {description.reference}
+                  </p>
+                )}
+                {scale.source_url && (
+                  <p className="break-all">
+                    <strong className="text-brutal-gray-900">IPIP source:</strong>{" "}
+                    <a href={scale.source_url} target="_blank" rel="noopener noreferrer" className="underline">
+                      {scale.source_url}
+                    </a>
+                  </p>
+                )}
+                {description.threshold_kind && (
+                  <p>
+                    <strong className="text-brutal-gray-900">Threshold:</strong>{" "}
+                    {description.threshold_low ?? "?"}-{description.threshold_high ?? "?"}{" "}
+                    ({description.threshold_kind})
+                  </p>
+                )}
+              </div>
+            </details>
           </div>
         )}
 
-        <div className="border-t-brutal-thin border-brutal-black pt-4 mb-6">
-          <p className="text-sm text-brutal-gray-800 leading-relaxed">
-            これから {items.length} 個の項目を 1 つずつ提示します。各項目について、最近の自分にどれくらい当てはまるかを 5 段階で答えてください。
-            {hasPrefill && (
-              <span className="block mt-2 font-mono text-xs text-viz-orange">
-                ※ 過去に同じ scale を受けた回答がプリフィルされています (再回答で上書きされます)。
-              </span>
-            )}
+        {/* description 不在時の source_url fallback */}
+        {!description && scale.source_url && (
+          <p className="text-xs font-mono text-brutal-gray-600 mb-4 break-all">
+            出典:{" "}
+            <a href={scale.source_url} target="_blank" rel="noopener noreferrer" className="underline">
+              {scale.source_url}
+            </a>
           </p>
-        </div>
+        )}
+
+        <p className="text-sm text-brutal-gray-700 leading-relaxed mb-6" style={{ fontFamily: "var(--font-display-ja)" }}>
+          これから <strong>{items.length} 個</strong>の項目を 1 つずつ提示します。各項目について、最近の自分にどれくらい当てはまるかを 5 段階で答えてください。
+          {hasPrefill && (
+            <span className="block mt-2 text-xs font-mono text-viz-orange">
+              ※ 過去回答がプリフィルされています (再回答で上書き)。
+            </span>
+          )}
+        </p>
 
         <button
           type="button"
           onClick={onStart}
-          className="w-full py-4 bg-brutal-black text-brutal-white border-brutal-thick border-brutal-black font-mono text-lg tracking-wider hover:bg-viz-cyan transition-all"
+          className="w-full py-4 bg-viz-cyan text-brutal-white border-brutal-thick border-brutal-black font-mono text-lg tracking-wider hover:bg-viz-blue transition-all"
         >
-          受験を開始 →
+          受験を開始する →
         </button>
 
         <Disclaimer />
@@ -290,6 +346,7 @@ function IntroView({
     </>
   );
 }
+
 
 // ============================================================
 // Take (1 question at a time)
@@ -426,10 +483,20 @@ function ResultView({
   const levelColor = band === "high" ? "green" : band === "mid" ? "yellow" : "blue";
   const interp = interpretations.find((i) => i.band === band);
 
+  // タイトル階層: facet があれば末端だけ大、path はサブ
+  const ja = scale.display_label_ja ?? scale.display_label_en ?? scale.scale_id;
+  const jaParts = ja.split(" / ");
+  const mainTitleJa = jaParts[jaParts.length - 1];
+  const subPathJa = jaParts.slice(0, -1).join(" / ");
+
   return (
     <>
-      <Link href="/shindan/explore/" className="inline-block mb-4 text-sm font-mono text-brutal-gray-700 hover:text-brutal-black">
-        ← 探索に戻る
+      <Link
+        href="/shindan/explore/"
+        className="group inline-flex items-center gap-1 mb-4 text-sm font-mono text-brutal-gray-700 hover:text-brutal-black transition-all"
+      >
+        <span className="transition-transform group-hover:-translate-x-0.5">←</span>
+        <span>探索に戻る</span>
       </Link>
       <Card variant="white" padding="lg">
         <DataBadge color="green">RESULT</DataBadge>
@@ -437,10 +504,12 @@ function ResultView({
           className="text-3xl md:text-5xl text-brutal-black mt-3 mb-1 tracking-wide"
           style={{ fontFamily: "var(--font-display-ja)", fontWeight: 900 }}
         >
-          {scale.display_label_ja ?? scale.display_label_en}
+          {mainTitleJa}
         </h1>
-        <p className="text-sm font-mono text-brutal-gray-600 mb-6">
-          {scale.scale_id} · 回答 {score.count} 項目
+        <p className="text-xs md:text-sm font-mono text-brutal-gray-500 mb-6">
+          {subPathJa && <>{subPathJa} <span className="text-brutal-gray-400">·</span> </>}
+          <code className="text-brutal-gray-500">{scale.scale_id}</code>
+          <span className="text-brutal-gray-400"> · </span>回答 {score.count} 項目
         </p>
 
         {/* メインスコア表示 */}
@@ -462,13 +531,13 @@ function ResultView({
 
         {/* 解釈 (= curated があれば優先、なければ generic fallback) */}
         {interp?.interpretation_long ? (
-          <div className="border-l-brutal-thick border-l-viz-cyan pl-3 mb-2">
-            <p className="text-xs font-mono text-brutal-gray-600 mb-2">解釈 ({band})</p>
-            <div className="text-sm text-brutal-gray-800 leading-relaxed whitespace-pre-wrap" style={{ fontFamily: "var(--font-display-ja)" }}>
-              {interp.interpretation_long}
+          <div className="p-5 bg-brutal-gray-50 border-l-brutal-thick border-l-viz-cyan rounded-sm">
+            <p className="text-xs font-mono text-brutal-gray-600 mb-2">解釈 · {band}</p>
+            <div className="text-brutal-gray-800" style={{ fontFamily: "var(--font-display-ja)" }}>
+              <MarkdownContent content={interp.interpretation_long} className="prose-sm" />
             </div>
             {interp.caveat && (
-              <p className="mt-2 text-xs font-mono text-viz-orange p-2 border-brutal-thin border-viz-orange bg-brutal-yellow">
+              <p className="mt-3 text-xs font-mono text-viz-orange p-2 border-brutal-thin border-viz-orange bg-brutal-yellow">
                 ⚠ {interp.caveat}
               </p>
             )}
