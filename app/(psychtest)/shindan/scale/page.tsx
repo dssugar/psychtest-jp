@@ -204,11 +204,19 @@ function IntroView({
         </p>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-          <Stat label="項目数" value={`${items.length}`} />
+          <Stat
+            label="項目数"
+            value={`${items.length}${scale.items_source === "aggregated" ? " (集約)" : ""}`}
+          />
           <Stat label="Inventory" value={scale.instrument} />
           {scale.alpha != null && <Stat label="Cronbach's α" value={scale.alpha.toFixed(2)} />}
           <Stat label="回答形式" value="5 段階" />
         </div>
+        {scale.items_source === "aggregated" && (
+          <p className="mb-4 text-xs font-mono text-viz-orange p-2 border-brutal-thin border-viz-orange bg-brutal-yellow">
+            ⚠ IPIP 公式に単独の短縮 scale なし。配下 facet items を集約して提示します ({items.length} 問)。
+          </p>
+        )}
 
         {scale.source_url && (
           <p className="text-xs font-mono text-brutal-gray-600 mb-4 break-all">

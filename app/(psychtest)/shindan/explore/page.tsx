@@ -255,6 +255,9 @@ function ScaleRow({ s, isChild = false }: { s: ScaleHierarchyEntry; isChild?: bo
         <div className="flex items-center gap-2 text-xs font-mono text-brutal-gray-700 shrink-0">
           {s.alpha != null && <span>α={s.alpha.toFixed(2)}</span>}
           <span>{s.item_count ?? 0} 項目</span>
+          {s.items_source === "aggregated" && (
+            <span className="text-viz-orange" title="IPIP 公式の単独 scale なし、children facet items を集約">集約</span>
+          )}
         </div>
       </div>
     </Link>

@@ -17,6 +17,8 @@ export interface ScaleHierarchyRow {
   alpha: number | null;
   source_url: string | null;
   item_count?: number;
+  // Phase 2.x.D.3: items の出所. 'direct' = IPIP 公式 single scale (= 短縮版あり) / 'aggregated' = children 集計 (= 公式 domain scale なし、facet items を sum)
+  items_source?: "direct" | "aggregated" | null;
 }
 
 export interface CanonicalLabelRow {
@@ -80,7 +82,8 @@ export async function listInstrumentScales(
        SELECT b.*,
          CASE WHEN b.level = 2 AND b.direct_items = 0 THEN
            COALESCE((SELECT SUM(c.direct_items) FROM base c WHERE c.parent_scale_id = b.scale_id), 0)
-         ELSE b.direct_items END AS item_count
+         ELSE b.direct_items END AS item_count,
+         CASE WHEN b.level = 2 AND b.direct_items = 0 THEN 'aggregated' ELSE 'direct' END AS items_source
        FROM base b
        ORDER BY b.level, b.scale_name, b.facet_name`,
     )
@@ -105,7 +108,8 @@ export async function getScale(db: D1Database, scaleId: string): Promise<ScaleHi
          CASE WHEN b.level = 2 AND b.direct_items = 0 THEN
            COALESCE((SELECT COUNT(DISTINCT s.item_id) FROM scales s
              WHERE s.scale_id IN (SELECT scale_id FROM scale_hierarchy WHERE parent_scale_id = b.scale_id)), 0)
-         ELSE b.direct_items END AS item_count
+         ELSE b.direct_items END AS item_count,
+         CASE WHEN b.level = 2 AND b.direct_items = 0 THEN 'aggregated' ELSE 'direct' END AS items_source
        FROM base b`,
     )
     .bind(scaleId)

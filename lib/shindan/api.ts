@@ -19,6 +19,7 @@ export interface ScaleHierarchyEntry {
   alpha: number | null;
   source_url: string | null;
   item_count?: number;
+  items_source?: "direct" | "aggregated" | null;
 }
 
 export interface CanonicalLabel {
