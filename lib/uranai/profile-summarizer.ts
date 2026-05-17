@@ -30,6 +30,29 @@ export interface SummarizerInput {
    * undefined なら section ごと skip (= 後方互換、Phase 2.6 以前の呼び出し用).
    */
   totalIpipResponses?: number;
+  /**
+   * Phase 2.x.H: 受験「完走」した IPIP scale の band + interpretation_short.
+   * functions/_lib/scales.ts の getCompletedScales() の出力をそのまま渡す.
+   * undefined / 空配列なら section skip (= 後方互換).
+   *
+   * 「短文だけ inject」が原則 (= context 爆発回避). 1 scale あたり ~30-50 字。
+   * 多すぎる場合は scale 単位 limit 適用済 (= 上位 ~10 件想定).
+   */
+  completedScales?: ScaleBriefForLLM[];
+}
+
+/**
+ * profile-summarizer に渡す scale 簡易情報 (D1 を直接知らない).
+ * functions/_lib/scales.ts の CompletedScaleRow と field 互換.
+ */
+export interface ScaleBriefForLLM {
+  scale_id: string;
+  instrument: string;
+  scale_name: string | null;
+  facet_name: string | null;
+  display_label_ja: string | null;
+  band: "low" | "mid" | "high";
+  interpretation_short: string | null;
 }
 
 /**
@@ -40,44 +63,45 @@ export function summarizeProfile({
   profile,
   phq9K6Optin,
   totalIpipResponses,
+  completedScales,
 }: SummarizerInput): string {
-  if (!profile) {
-    return "（この方は、まだ自らの輪郭を月に映していない。共に紐解いていく時です。）";
-  }
-
   const parts: string[] = [];
 
-  // 1. Big Five (5 次元の全体傾向 + 上位 facet 詩的言及)
-  if (profile.tests.bigfive?.result) {
-    parts.push(summarizeBigFive(profile.tests.bigfive.result));
-  }
+  // 1-6 は legacy profile (= localStorage の 7 test 完走結果) が存在する場合のみ.
+  // profile が null でも IPIP 統合 DB の section (7-8) は inject 可能.
+  if (profile) {
+    // 1. Big Five (5 次元の全体傾向 + 上位 facet 詩的言及)
+    if (profile.tests.bigfive?.result) {
+      parts.push(summarizeBigFive(profile.tests.bigfive.result));
+    }
 
-  // 2. Industriousness (4 象限)
-  if (profile.tests.industriousness?.result) {
-    parts.push(
-      summarizeIndustriousness(profile.tests.industriousness.result.quadrant),
-    );
-  }
+    // 2. Industriousness (4 象限)
+    if (profile.tests.industriousness?.result) {
+      parts.push(
+        summarizeIndustriousness(profile.tests.industriousness.result.quadrant),
+      );
+    }
 
-  // 3. Self-Concept (3 段階)
-  if (profile.tests.selfconcept?.result) {
-    parts.push(summarizeSelfConcept(profile.tests.selfconcept.result.level));
-  }
+    // 3. Self-Concept (3 段階)
+    if (profile.tests.selfconcept?.result) {
+      parts.push(summarizeSelfConcept(profile.tests.selfconcept.result.level));
+    }
 
-  // 4. Rosenberg (3 段階)
-  if (profile.tests.rosenberg?.result) {
-    parts.push(summarizeRosenberg(profile.tests.rosenberg.result.level));
-  }
+    // 4. Rosenberg (3 段階)
+    if (profile.tests.rosenberg?.result) {
+      parts.push(summarizeRosenberg(profile.tests.rosenberg.result.level));
+    }
 
-  // 5. SWLS (7 段階)
-  if (profile.tests.swls?.result) {
-    parts.push(summarizeSwls(profile.tests.swls.result.level));
-  }
+    // 5. SWLS (7 段階)
+    if (profile.tests.swls?.result) {
+      parts.push(summarizeSwls(profile.tests.swls.result.level));
+    }
 
-  // 6. PHQ-9 / K6 (opt-in 時のみ。検査名・数値は出さない、severity 抽象化のみ)
-  if (phq9K6Optin) {
-    const mentalHealth = summarizeMentalHealth(profile);
-    if (mentalHealth) parts.push(mentalHealth);
+    // 6. PHQ-9 / K6 (opt-in 時のみ。検査名・数値は出さない、severity 抽象化のみ)
+    if (phq9K6Optin) {
+      const mentalHealth = summarizeMentalHealth(profile);
+      if (mentalHealth) parts.push(mentalHealth);
+    }
   }
 
   // 7. IPIP 進捗 (Phase 2.6). 数値も尺度名も出さず、積層の厚みだけを詩的に表現.
@@ -86,11 +110,58 @@ export function summarizeProfile({
     if (progress) parts.push(progress);
   }
 
+  // 8. Phase 2.x.H: 受験済 IPIP scale の band 一覧を詩的形式で.
+  //   各 scale ~30-50 字 (= interpretation_short) を最大 10 件 inject.
+  //   token 試算: 10 × 50字 ≒ 500 字 / 200 token、月読 prompt 全体で許容範囲.
+  if (completedScales && completedScales.length > 0) {
+    const section = summarizeCompletedScales(completedScales);
+    if (section) parts.push(section);
+  }
+
   if (parts.length === 0) {
     return "（この方は、まだ自らの輪郭を月に映していない。共に紐解いていく時です。）";
   }
 
   return parts.join("\n");
+}
+
+/**
+ * Phase 2.x.H: 受験完走 IPIP scale 群を月読 context section に変換.
+ *
+ * 設計方針:
+ * - **scale_id / instrument 名 / 数値は LLM に渡さない** (= 既存 profile-summarizer の方針踏襲)
+ * - **interpretation_short のみを引用**、上位 facet を箇条書きで詩的に並べる
+ * - 月読は「個別 scale 名」を口にする必要なし、内的に「この人の輪郭」を理解する材料として使う
+ * - 多すぎると context 爆発 + persona drift (= 「測定結果リスト」化) するので上位 10 件に絞る
+ *
+ * 選別 priority:
+ *   1. domain (L2) entry を優先 (= 全体傾向)
+ *   2. high / low の極端な band を優先 (= 際立つ特徴)
+ *   3. mid band は section 末尾、もしくは省略 (= 標準範囲は context 価値小)
+ */
+function summarizeCompletedScales(scales: ScaleBriefForLLM[]): string {
+  // 順位付け: extreme (high/low) を優先、domain (level 2 ≒ scale_name に facet_name なし) を優先
+  const ranked = scales
+    .filter((s) => s.interpretation_short)
+    .map((s) => ({
+      s,
+      // extreme score 高、domain 高
+      priority:
+        (s.band === "high" || s.band === "low" ? 2 : 0) +
+        (s.facet_name === null ? 1 : 0),
+    }))
+    .sort((a, b) => b.priority - a.priority)
+    .map((x) => x.s);
+
+  if (ranked.length === 0) return "";
+
+  const top = ranked.slice(0, 10);
+  const lines: string[] = ["【測定された輪郭】"];
+  for (const s of top) {
+    // interpretation_short が「○○ 高め」のような形式なので、そのまま箇条書きに
+    lines.push(`・${s.interpretation_short}`);
+  }
+  return lines.join("\n");
 }
 
 /**

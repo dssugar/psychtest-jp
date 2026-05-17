@@ -32,6 +32,7 @@ import {
   getRecentTurns,
   nextTurnId,
 } from "../../_lib/d1";
+import { getCompletedScales } from "../../_lib/scales";
 import { summarizeProfile } from "../../../lib/uranai/profile-summarizer";
 import { buildTsukuyomiSystemPrompt } from "../../../lib/uranai/tsukuyomi-prompt";
 import type { ChatRequest, DivinationContext } from "../../../lib/uranai/types";
@@ -102,12 +103,18 @@ export const onRequest: PagesFunction<Env> = async (context) => {
   // 数値・尺度名は月読に直接渡らず、profile-summarizer 内で段階化された詩的表現に翻訳される.
   const totalIpipResponses = await countUserResponses(db, deviceId);
 
+  // Phase 2.x.H: 受験完走 IPIP scale を band 付きで取得 → 上位 10 件を inject.
+  // PHQ-9/K6 opt-in 時のみ mental health 系を露出するため、ここでは全 scale を取得した上で
+  // summarizer 側でフィルタ (= 現状は全件渡す、将来 opt-in 連動で絞る余地).
+  const completedScales = await getCompletedScales(db, deviceId, { limit: 20 });
+
   const profileSummary = summarizeProfile({
     profile: parsedTestResults
       ? ({ tests: parsedTestResults, metadata: { createdAt: "", updatedAt: "", version: "" } } as any)
       : null,
     phq9K6Optin,
     totalIpipResponses,
+    completedScales,
   });
 
   // 2. system prompt 組立

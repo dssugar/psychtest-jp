@@ -197,6 +197,128 @@ export async function getUserResponsesForScale(
 }
 
 /**
+ * Phase 2.x.H: user が受験「完走」した scale を band 付きで集計.
+ * 完走 = 当該 scale の全 item に user_responses が存在する.
+ * 月読 chat context に inject される (= description_short / interpretation_short の供給源).
+ */
+export interface CompletedScaleRow {
+  scale_id: string;
+  instrument: string;
+  scale_name: string | null;
+  facet_name: string | null;
+  display_label_ja: string | null;
+  description_short: string | null;
+  band: "low" | "mid" | "high";
+  interpretation_short: string | null;
+  raw_score: number;
+  max_possible: number;
+  min_possible: number;
+  items_answered: number;
+  items_total: number;
+}
+
+export async function getCompletedScales(
+  db: D1Database,
+  deviceId: string,
+  options?: { limit?: number },
+): Promise<CompletedScaleRow[]> {
+  // 完走判定: scale_id の全 item に対して user_responses があれば「完走」.
+  // SQL: scales table の (scale_id, item_id) 全件 ⊆ user_responses(device_id=...) の item_id 集合
+  // → answered_count = total_items の scale_id を抽出.
+  //
+  // band 判定はここでは生 score のみ取り、interpretation_short の取得を別 query で.
+  // (= 結合してもよいが、scale_id 単位の小さい集合なので簡潔に分ける)
+  const r = await db
+    .prepare(
+      `WITH scale_counts AS (
+         SELECT s.scale_id, COUNT(*) AS total_items
+         FROM scales s GROUP BY s.scale_id
+       ),
+       user_counts AS (
+         SELECT s.scale_id,
+                COUNT(DISTINCT ur.item_id) AS answered,
+                SUM(CASE WHEN s.key >= 0 THEN ur.value ELSE 6 - ur.value END) AS raw_score
+         FROM scales s
+         JOIN user_responses ur ON ur.item_id = s.item_id AND ur.device_id = ?1
+         GROUP BY s.scale_id
+       ),
+       completed AS (
+         SELECT u.scale_id, u.answered, u.raw_score, c.total_items
+         FROM user_counts u
+         JOIN scale_counts c USING(scale_id)
+         WHERE u.answered = c.total_items
+       )
+       SELECT comp.scale_id, comp.raw_score, comp.answered AS items_answered,
+              comp.total_items AS items_total,
+              h.instrument, h.scale_name, h.facet_name, h.display_label_ja,
+              sd.description_short, sd.threshold_low, sd.threshold_high
+       FROM completed comp
+       JOIN scale_hierarchy h ON h.scale_id = comp.scale_id
+       LEFT JOIN scale_descriptions sd ON sd.scale_id = comp.scale_id
+       ORDER BY comp.scale_id`,
+    )
+    .bind(deviceId)
+    .all<{
+      scale_id: string;
+      raw_score: number;
+      items_answered: number;
+      items_total: number;
+      instrument: string;
+      scale_name: string | null;
+      facet_name: string | null;
+      display_label_ja: string | null;
+      description_short: string | null;
+      threshold_low: number | null;
+      threshold_high: number | null;
+    }>();
+
+  const rows = r.results ?? [];
+
+  // band 判定 + interpretation_short 取得 (= 別 query で各 scale の該当 band を引く)
+  // 件数少ない想定 (= 数〜数十) なので個別 SELECT で十分.
+  const out: CompletedScaleRow[] = [];
+  for (const row of rows) {
+    const minPossible = row.items_total * 1;
+    const maxPossible = row.items_total * 5;
+    let band: "low" | "mid" | "high";
+    if (row.threshold_low !== null && row.threshold_high !== null) {
+      if (row.raw_score <= row.threshold_low) band = "low";
+      else if (row.raw_score >= row.threshold_high) band = "high";
+      else band = "mid";
+    } else {
+      const norm = (row.raw_score - minPossible) / Math.max(1, maxPossible - minPossible);
+      band = norm > 0.66 ? "high" : norm < 0.33 ? "low" : "mid";
+    }
+
+    const interp = await db
+      .prepare(
+        `SELECT interpretation_short FROM scale_interpretations WHERE scale_id = ?1 AND band = ?2`,
+      )
+      .bind(row.scale_id, band)
+      .first<{ interpretation_short: string | null }>();
+
+    out.push({
+      scale_id: row.scale_id,
+      instrument: row.instrument,
+      scale_name: row.scale_name,
+      facet_name: row.facet_name,
+      display_label_ja: row.display_label_ja,
+      description_short: row.description_short,
+      band,
+      interpretation_short: interp?.interpretation_short ?? null,
+      raw_score: row.raw_score,
+      max_possible: maxPossible,
+      min_possible: minPossible,
+      items_answered: row.items_answered,
+      items_total: row.items_total,
+    });
+  }
+
+  if (options?.limit && out.length > options.limit) return out.slice(0, options.limit);
+  return out;
+}
+
+/**
  * 1 scale の description + interpretation 全 band.
  * 未登録 scale は null / 空配列を返す (= UI 側でフォールバック表示).
  */
