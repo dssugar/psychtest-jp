@@ -604,6 +604,204 @@
       {"band":"low","interpretation_long":"**Openness 低め**。実用志向。芸術への関心は控えめ。","interpretation_short":"Openness 低め","caveat":null},
       {"band":"mid","interpretation_long":"**中程度**。場面に応じて美を楽しむ。","interpretation_short":"中程度","caveat":null},
       {"band":"high","interpretation_long":"**Openness 高め**。美 / 想像 / 芸術 / 自然に強く心動かされる。","interpretation_short":"Openness 高め","caveat":null}
+    ]},
+
+    {"scale_id":"tci_novelty_seeking","description_long":"**新奇追求 (Novelty-Seeking)** は Cloninger TCI の Temperament 4 因子のひとつで、**ドーパミン経路** に対応すると仮説される。新規・刺激への接近行動、衝動性、frustration への怒り反応。\n\n高得点は冒険的 / 衝動的 / 探索行動。低得点は熟慮的 / 慣習尊重。NS は 4 sub-facet (Variety-Seeking / Recklessness / Extravagance / Rebelliousness) で構成。","description_short":"Cloninger TCI Novelty-Seeking。ドーパミン経路、新規追求。","reference":"Cloninger, Svrakic & Przybeck (1993) TCI.","threshold_low":48,"threshold_high":72,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**新奇追求 低め**。慣習・熟慮志向。安定環境で力を発揮。","interpretation_short":"新奇追求 低め","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。新規性と安定のバランス。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**新奇追求 高め**。冒険的 / 衝動的。極端な高さは依存症 / リスク行動と関連。","interpretation_short":"新奇追求 高め","caveat":null}
+    ]},
+    {"scale_id":"tci_harm_avoidance","description_long":"**損害回避 (Harm Avoidance)** は Cloninger TCI Temperament 因子で、**セロトニン経路** に対応すると仮説。不確実性への不安・社会的緊張・疲労感の傾向。\n\n高得点はリスク回避 / 心配性。低得点は楽観 / 行動的。Big Five Neuroticism と重なる構成概念。","description_short":"Cloninger TCI Harm Avoidance。セロトニン経路、損害回避。","reference":"Cloninger, Svrakic & Przybeck (1993) TCI.","threshold_low":48,"threshold_high":72,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**損害回避 低め**。楽観的 / 行動的。リスクを恐れない。","interpretation_short":"損害回避 低め","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。標準的リスク感覚。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**損害回避 高め**。リスク回避 / 心配性。不安障害 / うつ病リスク。","interpretation_short":"損害回避 高め","caveat":null}
+    ]},
+    {"scale_id":"tci_reward_dependence","description_long":"**報酬依存 (Reward Dependence)** は Cloninger TCI Temperament 因子で、**ノルアドレナリン経路** に対応すると仮説。他者からの承認・温情への感受性。\n\n高得点は社会的暖かさを求める / 共感的。低得点は社会的承認に無関心 / 独立志向。","description_short":"Cloninger TCI Reward Dependence。ノルアドレナリン経路、他者承認依存。","reference":"Cloninger, Svrakic & Przybeck (1993) TCI.","threshold_low":48,"threshold_high":72,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**報酬依存 低め**。他者承認に無関心 / 独立的。","interpretation_short":"独立的","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。標準的範囲。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**報酬依存 高め**。社会的承認 / 温情を求め、共感的。","interpretation_short":"承認依存","caveat":null}
+    ]},
+    {"scale_id":"tci_persistence","description_long":"**持続性 (Persistence)** は Cloninger TCI Temperament 因子で、frustration や疲労があっても行動を続ける傾向。Big Five Conscientiousness / Grit と重なる。\n\n高得点は粘り強さ。低得点は諦めやすさ。","description_short":"Cloninger TCI Persistence。粘り強さ、Grit と重なる。","reference":"Cloninger, Svrakic & Przybeck (1993) TCI.","threshold_low":48,"threshold_high":72,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**持続性 低め**。frustration で諦めやすい。","interpretation_short":"持続性 低め","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。状況に応じて持続。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**持続性 高め**。困難でも諦めず行動を続ける。","interpretation_short":"持続性 高め","caveat":null}
+    ]},
+    {"scale_id":"tci_self_directedness","description_long":"**自己志向性 (Self-Directedness)** は Cloninger TCI Character 因子で、**成熟により発達** する。自己目標設定 / 自律性 / 自尊感情。\n\n高得点は成熟したパーソナリティ。低得点はパーソナリティ障害の指標 (Cloninger は SD 低を PD の核心と論じる)。","description_short":"Cloninger TCI Self-Directedness。Character 因子、成熟指標。","reference":"Cloninger, Svrakic & Przybeck (1993) TCI Character.","threshold_low":48,"threshold_high":72,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**自己志向性 低め**。自己目標が不明確、自律性に課題。Cloninger 理論では PD 指標。","interpretation_short":"自己志向性 低め","caveat":"極端な低さは臨床的評価が望ましい場合あり。"},
+      {"band":"mid","interpretation_long":"**中程度**。標準的成熟範囲。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**自己志向性 高め**。明確な自己目標 / 自律性 / 自尊感情。成熟したパーソナリティ。","interpretation_short":"自己志向性 高め","caveat":null}
+    ]},
+    {"scale_id":"tci_cooperativeness","description_long":"**協調性 (Cooperativeness)** は Cloninger TCI Character 因子で、**他者受容・共感・援助** の傾向。Big Five Agreeableness と重なる。\n\n高得点は対人協調。低得点は対人攻撃性 / 反社会性傾向。","description_short":"Cloninger TCI Cooperativeness。Character 因子、対人協調。","reference":"Cloninger, Svrakic & Przybeck (1993) TCI Character.","threshold_low":48,"threshold_high":72,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**協調性 低め**。対人衝突 / 攻撃性の傾向。","interpretation_short":"協調性 低め","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。状況に応じて協調。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**協調性 高め**。他者を受容し、共感的に振る舞う。","interpretation_short":"協調性 高め","caveat":null}
+    ]},
+    {"scale_id":"tci_self_transcendence","description_long":"**自己超越 (Self-Transcendence)** は Cloninger TCI Character 因子で、**スピリチュアル志向 / 自然との一体感 / 個人を超えた価値への志向**。\n\n高得点はスピリチュアリティ / 宗教性 / 芸術没入。低得点は世俗的・実用的価値観。Cloninger 理論では「霊性」の独立次元。","description_short":"Cloninger TCI Self-Transcendence。スピリチュアル志向。","reference":"Cloninger, Svrakic & Przybeck (1993) TCI Character.","threshold_low":48,"threshold_high":72,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**自己超越 低め**。世俗的 / 実用的価値観。","interpretation_short":"世俗志向","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。状況に応じて超越的体験。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**自己超越 高め**。スピリチュアル / 宗教的 / 芸術没入の傾向。","interpretation_short":"超越志向","caveat":null}
+    ]},
+
+    {"scale_id":"via_curiosity","description_long":"**好奇心 (Curiosity)** は VIA Wisdom 美徳の強み。新しい経験・知識への内発的関心。\n\n高得点は学習意欲 / 探索行動 / 主観的幸福感。Peterson & Seligman (2004) は 24 強みのうち curiosity + zest + hope + gratitude + love を「主観的幸福感を最も予測する」と報告。","description_short":"VIA 好奇心。Wisdom 美徳、幸福予測力 top 5。","reference":"Peterson & Seligman (2004) Character Strengths and Virtues.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**好奇心 低め**。慣れた領域に留まる傾向。","interpretation_short":"好奇心 低め","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。場面に応じて探索する。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**好奇心 高め**。新しい知識・経験を積極的に求める。幸福感の predictor。","interpretation_short":"好奇心 高め","caveat":null}
+    ]},
+    {"scale_id":"via_love_of_learning","description_long":"**学ぶことへの愛 (Love of Learning)** は VIA Wisdom 美徳。学び自体への喜び。Curiosity と類似だが、より体系的な学習志向。\n\n高得点は生涯学習 / 専門性開発。","description_short":"VIA 学ぶことへの愛。Wisdom 美徳。","reference":"Peterson & Seligman (2004).","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**学習愛 低め**。必要時のみ学ぶ。","interpretation_short":"低め","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。標準的学習意欲。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**学習愛 高め**。学び自体に喜びを感じ、深く知ろうとする。","interpretation_short":"高め","caveat":null}
+    ]},
+    {"scale_id":"via_judgment_open_mindedness","description_long":"**判断力／開放的態度 (Judgment / Open-Mindedness)** は VIA Wisdom 美徳。多面的に考え、結論を急がない傾向。\n\n高得点は批判的思考 / 偏見の少なさ。","description_short":"VIA 判断力。Wisdom 美徳、批判的思考。","reference":"Peterson & Seligman (2004).","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**判断力 低め**。即断 / 偏見に基づく決定。","interpretation_short":"低め","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。場面に応じて熟考。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**判断力 高め**。多面的に考え、エビデンスベースで判断する。","interpretation_short":"高め","caveat":null}
+    ]},
+    {"scale_id":"via_originality_creativity","description_long":"**独創性／創造性 (Originality / Creativity)** は VIA Wisdom 美徳。新しいアイデア・解決策を生む力。\n\n高得点はクリエイティブ職 / 起業適性。","description_short":"VIA 創造性。Wisdom 美徳。","reference":"Peterson & Seligman (2004).","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**創造性 低め**。既存方法を活用する。","interpretation_short":"低め","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。場面に応じて創造。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**創造性 高め**。新しいアイデア・解決策を生み出す。","interpretation_short":"高め","caveat":null}
+    ]},
+    {"scale_id":"via_perspective_wisdom","description_long":"**大局観／叡智 (Perspective / Wisdom)** は VIA Wisdom 美徳の頂点。人生経験を統合し、他者に賢明な助言を提供する力。\n\n高得点はメンター / 相談役の資質。","description_short":"VIA 叡智。Wisdom 美徳の頂点。","reference":"Peterson & Seligman (2004).","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**叡智 低め**。経験統合より個別判断。","interpretation_short":"低め","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。場面に応じた知恵。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**叡智 高め**。人生経験を統合し、賢明な助言を提供する。","interpretation_short":"高め","caveat":null}
+    ]},
+    {"scale_id":"via_valor_bravery_courage","description_long":"**勇気 (Valor / Bravery / Courage)** は VIA Courage 美徳。脅威 / 困難 / 痛みに直面しても屈しない力。物理的勇気 + 道徳的勇気 + 心理的勇気を含む。","description_short":"VIA 勇気。Courage 美徳。","reference":"Peterson & Seligman (2004).","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**勇気 低め**。脅威・困難を避ける傾向。","interpretation_short":"低め","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。状況に応じて勇気を発揮。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**勇気 高め**。脅威 / 困難でも屈しない。","interpretation_short":"高め","caveat":null}
+    ]},
+    {"scale_id":"via_industry_perseverance_persistence","description_long":"**勤勉／忍耐／持続性 (Industry / Perseverance / Persistence)** は VIA Courage 美徳。目標達成に向けて努力を続ける力。Grit と重なる構成概念。","description_short":"VIA 勤勉。Courage 美徳、Grit と重なる。","reference":"Peterson & Seligman (2004) / Duckworth (2007) Grit.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**勤勉 低め**。困難で諦めやすい。","interpretation_short":"低め","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。標準的持続性。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**勤勉 高め**。目標達成まで諦めず努力を続ける。","interpretation_short":"高め","caveat":null}
+    ]},
+    {"scale_id":"via_integrity_honesty_authenticity","description_long":"**誠実さ／真摯さ (Integrity / Honesty / Authenticity)** は VIA Courage 美徳。自分の価値観に正直で、嘘・偽りを避ける傾向。","description_short":"VIA 誠実さ。Courage 美徳、価値観への正直さ。","reference":"Peterson & Seligman (2004).","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**誠実さ 低め**。状況に応じて嘘・演技。","interpretation_short":"低め","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。原則は誠実。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**誠実さ 高め**。価値観に正直で、嘘を避ける。","interpretation_short":"高め","caveat":null}
+    ]},
+    {"scale_id":"via_zest_enthusiasm_vitality","description_long":"**活力／熱意 (Zest / Enthusiasm / Vitality)** は VIA Courage 美徳。生命力 / 情熱 / エネルギーをもって生きる傾向。\n\nPeterson & Seligman (2004): 24 強みのうち主観的幸福感を最も予測する強みのひとつ。","description_short":"VIA 活力。Courage 美徳、幸福予測力 top 5。","reference":"Peterson & Seligman (2004).","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**活力 低め**。淡々と過ごす傾向。","interpretation_short":"低め","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。標準的エネルギー。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**活力 高め**。情熱とエネルギーをもって生きる。幸福 predictor。","interpretation_short":"高め","caveat":null}
+    ]},
+    {"scale_id":"via_capacity_for_love","description_long":"**愛する能力 (Capacity for Love)** は VIA Humanity 美徳。親密な関係を築き維持する力。\n\nPeterson & Seligman (2004) の幸福予測 top 5 のひとつ。","description_short":"VIA 愛する能力。Humanity 美徳、幸福予測力 top 5。","reference":"Peterson & Seligman (2004).","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**愛する能力 低め**。親密関係を作りにくい。","interpretation_short":"低め","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。標準的範囲。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**愛する能力 高め**。深い親密関係を築ける。","interpretation_short":"高め","caveat":null}
+    ]},
+    {"scale_id":"via_kindness_generosity","description_long":"**親切／寛大さ (Kindness / Generosity)** は VIA Humanity 美徳。他者への思いやりと援助。","description_short":"VIA 親切。Humanity 美徳。","reference":"Peterson & Seligman (2004).","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**親切 低め**。自己利害優先。","interpretation_short":"低め","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。状況に応じて親切。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**親切 高め**。他者への思いやりと援助行動。","interpretation_short":"高め","caveat":null}
+    ]},
+    {"scale_id":"via_social_personal_emotional_intelligence","description_long":"**社会的／個人的／情動的知性** は VIA Humanity 美徳。他者と自分の感情を理解し、適切に対応する力 (= Emotional Intelligence)。","description_short":"VIA 情動知性。Humanity 美徳。","reference":"Peterson & Seligman (2004).","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**情動知性 低め**。感情理解が苦手。","interpretation_short":"低め","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。標準的感情理解。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**情動知性 高め**。自他の感情を深く理解し、適切に対応する。","interpretation_short":"高め","caveat":null}
+    ]},
+    {"scale_id":"via_citizenship_teamwork","description_long":"**市民意識／チームワーク (Citizenship / Teamwork)** は VIA Justice 美徳。集団への忠誠と協力。","description_short":"VIA 市民意識。Justice 美徳。","reference":"Peterson & Seligman (2004).","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**市民意識 低め**。集団より個人志向。","interpretation_short":"低め","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。状況に応じて集団に貢献。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**市民意識 高め**。集団・組織・社会への貢献を重視。","interpretation_short":"高め","caveat":null}
+    ]},
+    {"scale_id":"via_equity_fairness","description_long":"**公平／公正 (Equity / Fairness)** は VIA Justice 美徳。すべての人を平等に扱う。","description_short":"VIA 公平。Justice 美徳。","reference":"Peterson & Seligman (2004).","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**公平 低め**。差別的判断のリスク。","interpretation_short":"低め","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。状況に応じて公平を考慮。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**公平 高め**。すべての人を平等に扱う。","interpretation_short":"高め","caveat":null}
+    ]},
+    {"scale_id":"via_leadership","description_long":"**リーダーシップ (Leadership)** は VIA Justice 美徳。集団を組織し、メンバーの強みを引き出す力。","description_short":"VIA リーダーシップ。Justice 美徳。","reference":"Peterson & Seligman (2004).","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**リーダーシップ 低め**。フォロワー / サポート役。","interpretation_short":"低め","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。場面に応じて主導。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**リーダーシップ 高め**。集団を組織し、力を引き出す。","interpretation_short":"高め","caveat":null}
+    ]},
+    {"scale_id":"via_forgiveness_mercy","description_long":"**寛容さ／慈愛 (Forgiveness / Mercy)** は VIA Temperance 美徳。過去の害を許し、復讐を避ける。","description_short":"VIA 寛容。Temperance 美徳。","reference":"Peterson & Seligman (2004).","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**寛容 低め**。恨み続ける傾向。","interpretation_short":"低め","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。状況に応じて許す。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**寛容 高め**。過去の害を許し、関係を修復する。","interpretation_short":"高め","caveat":null}
+    ]},
+    {"scale_id":"via_modesty_humility","description_long":"**謙虚 (Modesty / Humility)** は VIA Temperance 美徳。自己誇大化を避け、控えめに振る舞う。","description_short":"VIA 謙虚。Temperance 美徳。","reference":"Peterson & Seligman (2004).","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**謙虚 低め**。自信表明 / 自己 PR。","interpretation_short":"低め","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。場面に応じて控えめ。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**謙虚 高め**。自慢を避け、控えめに振る舞う。","interpretation_short":"高め","caveat":null}
+    ]},
+    {"scale_id":"via_prudence","description_long":"**思慮深さ (Prudence)** は VIA Temperance 美徳。長期的結果を考えて行動する。","description_short":"VIA 思慮深さ。Temperance 美徳。","reference":"Peterson & Seligman (2004).","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**思慮深さ 低め**。即断 / 衝動的。","interpretation_short":"低め","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。状況に応じて熟考。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**思慮深さ 高め**。長期結果を考え行動する。","interpretation_short":"高め","caveat":null}
+    ]},
+    {"scale_id":"via_self_regulation_self_control","description_long":"**自己制御 (Self-Regulation / Self-Control)** は VIA Temperance 美徳。衝動 / 感情 / 欲求のコントロール。Big Five Conscientiousness と関連。","description_short":"VIA 自己制御。Temperance 美徳。","reference":"Peterson & Seligman (2004).","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**自己制御 低め**。衝動的 / 感情のままに行動。","interpretation_short":"低め","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。場面に応じてコントロール。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**自己制御 高め**。衝動 / 感情を抑え、計画的に行動。","interpretation_short":"高め","caveat":null}
+    ]},
+    {"scale_id":"via_appreciation_of_beauty","description_long":"**美の賞賛 (Appreciation of Beauty)** は VIA Transcendence 美徳。美術・自然美・人間の卓越性に心動かされる感受性。","description_short":"VIA 美の賞賛。Transcendence 美徳。","reference":"Peterson & Seligman (2004).","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**美への感受性 低め**。実用志向。","interpretation_short":"低め","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。場面に応じて美を楽しむ。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**美への感受性 高め**。美に強く心動かされる。","interpretation_short":"高め","caveat":null}
+    ]},
+    {"scale_id":"via_gratitude","description_long":"**感謝 (Gratitude)** は VIA Transcendence 美徳。良いことに気づき、感謝の念を持つ。\n\nPeterson & Seligman (2004) 幸福予測 top 5 のひとつ。介入研究で「感謝日記」が幸福感を高めることが報告。","description_short":"VIA 感謝。Transcendence 美徳、幸福予測力 top 5。","reference":"Peterson & Seligman (2004) / Emmons & McCullough (2003) Counting blessings vs burdens.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**感謝 低め**。良いことを当然と感じる。","interpretation_short":"低め","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。場面に応じて感謝。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**感謝 高め**。日常の良いことに気づき、感謝の念を持つ。幸福 predictor。","interpretation_short":"高め","caveat":null}
+    ]},
+    {"scale_id":"via_hope_optimism","description_long":"**希望／楽観性 (Hope / Optimism)** は VIA Transcendence 美徳。将来に良い結果を期待し、実現に向けて努力する。\n\nPeterson & Seligman (2004) 幸福予測 top 5 のひとつ。LOT-R と重なる構成概念。","description_short":"VIA 希望／楽観性。Transcendence 美徳、幸福予測力 top 5。","reference":"Peterson & Seligman (2004) / Scheier et al. (1994) LOT-R.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**希望 低め**。将来に否定的期待。","interpretation_short":"低め","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。現実的期待。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**希望 高め**。将来に良い結果を期待し、実現に向けて努力する。幸福 predictor。","interpretation_short":"高め","caveat":null}
+    ]},
+    {"scale_id":"via_humor_playfulness","description_long":"**ユーモア／遊び心 (Humor / Playfulness)** は VIA Transcendence 美徳。笑いと遊びを楽しみ、他者にも提供する。","description_short":"VIA ユーモア。Transcendence 美徳。","reference":"Peterson & Seligman (2004).","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**ユーモア 低め**。シリアス志向。","interpretation_short":"低め","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。場面に応じて笑う。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**ユーモア 高め**。笑いと遊びを楽しみ、周囲を明るくする。","interpretation_short":"高め","caveat":null}
+    ]},
+    {"scale_id":"via_spirituality_religiousness","description_long":"**スピリチュアリティ／信仰心 (Spirituality / Religiousness)** は VIA Transcendence 美徳。人生の意味や目的、神聖な存在への信念。\n\n文化・個人差大きい強み。低得点が問題ではない。","description_short":"VIA スピリチュアリティ。Transcendence 美徳。","reference":"Peterson & Seligman (2004).","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**スピリチュアリティ 低め**。世俗的志向。","interpretation_short":"低め","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。場面に応じて超越的体験。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**スピリチュアリティ 高め**。人生の意味 / 神聖さへの強い信念。","interpretation_short":"高め","caveat":null}
+    ]},
+
+    {"scale_id":"ipip_ipc_assured_dominant","description_long":"**自信・支配的 (Assured-Dominant / PA)** は IPIP-IPC 対人円環の北 (= 12 時方向)。**支配的だが温かみは中程度** の対人スタイル。\n\n高得点はリーダーシップ / 主張性 / 自信。Wiggins (1979) IAS 系譜の対人行動 octant モデル。","description_short":"IPIP-IPC PA octant。北方向、支配的・自信。","reference":"Markey & Markey (2009) IPIP-IPC.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**この octant 低め**。支配的ではなく、控えめな対人スタイル。","interpretation_short":"非該当","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。場面に応じて主導性を発揮。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**自信・支配的が強い**。リーダー / 影響者として振る舞う。","interpretation_short":"該当","caveat":null}
+    ]},
+    {"scale_id":"ipip_ipc_arrogant_calculating","description_long":"**傲慢・打算的 (Arrogant-Calculating / BC)** は IPIP-IPC 対人円環の北東 (= 1-2 時方向)。**支配的かつ冷淡** な対人スタイル。\n\n高得点はマキャベリズム / ダークトライアド傾向と関連。","description_short":"IPIP-IPC BC octant。北東、支配的・冷淡。","reference":"Markey & Markey (2009) IPIP-IPC.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**この octant 低め**。打算的ではない対人スタイル。","interpretation_short":"非該当","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。状況に応じて戦略的。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**傲慢・打算的が強い**。マキャベリズム傾向の指標。","interpretation_short":"該当","caveat":null}
+    ]},
+    {"scale_id":"ipip_ipc_cold_hearted","description_long":"**冷淡 (Cold-Hearted / DE)** は IPIP-IPC 対人円環の東 (= 3 時方向)。**冷淡で他者に関心を示さない** スタイル。","description_short":"IPIP-IPC DE octant。東、冷淡。","reference":"Markey & Markey (2009) IPIP-IPC.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**冷淡傾向 低め**。温かみある対人スタイル。","interpretation_short":"非該当","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。場面に応じて距離。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**冷淡傾向 強い**。他者への関心が薄い。","interpretation_short":"該当","caveat":null}
+    ]},
+    {"scale_id":"ipip_ipc_aloof_introverted","description_long":"**よそよそしい・内向的 (Aloof-Introverted / FG)** は IPIP-IPC 対人円環の南東 (= 4-5 時方向)。**距離を保ち、内向的** な対人スタイル。","description_short":"IPIP-IPC FG octant。南東、よそよそしい・内向的。","reference":"Markey & Markey (2009) IPIP-IPC.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**この octant 低め**。社交的なスタイル。","interpretation_short":"非該当","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。場面に応じた距離感。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**よそよそしい・内向的が強い**。集団から離れがち。","interpretation_short":"該当","caveat":null}
+    ]},
+    {"scale_id":"ipip_ipc_unassured_submissive","description_long":"**自信なし・従属的 (Unassured-Submissive / HI)** は IPIP-IPC 対人円環の南 (= 6 時方向)。**従属的で自信のない** 対人スタイル。\n\n高得点は自尊感情低め / 依存的傾向の指標。","description_short":"IPIP-IPC HI octant。南、従属的・自信なし。","reference":"Markey & Markey (2009) IPIP-IPC.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**この octant 低め**。主張的なスタイル。","interpretation_short":"非該当","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。場面に応じて従う。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**従属的・自信なし**。他者に従いがちで、主張を控える。","interpretation_short":"該当","caveat":null}
+    ]},
+    {"scale_id":"ipip_ipc_unassuming_ingenuous","description_long":"**控えめ・素直 (Unassuming-Ingenuous / JK)** は IPIP-IPC 対人円環の南西 (= 7-8 時方向)。**控えめだが温かみある** 対人スタイル。","description_short":"IPIP-IPC JK octant。南西、控えめ・素直。","reference":"Markey & Markey (2009) IPIP-IPC.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**この octant 低め**。より積極的なスタイル。","interpretation_short":"非該当","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。標準的範囲。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**控えめ・素直**。謙虚で温かみある対人スタイル。","interpretation_short":"該当","caveat":null}
+    ]},
+    {"scale_id":"ipip_ipc_warm_agreeable","description_long":"**温かい・協調的 (Warm-Agreeable / LM)** は IPIP-IPC 対人円環の西 (= 9 時方向)。**温かく協力的** な対人スタイル。\n\n高得点は対人関係の充実 / チームワーク。","description_short":"IPIP-IPC LM octant。西、温かい・協調的。","reference":"Markey & Markey (2009) IPIP-IPC.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**この octant 低め**。距離をおいた対人スタイル。","interpretation_short":"非該当","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。場面に応じて協調。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**温かい・協調的**。対人関係の充実 / チームワークに強み。","interpretation_short":"該当","caveat":null}
+    ]},
+    {"scale_id":"ipip_ipc_gregarious_extraverted","description_long":"**群居・外向的 (Gregarious-Extraverted / NO)** は IPIP-IPC 対人円環の北西 (= 10-11 時方向)。**社交的で活発** な対人スタイル。\n\n高得点はネットワーキング / 営業に強み。","description_short":"IPIP-IPC NO octant。北西、群居・外向的。","reference":"Markey & Markey (2009) IPIP-IPC.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**この octant 低め**。内向的なスタイル。","interpretation_short":"非該当","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。場面に応じて活発。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**群居・外向的**。社交を楽しみ、広いネットワークを持つ。","interpretation_short":"該当","caveat":null}
     ]}
 
   ]
