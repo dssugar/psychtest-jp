@@ -327,6 +327,51 @@ export async function getCompletedScales(
 }
 
 /**
+ * Phase 2.x.H.2: user が「強く同意 (5)」「強く否定 (1)」と答えた item-level 回答を抽出.
+ * 月読 chat context に inject される (= 抽象的な band 解釈に加えて、具体的な item 文言を素材化).
+ *
+ * 設計方針:
+ * - extreme value (1 or 5) のみ → 信号価値の高い回答に絞る
+ * - clinical scale (= source 'scale:phq9' / 'scale:k6') は除外 (既存 phq9K6Optin policy 踏襲)
+ * - 同一 item は user_responses で 1 行 (= PK device_id+item_id)、scale が複数あっても重複なし
+ * - 新→旧順、context bloat 防止に上位 ~12 件
+ */
+export interface ExtremeItemRow {
+  item_id: string;
+  en_text: string;
+  ja_text: string | null;
+  value: number; // 1 (= 強く否定) or 5 (= 強く同意)
+  answered_at: number;
+  source: string;
+}
+
+export async function getExtremeItemResponses(
+  db: D1Database,
+  deviceId: string,
+  options?: { limit?: number; includeClinical?: boolean },
+): Promise<ExtremeItemRow[]> {
+  const limit = options?.limit ?? 12;
+  const excludeClinical = !options?.includeClinical;
+  const sources = excludeClinical
+    ? "AND ur.source NOT IN ('scale:phq9', 'scale:k6')"
+    : "";
+  const r = await db
+    .prepare(
+      `SELECT ur.item_id, i.en_text, i.ja_text, ur.value, ur.answered_at, ur.source
+       FROM user_responses ur
+       JOIN ipip_items i ON i.item_id = ur.item_id
+       WHERE ur.device_id = ?1
+         AND (ur.value = 1 OR ur.value = 5)
+         ${sources}
+       ORDER BY ur.answered_at DESC
+       LIMIT ?2`,
+    )
+    .bind(deviceId, limit)
+    .all<ExtremeItemRow>();
+  return r.results ?? [];
+}
+
+/**
  * 1 scale の description + interpretation 全 band.
  * 未登録 scale は null / 空配列を返す (= UI 側でフォールバック表示).
  */

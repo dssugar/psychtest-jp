@@ -63,3 +63,26 @@ console.log(
     completedScales: [],
   }) || "(empty)",
 );
+
+console.log("\n\n=== Test 5: extreme item-level inject + 対話途中分マーク ===\n");
+const now5 = Date.now();
+console.log(
+  summarizeProfile({
+    profile: null,
+    phq9K6Optin: false,
+    totalIpipResponses: 80,
+    lastAssistantTurnAt: now5 - 60 * 60 * 1000,
+    completedScales: [
+      { scale_id: "neo_anxiety", instrument: "NEO", scale_name: "Neuroticism", facet_name: "Anxiety", display_label_ja: "不安", band: "high" as const, interpretation_short: "不安傾向 高め (心配しやすい)", latest_answered_at: now5 - 30 * 60 * 1000 },
+    ],
+    extremeItemResponses: [
+      // 対話途中 (= 新規)
+      { item_id: "H1", ja_text: "心配性である", en_text: "Worry about things.", value: 5, answered_at: now5 - 30 * 60 * 1000 },
+      { item_id: "H2", ja_text: "常にリラックスしている", en_text: "Am relaxed most of the time.", value: 1, answered_at: now5 - 30 * 60 * 1000 },
+      // 過去受験
+      { item_id: "H100", ja_text: "自分に自信がある", en_text: "Believe in myself.", value: 5, answered_at: now5 - 7 * 24 * 60 * 60 * 1000 },
+      { item_id: "H101", ja_text: "新しい経験を求める", en_text: "Seek adventure.", value: 5, answered_at: now5 - 7 * 24 * 60 * 60 * 1000 },
+      { item_id: "H102", ja_text: "他人を信じる", en_text: "Trust others.", value: 1, answered_at: now5 - 7 * 24 * 60 * 60 * 1000 },
+    ],
+  }),
+);

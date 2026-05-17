@@ -32,7 +32,7 @@ import {
   getRecentTurns,
   nextTurnId,
 } from "../../_lib/d1";
-import { getCompletedScales } from "../../_lib/scales";
+import { getCompletedScales, getExtremeItemResponses } from "../../_lib/scales";
 import { summarizeProfile } from "../../../lib/uranai/profile-summarizer";
 import { buildTsukuyomiSystemPrompt } from "../../../lib/uranai/tsukuyomi-prompt";
 import type { ChatRequest, DivinationContext } from "../../../lib/uranai/types";
@@ -106,6 +106,13 @@ export const onRequest: PagesFunction<Env> = async (context) => {
   // Phase 2.x.H: 受験完走 IPIP scale を band 付きで取得 → 上位 10 件を inject.
   const completedScales = await getCompletedScales(db, deviceId, { limit: 20 });
 
+  // Phase 2.x.H.2: extreme item-level 回答 (value=1 or 5) を 12 件取得.
+  //   clinical scale (PHQ-9/K6) は phq9K6Optin に関わらず除外 (= 個別 item 文言を LLM に流すリスク回避).
+  const extremeItemResponses = await getExtremeItemResponses(db, deviceId, {
+    limit: 12,
+    includeClinical: false,
+  });
+
   // Phase 2.x.H: 過去 turn を先に hydrate → 直近 assistant turn の created_at を抽出.
   //   summarizer がこの時刻を境に「対話途中で新たに受験した scale」を別 section に分離するため、
   //   システムプロンプト組立より前に past を取得する.
@@ -126,6 +133,7 @@ export const onRequest: PagesFunction<Env> = async (context) => {
     totalIpipResponses,
     completedScales,
     lastAssistantTurnAt,
+    extremeItemResponses,
   });
 
   // 2. system prompt 組立

@@ -45,6 +45,11 @@ export interface SummarizerInput {
    * 強調表示される (= 対話途中に受験した scale の即時反映を月読に意識させる).
    */
   lastAssistantTurnAt?: number;
+  /**
+   * Phase 2.x.H.2: extreme item-level 回答 (value=1 or 5).
+   * 月読が具体的な item 文言を引用できる素材として「強く響いた問い」section に変換.
+   */
+  extremeItemResponses?: ExtremeItemForLLM[];
 }
 
 /**
@@ -79,6 +84,18 @@ export interface SummarizerInputExt {
 }
 
 /**
+ * Phase 2.x.H.2: user が「強く同意 (5)」「強く否定 (1)」と答えた item.
+ * functions/_lib/scales.ts の ExtremeItemRow と field 互換 (= source 等は省略可).
+ */
+export interface ExtremeItemForLLM {
+  item_id: string;
+  en_text: string;
+  ja_text: string | null;
+  value: number; // 1 or 5
+  answered_at?: number;
+}
+
+/**
  * profile 全体 → 月読向け詩的サマリー. 各セクションを改行で連結.
  * profile が null / テスト未完了の section は skip.
  */
@@ -88,6 +105,7 @@ export function summarizeProfile({
   totalIpipResponses,
   completedScales,
   lastAssistantTurnAt,
+  extremeItemResponses,
 }: SummarizerInput): string {
   const parts: string[] = [];
 
@@ -141,6 +159,13 @@ export function summarizeProfile({
   //   - 直近 assistant turn より後の受験は「新たに紐解いた波長」として別 section に分離.
   if (completedScales && completedScales.length > 0) {
     const section = summarizeCompletedScales(completedScales, lastAssistantTurnAt);
+    if (section) parts.push(section);
+  }
+
+  // 9. Phase 2.x.H.2: extreme item-level 回答 (value=1 / 5) を「強く響いた問い」section に.
+  //   抽象 band より具体性高、月読が item 文言を直接引用できる素材.
+  if (extremeItemResponses && extremeItemResponses.length > 0) {
+    const section = summarizeExtremeItems(extremeItemResponses, lastAssistantTurnAt);
     if (section) parts.push(section);
   }
 
@@ -215,6 +240,39 @@ function summarizeCompletedScales(
   }
 
   return sections.join("\n");
+}
+
+/**
+ * Phase 2.x.H.2: extreme item 回答 (value=1 or 5) を月読 context section に変換.
+ *
+ * 月読が item 文言を直接引用できる素材として「強く響いた問い」section を生成.
+ *
+ * 設計方針:
+ * - ja_text 優先、なければ en_text
+ * - value=5 → 「『○○』に強く同意」
+ * - value=1 → 「『○○』を強く否定」
+ * - lastAssistantTurnAt 後 (= 対話途中の回答) は section 内で先頭にして「(今しがた)」マーク
+ * - context bloat 防止に 12 件上限 (= 呼び出し側の getExtremeItemResponses limit と合致)
+ *
+ * token 試算: 12 × ~40字 ≒ 480字 / ~200 token、scale band section と合算しても許容範囲.
+ */
+function summarizeExtremeItems(
+  items: ExtremeItemForLLM[],
+  lastAssistantTurnAt?: number,
+): string {
+  if (items.length === 0) return "";
+  // 受験順 (新→旧) は呼び出し側で確保済の想定. ここでは新規マークだけ付ける.
+  const isFresh = (it: ExtremeItemForLLM): boolean =>
+    !!lastAssistantTurnAt && !!it.answered_at && it.answered_at > lastAssistantTurnAt;
+
+  const lines: string[] = ["【強く響いた問い】"];
+  for (const it of items) {
+    const text = (it.ja_text ?? it.en_text).trim().replace(/[「」]/g, "");
+    const verb = it.value === 5 ? "に強く同意" : "を強く否定";
+    const freshMark = isFresh(it) ? " (今しがた)" : "";
+    lines.push(`・「${text}」${verb}${freshMark}`);
+  }
+  return lines.join("\n");
 }
 
 /**
