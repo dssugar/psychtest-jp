@@ -1,0 +1,610 @@
+{
+  "_note": "Phase 2.x.G Phase B: literature 引用付きの hand-craft description. generate-scale-descriptions.ts 実行時に template に優先する.",
+  "_facet_format": "NEO/HEXACO の facet は 100-200 字、scale 概要 + 高/低 1 行ずつ。詳細は domain (L2) entry に集約.",
+  "scales": [
+    {
+      "scale_id": "neo_neuroticism",
+      "description_long": "**神経症傾向 (Neuroticism)** は **負の感情を経験しやすい傾向** を測定する Big Five の中核 5 因子のひとつ。\n\nIPIP-NEO-300 では 6 facet (Anxiety / Anger / Depression / Self-Consciousness / Immoderation / Vulnerability) × 各 10 項目 = 60 項目で多面的に測定。\n\n**理論的位置づけ**\n\n- 双子研究で遺伝率 ~0.40-0.50 が報告されている、比較的安定した気質要因\n- 高水準は不安障害・うつ病・身体化症状の縦断的予測因子 (Kotov et al., 2010 meta-analysis)\n- 低水準は感情安定 = 「動じなさ」、リーダーシップや交渉場面で有利\n\n**改善・介入**\n\n固定的特性だが、認知行動療法 (CBT) / マインドフルネス療法 (MBSR / MBCT) / 自己コンパッション療法で長期的に低下することが示されている (Roberts et al., 2017)。",
+      "description_short": "Neuroticism。負の感情を経験しやすい傾向。Big Five 中核 5 因子のひとつ。",
+      "reference": "Costa & McCrae (1992) NEO-PI-R / Goldberg (1999) IPIP / Kotov et al. (2010) Linking 'big' personality traits to anxiety, depressive, and substance use disorders. Psychol Bull.",
+      "threshold_low": 144,
+      "threshold_high": 216,
+      "threshold_kind": "equal_split",
+      "interpretations": [
+        {
+          "band": "low",
+          "interpretation_long": "**神経症傾向 低め**。ストレス状況でも感情が安定しやすく、平静を保ちやすい。否定的感情の頻度・強度が小さく、回復も速い。リーダーシップ・交渉・救急対応など緊張下の場面で力を発揮しやすい。\n\n一方で、感情シグナルが弱く、リスク察知や共感的反応が鈍くなる場合もある (= 極端な低さ)。",
+          "interpretation_short": "Neuroticism 低め (情緒安定型)",
+          "caveat": null
+        },
+        {
+          "band": "mid",
+          "interpretation_long": "**神経症傾向 中程度**。標準的な感情変動範囲。日常的なストレスには対処できるが、強いストレッサーでは一時的に不安・怒り・抑うつが高まる。多くの人がこの範囲。",
+          "interpretation_short": "Neuroticism 中程度 (適応範囲)",
+          "caveat": null
+        },
+        {
+          "band": "high",
+          "interpretation_long": "**神経症傾向 高め**。負の感情を経験しやすく、ストレス状況での反応が強い。不安・怒り・抑うつ・自己批判が日常的に観察される。\n\n高水準は精神的健康のリスク因子だが、固定的ではなく、認知行動療法 / マインドフルネス療法 / 自己コンパッション療法で改善が報告されている。同時に、感受性の高さは芸術的創造性や深い対人理解と関連する側面もある。",
+          "interpretation_short": "Neuroticism 高め (感情変動大)",
+          "caveat": "極端な高得点が継続している場合、専門家への相談を検討してください。これは医療診断ではありません。"
+        }
+      ]
+    },
+    {
+      "scale_id": "neo_extraversion",
+      "description_long": "**外向性 (Extraversion)** は **社会的活動・刺激への接近傾向** を測定する Big Five 5 因子のひとつ。\n\nIPIP-NEO-300 では 6 facet (Friendliness / Gregariousness / Assertiveness / Activity Level / Excitement-Seeking / Cheerfulness) × 各 10 項目 = 60 項目で測定。\n\n**理論的位置づけ**\n\n- Gray (1981) の Behavioral Activation System (BAS) との対応が示唆される、報酬接近系の気質\n- 高水準は主観的幸福感・社会的成功・リーダーシップの予測因子\n- 低水準は内向 (introversion) で、深い集中・独立思考に有利\n\n**注意**: 内向 = 社交不安 ではない。社交不安は Neuroticism 系の構成概念で、外向性とは独立。",
+      "description_short": "Extraversion。社会的活動・刺激への接近傾向。BAS との対応が示唆。",
+      "reference": "Costa & McCrae (1992) NEO-PI-R / Lucas, Diener, Grob, Suh & Shao (2000) Cross-cultural evidence for the fundamental features of extraversion.",
+      "threshold_low": 144,
+      "threshold_high": 216,
+      "threshold_kind": "equal_split",
+      "interpretations": [
+        {
+          "band": "low",
+          "interpretation_long": "**外向性 低め (内向)**。一人の時間を好み、深い集中や内的経験を大切にする。社交場面では消耗しやすく、回復に独りの時間を必要とする。少人数の親密な関係を好む傾向。\n\n内向 = 社交不安ではない (両者は独立次元)。一人を好むだけで、対人能力が低いとは限らない。",
+          "interpretation_short": "Extraversion 低め (内向型)",
+          "caveat": null
+        },
+        {
+          "band": "mid",
+          "interpretation_long": "**外向性 中程度**。社交場面と一人時間のバランスを取りやすい。状況に応じて活発にも控えめにも振る舞える。",
+          "interpretation_short": "Extraversion 中程度 (両向)",
+          "caveat": null
+        },
+        {
+          "band": "high",
+          "interpretation_long": "**外向性 高め**。社会的接触・刺激・活動を求め、グループ場面で活気づく。ポジティブ感情の経験頻度が高く、主観的幸福感の予測因子となる。リーダーシップ・営業・教育職での適性が報告されている。\n\n極端に高い場合、一人時間の不足や刺激追求リスク (= 衝動的消費 / リスク行動) に注意。",
+          "interpretation_short": "Extraversion 高め (外向型)",
+          "caveat": null
+        }
+      ]
+    },
+    {
+      "scale_id": "neo_openness",
+      "description_long": "**開放性 (Openness to Experience)** は **新しい経験・抽象思考・芸術への関心** を測定する Big Five 5 因子のひとつ。\n\nIPIP-NEO-300 では 6 facet (Imagination / Artistic Interests / Emotionality / Adventurousness / Intellect / Liberalism) × 各 10 項目 = 60 項目で測定。\n\n**理論的位置づけ**\n\n- IQ と弱-中等度 (r ~0.30) の相関、ただし独立次元\n- 創造性 / 学術的成功 / 文化消費との関連が一貫して報告 (McCrae & Greenberg, 2014)\n- 政治的にはリベラル傾向 (= 変化・多様性への寛容) と関連\n- 低水準は伝統重視 / 具体志向 / ルーティン好み (= 必ずしも「閉鎖的」ではない、安定志向)",
+      "description_short": "Openness。新しい経験・抽象思考・芸術への関心。創造性と関連。",
+      "reference": "Costa & McCrae (1992) NEO-PI-R / McCrae & Greenberg (2014) Openness to Experience. In APA Handbook of Personality.",
+      "threshold_low": 144,
+      "threshold_high": 216,
+      "threshold_kind": "equal_split",
+      "interpretations": [
+        {
+          "band": "low",
+          "interpretation_long": "**開放性 低め (実用・伝統重視)**。具体的・実用的なアプローチを好み、既存のやり方や伝統に価値を置く。芸術・抽象議論・新規体験への関心は控えめで、安定したルーティンの中で力を発揮する。\n\n「閉鎖的」というネガティブな意味ではなく、**実務遂行・伝統継承・安定運用** に向く特性。",
+          "interpretation_short": "Openness 低め (実用・伝統重視型)",
+          "caveat": null
+        },
+        {
+          "band": "mid",
+          "interpretation_long": "**開放性 中程度**。新規性と慣れ親しんだものの両方に程よく開かれている。状況に応じて柔軟に新しい考え方を取り入れる。",
+          "interpretation_short": "Openness 中程度 (バランス型)",
+          "caveat": null
+        },
+        {
+          "band": "high",
+          "interpretation_long": "**開放性 高め**。知的好奇心が強く、新しい経験・芸術・抽象議論・異文化への関心が高い。創造的職業 (= 研究 / アート / 起業) で力を発揮しやすい。リベラル / 進歩的価値観との関連あり。\n\n極端に高い場合、ルーティン作業・具体的タスクへの不耐感、空想と現実の区別が曖昧になる傾向に注意。",
+          "interpretation_short": "Openness 高め (探索・創造型)",
+          "caveat": null
+        }
+      ]
+    },
+    {
+      "scale_id": "neo_agreeableness",
+      "description_long": "**協調性 (Agreeableness)** は **他者との協力・共感・利他的振る舞いへの傾向** を測定する Big Five 5 因子のひとつ。\n\nIPIP-NEO-300 では 6 facet (Trust / Morality / Altruism / Cooperation / Modesty / Sympathy) × 各 10 項目 = 60 項目で測定。\n\n**理論的位置づけ**\n\n- 進化心理学的には「互恵的利他行動」の個人差を捉える次元\n- 高水準は対人満足度 / チームワーク / 親密関係の質の予測因子\n- 低水準は競争的・自己主張的で、交渉・リーダー的決断・批判的レビューに有利\n- 極端に低いと反社会的傾向 / マキャベリズムとの関連 (HEXACO の Honesty-Humility 低と組合せで顕著)",
+      "description_short": "Agreeableness。他者との協力・共感・利他行動への傾向。",
+      "reference": "Costa & McCrae (1992) NEO-PI-R / Graziano & Tobin (2009) Agreeableness. In Leary & Hoyle (Eds.), Handbook of Individual Differences in Social Behavior.",
+      "threshold_low": 144,
+      "threshold_high": 216,
+      "threshold_kind": "equal_split",
+      "interpretations": [
+        {
+          "band": "low",
+          "interpretation_long": "**協調性 低め (競争・主張型)**。自分の利害や意見を率直に主張し、必要なら対立も辞さない。批判的レビュー・厳しい交渉・独立した意思決定の場面で力を発揮する。\n\n「冷淡」ではなく「現実主義」と捉えるべき特性。ただし極端に低いと対人関係でのコスト増大に注意。",
+          "interpretation_short": "Agreeableness 低め (競争・主張型)",
+          "caveat": null
+        },
+        {
+          "band": "mid",
+          "interpretation_long": "**協調性 中程度**。協力と主張のバランスを取りやすい。場面に応じて柔軟に振る舞える標準範囲。",
+          "interpretation_short": "Agreeableness 中程度",
+          "caveat": null
+        },
+        {
+          "band": "high",
+          "interpretation_long": "**協調性 高め**。他者の感情や立場を考慮し、調和を重視する。対人関係の満足度 / チーム協力 / 親密関係の質の予測因子。介護 / 教育 / カウンセリング職で適性が高い。\n\n極端に高い場合、自分の意見を抑えすぎる傾向 / 搾取されやすい傾向に注意。「健全な主張」も大切。",
+          "interpretation_short": "Agreeableness 高め (協力・共感型)",
+          "caveat": null
+        }
+      ]
+    },
+    {
+      "scale_id": "neo_conscientiousness",
+      "description_long": "**誠実性 (Conscientiousness)** は **計画性・自己制御・責任感・達成志向** を測定する Big Five 5 因子のひとつ、**最も生涯成果を予測する次元**。\n\nIPIP-NEO-300 では 6 facet (Self-Efficacy / Orderliness / Dutifulness / Achievement-Striving / Self-Discipline / Cautiousness) × 各 10 項目 = 60 項目で測定。\n\n**理論的位置づけ**\n\n- 学業成績・職務パフォーマンス・収入・健康・長寿との縦断的相関が一貫して報告 (Roberts, Walton & Viechtbauer, 2006 meta-analysis)\n- 効果サイズは個別 facet で異なる: Achievement-Striving は職務成績、Self-Discipline は長寿予測に強い\n- 加齢に伴い徐々に上昇する傾向 (= 「成熟」)\n\n**改善余地**\n\n性格特性のなかでも介入による変化が報告されている (= 認知行動的習慣形成 / 環境調整 / 自己モニタリング)。",
+      "description_short": "Conscientiousness。計画性・自己制御・責任感。最も生涯成果を予測する Big Five 次元。",
+      "reference": "Costa & McCrae (1992) NEO-PI-R / Roberts, Walton & Viechtbauer (2006) Patterns of mean-level change in personality traits across the life course. Psychol Bull.",
+      "threshold_low": 144,
+      "threshold_high": 216,
+      "threshold_kind": "equal_split",
+      "interpretations": [
+        {
+          "band": "low",
+          "interpretation_long": "**誠実性 低め**。計画より即興、ルールより自分の判断を優先する。柔軟性・遊び心・即応性に強み。一方で、長期目標の達成・組織的タスク・締切管理は苦手な場合が多い。\n\n極端な低さは学業 / 職務遂行 / 健康行動への影響が報告されている。タスク管理ツール / 環境調整 / 習慣形成支援で改善余地あり。",
+          "interpretation_short": "Conscientiousness 低め (即興・柔軟型)",
+          "caveat": null
+        },
+        {
+          "band": "mid",
+          "interpretation_long": "**誠実性 中程度**。計画と即興のバランスを取りやすい。日常タスクは確実に処理しつつ、過剰に硬直しない。",
+          "interpretation_short": "Conscientiousness 中程度",
+          "caveat": null
+        },
+        {
+          "band": "high",
+          "interpretation_long": "**誠実性 高め**。計画的・組織的・自己規律的に行動する。学業成績 / 職務パフォーマンス / 長寿 / 健康行動の最大の予測因子。締切遵守 / 品質管理 / 長期プロジェクト遂行で力を発揮。\n\n極端に高い場合、完璧主義 / ワーカホリック / 柔軟性の不足に注意。「休む計画」も大切。",
+          "interpretation_short": "Conscientiousness 高め (計画・規律型)",
+          "caveat": null
+        }
+      ]
+    },
+    {
+      "scale_id": "hexaco_pi_honesty_humility",
+      "description_long": "**正直さ-謙虚さ (Honesty-Humility)** は HEXACO モデルが **Big Five に加えた第 6 因子**。\n\nHEXACO-PI-R では 4 facet (Sincerity / Fairness / Greed Avoidance / Modesty) × 各 10 項目 = 40 項目で測定。\n\n**理論的位置づけ**\n\n- Lee & Ashton (2004) が言語横断因子分析で発見した、Big Five Agreeableness とは独立な「他者を搾取しない傾向」\n- **ダークトライアド (マキャベリズム / ナルシシズム / サイコパシー) と強い負の相関** (Lee et al., 2013, r ≈ -0.50 to -0.70)\n- 低水準は職場での詐欺・盗難・性的搾取行動の予測因子\n- 高水準は誠実性 (= 嘘をつかない) + 公平 (= ルール尊重) + 質素 (= 富への執着なし) + 謙虚 (= 自己誇大化なし)\n\n**Big Five との関係**\n\n表面的に Agreeableness と類似だが、A は「人当たりの良さ」、H-H は「不正をしない傾向」を捉える別次元。両方測ると個人プロファイルの解像度が上がる。",
+      "description_short": "Honesty-Humility。HEXACO の第 6 因子。ダークトライアドの裏返し。Big Five にはない。",
+      "reference": "Lee & Ashton (2004) The HEXACO Personality Inventory / Lee, Ashton, Wiltshire, Bourdage, Visser & Gallucci (2013) Sex, power, and money: Prediction from the Dark Triad and Honesty-Humility. EJP.",
+      "threshold_low": 96,
+      "threshold_high": 144,
+      "threshold_kind": "equal_split",
+      "interpretations": [
+        {
+          "band": "low",
+          "interpretation_long": "**正直さ-謙虚さ 低め**。自分の利益のために嘘・操作・規則違反を用いることを厭わない傾向。富 / 地位 / 名声への執着が強い。ダークトライアド特性 (マキャベリズム / ナルシシズム / サイコパシー) との関連が報告されている。\n\n極端な低さは職場での非倫理的行動 / 詐欺 / 搾取的対人関係のリスク因子。一方で、ビジネスや交渉場面では「ためらいなく利益追求できる」側面が成果につながる場合もある。",
+          "interpretation_short": "Honesty-Humility 低め (利己・操作的)",
+          "caveat": "極端な低さは反社会的傾向と関連。自他の関係性に気になる点があれば内省してください。"
+        },
+        {
+          "band": "mid",
+          "interpretation_long": "**正直さ-謙虚さ 中程度**。一般的な誠実さと適度な自己利益追求のバランス。多くの人がこの範囲。",
+          "interpretation_short": "Honesty-Humility 中程度",
+          "caveat": null
+        },
+        {
+          "band": "high",
+          "interpretation_long": "**正直さ-謙虚さ 高め**。嘘・操作・不正を避け、公平で謙虚に振る舞う。富や地位への執着は少なく、内面的価値を重視。協同的タスク / 信頼関係構築 / 倫理判断で力を発揮。\n\n極端に高い場合、自己アドボカシーの不足 / 競争場面での不利に注意。「正当な主張」「健全な野心」も大切。",
+          "interpretation_short": "Honesty-Humility 高め (誠実・謙虚型)",
+          "caveat": null
+        }
+      ]
+    },
+    {
+      "scale_id": "rosenberg1965",
+      "description_long": "**Rosenberg Self-Esteem Scale (1965)** は **自尊感情** (Self-Esteem = 自分自身の価値についての総合評価) を 10 項目で測定する、世界で最も広く使用されている尺度。\n\n**学術的位置づけ**\n\n- 50,000+ 引用、心理学で最も使用される尺度のひとつ\n- Cronbach's α = 0.77-0.88、再テスト信頼性 r = 0.82-0.85 (Sinclair et al., 2010 meta-analysis)\n- 縦断研究で低自尊感情は将来のうつ病 (r = -0.64) / 不安症 (r = -0.33) / 学業困難を予測 (Sowislo & Orth, 2013, Psychol Bull)\n- 高自尊感情はストレスへのバッファ機能、対人満足度・職務パフォーマンスの予測因子\n\n**改善余地**\n\n固定的特性ではなく、認知行動療法 / 自己コンパッション療法 / マインドフルネス実践で改善可能。Neff (2003) の self-compassion アプローチが特に効果的と報告。\n\n**項目構成**\n\n5 項目が肯定文 (= 「私は価値ある人間だ」)、5 項目が否定文 (= 「自分には何の取り柄もない」) で、後者は逆転スコアリング。",
+      "description_short": "Rosenberg 自尊感情 (10項目)。50,000+ 引用、α=0.77-0.88、世界最頻使用尺度。",
+      "reference": "Rosenberg (1965) Society and the adolescent self-image. Princeton University Press. Sowislo & Orth (2013) Does low self-esteem predict depression and anxiety? Psychol Bull.",
+      "threshold_low": 24,
+      "threshold_high": 36,
+      "threshold_kind": "equal_split",
+      "interpretations": [
+        {
+          "band": "low",
+          "interpretation_long": "**自尊感情 低め**。自分自身の価値について控えめ、または否定的な評価。失敗や批判に過敏になりやすく、自己批判的内的対話が頻繁。長期的にうつ・不安リスクが報告されている。\n\n**改善の可能性**: 固定的特性ではなく、認知行動療法 (CBT) / 自己コンパッション療法 / マインドフルネスで有意な改善が示されている。「自分への思いやり」の練習が特に効果的 (Neff 2003)。",
+          "interpretation_short": "自尊感情 低め (自己批判的)",
+          "caveat": "長期間にわたって低水準が続く場合、専門家への相談を検討してください。これは医療診断ではありません。"
+        },
+        {
+          "band": "mid",
+          "interpretation_long": "**自尊感情 中程度**。自分について現実的な評価を持っている範囲。日常的なストレスや失敗には対処できるが、強い批判や挫折では一時的に揺らぐこともある。多くの人がこの範囲。",
+          "interpretation_short": "自尊感情 中程度",
+          "caveat": null
+        },
+        {
+          "band": "high",
+          "interpretation_long": "**自尊感情 高め**。自分自身の価値について肯定的な評価。ストレスへのバッファ機能が働き、対人関係 / 仕事 / 学業で安定したパフォーマンスを示しやすい。\n\n極端に高い場合、自己愛的傾向 / 他者軽視 / 批判受容の困難に注意。「健全な自尊感情」と「自己愛」は別概念。",
+          "interpretation_short": "自尊感情 高め (自己肯定的)",
+          "caveat": null
+        }
+      ]
+    },
+    {
+      "scale_id": "scheier1994",
+      "description_long": "**Life Orientation Test-Revised (LOT-R, Scheier et al. 1994)** は **性格特性的楽観性 (dispositional optimism)** を 10 項目で測定。\n\n**理論的位置づけ**\n\n- 楽観性 = 「将来に良い結果を期待する一般的傾向」(Carver & Scheier, 1985, expectancy-value theory)\n- α = 0.78、再テスト信頼性 r = 0.79 (4 ヶ月)\n- **健康行動・身体的健康・主観的幸福感** の縦断的予測因子 (Rasmussen et al., 2009 meta-analysis): 楽観性が高いほど心血管疾患リスク低下\n- ストレス対処 (= 問題焦点型対処 / 認知再構成) との関連\n\n**注意**\n\n楽観性 ≠ 現実逃避。LOT-R で測る楽観性は「努力に応じて良い結果が来る」期待で、根拠なき確信や否認とは区別される。\n\n**改善余地**\n\n認知行動療法的介入 (= 自動思考の修正 / 帰属再訓練) で楽観性が向上することが示されている。",
+      "description_short": "LOT-R (Scheier 1994)。性格特性的楽観性。健康・幸福の予測因子。",
+      "reference": "Scheier, Carver & Bridges (1994) Distinguishing optimism from neuroticism: A reevaluation of the LOT. JPSP. Rasmussen, Scheier & Greenhouse (2009) Optimism and physical health: A meta-analytic review. Ann Behav Med.",
+      "threshold_low": 24,
+      "threshold_high": 36,
+      "threshold_kind": "equal_split",
+      "interpretations": [
+        {
+          "band": "low",
+          "interpretation_long": "**楽観性 低め (悲観的)**。将来の結果に否定的な期待を抱きやすい。問題が起きると「やはり」と感じ、無力感に陥りがち。\n\n悲観傾向はうつ / 不安 / 健康問題の独立リスク因子だが、認知行動療法的アプローチ (= 自動思考の特定と修正 / 帰属の再訓練 / 行動活性化) で改善可能。",
+          "interpretation_short": "楽観性 低め (悲観的)",
+          "caveat": "悲観傾向が日常生活に支障をきたす場合、専門家への相談を検討してください。"
+        },
+        {
+          "band": "mid",
+          "interpretation_long": "**楽観性 中程度**。現実的な楽観で、状況に応じて期待を調整できる範囲。",
+          "interpretation_short": "楽観性 中程度 (現実的)",
+          "caveat": null
+        },
+        {
+          "band": "high",
+          "interpretation_long": "**楽観性 高め**。将来に良い結果を期待し、ストレス状況でも前向きに対処する。健康行動の実行 / 心血管疾患リスク低下 / 寿命延伸との関連が報告されている。\n\n極端に高い場合、リスク過小評価 / 準備不足に注意。「健全な楽観」と「根拠なき楽観」は別。",
+          "interpretation_short": "楽観性 高め",
+          "caveat": null
+        }
+      ]
+    },
+
+    {"scale_id":"neo_anger","description_long":"**怒り (Anger / N2 facet)** は **frustration や不快事象に対する怒り反応の強さと頻度** を測定。短気・苛立ち・不機嫌の傾向を含む。\n\n高得点は対人衝突 / 攻撃行動 / 心血管疾患リスクとの関連が報告 (Chida & Steptoe, 2009)。一方、健康な怒りは不正への対抗・自己アドボカシーの原動力でもある。","description_short":"怒り反応の強さ・頻度。N2 facet。","reference":"Costa & McCrae (1992) NEO-PI-R N2.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**怒り 低め**。frustration への反応が穏やかで、苛立ちにくい。対人関係で衝突を生みにくい一方、抑圧的になりすぎると後で噴出するリスクも。","interpretation_short":"怒り 低め (穏やか)","caveat":null},
+      {"band":"mid","interpretation_long":"**怒り 中程度**。状況に応じて適切に怒りを感じ表現できる標準範囲。","interpretation_short":"怒り 中程度","caveat":null},
+      {"band":"high","interpretation_long":"**怒り 高め**。小さな不快事象でも苛立ちを覚えやすい。対人衝突 / 心血管リスクの上昇に注意。怒りマネジメント (= マインドフルネス / CBT) で改善可能。","interpretation_short":"怒り 高め (短気)","caveat":null}
+    ]},
+
+    {"scale_id":"neo_depression","description_long":"**抑うつ (Depression / N3 facet)** は **悲しみ・無価値感・将来への絶望の傾向** を測定。臨床的うつ病ではなく、健常範囲のうつ傾向。\n\n高得点は将来のうつ病エピソード / 自殺念慮 / 身体化症状の予測因子 (Kotov et al., 2010)。低得点は感情の安定 / 自己肯定。","description_short":"抑うつ・無価値感の傾向。N3 facet。","reference":"Costa & McCrae (1992) NEO-PI-R N3.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**抑うつ傾向 低め**。気分が安定し、自己肯定的。失敗にも引きずられにくい。","interpretation_short":"抑うつ傾向 低め","caveat":null},
+      {"band":"mid","interpretation_long":"**抑うつ傾向 中程度**。日常的な落ち込みは経験するが、回復する範囲。","interpretation_short":"抑うつ傾向 中程度","caveat":null},
+      {"band":"high","interpretation_long":"**抑うつ傾向 高め**。悲しみ・無価値感・将来への悲観を感じやすい。臨床的うつ病ではないが将来のうつエピソードの予測因子。認知行動療法 / 行動活性化 / マインドフルネスで改善が報告されている。","interpretation_short":"抑うつ傾向 高め","caveat":"長期的に高水準が続く場合、専門家への相談を検討してください。"}
+    ]},
+
+    {"scale_id":"neo_self_consciousness","description_long":"**自己意識 (Self-Consciousness / N4 facet)** は **他者からの評価への過敏さ・社会的恥ずかしさ** を測定。社会的不安傾向に近い構成概念。\n\n高得点は社会場面でのパフォーマンス低下 / 社交不安障害との関連。低得点は他者目を気にせず行動できる強み。","description_short":"他者評価への過敏さ・社会的恥ずかしさ。N4 facet。","reference":"Costa & McCrae (1992) NEO-PI-R N4.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**自己意識 低め**。他者目を気にせず行動でき、緊張なく社会場面に臨める。","interpretation_short":"自己意識 低め (図太い)","caveat":null},
+      {"band":"mid","interpretation_long":"**自己意識 中程度**。場に応じて適切に他者の目を意識できる範囲。","interpretation_short":"自己意識 中程度","caveat":null},
+      {"band":"high","interpretation_long":"**自己意識 高め**。他者評価に敏感で、社会場面で緊張・恥ずかしさを感じやすい。社交不安傾向との関連。曝露療法 / 認知再構成 / マインドフルネスで改善可能。","interpretation_short":"自己意識 高め (恥ずかしがり)","caveat":null}
+    ]},
+
+    {"scale_id":"neo_immoderation","description_long":"**節制困難 (Immoderation / N5 facet)** は **衝動・欲求への抑制困難** を測定。食事 / 買い物 / 性的衝動 / 物質使用などへのコントロール低下。\n\n高得点は依存リスク / 肥満 / 浪費との関連 (Bogg & Roberts, 2004 meta-analysis)。低得点は自己制御の強さ。","description_short":"衝動・欲求への抑制困難。N5 facet。","reference":"Costa & McCrae (1992) NEO-PI-R N5.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**節制 高め (= 抑制 高)**。衝動を抑え、長期目標のために短期欲求を我慢できる。","interpretation_short":"節制 強い","caveat":null},
+      {"band":"mid","interpretation_long":"**節制 中程度**。日常的な誘惑には対処できる標準範囲。","interpretation_short":"節制 中程度","caveat":null},
+      {"band":"high","interpretation_long":"**節制困難 高め**。衝動・欲求への抑制が弱く、依存・浪費・過食などのリスク。実装意図 (implementation intention) / 環境調整 / CBT で改善可能。","interpretation_short":"節制困難 (衝動的)","caveat":null}
+    ]},
+
+    {"scale_id":"neo_vulnerability","description_long":"**傷つきやすさ (Vulnerability / N6 facet)** は **ストレス下でのパフォーマンス低下・恐慌反応** を測定。緊急時に混乱しやすいか、冷静を保てるか。\n\n高得点は危機時のパフォーマンス低下 / PTSD リスク。低得点は救急・軍事・経営など緊張下の意思決定に有利。","description_short":"ストレス下でのパフォーマンス低下。N6 facet。","reference":"Costa & McCrae (1992) NEO-PI-R N6.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**傷つきにくい**。ストレス下でも冷静を保ち、危機対応で力を発揮する。","interpretation_short":"傷つきにくい (タフ)","caveat":null},
+      {"band":"mid","interpretation_long":"**標準的なストレス耐性**。通常のストレスには対処できる範囲。","interpretation_short":"標準的耐性","caveat":null},
+      {"band":"high","interpretation_long":"**傷つきやすい**。ストレス下で混乱・恐慌しやすく、危機時のパフォーマンス低下が目立つ。マインドフルネス / 認知行動療法 / ストレス免疫訓練で耐性向上が可能。","interpretation_short":"傷つきやすい","caveat":null}
+    ]},
+
+    {"scale_id":"neo_friendliness","description_long":"**親しみやすさ (Friendliness / E1 facet)** は **他者への温かい関心と接近** を測定。NEO E1 は HEXACO Sociability や Big Five Agreeableness の温かさ要素と部分的に重なる。\n\n高得点は対人満足 / 友人ネットワークの広さ。低得点は形式的・距離をおいた対人スタイル。","description_short":"他者への温かい関心と接近。E1 facet。","reference":"Costa & McCrae (1992) NEO-PI-R E1.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**親しみやすさ 低め**。他者と距離を保つ傾向。形式的で professional な対人スタイル。","interpretation_short":"親しみやすさ 低め","caveat":null},
+      {"band":"mid","interpretation_long":"**親しみやすさ 中程度**。場面に応じて温かさと距離を使い分ける。","interpretation_short":"親しみやすさ 中程度","caveat":null},
+      {"band":"high","interpretation_long":"**親しみやすさ 高め**。誰に対しても温かく、すぐ親しくなれる。対人満足度の高さと関連。","interpretation_short":"親しみやすさ 高め","caveat":null}
+    ]},
+
+    {"scale_id":"neo_gregariousness","description_long":"**群居性 (Gregariousness / E2 facet)** は **集団 / パーティー / 賑やかさを好む傾向**。大人数の社交場面に身を置く頻度や心地よさ。\n\n高得点はパーティー好き / グループ活動主導。低得点は少人数の親密関係を好む内向傾向。","description_short":"集団・パーティーを好む傾向。E2 facet。","reference":"Costa & McCrae (1992) NEO-PI-R E2.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**群居性 低め**。少人数の親密な関係を好み、大人数より静かな場を好む。","interpretation_short":"群居性 低め (少人数好み)","caveat":null},
+      {"band":"mid","interpretation_long":"**群居性 中程度**。状況に応じて大人数も少人数も楽しめる。","interpretation_short":"群居性 中程度","caveat":null},
+      {"band":"high","interpretation_long":"**群居性 高め**。大人数の集まり / パーティー / グループ活動を好み、賑やかさで活気づく。","interpretation_short":"群居性 高め (賑やか好き)","caveat":null}
+    ]},
+
+    {"scale_id":"neo_assertiveness","description_long":"**主張性 (Assertiveness / E3 facet)** は **自分の意見・要求を率直に表現する傾向** + **リーダーシップ志向**。\n\n高得点は管理職適性 / 交渉力 / 影響力。低得点は他者を立てる傾向、フォロワーシップに優れる。","description_short":"意見・要求を率直に表現する傾向。E3 facet。","reference":"Costa & McCrae (1992) NEO-PI-R E3.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**主張性 低め**。他者を立てる傾向。フォロワー / サポート役で力を発揮。","interpretation_short":"主張性 低め (控えめ)","caveat":null},
+      {"band":"mid","interpretation_long":"**主張性 中程度**。場面に応じて主張と傾聴を使い分ける。","interpretation_short":"主張性 中程度","caveat":null},
+      {"band":"high","interpretation_long":"**主張性 高め**。意見を率直に表現し、リーダーシップを発揮する。交渉 / 管理職 / 起業で適性が高い。","interpretation_short":"主張性 高め (リーダー型)","caveat":null}
+    ]},
+
+    {"scale_id":"neo_activity_level","description_long":"**活動水準 (Activity Level / E4 facet)** は **行動的・身体的エネルギー量**。常に動いていたいか、ゆったり過ごすか。\n\n高得点は忙しい予定を好み、複数タスクを同時遂行。低得点は省エネ・ゆとり志向。","description_short":"行動的エネルギー量。E4 facet。","reference":"Costa & McCrae (1992) NEO-PI-R E4.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**活動水準 低め**。ゆったりしたペースを好み、休息を大切にする。","interpretation_short":"活動水準 低め","caveat":null},
+      {"band":"mid","interpretation_long":"**活動水準 中程度**。活動と休息のバランスを取る標準範囲。","interpretation_short":"活動水準 中程度","caveat":null},
+      {"band":"high","interpretation_long":"**活動水準 高め**。常に何かを行っており、忙しさで活気づく。マルチタスクに強い。極端に高いと燃え尽きリスクに注意。","interpretation_short":"活動水準 高め (エネルギッシュ)","caveat":null}
+    ]},
+
+    {"scale_id":"neo_excitement_seeking","description_long":"**刺激追求 (Excitement-Seeking / E5 facet)** は **強い刺激・新規体験・スリルへの欲求**。Zuckerman の Sensation-Seeking と重なる構成概念。\n\n高得点は冒険行動 / リスクテイク / 起業傾向。低得点は安定志向 / リスク回避。","description_short":"強い刺激・新規体験への欲求。E5 facet。","reference":"Costa & McCrae (1992) NEO-PI-R E5 / Zuckerman (1994) Behavioral Expressions and Biosocial Bases of Sensation Seeking.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**刺激追求 低め**。穏やかで予測可能な環境を好む。安定志向。","interpretation_short":"刺激追求 低め (安定志向)","caveat":null},
+      {"band":"mid","interpretation_long":"**刺激追求 中程度**。新規性と慣れ親しんだものの両方を楽しむ。","interpretation_short":"刺激追求 中程度","caveat":null},
+      {"band":"high","interpretation_long":"**刺激追求 高め**。スリル / 冒険 / 新規体験を求める。起業 / アクティビティ職に適性。極端に高いと無謀リスク (= 違法薬物 / 危険運転) に注意。","interpretation_short":"刺激追求 高め (スリル好み)","caveat":null}
+    ]},
+
+    {"scale_id":"neo_cheerfulness","description_long":"**陽気さ (Cheerfulness / E6 facet)** は **ポジティブ感情の経験頻度・強度**。喜び・楽しさ・幸福感の主観的経験。\n\n高得点は主観的幸福感 / 対人魅力。低得点は感情の平坦さ (= うつでなくとも盛り上がりにくい)。","description_short":"ポジティブ感情の経験頻度。E6 facet。","reference":"Costa & McCrae (1992) NEO-PI-R E6.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**陽気さ 低め**。感情の起伏が控えめで、淡々とした印象。シリアスな場面に適する。","interpretation_short":"陽気さ 低め (淡々型)","caveat":null},
+      {"band":"mid","interpretation_long":"**陽気さ 中程度**。場面に応じて喜びを表現する標準範囲。","interpretation_short":"陽気さ 中程度","caveat":null},
+      {"band":"high","interpretation_long":"**陽気さ 高め**。ポジティブ感情を頻繁に経験し、周囲を明るくする。主観的幸福感の高さと関連。","interpretation_short":"陽気さ 高め (明るい)","caveat":null}
+    ]},
+
+    {"scale_id":"neo_imagination","description_long":"**想像力 (Imagination / O1 facet)** は **空想・想像・内的世界への没入** の傾向。\n\n高得点は創造的職業 (作家 / 芸術家 / 研究者) で適性。低得点は具体的・現実的志向。","description_short":"空想・想像力への傾倒。O1 facet。","reference":"Costa & McCrae (1992) NEO-PI-R O1.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**想像力 低め (具体志向)**。事実・データ・現実に焦点を当てる。実務遂行に強い。","interpretation_short":"想像力 低め","caveat":null},
+      {"band":"mid","interpretation_long":"**想像力 中程度**。具体と空想の両方を活用する。","interpretation_short":"想像力 中程度","caveat":null},
+      {"band":"high","interpretation_long":"**想像力 高め**。豊かな内的世界を持ち、空想・物語・抽象思考に没入する。創造的職業に適性。","interpretation_short":"想像力 高め (空想家)","caveat":null}
+    ]},
+
+    {"scale_id":"neo_artistic_interests","description_long":"**芸術的関心 (Artistic Interests / O2 facet)** は **美術・音楽・詩 etc 芸術への関心と感受性**。\n\n高得点は美に対する敏感さ / 芸術消費 / 文化活動。低得点は実用志向。","description_short":"芸術・美への関心。O2 facet。","reference":"Costa & McCrae (1992) NEO-PI-R O2.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**芸術的関心 低め**。美術・音楽より実用に重きを置く。","interpretation_short":"芸術的関心 低め","caveat":null},
+      {"band":"mid","interpretation_long":"**芸術的関心 中程度**。場面に応じて美を楽しむ標準範囲。","interpretation_short":"芸術的関心 中程度","caveat":null},
+      {"band":"high","interpretation_long":"**芸術的関心 高め**。美術 / 音楽 / 詩 / 自然美に強く心動かされる。芸術職 / 文化消費の高さと関連。","interpretation_short":"芸術的関心 高め","caveat":null}
+    ]},
+
+    {"scale_id":"neo_emotionality","description_long":"**情動性 (Emotionality / O3 facet)** は **自分の感情への気づき・受容**。NEO O3 は感情語彙の豊かさや感情経験の深さを捉える。\n\n高得点は感情への鋭い洞察 / 共感性。低得点はクールな分析志向。","description_short":"自分の感情への気づき・受容。O3 facet。","reference":"Costa & McCrae (1992) NEO-PI-R O3.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**情動性 低め**。感情より論理・事実に焦点。クールな分析者。","interpretation_short":"情動性 低め (クール)","caveat":null},
+      {"band":"mid","interpretation_long":"**情動性 中程度**。感情と論理のバランス。","interpretation_short":"情動性 中程度","caveat":null},
+      {"band":"high","interpretation_long":"**情動性 高め**。自他の感情に敏感で、感情経験を豊かに受容する。共感性の高さと関連。","interpretation_short":"情動性 高め (感受性豊か)","caveat":null}
+    ]},
+
+    {"scale_id":"neo_adventurousness","description_long":"**冒険心 (Adventurousness / O4 facet)** は **新しい場所・活動・経験への試みやすさ**。\n\n高得点は旅行 / 新規挑戦 / 食の冒険を好む。低得点は慣れた環境 / ルーティンを好む。","description_short":"新しい場所・活動・経験への試みやすさ。O4 facet。","reference":"Costa & McCrae (1992) NEO-PI-R O4.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**冒険心 低め**。慣れた環境 / ルーティンで安心する。安定志向。","interpretation_short":"冒険心 低め","caveat":null},
+      {"band":"mid","interpretation_long":"**冒険心 中程度**。新しさと慣れの両方を楽しむ。","interpretation_short":"冒険心 中程度","caveat":null},
+      {"band":"high","interpretation_long":"**冒険心 高め**。新しい場所 / 活動 / 食べ物 / 文化への試みを楽しむ。海外勤務 / 旅行職に適性。","interpretation_short":"冒険心 高め","caveat":null}
+    ]},
+
+    {"scale_id":"neo_intellect","description_long":"**知性 (Intellect / O5 facet)** は **抽象的思考・知的議論・哲学的問いへの関心**。IQ ではなく「考えること自体への動機」(Cacioppo の Need for Cognition と重なる)。\n\n高得点は学術 / 研究職に適性。低得点は具体志向で、抽象議論を退屈と感じる。","description_short":"抽象的思考・知的議論への関心。O5 facet。","reference":"Costa & McCrae (1992) NEO-PI-R O5 / Cacioppo & Petty (1982) NCS.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**知性 低め (具体志向)**。具体的問題 / 実務に集中する。抽象議論は退屈と感じる。","interpretation_short":"知性 低め (具体志向)","caveat":null},
+      {"band":"mid","interpretation_long":"**知性 中程度**。必要に応じて抽象議論にも参加する。","interpretation_short":"知性 中程度","caveat":null},
+      {"band":"high","interpretation_long":"**知性 高め**。抽象 / 哲学 / 理論議論を楽しみ、深く考えることに喜びを感じる。学術 / 研究 / コンサル職に適性。","interpretation_short":"知性 高め (思索型)","caveat":null}
+    ]},
+
+    {"scale_id":"neo_liberalism","description_long":"**リベラル傾向 (Liberalism / O6 facet)** は **伝統への懐疑・変化への支持・価値観の柔軟性**。政治的にはリベラル / 進歩主義との関連。\n\n高得点は多様性受容 / 改革志向。低得点は伝統重視 / 保守的価値観。","description_short":"伝統への懐疑・変化への支持。O6 facet。","reference":"Costa & McCrae (1992) NEO-PI-R O6.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**リベラル傾向 低め (= 保守)**。伝統 / 既存秩序を尊重し、変化に慎重。安定運用に強い。","interpretation_short":"保守的","caveat":null},
+      {"band":"mid","interpretation_long":"**中道**。状況に応じて伝統尊重と変化支持を使い分ける。","interpretation_short":"中道","caveat":null},
+      {"band":"high","interpretation_long":"**リベラル傾向 高め**。伝統を疑い、新しい価値観 / 改革を支持する。多様性受容と関連。","interpretation_short":"リベラル","caveat":null}
+    ]},
+
+    {"scale_id":"neo_trust","description_long":"**信頼 (Trust / A1 facet)** は **他者の善意・誠実さへの基本的信頼**。\n\n高得点は対人関係の充実 / 協力的環境作り。低得点は警戒的で、騙されにくいが疎外感を生む場合も。","description_short":"他者の善意への基本的信頼。A1 facet。","reference":"Costa & McCrae (1992) NEO-PI-R A1.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**信頼 低め (警戒的)**。他者の動機を疑い、騙されにくい。批判的思考 / リスク評価で強み。","interpretation_short":"信頼 低め (警戒的)","caveat":null},
+      {"band":"mid","interpretation_long":"**信頼 中程度**。状況に応じて信頼と警戒を使い分ける。","interpretation_short":"信頼 中程度","caveat":null},
+      {"band":"high","interpretation_long":"**信頼 高め**。基本的に他者を善意で見る。対人関係が円滑だが、騙されやすい側面に注意。","interpretation_short":"信頼 高め","caveat":null}
+    ]},
+
+    {"scale_id":"neo_morality","description_long":"**率直さ (Morality / A2 facet)** は **嘘・操作・策略を避ける傾向**。HEXACO Honesty-Humility の Sincerity facet と重なる。\n\n高得点は道徳的一貫性 / 信頼関係。低得点は戦略的・策略的振る舞いを厭わない。","description_short":"嘘・操作を避ける傾向。A2 facet。","reference":"Costa & McCrae (1992) NEO-PI-R A2 / Ashton & Lee (2007) HEXACO H.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**率直さ 低め**。状況に応じて嘘・策略を用いる。交渉 / 営業で戦略的だが、信頼性への懸念。","interpretation_short":"率直さ 低め (戦略的)","caveat":null},
+      {"band":"mid","interpretation_long":"**率直さ 中程度**。原則は誠実だが、必要時には方便も使う標準範囲。","interpretation_short":"率直さ 中程度","caveat":null},
+      {"band":"high","interpretation_long":"**率直さ 高め**。嘘 / 操作 / 策略を厭い、率直で透明性ある対人スタイル。信頼関係構築に強み。","interpretation_short":"率直さ 高め","caveat":null}
+    ]},
+
+    {"scale_id":"neo_altruism","description_long":"**利他性 (Altruism / A3 facet)** は **他者の福祉を気にかけ、援助行動を取る傾向**。\n\n高得点はケア職 / ボランティア活動 / 親密関係の質。低得点は自己中心的 (= 必ずしも悪ではない、自己利益追求が必要な場面もある)。","description_short":"他者の福祉への配慮・援助行動。A3 facet。","reference":"Costa & McCrae (1992) NEO-PI-R A3.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**利他性 低め**。自分の利害を優先する。自己アドボカシー / 競争的環境で強み。","interpretation_short":"利他性 低め","caveat":null},
+      {"band":"mid","interpretation_long":"**利他性 中程度**。状況に応じて自他のバランスを取る。","interpretation_short":"利他性 中程度","caveat":null},
+      {"band":"high","interpretation_long":"**利他性 高め**。他者の福祉を気にかけ、援助を惜しまない。ケア職 / ボランティアに適性。極端に高いと自己犠牲 / 燃え尽きに注意。","interpretation_short":"利他性 高め","caveat":null}
+    ]},
+
+    {"scale_id":"neo_cooperation","description_long":"**協力性 (Cooperation / A4 facet)** は **対立より調和を選ぶ傾向**。譲歩・妥協への前向きさ。\n\n高得点はチーム調和 / 衝突回避。低得点は意見対立を辞さない、必要なら衝突する姿勢。","description_short":"対立より調和を選ぶ傾向。A4 facet。","reference":"Costa & McCrae (1992) NEO-PI-R A4.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**協力性 低め (対立辞さず)**。意見の違いをはっきり主張し、必要なら衝突する。交渉 / 批判的レビューで強み。","interpretation_short":"協力性 低め","caveat":null},
+      {"band":"mid","interpretation_long":"**協力性 中程度**。調和と主張のバランスを取る。","interpretation_short":"協力性 中程度","caveat":null},
+      {"band":"high","interpretation_long":"**協力性 高め**。対立を避け、調和を優先する。チーム円滑運営に強み。極端に高いと「言うべきこと」を言えない傾向に注意。","interpretation_short":"協力性 高め","caveat":null}
+    ]},
+
+    {"scale_id":"neo_modesty","description_long":"**謙虚さ (Modesty / A5 facet)** は **自慢・自己誇大化を避ける傾向**。HEXACO Honesty-Humility の Modesty facet と重なる。\n\n高得点は他者から好かれやすい。低得点は自信表明 / 自己 PR が得意 (= 起業 / 営業で有利)。","description_short":"自慢・自己誇大化を避ける傾向。A5 facet。","reference":"Costa & McCrae (1992) NEO-PI-R A5.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**謙虚さ 低め (自信家)**。自分の能力 / 成果を率直に主張する。営業 / 起業 / リーダーで強み。","interpretation_short":"謙虚さ 低め (自信家)","caveat":null},
+      {"band":"mid","interpretation_long":"**謙虚さ 中程度**。場面に応じて主張と控えめを使い分ける。","interpretation_short":"謙虚さ 中程度","caveat":null},
+      {"band":"high","interpretation_long":"**謙虚さ 高め**。自慢を避け、控えめに振る舞う。他者から好かれやすい。極端に高いと自己アピール不足で評価されにくい傾向に注意。","interpretation_short":"謙虚さ 高め","caveat":null}
+    ]},
+
+    {"scale_id":"neo_sympathy","description_long":"**同情 (Sympathy / A6 facet)** は **弱者・困っている人への共感的反応**。\n\n高得点は社会福祉 / 援助行動。低得点はタフな現実主義 (= 必ずしも冷酷ではない、構造的解決を志向)。","description_short":"弱者・困っている人への共感。A6 facet。","reference":"Costa & McCrae (1992) NEO-PI-R A6.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**同情 低め (タフ)**。個別の感情訴えに動かされにくい。構造的・統計的判断で強み。","interpretation_short":"同情 低め","caveat":null},
+      {"band":"mid","interpretation_long":"**同情 中程度**。状況に応じて共感と分析を使い分ける。","interpretation_short":"同情 中程度","caveat":null},
+      {"band":"high","interpretation_long":"**同情 高め**。困っている人 / 弱者に強く共感し、援助したくなる。ケア職 / 社会活動に適性。","interpretation_short":"同情 高め","caveat":null}
+    ]},
+
+    {"scale_id":"neo_self_efficacy","description_long":"**自己効力感 (Self-Efficacy / C1 facet)** は **「自分は目標を達成できる」という自信**。Bandura (1977) の self-efficacy 理論と対応。\n\n高得点はチャレンジ志向 / 困難への persistence。低得点は自信欠如 / 諦めやすさ。","description_short":"目標達成への自信。C1 facet。","reference":"Costa & McCrae (1992) NEO-PI-R C1 / Bandura (1977) Self-efficacy.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**自己効力感 低め**。「できない」感覚が強く、困難を避けがち。成功体験の積み重ね / 行動活性化で改善可能。","interpretation_short":"自己効力感 低め","caveat":null},
+      {"band":"mid","interpretation_long":"**自己効力感 中程度**。現実的な自信を持つ。","interpretation_short":"自己効力感 中程度","caveat":null},
+      {"band":"high","interpretation_long":"**自己効力感 高め**。困難な目標にも「できる」と思って挑戦する。学業 / 仕事 / 健康行動の predictor。","interpretation_short":"自己効力感 高め","caveat":null}
+    ]},
+
+    {"scale_id":"neo_orderliness","description_long":"**秩序性 (Orderliness / C2 facet)** は **整理整頓・体系化・きちんとした環境への好み**。\n\n高得点は事務職 / プロジェクト管理に強い。低得点は乱雑だがクリエイティブな環境を好む。","description_short":"整理整頓・体系化への好み。C2 facet。","reference":"Costa & McCrae (1992) NEO-PI-R C2.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**秩序性 低め (= 乱雑)**。整理整頓より柔軟性を優先。クリエイティブな環境を好む。","interpretation_short":"秩序性 低め","caveat":null},
+      {"band":"mid","interpretation_long":"**秩序性 中程度**。必要な範囲で整理する。","interpretation_short":"秩序性 中程度","caveat":null},
+      {"band":"high","interpretation_long":"**秩序性 高め**。整理整頓 / 体系化 / きちんとした環境を好む。事務 / 管理 / 品質保証に適性。極端に高いと完璧主義 / 強迫的傾向に注意。","interpretation_short":"秩序性 高め","caveat":null}
+    ]},
+
+    {"scale_id":"neo_dutifulness","description_long":"**義務感 (Dutifulness / C3 facet)** は **約束 / 義務 / ルールへの忠実さ**。\n\n高得点は信頼性 / コンプライアンス職に強い。低得点はルールに縛られず、柔軟だが約束破りリスク。","description_short":"約束・義務・ルールへの忠実さ。C3 facet。","reference":"Costa & McCrae (1992) NEO-PI-R C3.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**義務感 低め**。ルールより自分の判断を優先。柔軟だが約束遵守への懸念。","interpretation_short":"義務感 低め","caveat":null},
+      {"band":"mid","interpretation_long":"**義務感 中程度**。原則は守るが状況に応じて判断する。","interpretation_short":"義務感 中程度","caveat":null},
+      {"band":"high","interpretation_long":"**義務感 高め**。約束 / 義務 / ルールに忠実で、信頼性が高い。コンプライアンス / 公務員 / 医療職に適性。","interpretation_short":"義務感 高め","caveat":null}
+    ]},
+
+    {"scale_id":"neo_achievement_striving","description_long":"**達成追求 (Achievement-Striving / C4 facet)** は **高い目標設定と達成への努力**。「やり抜く力 (Grit)」の中核要素 (Credé et al., 2017)。\n\n高得点は学業成績 / 職務パフォーマンス / 起業成功の predictor。低得点はワークライフバランス重視 / マイペース。","description_short":"高い目標設定と達成への努力。C4 facet。Grit の中核。","reference":"Costa & McCrae (1992) NEO-PI-R C4 / Credé, Tynan & Harms (2017) Much ado about Grit: A meta-analytic synthesis of the Grit literature.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**達成追求 低め**。高い目標より現状維持・ワークライフバランス志向。マイペース。","interpretation_short":"達成追求 低め","caveat":null},
+      {"band":"mid","interpretation_long":"**達成追求 中程度**。適度な目標を立てて取り組む。","interpretation_short":"達成追求 中程度","caveat":null},
+      {"band":"high","interpretation_long":"**達成追求 高め**。高い目標を設定し、達成のために努力を惜しまない。学業 / 職務成功の predictor。極端に高いとワーカホリック / 燃え尽きに注意。","interpretation_short":"達成追求 高め","caveat":null}
+    ]},
+
+    {"scale_id":"neo_self_discipline","description_long":"**自己規律 (Self-Discipline / C5 facet)** は **退屈・困難なタスクをやり遂げる力**。Grit の persistence 要素と対応。\n\n高得点は長期プロジェクト遂行 / 健康行動継続。低得点は楽な方に流れやすい (= 短期的快楽優先)。","description_short":"退屈・困難なタスクの遂行力。C5 facet。Grit の persistence。","reference":"Costa & McCrae (1992) NEO-PI-R C5 / Duckworth & Quinn (2009) Development and validation of the Short Grit Scale.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**自己規律 低め**。退屈な作業を避け、楽しい方に流れやすい。実装意図 / 環境調整で改善可能。","interpretation_short":"自己規律 低め","caveat":null},
+      {"band":"mid","interpretation_long":"**自己規律 中程度**。必要なときには踏ん張れる。","interpretation_short":"自己規律 中程度","caveat":null},
+      {"band":"high","interpretation_long":"**自己規律 高め**。退屈・困難なタスクも最後までやり遂げる。長期プロジェクト / 健康習慣継続に強み。","interpretation_short":"自己規律 高め","caveat":null}
+    ]},
+
+    {"scale_id":"neo_cautiousness","description_long":"**慎重さ (Cautiousness / C6 facet)** は **熟考してから行動する傾向**。\n\n高得点はリスク評価 / 計画立案に強い。低得点は即断 / 実験的試行 (= 起業 / 救急で有利な場面も)。","description_short":"熟考してから行動する傾向。C6 facet。","reference":"Costa & McCrae (1992) NEO-PI-R C6.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**慎重さ 低め (即断型)**。考えるより先に動く。起業 / 救急対応で強み。極端に低いと衝動的判断のリスク。","interpretation_short":"慎重さ 低め","caveat":null},
+      {"band":"mid","interpretation_long":"**慎重さ 中程度**。場面に応じて熟考と即断を使い分ける。","interpretation_short":"慎重さ 中程度","caveat":null},
+      {"band":"high","interpretation_long":"**慎重さ 高め**。十分に考えてから行動する。リスク評価 / 計画立案 / 安全管理に強み。極端に高いと優柔不断 / 機会損失に注意。","interpretation_short":"慎重さ 高め","caveat":null}
+    ]},
+
+    {"scale_id":"hexaco_pi_sincerity","description_long":"**率直さ (Sincerity / H1 facet)** は HEXACO Honesty-Humility 因子の facet で、**人間関係で誠実 / お世辞や演技を使わない傾向**。\n\n高得点は信頼関係の深さ。低得点は印象操作 / 戦略的演技を厭わない (= 営業 / 政治家で有利な場面も)。","description_short":"人間関係での率直さ。HEXACO H-Sinc。","reference":"Lee & Ashton (2004) HEXACO-PI-R H-Sinc.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**率直さ 低め (戦略的)**。状況に応じて演技 / 印象操作する。","interpretation_short":"率直さ 低め","caveat":null},
+      {"band":"mid","interpretation_long":"**率直さ 中程度**。原則は誠実だが場面に応じて社交辞令も。","interpretation_short":"率直さ 中程度","caveat":null},
+      {"band":"high","interpretation_long":"**率直さ 高め**。お世辞や演技を避け、本心を率直に伝える。","interpretation_short":"率直さ 高め","caveat":null}
+    ]},
+    {"scale_id":"hexaco_pi_fairness","description_long":"**公平さ (Fairness / H2 facet)** は **不正・搾取・盗難を厭う傾向**。\n\n高得点は倫理的職務 / 法執行に強み。低得点はルール違反 / 詐欺リスク。","description_short":"不正・搾取を厭う傾向。HEXACO H-Fair。","reference":"Lee & Ashton (2004) HEXACO H-Fair.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**公平さ 低め**。自分の利益のためルール違反も厭わない。","interpretation_short":"公平さ 低め","caveat":"極端な低さは非倫理的行動リスク。"},
+      {"band":"mid","interpretation_long":"**公平さ 中程度**。基本ルールは守る範囲。","interpretation_short":"公平さ 中程度","caveat":null},
+      {"band":"high","interpretation_long":"**公平さ 高め**。不正を厭い、ルール尊重で公正に振る舞う。","interpretation_short":"公平さ 高め","caveat":null}
+    ]},
+    {"scale_id":"hexaco_pi_greed_avoidance","description_long":"**貪欲回避 (Greed Avoidance / H3 facet)** は **富 / 贅沢 / 地位への執着の少なさ**。\n\n高得点は質素 / 内発的価値志向。低得点は物質的成功への強い動機 (= 起業 / 営業で有利な場面も)。","description_short":"富・贅沢への執着の少なさ。HEXACO H-Gree。","reference":"Lee & Ashton (2004) HEXACO H-GrAv.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**貪欲回避 低め (= 物質志向)**。富 / 地位への強い欲求。","interpretation_short":"物質志向","caveat":null},
+      {"band":"mid","interpretation_long":"**貪欲回避 中程度**。物質と内発的価値のバランス。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**貪欲回避 高め**。質素 / 簡素を好み、富や贅沢への執着が少ない。","interpretation_short":"質素志向","caveat":null}
+    ]},
+    {"scale_id":"hexaco_pi_modesty","description_long":"**謙虚さ (Modesty / H4 facet)** は **自己誇大化を避け、他者と同等と感じる傾向**。\n\n高得点は対人好感度 / チームワーク。低得点は自信表明 / 特権意識 (= ダークトライアド と関連)。","description_short":"自己誇大化を避ける傾向。HEXACO H-Mode。","reference":"Lee & Ashton (2004) HEXACO H-Mode.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**謙虚さ 低め (= 誇大)**。自分を他者より優れていると感じる傾向。","interpretation_short":"謙虚さ 低め","caveat":null},
+      {"band":"mid","interpretation_long":"**謙虚さ 中程度**。場面に応じて主張と控えめを。","interpretation_short":"謙虚さ 中程度","caveat":null},
+      {"band":"high","interpretation_long":"**謙虚さ 高め**。自分を特別視せず、他者と同等と感じる。対人好感度 / チームワークに強み。","interpretation_short":"謙虚さ 高め","caveat":null}
+    ]},
+    {"scale_id":"hexaco_pi_fearfulness","description_long":"**恐れやすさ (Fearfulness / E1 facet of Emotionality)** は **身体的・物理的脅威への恐れ**。\n\n高得点はリスク回避 / 安全行動。低得点は恐怖なき行動 (= 救急 / 軍事に適性、極端に低いと無謀リスク)。","description_short":"身体的・物理的脅威への恐れ。HEXACO E-Fear.","reference":"Lee & Ashton (2004) HEXACO E-Fear.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**恐れやすさ 低め**。物理的危険を恐れず行動。救急 / 探検で強み。","interpretation_short":"恐れやすさ 低め","caveat":null},
+      {"band":"mid","interpretation_long":"**恐れやすさ 中程度**。標準的なリスク感覚。","interpretation_short":"恐れやすさ 中程度","caveat":null},
+      {"band":"high","interpretation_long":"**恐れやすさ 高め**。物理的危険に敏感で安全行動を取る。","interpretation_short":"恐れやすさ 高め","caveat":null}
+    ]},
+    {"scale_id":"hexaco_pi_anxiety","description_long":"**不安 (Anxiety / E2 facet of Emotionality)** は **心配・緊張・将来不安**。NEO Neuroticism/Anxiety と重なる構成概念。\n\n高得点は予期不安 / 反芻。低得点は平静さ。","description_short":"心配・緊張・将来不安。HEXACO E-Anxi.","reference":"Lee & Ashton (2004) HEXACO E-Anxi.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**不安 低め**。心配しにくく、平静を保ちやすい。","interpretation_short":"不安 低め","caveat":null},
+      {"band":"mid","interpretation_long":"**不安 中程度**。状況に応じた適度な心配。","interpretation_short":"不安 中程度","caveat":null},
+      {"band":"high","interpretation_long":"**不安 高め**。心配・緊張・反芻に陥りやすい。マインドフルネス / CBT で改善可能。","interpretation_short":"不安 高め","caveat":null}
+    ]},
+    {"scale_id":"hexaco_pi_dependence","description_long":"**依存 (Dependence / E3 facet of Emotionality)** は **他者からの感情的支援を求める傾向**。\n\n高得点は親密な関係構築。低得点は自立 / 独立志向。","description_short":"他者からの感情的支援を求める傾向。HEXACO E-Depe.","reference":"Lee & Ashton (2004) HEXACO E-Depe.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**依存 低め (自立的)**。困難を一人で乗り越える傾向。","interpretation_short":"自立的","caveat":null},
+      {"band":"mid","interpretation_long":"**依存 中程度**。必要なときに支援を求める。","interpretation_short":"依存 中程度","caveat":null},
+      {"band":"high","interpretation_long":"**依存 高め**。他者の支援を頻繁に求め、感情的繋がりを大切にする。","interpretation_short":"依存 高め","caveat":null}
+    ]},
+    {"scale_id":"hexaco_pi_sentimentality","description_long":"**感傷性 (Sentimentality / E4 facet of Emotionality)** は **情緒的紐帯への感受性**。他者への共感的反応の強さ。\n\n高得点は深い対人関係。低得点は感情的距離。","description_short":"情緒的紐帯への感受性。HEXACO E-Sent.","reference":"Lee & Ashton (2004) HEXACO E-Sent.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**感傷性 低め**。感情的に距離を保つ。","interpretation_short":"感傷性 低め","caveat":null},
+      {"band":"mid","interpretation_long":"**感傷性 中程度**。状況に応じた感情的繋がり。","interpretation_short":"感傷性 中程度","caveat":null},
+      {"band":"high","interpretation_long":"**感傷性 高め**。情緒的繋がりに敏感で、別れや変化に強く反応する。","interpretation_short":"感傷性 高め","caveat":null}
+    ]},
+    {"scale_id":"hexaco_pi_expressiveness","description_long":"**表出性 (Expressiveness / X1 facet of Extraversion)** は **感情や考えを表出する傾向**。\n\n高得点はオープン / 表現豊か。低得点は感情を内に秘める。","description_short":"感情・考えを表出する傾向。HEXACO X-Expr.","reference":"Lee & Ashton (2004) HEXACO X-Expr.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**表出性 低め**。感情を内に秘めて控えめ。","interpretation_short":"表出性 低め","caveat":null},
+      {"band":"mid","interpretation_long":"**表出性 中程度**。場に応じた表現。","interpretation_short":"表出性 中程度","caveat":null},
+      {"band":"high","interpretation_long":"**表出性 高め**。感情を率直に表現し、自分らしさを示す。","interpretation_short":"表出性 高め","caveat":null}
+    ]},
+    {"scale_id":"hexaco_pi_social_boldness","description_long":"**社会的大胆さ (Social Boldness / X2)** は **社会的場面での自信と大胆さ**。\n\n高得点は人前でのパフォーマンス / 即興スピーチに強い。低得点は控えめ / 内向。","description_short":"社会場面での自信と大胆さ。HEXACO X-SocB.","reference":"Lee & Ashton (2004) HEXACO X-SocB.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**社会的大胆さ 低め**。人前での緊張感が強い。","interpretation_short":"控えめ","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。場面に応じて積極性を発揮する。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**社会的大胆さ 高め**。人前で堂々と振る舞い、即興スピーチも厭わない。","interpretation_short":"大胆","caveat":null}
+    ]},
+    {"scale_id":"hexaco_pi_sociability","description_long":"**社交性 (Sociability / X3)** は **他者との交流を好む傾向**。\n\n高得点はネットワーキング / 営業に強い。低得点は少人数派 / 一人時間重視。","description_short":"他者との交流を好む傾向。HEXACO X-Soci.","reference":"Lee & Ashton (2004) HEXACO X-Soci.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**社交性 低め**。少人数の親密関係を好む。","interpretation_short":"社交性 低め","caveat":null},
+      {"band":"mid","interpretation_long":"**社交性 中程度**。状況に応じて社交。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**社交性 高め**。新しい人との出会いを楽しみ、広いネットワークを持つ。","interpretation_short":"社交性 高め","caveat":null}
+    ]},
+    {"scale_id":"hexaco_pi_liveliness","description_long":"**活発さ (Liveliness / X4)** は **エネルギッシュ / 楽観的 / 熱意ある振る舞い**。\n\n高得点は周囲を活気づける。低得点は淡々 / 落ち着き。","description_short":"エネルギッシュさ・熱意。HEXACO X-Live.","reference":"Lee & Ashton (2004) HEXACO X-Live.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**活発さ 低め (淡々型)**。落ち着いた振る舞いを好む。","interpretation_short":"活発さ 低め","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。場面に応じて活気を出す。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**活発さ 高め**。エネルギッシュで、周囲を明るくする。","interpretation_short":"活発","caveat":null}
+    ]},
+    {"scale_id":"hexaco_pi_forgiveness","description_long":"**寛容さ (Forgiveness / A1 facet of Agreeableness)** は **過去の害を許す傾向**。\n\n高得点はストレス耐性 / 関係修復力。低得点は恨み続ける傾向。","description_short":"過去の害を許す傾向。HEXACO A-Forg.","reference":"Lee & Ashton (2004) HEXACO A-Forg.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**寛容さ 低め**。過去の害を覚えており、信頼回復に時間。","interpretation_short":"寛容さ 低め","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。状況に応じて許す / 距離を置く。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**寛容さ 高め**。過去の害を水に流せる。関係修復力に強み。","interpretation_short":"寛容さ 高め","caveat":null}
+    ]},
+    {"scale_id":"hexaco_pi_gentleness","description_long":"**穏やかさ (Gentleness / A2)** は **他者への批判や厳しさを抑える傾向**。\n\n高得点はサポート役 / メンター適性。低得点は厳しい指導 / 批判的レビュー。","description_short":"他者への批判・厳しさを抑える傾向。HEXACO A-Gent.","reference":"Lee & Ashton (2004) HEXACO A-Gent.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**穏やかさ 低め**。率直に批判し、厳しいフィードバックも厭わない。","interpretation_short":"厳格","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。状況に応じて厳しさと優しさ。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**穏やかさ 高め**。他者に優しく接し、批判を控える。サポート役で強み。","interpretation_short":"穏やか","caveat":null}
+    ]},
+    {"scale_id":"hexaco_pi_flexibility","description_long":"**柔軟性 (Flexibility / A3)** は **他者の意見への譲歩・妥協のしやすさ**。\n\n高得点は協調性 / 交渉円滑。低得点は信念貫徹 / 頑固。","description_short":"他者意見への譲歩のしやすさ。HEXACO A-Flex.","reference":"Lee & Ashton (2004) HEXACO A-Flex.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**柔軟性 低め (頑固)**。自分の意見を変えない。リーダーシップで強み。","interpretation_short":"頑固","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。状況に応じて譲歩 / 主張。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**柔軟性 高め**。他者の意見を取り入れ、妥協できる。チームワークに強み。","interpretation_short":"柔軟","caveat":null}
+    ]},
+    {"scale_id":"hexaco_pi_patience","description_long":"**忍耐 (Patience / A4)** は **frustration への耐性、感情的爆発を避ける傾向**。\n\n高得点はストレス耐性。低得点は短気 / 衝動的反応。","description_short":"frustration への耐性。HEXACO A-Pati.","reference":"Lee & Ashton (2004) HEXACO A-Pati.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**忍耐 低め**。frustration で苛立ちやすい。","interpretation_short":"忍耐 低め","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。状況に応じて忍耐。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**忍耐 高め**。frustration でも冷静を保ち、感情的爆発を避ける。","interpretation_short":"忍耐 高め","caveat":null}
+    ]},
+    {"scale_id":"hexaco_pi_organization","description_long":"**組織性 (Organization / C1 facet of Conscientiousness)** は **整理整頓・体系化への好み**。\n\n高得点は計画立案 / 整理に強い。低得点は柔軟 / クリエイティブな乱雑さ。","description_short":"整理整頓・体系化への好み。HEXACO C-Orga.","reference":"Lee & Ashton (2004) HEXACO C-Orga.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**組織性 低め**。乱雑だがクリエイティブな環境を好む。","interpretation_short":"組織性 低め","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。必要範囲で整理する。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**組織性 高め**。整理整頓 / 計画立案に強み。","interpretation_short":"組織性 高め","caveat":null}
+    ]},
+    {"scale_id":"hexaco_pi_diligence","description_long":"**勤勉さ (Diligence / C2)** は **持続的努力・hard work**。\n\n高得点は長期プロジェクト遂行。低得点は燃え尽き回避 / マイペース。","description_short":"持続的努力・hard work。HEXACO C-Dili.","reference":"Lee & Ashton (2004) HEXACO C-Dili.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**勤勉さ 低め**。マイペース / ワークライフバランス重視。","interpretation_short":"勤勉さ 低め","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。必要なときに頑張る。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**勤勉さ 高め**。持続的に努力し、長期プロジェクトを完遂する。","interpretation_short":"勤勉さ 高め","caveat":null}
+    ]},
+    {"scale_id":"hexaco_pi_perfectionism","description_long":"**完璧主義 (Perfectionism / C3)** は **高品質の追求・細部へのこだわり**。\n\n高得点は品質保証 / 編集職に強み。極端に高いと作業遅延 / 完璧麻痺リスク。","description_short":"高品質の追求・細部へのこだわり。HEXACO C-Perf.","reference":"Lee & Ashton (2004) HEXACO C-Perf.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**完璧主義 低め**。細部より全体・スピード優先。","interpretation_short":"完璧主義 低め","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。重要箇所のみ細部にこだわる。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**完璧主義 高め**。細部までこだわり、高品質を追求。極端に高いと完璧麻痺リスク。","interpretation_short":"完璧主義 高め","caveat":null}
+    ]},
+    {"scale_id":"hexaco_pi_prudence","description_long":"**思慮深さ (Prudence / C4)** は **熟考・衝動抑制・計画的行動**。NEO Cautiousness と重なる。\n\n高得点はリスク管理 / 投資判断に強み。低得点は即断 / 衝動。","description_short":"熟考・衝動抑制・計画的行動。HEXACO C-Prud.","reference":"Lee & Ashton (2004) HEXACO C-Prud.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**思慮深さ 低め**。即断・衝動的判断を厭わない。","interpretation_short":"即断型","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。状況に応じて熟考 / 即断。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**思慮深さ 高め**。十分に考えてから行動。リスク管理に強み。","interpretation_short":"思慮深さ 高め","caveat":null}
+    ]},
+    {"scale_id":"hexaco_pi_aesthetic_appreciation","description_long":"**審美感受性 (Aesthetic Appreciation / O1 facet of Openness)** は **美術・自然美・芸術への感受性**。\n\nNEO Artistic Interests と重なる。高得点は芸術職 / 文化消費。","description_short":"美術・芸術への感受性。HEXACO O-AesA.","reference":"Lee & Ashton (2004) HEXACO O-AesA.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**審美感受性 低め**。実用志向。","interpretation_short":"審美感受性 低め","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。場面に応じて美を楽しむ。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**審美感受性 高め**。美に強く心動かされる。芸術職に適性。","interpretation_short":"審美感受性 高め","caveat":null}
+    ]},
+    {"scale_id":"hexaco_pi_inquisitiveness","description_long":"**探求心 (Inquisitiveness / O2)** は **新しい知識・経験への好奇心**。\n\n高得点は学術 / 研究 / 探検志向。低得点は慣れた領域に留まる安定志向。","description_short":"新しい知識・経験への好奇心。HEXACO O-Inqu.","reference":"Lee & Ashton (2004) HEXACO O-Inqu.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**探求心 低め**。慣れた領域 / ルーティンを好む。","interpretation_short":"探求心 低め","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。新規性と慣れの両方。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**探求心 高め**。新しい知識 / 経験を積極的に求める。","interpretation_short":"探求心 高め","caveat":null}
+    ]},
+    {"scale_id":"hexaco_pi_creativity","description_long":"**創造性 (Creativity / O3)** は **新規アイデア生成・革新的問題解決の傾向**。\n\n高得点はクリエイティブ職 / 起業適性。低得点は既存アプローチ重視。","description_short":"新規アイデア生成・革新性。HEXACO O-Crea.","reference":"Lee & Ashton (2004) HEXACO O-Crea.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**創造性 低め**。既存の方法・パターンを活用する。","interpretation_short":"創造性 低め","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。場面に応じて新規アイデア。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**創造性 高め**。新規アイデア / 革新的解決策を生み出す。","interpretation_short":"創造性 高め","caveat":null}
+    ]},
+    {"scale_id":"hexaco_pi_unconventionality","description_long":"**型破りさ (Unconventionality / O4)** は **慣習や規範から外れた考え方・行動を好む傾向**。\n\n高得点は革新者 / アーティスト。低得点は伝統・慣習尊重。","description_short":"慣習・規範から外れる傾向。HEXACO O-Unco.","reference":"Lee & Ashton (2004) HEXACO O-Unco.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**型破りさ 低め (= 慣習尊重)**。既存ルール・伝統に従う。","interpretation_short":"慣習尊重","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。場面に応じて慣習と型破り。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**型破りさ 高め**。慣習を疑い、独自の道を行く。","interpretation_short":"型破り","caveat":null}
+    ]},
+
+    {"scale_id":"bfas_neuroticism","description_long":"**神経症傾向 (BFAS Neuroticism)** は Big Five Aspect Scales での **負の感情経験性**。BFAS では Neuroticism 因子を **Volatility (感情の起伏) + Withdrawal (引きこもり傾向)** の 2 aspect に分解する点が特徴。\n\n高得点はうつ / 不安リスク。低得点は感情安定。NEO Neuroticism と重なる構成概念だが、より中粒度。","description_short":"BFAS Neuroticism。Volatility + Withdrawal の 2 aspect 上位。","reference":"DeYoung, Quilty & Peterson (2007) BFAS.","threshold_low":48,"threshold_high":72,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**Neuroticism 低め**。感情安定型、ストレス耐性高め。","interpretation_short":"Neuroticism 低め","caveat":null},
+      {"band":"mid","interpretation_long":"**Neuroticism 中程度**。標準的範囲。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**Neuroticism 高め**。負の感情を経験しやすい。Volatility / Withdrawal どちらが高いかで対応戦略が変わる。","interpretation_short":"Neuroticism 高め","caveat":null}
+    ]},
+    {"scale_id":"bfas_volatility","description_long":"**感情の起伏 (Volatility / N-Vol aspect)** は BFAS Neuroticism の 2 aspect の片方で、**感情の爆発的変動・怒りやすさ・苛立ち**。NEO Anger に近い。\n\n高得点は感情の振れ幅が大きい / 短気。Withdrawal とは独立した「外向きの」neurotic 傾向。","description_short":"感情の爆発的変動・怒りやすさ。BFAS N-Vol aspect。","reference":"DeYoung, Quilty & Peterson (2007) BFAS Volatility.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**Volatility 低め**。感情の起伏が小さく、穏やかに安定。","interpretation_short":"Volatility 低め","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。標準的な感情変動。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**Volatility 高め**。感情の振れ幅が大きく、苛立ち・怒りに陥りやすい。マインドフルネス / CBT で改善可能。","interpretation_short":"Volatility 高め","caveat":null}
+    ]},
+    {"scale_id":"bfas_withdrawal","description_long":"**引きこもり傾向 (Withdrawal / N-Wit aspect)** は BFAS Neuroticism のもう片方で、**不安・抑うつ・社会的回避** といった「内向きの」neurotic 傾向。\n\n高得点は予期不安 / 抑うつ気分 / 自己批判が強い。Volatility とは独立。","description_short":"不安・抑うつ・社会的回避。BFAS N-Wit aspect。","reference":"DeYoung, Quilty & Peterson (2007) BFAS Withdrawal.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**Withdrawal 低め**。不安・抑うつに陥りにくい。","interpretation_short":"Withdrawal 低め","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。日常的な不安は経験する。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**Withdrawal 高め**。不安・抑うつ・自己批判に陥りやすい。CBT / マインドフルネスで改善可能。","interpretation_short":"Withdrawal 高め","caveat":null}
+    ]},
+    {"scale_id":"bfas_agreeableness","description_long":"**協調性 (BFAS Agreeableness)** は Big Five Aspect Scales での **他者との協力性**。BFAS では **Compassion (共感的配慮) + Politeness (礼儀正しさ)** の 2 aspect に分解。\n\n高得点はチームワーク / 親密関係に強み。NEO Agreeableness と重なるが、より中粒度。","description_short":"BFAS Agreeableness。Compassion + Politeness の 2 aspect 上位。","reference":"DeYoung, Quilty & Peterson (2007) BFAS Agreeableness.","threshold_low":48,"threshold_high":72,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**Agreeableness 低め (= 競争・主張型)**。意見を率直に主張し、対立を辞さない。","interpretation_short":"競争・主張型","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。協調と主張のバランス。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**Agreeableness 高め**。他者への配慮と協力性。チームワークに強み。","interpretation_short":"協力・共感型","caveat":null}
+    ]},
+    {"scale_id":"bfas_compassion","description_long":"**共感的配慮 (Compassion / A-Com aspect)** は BFAS Agreeableness の **情緒的共感・他者への思いやり** 側面。\n\n高得点はケア職 / カウンセリング適性。NEO Sympathy + Altruism と重なる。","description_short":"情緒的共感・他者への思いやり。BFAS A-Com aspect。","reference":"DeYoung, Quilty & Peterson (2007) BFAS Compassion.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**Compassion 低め**。情緒的訴えに動かされにくい。","interpretation_short":"Compassion 低め","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。場面に応じた共感。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**Compassion 高め**。他者の感情に深く共感し、思いやりを示す。","interpretation_short":"Compassion 高め","caveat":null}
+    ]},
+    {"scale_id":"bfas_politeness","description_long":"**礼儀正しさ (Politeness / A-Pol aspect)** は BFAS Agreeableness の **認知的・規範的協調** 側面。礼儀 / 敬意 / 攻撃性の抑制。\n\nCompassion とは独立。両方測ると協調性の中身が見える (= 例: 共感はあるが規範には従わない人も存在)。","description_short":"礼儀・敬意・攻撃性の抑制。BFAS A-Pol aspect。","reference":"DeYoung, Quilty & Peterson (2007) BFAS Politeness.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**Politeness 低め**。批判的 / 直截的で、規範に縛られない。","interpretation_short":"Politeness 低め","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。状況に応じて礼儀正しさ。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**Politeness 高め**。礼儀・敬意を重んじ、攻撃性を抑える。","interpretation_short":"Politeness 高め","caveat":null}
+    ]},
+    {"scale_id":"bfas_conscientiousness","description_long":"**誠実性 (BFAS Conscientiousness)** は Big Five Aspect Scales での **計画性・自己制御**。BFAS では **Industriousness (勤勉性) + Orderliness (秩序性)** の 2 aspect に分解。\n\n高得点は生涯成果の最大予測因子 (= Roberts et al., 2006)。","description_short":"BFAS Conscientiousness。Industriousness + Orderliness の 2 aspect 上位。","reference":"DeYoung, Quilty & Peterson (2007) BFAS Conscientiousness.","threshold_low":48,"threshold_high":72,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**Conscientiousness 低め**。即興・柔軟型。長期目標管理が苦手な場合あり。","interpretation_short":"Conscientiousness 低め","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。計画と即興のバランス。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**Conscientiousness 高め**。計画的・規律的。学業 / 仕事 / 健康行動の最大予測因子。","interpretation_short":"Conscientiousness 高め","caveat":null}
+    ]},
+    {"scale_id":"bfas_industriousness","description_long":"**勤勉性 (Industriousness / C-Ind aspect)** は BFAS Conscientiousness の **目標達成への努力・persistence** 側面。NEO Achievement-Striving + Self-Discipline + Self-Efficacy と重なる。\n\n高得点は学業成績 / 職務パフォーマンスを最も予測する性格 facet (Roberts 2009 meta-analysis)。Grit の中核。","description_short":"目標達成への努力・persistence。BFAS C-Ind aspect。Grit の中核。","reference":"DeYoung, Quilty & Peterson (2007) BFAS Industriousness / Roberts (2009) Conscientiousness meta-analysis.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**Industriousness 低め**。マイペース / 短期的快楽優先。","interpretation_short":"Industriousness 低め","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。必要なときに頑張る。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**Industriousness 高め**。困難な目標を持続的に追求する。学業 / 職務成功の最大予測因子。","interpretation_short":"Industriousness 高め","caveat":null}
+    ]},
+    {"scale_id":"bfas_orderliness","description_long":"**秩序性 (Orderliness / C-Ord aspect)** は BFAS Conscientiousness の **整理整頓・体系化・ルール志向** 側面。NEO Orderliness と重なる。\n\nIndustriousness とは独立 (= 計画的だが部屋は乱雑な人も存在)。極端に高いと完璧主義 / 強迫的傾向リスク。","description_short":"整理整頓・体系化・ルール志向。BFAS C-Ord aspect。","reference":"DeYoung, Quilty & Peterson (2007) BFAS Orderliness.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**Orderliness 低め**。乱雑だがクリエイティブな環境を好む。","interpretation_short":"Orderliness 低め","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。必要範囲で整理する。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**Orderliness 高め**。整理整頓・体系化に強い。極端に高いと強迫的傾向に注意。","interpretation_short":"Orderliness 高め","caveat":null}
+    ]},
+    {"scale_id":"bfas_extraversion","description_long":"**外向性 (BFAS Extraversion)** は Big Five Aspect Scales での **社交・刺激追求**。BFAS では **Enthusiasm (熱意) + Assertiveness (主張性)** の 2 aspect に分解。\n\nNEO Extraversion と重なるが、Enthusiasm (= positive emotion / 喜び) と Assertiveness (= dominance / 主張) が独立軸として分かれる点が示唆的。","description_short":"BFAS Extraversion。Enthusiasm + Assertiveness の 2 aspect 上位。","reference":"DeYoung, Quilty & Peterson (2007) BFAS Extraversion.","threshold_low":48,"threshold_high":72,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**Extraversion 低め (内向)**。一人時間を好む。","interpretation_short":"内向","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。社交と独居のバランス。","interpretation_short":"両向","caveat":null},
+      {"band":"high","interpretation_long":"**Extraversion 高め**。社交的で活発。Enthusiasm / Assertiveness どちらが高いかで profile が変わる。","interpretation_short":"外向","caveat":null}
+    ]},
+    {"scale_id":"bfas_enthusiasm","description_long":"**熱意 (Enthusiasm / E-Ent aspect)** は BFAS Extraversion の **ポジティブ感情・社交を楽しむ** 側面。NEO Cheerfulness + Friendliness と重なる。\n\nAssertiveness とは独立 (= 親しみやすいが主張は控えめな人も存在)。","description_short":"ポジティブ感情・社交を楽しむ。BFAS E-Ent aspect。","reference":"DeYoung, Quilty & Peterson (2007) BFAS Enthusiasm.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**Enthusiasm 低め**。淡々と落ち着いた振る舞い。","interpretation_short":"Enthusiasm 低め","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。場面に応じて熱意。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**Enthusiasm 高め**。社交を楽しみ、ポジティブ感情を頻繁に経験する。","interpretation_short":"Enthusiasm 高め","caveat":null}
+    ]},
+    {"scale_id":"bfas_assertiveness","description_long":"**主張性 (Assertiveness / E-Ass aspect)** は BFAS Extraversion の **影響力行使・リーダーシップ** 側面。NEO Assertiveness と重なる。\n\nEnthusiasm とは独立。","description_short":"影響力行使・リーダーシップ。BFAS E-Ass aspect。","reference":"DeYoung, Quilty & Peterson (2007) BFAS Assertiveness.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**Assertiveness 低め**。控えめ / フォロワー型。","interpretation_short":"Assertiveness 低め","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。場面に応じて主張。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**Assertiveness 高め**。リーダーシップを発揮し、影響力を行使する。","interpretation_short":"Assertiveness 高め","caveat":null}
+    ]},
+    {"scale_id":"bfas_openness_intellect","description_long":"**開放性／知性 (BFAS Openness/Intellect)** は Big Five Aspect Scales での **新規経験・知的活動への開放**。BFAS では **Intellect (知性) + Openness (開放性)** の 2 aspect に分解する点が特徴。\n\nDeYoung et al. (2014) は、Intellect (= 抽象思考 / 推論) と Openness (= 美術 / 知覚的開放) は神経基盤も異なる独立次元と論じる。","description_short":"BFAS Openness/Intellect。Intellect + Openness の 2 aspect 上位。","reference":"DeYoung, Quilty & Peterson (2007) BFAS / DeYoung (2014) Cybernetic Big Five Theory.","threshold_low":48,"threshold_high":72,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**Openness/Intellect 低め**。実用・伝統志向。","interpretation_short":"実用志向","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。新規性と慣れの両方。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**Openness/Intellect 高め**。新規経験 / 抽象思考を求める。Intellect / Openness どちらが高いかで profile が変わる。","interpretation_short":"探索・知的型","caveat":null}
+    ]},
+    {"scale_id":"bfas_intellect","description_long":"**知性 (Intellect / O-Int aspect)** は BFAS Openness/Intellect の **抽象的思考・推論・哲学的問いへの関心**。Cacioppo の Need for Cognition と重なる。\n\n高得点は学術 / 理論職に適性。Openness とは独立。","description_short":"抽象思考・推論への関心。BFAS O-Int aspect。","reference":"DeYoung, Quilty & Peterson (2007) BFAS Intellect.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**Intellect 低め (具体志向)**。具体的問題に集中する。","interpretation_short":"具体志向","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。必要に応じて抽象議論。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**Intellect 高め**。抽象 / 理論 / 哲学を楽しむ。","interpretation_short":"思索型","caveat":null}
+    ]},
+    {"scale_id":"bfas_openness","description_long":"**開放性 (Openness / O-Opn aspect)** は BFAS Openness/Intellect の **美術・想像・知覚的開放** 側面。NEO Artistic Interests + Imagination と重なる。\n\nIntellect とは独立 (= 美に敏感だが抽象議論は嫌いな人も存在)。","description_short":"美術・想像・知覚的開放。BFAS O-Opn aspect。","reference":"DeYoung, Quilty & Peterson (2007) BFAS Openness.","threshold_low":24,"threshold_high":36,"threshold_kind":"equal_split","interpretations":[
+      {"band":"low","interpretation_long":"**Openness 低め**。実用志向。芸術への関心は控えめ。","interpretation_short":"Openness 低め","caveat":null},
+      {"band":"mid","interpretation_long":"**中程度**。場面に応じて美を楽しむ。","interpretation_short":"中程度","caveat":null},
+      {"band":"high","interpretation_long":"**Openness 高め**。美 / 想像 / 芸術 / 自然に強く心動かされる。","interpretation_short":"Openness 高め","caveat":null}
+    ]}
+
+  ]
+}

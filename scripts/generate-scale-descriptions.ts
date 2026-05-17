@@ -13,6 +13,7 @@ import { resolve } from "node:path";
 
 const ROOT = resolve(__dirname, "..");
 const OUT = resolve(ROOT, "data/ipip-master/scale-descriptions.json");
+const HANDCRAFT = resolve(ROOT, "data/ipip-master/scale-descriptions-handcraft.json");
 const JA_GLOSSARY = resolve(ROOT, "data/ipip-master/ja-glossary.json");
 
 // ============================================================
@@ -326,16 +327,38 @@ type ScaleDescEntry = {
   }>;
 };
 
+// hand-crafted entry の優先順位:
+//   1. scale-descriptions-handcraft.json (= 専用ファイル、Phase B literature 引用版)
+//   2. 既存 scale-descriptions.json (= 前回の neo_anxiety pilot 等、未移行分)
 const existingEntries = new Map<string, ScaleDescEntry>();
 if (existsSync(OUT)) {
   try {
     const ex = JSON.parse(readFileSync(OUT, "utf-8")) as { scales?: ScaleDescEntry[] };
     for (const e of ex.scales ?? []) {
-      if (e.scale_id) existingEntries.set(e.scale_id, e);
+      if (e.scale_id && !isTemplateGenerated(e)) existingEntries.set(e.scale_id, e);
+    }
+  } catch {}
+}
+if (existsSync(HANDCRAFT)) {
+  try {
+    const hc = JSON.parse(readFileSync(HANDCRAFT, "utf-8")) as { scales?: ScaleDescEntry[] };
+    for (const e of hc.scales ?? []) {
+      if (e.scale_id) existingEntries.set(e.scale_id, e); // override
     }
   } catch {}
 }
 console.error(`existing hand-crafted: ${existingEntries.size}`);
+
+// template 生成された entry を判定する heuristic:
+//   - description_long が template に書いた定型フレーズで始まる
+//   - interpretation_short も「{name} 低め」等の定型
+function isTemplateGenerated(e: ScaleDescEntry): boolean {
+  const dl = e.description_long ?? "";
+  // template の特徴的フレーズ
+  if (/に属する facet。\d+ 項目 5 段階 Likert、α/.test(dl)) return true;
+  if (/の主要尺度のひとつ。\d+ 項目 5 段階 Likert、α/.test(dl)) return true;
+  return false;
+}
 
 // ============================================================
 // template generator
