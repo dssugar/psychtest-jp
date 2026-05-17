@@ -36,6 +36,25 @@ export interface CanonicalImplRow {
   display_label_ja?: string | null;
 }
 
+export interface ScaleDescriptionRow {
+  scale_id: string;
+  description_long: string | null;
+  description_short: string | null;
+  reference: string | null;
+  source_url: string | null;
+  threshold_low: number | null;
+  threshold_high: number | null;
+  threshold_kind: string | null;
+}
+
+export interface ScaleInterpretationRow {
+  scale_id: string;
+  band: "very_low" | "low" | "mid" | "high" | "very_high";
+  interpretation_long: string | null;
+  interpretation_short: string | null;
+  caveat: string | null;
+}
+
 export interface ScaleItemRow {
   scale_id: string;
   item_id: string;
@@ -175,6 +194,25 @@ export async function getUserResponsesForScale(
     .bind(deviceId, scaleId)
     .all<{ item_id: string; value: number; answered_at: number }>();
   return r.results ?? [];
+}
+
+/**
+ * 1 scale の description + interpretation 全 band.
+ * 未登録 scale は null / 空配列を返す (= UI 側でフォールバック表示).
+ */
+export async function getScaleDescription(
+  db: D1Database,
+  scaleId: string,
+): Promise<{ description: ScaleDescriptionRow | null; interpretations: ScaleInterpretationRow[] }> {
+  const desc = await db
+    .prepare("SELECT * FROM scale_descriptions WHERE scale_id = ?1")
+    .bind(scaleId)
+    .first<ScaleDescriptionRow>();
+  const interps = await db
+    .prepare("SELECT * FROM scale_interpretations WHERE scale_id = ?1 ORDER BY band")
+    .bind(scaleId)
+    .all<ScaleInterpretationRow>();
+  return { description: desc ?? null, interpretations: interps.results ?? [] };
 }
 
 /**

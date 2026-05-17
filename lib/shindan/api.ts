@@ -52,6 +52,25 @@ export interface UserResponseRow {
   answered_at: number;
 }
 
+export interface ScaleDescription {
+  scale_id: string;
+  description_long: string | null;
+  description_short: string | null;
+  reference: string | null;
+  source_url: string | null;
+  threshold_low: number | null;
+  threshold_high: number | null;
+  threshold_kind: string | null;
+}
+
+export interface ScaleInterpretation {
+  scale_id: string;
+  band: "very_low" | "low" | "mid" | "high" | "very_high";
+  interpretation_long: string | null;
+  interpretation_short: string | null;
+  caveat: string | null;
+}
+
 // ---------- API ----------
 
 export async function listInstrumentsApi(): Promise<ScaleHierarchyEntry[]> {
@@ -76,6 +95,8 @@ export async function getScaleApi(
   scale: ScaleHierarchyEntry;
   items: ScaleItem[];
   responses?: UserResponseRow[];
+  description?: ScaleDescription | null;
+  interpretations?: ScaleInterpretation[];
 }> {
   const url = new URL(`/scales/${encodeURIComponent(scaleId)}/`, window.location.origin);
   if (includeResponses) {
@@ -84,7 +105,29 @@ export async function getScaleApi(
   }
   const res = await fetch(url.toString());
   if (!res.ok) throw new Error(`/scales/${scaleId} 失敗: ${res.status}`);
-  return await res.json();
+  return (await res.json()) as ReturnType<typeof getScaleApi> extends Promise<infer T> ? T : never;
+}
+
+/**
+ * raw score + threshold から band ('low' | 'mid' | 'high') を判定.
+ * threshold_low / threshold_high 未設定なら equal_split (= 0.33 / 0.66 of normalized).
+ */
+export function pickBand(
+  rawScore: number,
+  min: number,
+  max: number,
+  thresholdLow: number | null,
+  thresholdHigh: number | null,
+): "low" | "mid" | "high" {
+  if (thresholdLow !== null && thresholdHigh !== null) {
+    if (rawScore <= thresholdLow) return "low";
+    if (rawScore >= thresholdHigh) return "high";
+    return "mid";
+  }
+  const normalized = max === min ? 0 : (rawScore - min) / (max - min);
+  if (normalized < 0.33) return "low";
+  if (normalized > 0.66) return "high";
+  return "mid";
 }
 
 export async function listCanonicalLabelsApi(): Promise<CanonicalLabel[]> {

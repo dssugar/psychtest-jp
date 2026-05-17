@@ -20,9 +20,12 @@ import { Card } from "@/components/ui/Card";
 import { DataBadge } from "@/components/viz/DataBadge";
 import {
   getScaleApi,
+  pickBand,
   scoreLikert5,
   submitScaleResponses,
+  type ScaleDescription,
   type ScaleHierarchyEntry,
+  type ScaleInterpretation,
   type ScaleItem,
 } from "@/lib/shindan/api";
 
@@ -57,6 +60,8 @@ function ScaleRunner() {
   const [phase, setPhase] = useState<Phase>("loading");
   const [scale, setScale] = useState<ScaleHierarchyEntry | null>(null);
   const [items, setItems] = useState<ScaleItem[]>([]);
+  const [description, setDescription] = useState<ScaleDescription | null>(null);
+  const [interpretations, setInterpretations] = useState<ScaleInterpretation[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [answers, setAnswers] = useState<number[]>([]);
   const [currentIdx, setCurrentIdx] = useState(0);
@@ -72,7 +77,8 @@ function ScaleRunner() {
       const data = await getScaleApi(scaleId, true);
       setScale(data.scale);
       setItems(data.items);
-      // 既存 user_responses があれば prefill (= 再受験時の初期値)
+      setDescription(data.description ?? null);
+      setInterpretations(data.interpretations ?? []);
       const existing = data.responses ?? [];
       const byItem = new Map(existing.map((r) => [r.item_id, r.value] as const));
       const prefill = data.items.map((it) => byItem.get(it.item_id) ?? 0);
@@ -141,7 +147,15 @@ function ScaleRunner() {
   if (!scale) return <ErrorBox message="scale data がありません" />;
 
   if (phase === "intro") {
-    return <IntroView scale={scale} items={items} onStart={startTake} hasPrefill={answers.some((a) => a > 0)} />;
+    return (
+      <IntroView
+        scale={scale}
+        items={items}
+        description={description}
+        onStart={startTake}
+        hasPrefill={answers.some((a) => a > 0)}
+      />
+    );
   }
 
   if (phase === "submitting") {
@@ -153,7 +167,17 @@ function ScaleRunner() {
   }
 
   if (phase === "result" && score) {
-    return <ResultView scale={scale} items={items} answers={answers} score={score} onRestart={restart} />;
+    return (
+      <ResultView
+        scale={scale}
+        items={items}
+        answers={answers}
+        score={score}
+        description={description}
+        interpretations={interpretations}
+        onRestart={restart}
+      />
+    );
   }
 
   // phase === "take"
@@ -178,11 +202,13 @@ function ScaleRunner() {
 function IntroView({
   scale,
   items,
+  description,
   onStart,
   hasPrefill,
 }: {
   scale: ScaleHierarchyEntry;
   items: ScaleItem[];
+  description: ScaleDescription | null;
   onStart: () => void;
   hasPrefill: boolean;
 }) {
@@ -222,6 +248,22 @@ function IntroView({
           <p className="text-xs font-mono text-brutal-gray-600 mb-4 break-all">
             出典: <a href={scale.source_url} target="_blank" rel="noopener noreferrer" className="underline">{scale.source_url}</a>
           </p>
+        )}
+
+        {description?.description_long && (
+          <div className="border-t-brutal-thin border-brutal-black pt-4 mb-4">
+            <h2 className="text-lg text-brutal-black mb-2" style={{ fontFamily: "var(--font-display-ja)", fontWeight: 700 }}>
+              この尺度について
+            </h2>
+            <div className="text-sm text-brutal-gray-800 leading-relaxed whitespace-pre-wrap" style={{ fontFamily: "var(--font-display-ja)" }}>
+              {description.description_long}
+            </div>
+            {description.reference && (
+              <p className="text-xs font-mono text-brutal-gray-600 mt-3">
+                Reference: {description.reference}
+              </p>
+            )}
+          </div>
         )}
 
         <div className="border-t-brutal-thin border-brutal-black pt-4 mb-6">
@@ -359,17 +401,30 @@ function ResultView({
   items,
   answers,
   score,
+  description,
+  interpretations,
   onRestart,
 }: {
   scale: ScaleHierarchyEntry;
   items: ScaleItem[];
   answers: number[];
   score: ReturnType<typeof scoreLikert5>;
+  description: ScaleDescription | null;
+  interpretations: ScaleInterpretation[];
   onRestart: () => void;
 }) {
   const pct = Math.round(score.normalized * 100);
-  const level = pct >= 70 ? "高" : pct >= 30 ? "中" : "低";
-  const levelColor = pct >= 70 ? "green" : pct >= 30 ? "yellow" : "blue";
+  // band 判定: threshold があれば raw score で、なければ normalized % で
+  const band = pickBand(
+    score.total,
+    score.min,
+    score.max,
+    description?.threshold_low ?? null,
+    description?.threshold_high ?? null,
+  );
+  const level = band === "high" ? "高" : band === "mid" ? "中" : "低";
+  const levelColor = band === "high" ? "green" : band === "mid" ? "yellow" : "blue";
+  const interp = interpretations.find((i) => i.band === band);
 
   return (
     <>
@@ -405,8 +460,22 @@ function ResultView({
           </p>
         </div>
 
-        {/* 解釈 */}
-        <ScoreInterpretation pct={pct} scale={scale} />
+        {/* 解釈 (= curated があれば優先、なければ generic fallback) */}
+        {interp?.interpretation_long ? (
+          <div className="border-l-brutal-thick border-l-viz-cyan pl-3 mb-2">
+            <p className="text-xs font-mono text-brutal-gray-600 mb-2">解釈 ({band})</p>
+            <div className="text-sm text-brutal-gray-800 leading-relaxed whitespace-pre-wrap" style={{ fontFamily: "var(--font-display-ja)" }}>
+              {interp.interpretation_long}
+            </div>
+            {interp.caveat && (
+              <p className="mt-2 text-xs font-mono text-viz-orange p-2 border-brutal-thin border-viz-orange bg-brutal-yellow">
+                ⚠ {interp.caveat}
+              </p>
+            )}
+          </div>
+        ) : (
+          <ScoreInterpretation pct={pct} scale={scale} />
+        )}
 
         {/* 項目別 breakdown */}
         <details className="mt-6">

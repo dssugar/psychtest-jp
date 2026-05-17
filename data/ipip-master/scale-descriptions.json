@@ -1,0 +1,46 @@
+{
+  "_note": "Phase 2.x.G: scale 説明 + 結果解釈. pilot は neo_anxiety 1 件のみ、format 確定後に Tier S 横展開予定。description_long は UI / description_short は LLM context 用.",
+  "_format": {
+    "scale_id": "scale_hierarchy.scale_id 一致",
+    "description_long": "200-400 字、UI scale intro ページ表示",
+    "description_short": "30-80 字、月読 LLM context 1 行要約",
+    "reference": "原著 citation (free text)",
+    "source_url": "IPIP page or 一次資料 URL",
+    "threshold_low": "raw score ≤ この値 → 'low' band",
+    "threshold_high": "raw score ≥ この値 → 'high' band",
+    "threshold_kind": "'percentile' | 'normed_z' | 'clinical_cutoff' | 'equal_split'",
+    "interpretations": "band 別 (low/mid/high) の解釈 + 短文 + caveat"
+  },
+  "scales": [
+    {
+      "scale_id": "neo_anxiety",
+      "description_long": "**NEO Neuroticism / Anxiety (N1 facet)** は、心配・恐れ・緊張といった「将来や危険に対する不安傾向」を測定する尺度です。IPIP-NEO-300 の Neuroticism 因子 6 facet のうち最も中核的な構成概念で、Costa & McCrae (1992) の NEO-PI-R を Goldberg (1999) が IPIP public-domain 化したもの。10 項目 5 段階 Likert で α = 0.83、再テスト信頼性 r = 0.84 (2 年間)。高得点は不安障害・抑うつとの相関が一貫して報告されており (Kotov et al., 2010, Psychol Bull)、一方で「危険察知」「準備行動」といった適応的側面もある (= 過剰に不安 = 病理ではない)。低得点は「平静」「動じなさ」を意味するが、リスク感度が低すぎると別問題 (準備不足等) を招きうる。介入対象としては認知行動療法 (CBT) や、マインドフルネス系療法 (MBSR / MBCT) のエビデンスが豊富。",
+      "description_short": "心配・恐れ・緊張への傾向。Neuroticism N1 facet。10項目 α=0.83。",
+      "reference": "Goldberg (1999) IPIP / Costa & McCrae (1992) NEO-PI-R. Kotov et al. (2010) で不安障害との関連 meta-analysis.",
+      "source_url": "https://ipip.ori.org/newNEOKey.htm",
+      "threshold_low": 20,
+      "threshold_high": 35,
+      "threshold_kind": "equal_split",
+      "interpretations": [
+        {
+          "band": "low",
+          "interpretation_long": "心配や緊張をあまり感じにくいタイプ。ストレス状況でも落ち着いていられ、平静を保ちやすい。一方で、リスク察知や事前準備の感度が低い可能性もあり、極端に低い場合は「楽観バイアス」(= 危険を過小評価) に注意。",
+          "interpretation_short": "不安傾向 低め (落ち着き型)",
+          "caveat": null
+        },
+        {
+          "band": "mid",
+          "interpretation_long": "標準的な不安レベル。状況に応じて適度に心配し、必要な準備行動を取れる範囲。日常的なストレスには対処できるが、強いストレッサー (= 試験・対人衝突・健康問題等) では一時的に不安が高まることもある。",
+          "interpretation_short": "不安傾向 中程度 (適応範囲)",
+          "caveat": null
+        },
+        {
+          "band": "high",
+          "interpretation_long": "心配や緊張を感じやすいタイプ。将来の不確実さや潜在的危険に対する感度が高く、過剰な反芻 (= 同じことを繰り返し考える) や予期不安に陥りやすい。臨床的不安障害との相関が報告されているが、これ単独で診断はできない。極端に高い場合、認知行動療法やマインドフルネス療法、必要なら専門家相談を検討。",
+          "interpretation_short": "不安傾向 高め (心配しやすい)",
+          "caveat": "高得点が継続している場合、専門家への相談を検討してください。これは医療診断ではありません。"
+        }
+      ]
+    }
+  ]
+}

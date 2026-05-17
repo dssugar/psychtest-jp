@@ -9,7 +9,7 @@
  */
 
 import { jsonResponse } from "../../_lib/vllm";
-import { getScale, listScaleItems, getUserResponsesForScale } from "../../_lib/scales";
+import { getScale, listScaleItems, getUserResponsesForScale, getScaleDescription } from "../../_lib/scales";
 
 interface Env {
   DB: D1Database;
@@ -31,11 +31,12 @@ export const onRequest: PagesFunction<Env, "scaleId"> = async (context) => {
   if (!scale) return jsonResponse({ error: "scale not found" }, 404);
 
   const items = await listScaleItems(context.env.DB, scaleId);
+  const { description, interpretations } = await getScaleDescription(context.env.DB, scaleId);
 
   let responses: Array<{ item_id: string; value: number; answered_at: number }> | undefined;
   if (deviceId) {
     responses = await getUserResponsesForScale(context.env.DB, deviceId, scaleId);
   }
 
-  return jsonResponse({ scale, items, responses }, 200);
+  return jsonResponse({ scale, items, responses, description, interpretations }, 200);
 };

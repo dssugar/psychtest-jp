@@ -50,6 +50,7 @@ const SCALE_HIERARCHY_JA_JSON = resolve(ROOT, "data/ipip-master/scale-hierarchy-
 const JA_GLOSSARY_JSON = resolve(ROOT, "data/ipip-master/ja-glossary.json");
 const CANONICAL_LABELS_JA_JSON = resolve(ROOT, "data/ipip-master/canonical-labels-ja.json");
 const ITEMS_JA_SUPPLEMENT_JSON = resolve(ROOT, "data/ipip-master/items-ja-supplement.json");
+const SCALE_DESCRIPTIONS_JSON = resolve(ROOT, "data/ipip-master/scale-descriptions.json");
 const SQL_OUT = resolve(ROOT, "scripts/.cache/seed-ipip.sql");
 const BIGFIVE_MAPPING_OUT = resolve(ROOT, "data/ipip-master/bigfive-id-mapping.json");
 const INDUSTRIOUSNESS_MAPPING_OUT = resolve(ROOT, "data/ipip-master/industriousness-id-mapping.json");
@@ -1430,6 +1431,55 @@ function build() {
     log.push(`  scale_id resolved: ${canonicalResolved} / ${canonicalImplsCount} (= ${Math.round((canonicalResolved / canonicalImplsCount) * 100)}% , 残は命名揺れ / facet_code 直接 match 不可)`);
   } catch (err) {
     log.push(`canonical_labels: not found or error (${err})`);
+  }
+
+  // 5.9.7. Phase 2.x.G: scale_descriptions + scale_interpretations populate.
+  //   scale-descriptions.json (= 手動キュレーション) を 2 table に DELETE → INSERT で投入 (冪等).
+  log.push("");
+  log.push("=== Phase 2.x.G: scale_descriptions populate ===");
+  interface ScaleDescriptionEntry {
+    scale_id: string;
+    description_long?: string | null;
+    description_short?: string | null;
+    reference?: string | null;
+    source_url?: string | null;
+    threshold_low?: number | null;
+    threshold_high?: number | null;
+    threshold_kind?: string | null;
+    interpretations?: Array<{
+      band: "very_low" | "low" | "mid" | "high" | "very_high";
+      interpretation_long?: string | null;
+      interpretation_short?: string | null;
+      caveat?: string | null;
+    }>;
+  }
+  let descCount = 0;
+  let interpCount = 0;
+  try {
+    const sdParsed = JSON.parse(readFileSync(SCALE_DESCRIPTIONS_JSON, "utf-8")) as {
+      scales?: ScaleDescriptionEntry[];
+    };
+    sql.push("");
+    sql.push("-- scale_descriptions + scale_interpretations (Phase 2.x.G)");
+    sql.push("DELETE FROM scale_interpretations;");
+    sql.push("DELETE FROM scale_descriptions;");
+    for (const sd of sdParsed.scales ?? []) {
+      if (!sd.scale_id) continue;
+      sql.push(
+        `INSERT INTO scale_descriptions (scale_id, description_long, description_short, reference, source_url, threshold_low, threshold_high, threshold_kind, created_at, updated_at) VALUES (${sqlStr(sd.scale_id)}, ${sqlStr(sd.description_long)}, ${sqlStr(sd.description_short)}, ${sqlStr(sd.reference)}, ${sqlStr(sd.source_url)}, ${sqlNum(sd.threshold_low)}, ${sqlNum(sd.threshold_high)}, ${sqlStr(sd.threshold_kind)}, ${now}, ${now});`,
+      );
+      descCount++;
+      for (const ip of sd.interpretations ?? []) {
+        if (!ip.band) continue;
+        sql.push(
+          `INSERT INTO scale_interpretations (scale_id, band, interpretation_long, interpretation_short, caveat, created_at) VALUES (${sqlStr(sd.scale_id)}, ${sqlStr(ip.band)}, ${sqlStr(ip.interpretation_long)}, ${sqlStr(ip.interpretation_short)}, ${sqlStr(ip.caveat)}, ${now});`,
+        );
+        interpCount++;
+      }
+    }
+    log.push(`scale_descriptions: ${descCount} entries / scale_interpretations: ${interpCount} bands`);
+  } catch (err) {
+    log.push(`scale_descriptions: not found or error (${err})`);
   }
 
   // 5.7. scale_meta 投入 (Phase 2.1.β: UI 表示用 metadata、12 scale)
