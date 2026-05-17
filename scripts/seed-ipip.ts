@@ -1305,12 +1305,14 @@ function build() {
     "BFAS-20": "BFAS",
     "NEO5-20": "NEO",
     "Big-Seven": "Saucier1997",
-    "BAS-Drive": "Carver1994",
-    "BAS-Fun-seeking": "Carver1994",
-    "BAS-Reward-Responsiveness": "Carver1994",
-    "BIS-Anxiety": "Carver1994",
-    "BIS/BAS": "Carver1994",
-    "BIS-BAS": "Carver1994",
+    // Carver & White 1994 BIS/BAS: canonical_labels で 4 instrument 名 (BAS-Drive 等) で分離されているが、
+    // 実 Tedone Table では 1 instrument "BIS/BAS" 配下に格納 (→ scale_hierarchy.instrument="BIS_BAS")
+    "BAS-Drive": "BIS_BAS",
+    "BAS-Fun-seeking": "BIS_BAS",
+    "BAS-Reward-Responsiveness": "BIS_BAS",
+    "BIS-Anxiety": "BIS_BAS",
+    "BIS/BAS": "BIS_BAS",
+    "BIS-BAS": "BIS_BAS",
     "ADHD": "Span2002",
     // 単一 construct instrument → 実 scale_hierarchy 上の instrument 名 (= source の "Author + 年" slug)
     "Cognitive Failures": "BIDR", // IPIP project は Broadbent を BIDR sub-scale として実装
@@ -1345,7 +1347,8 @@ function build() {
   } catch {}
 
   // resolve 関数: 多段 strategy で scale_id を返す (null = unresolved).
-  const resolveCanonical = (instrument: string, facetCode: string): string | null => {
+  //   canonicalLabel も受け取り、strategy 5 で `{instrument}_{canonical_label}` を直接試行.
+  const resolveCanonical = (canonicalLabel: string, instrument: string, facetCode: string): string | null => {
     const aliasedInst = INSTRUMENT_ALIASES[instrument] ?? instrument;
 
     // strategy 1: facet_code を facet_codes table で label に翻訳 → (instrument, label) lookup
@@ -1369,13 +1372,19 @@ function build() {
       if (hit) return hit;
     }
 
+    // strategy 5 (citation facet_code 用): canonical_label そのものを scale 名として lookup.
+    //   例: BIS_BAS + "Ambition/Drive" → bis_bas_ambition_drive (Tedone Table 由来の scale_id)
+    //   Carver1994 / Buss1980 / Chapman1986 等 facet_code が citation の case で有効.
+    {
+      const hit = instrumentKeyToScaleId.get(`${aliasedInst}::${normalizeFacetKey(canonicalLabel)}`);
+      if (hit) return hit;
+    }
+
     // strategy 4: 単一 instrument scale (= instrument 自体が scale).
     //   single-construct で facet_code が citation や "Domain" 等の場合、instrument slug 単独を返す.
     const baseId = instrumentToScaleId(aliasedInst);
-    // hierarchyMap に level-2 で 1 entry のみある場合はそれを返す
     const level2 = [...hierarchyMap.values()].filter((h) => h.instrument === aliasedInst && h.level === 2);
     if (level2.length === 1) return level2[0].scale_id;
-    // level-1 (instrument 単独) を返す (= 構成概念 navigation で「この instrument 全体に該当」を意味)
     if (hierarchyMap.has(baseId)) return baseId;
 
     return null;
@@ -1408,7 +1417,7 @@ function build() {
 
       for (const impl of entry.implementations ?? []) {
         if (!impl.instrument || !impl.facet_code) continue;
-        const scaleId = resolveCanonical(impl.instrument, impl.facet_code);
+        const scaleId = resolveCanonical(entry.canonical_label, impl.instrument, impl.facet_code);
         if (scaleId) canonicalResolved++;
 
         sql.push(
